@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.1",
+    "version": "0.0.12",
     "description": "SSP React Components",
     "main": "dist/index.js",
     "files": [
@@ -51,6 +51,6 @@
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",
-        "publish": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm publish --access public"
+        "publish": "npx tsc && cp lib-package.json dist/package.json && cp README.md dist/README.md && cd dist && npm publish --access public"
     }
 }
