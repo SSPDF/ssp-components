@@ -2,13 +2,7 @@
     "name": "sspdf-components",
     "version": "0.0.1",
     "description": "SSP React Components",
-    "main": "dist/index.js",
-    "files": [
-        "src/**/*"
-    ],
-    "directories": {
-        "src": "src"
-    },
+    "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
     "dependencies": {
@@ -47,23 +41,11 @@
         "react-dom": "18.2.0",
         "storybook": "7.0.5"
     },
-    "scripts": {
-        "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build",
-        "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",
-        "publish": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm publish"
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Henrique-Henrique/ssp-components.git"
     },
-    "keywords": [
-        "front",
-        "react",
-        "components",
-        "ssp",
-        "df"
-    ],
+    "keywords": ["front", "react", "components", "ssp", "df"],
     "bugs": {
         "url": "https://github.com/Henrique-Henrique/ssp-components/issues"
     },
