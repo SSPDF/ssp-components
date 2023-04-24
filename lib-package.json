@@ -1,5 +1,5 @@
 {
-    "name": "@ssp_df/react-components",
+    "name": "@ssplib/react-components",
     "version": "0.0.1",
     "description": "SSP React Components",
     "main": "index.js",
