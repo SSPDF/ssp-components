@@ -1,5 +1,5 @@
 {
-    "name": "sspdf-components",
+    "name": "@ssp_df/react-components",
     "version": "0.0.1",
     "description": "SSP React Components",
     "main": "index.js",
@@ -43,11 +43,11 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Henrique-Henrique/ssp-components.git"
+        "url": "git+https://github.com/SSPDF/ssp-components.git"
     },
     "keywords": ["front", "react", "components", "ssp", "df"],
     "bugs": {
-        "url": "https://github.com/Henrique-Henrique/ssp-components/issues"
+        "url": "https://github.com/SSPDF/ssp-components/issues"
     },
-    "homepage": "https://github.com/Henrique-Henrique/ssp-components#readme"
+    "homepage": "https://github.com/SSPDF/ssp-components#readme"
 }
