@@ -35,12 +35,14 @@ export function OAuthProvider({
     oidcConfig,
     redirectURL,
     validateTokenRoute,
+    testToken,
 }: {
     children: JSX.Element | JSX.Element[]
     AUTH_URL: string
     oidcConfig: OiDcConfig
     redirectURL: string
     validateTokenRoute: string
+    testToken: string
 }) {
     const govBrURL = oidcConfig.authority + '/authorize?response_type=code&client_id=' + oidcConfig.client_id + '&scope=' + oidcConfig.scope + '&redirect_uri=' + oidcConfig.redirect_uri
 
@@ -80,8 +82,7 @@ export function OAuthProvider({
     function login() {
         // Teste em localhost
         if (location && location.hostname === 'localhost') {
-            const token =
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsIm5hbWUiOiJQZWRpbiIsImVtYWlsIjoiZ2FpdGFjaGkwQGdtYWlsLmNvbSIsInBob25lX251bWJlciI6IjYxOTkzMDU4NDIzIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiMDU1MTk0MjkxNjIiLCJyb2xlcyI6W3siY29kZSI6MSwibmFtZSI6IlVzZXIgRXZlbnRvcyIsInN5c3RlbSI6Mn0seyJjb2RlIjoyLCJuYW1lIjoiQWRtaW4gRXZlbnRvcyIsInN5c3RlbSI6Mn1dLCJpYXQiOjE2ODE5OTUzOTUsImV4cCI6MTY4MjYwMDE5NSwiYXVkIjoiVXNlcnMiLCJpc3MiOiJBdXRoU1NQIiwic3ViIjoiMDU1MTk0MjkxNjIifQ.m8U6BUrviJqYv2pdQpL74YxAlPhBJoh2-QRbg111uO8'
+            const token = testToken
             setCookie(cookieName, token, { maxAge: 60 * 60 * 24 * 500 })
             setUser({
                 name: 'Teste',
