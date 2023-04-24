@@ -1,0 +1,20 @@
+import { Meta, StoryObj } from '@storybook/react'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
+import MultInput from '../components/form/input/MultInput'
+
+const meta: Meta<typeof MultInput> = {
+    title: 'Input/MultInput',
+    component: MultInput,
+    tags: ['autodocs'],
+    decorators: [FormBaseDecorator],
+}
+
+export default meta
+type Story = StoryObj<typeof MultInput>
+
+export const Base: Story = {
+    args: {
+        name: 'teste',
+        customPlaceholder: 'Placeholder de teste',
+    },
+}
