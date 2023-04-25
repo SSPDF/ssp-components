@@ -29,6 +29,9 @@ jobs:
       - name: Criando readme
         run: cp README.md dist/README.md
 
+      - name: Criando readme
+        run: cp .npmignore dist/.npmignore
+
       - name: Publicando
         run: npm publish --access public
         working-directory: dist
