@@ -3,8 +3,8 @@ import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { SyntheticEvent, useCallback, useContext, useState } from 'react'
 import { useQuery } from 'react-query'
+import { AuthContext } from '../../../context/auth'
 import formContext from '../../../context/form'
-import { User } from '../../../types/auth'
 
 interface Option {
     id: number
@@ -16,16 +16,13 @@ export default function AutoComplete({
     required = false,
     title,
     customPlaceholder,
-    user,
     url,
     xs = 12,
     sm,
     md,
-    ...props
 }: {
     url: string
     name: string
-    user?: User
     title?: string
     customPlaceholder?: string
     required?: boolean
@@ -34,7 +31,9 @@ export default function AutoComplete({
     md?: number
 }) {
     const context = useContext(formContext)
+    const { user } = useContext(AuthContext)
     const [options, setOptions] = useState([])
+
     const { isLoading, data, error } = useQuery(`autocomplete-${name!}`, () =>
         fetch(url, {
             headers: {

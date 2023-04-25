@@ -17,13 +17,6 @@ type Story = StoryObj<typeof Table>
 
 export const Base: Story = {
     args: {
-        auth: {
-            isAuth: false,
-            login: () => console.log('LOGOU'),
-            logout: () => console.log('DESLOGOU'),
-            user: null,
-            userLoaded: true,
-        },
         fetchFunc: () => fetch('https://jsonplaceholder.typicode.com/posts'),
         csv: {
             fileName: 'Exemplo',

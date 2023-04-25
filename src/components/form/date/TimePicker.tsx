@@ -7,7 +7,7 @@ import get from 'lodash.get'
 import React, { useContext, useState } from 'react'
 import formContext from '../../../context/form'
 
-export default function TimePicker({ name, required = false, title, xs = 12, sm, md, ...props }: { name: string; title?: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
+export default function TimePicker({ name, required = false, title, xs = 12, sm, md }: { name: string; title?: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
     const context = useContext(formContext)
     const [value, setValue] = useState<Dayjs | null>(null)
 

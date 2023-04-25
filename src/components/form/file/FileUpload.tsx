@@ -8,8 +8,8 @@ import { Box, Button, CircularProgress, Grid, Paper, TableContainer, Typography 
 import { Stack } from '@mui/system'
 import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../../../context/auth'
 import formContext from '../../../context/form'
-import { User } from '../../../types/auth'
 
 interface FileState {
     id: number
@@ -25,7 +25,6 @@ export default function FileUpload({
     title,
     required = false,
     multiple = false,
-    user,
     apiURL,
     xs = 12,
     sm,
@@ -35,7 +34,6 @@ export default function FileUpload({
     tipoArquivo: string
     title: string
     apiURL: string
-    user?: User
     required?: boolean
     multiple?: boolean
     xs?: number
@@ -43,6 +41,7 @@ export default function FileUpload({
     md?: number
 }) {
     const context = useContext(formContext)!
+    const { user } = useContext(AuthContext)
 
     const [files, setFiles] = useState<FileState[]>([])
     const [filesLoaded, setFilesLoaded] = useState<number[]>([])

@@ -7,8 +7,9 @@ import Pagination from '@mui/material/Pagination'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import get from 'lodash.get'
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
+import { AuthContext } from '../../../context/auth'
 
 interface ColumnData {
     title: string
@@ -17,7 +18,6 @@ interface ColumnData {
 
 export function Table({
     columns,
-    auth,
     fetchFunc,
     emptyMsg = {
         user: 'Nenhum dado encontrado',
@@ -30,7 +30,6 @@ export function Table({
     action,
 }: {
     columns: ColumnData[]
-    auth: AuthData
     tableName: string
     action: (prop: any) => JSX.Element
     csv?: {
@@ -44,7 +43,7 @@ export function Table({
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(null)
-    const { user, userLoaded } = auth
+    const { user, userLoaded } = useContext(AuthContext)
 
     useEffect(() => {
         if (userLoaded)

@@ -7,11 +7,10 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Image from 'next/image'
 import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
-import React, { useCallback, useState } from 'react'
-import { AuthData } from '../../types/auth'
+import React, { useCallback, useContext, useState } from 'react'
+import { AuthContext } from '../../context/auth'
 
 export default function NavBar({
-    auth,
     links,
     title,
     img,
@@ -22,7 +21,6 @@ export default function NavBar({
     links: { name: string; path: string }[]
     title: string
     img: string
-    auth: AuthData
     next?: boolean
     el?: JSX.Element
     pos?: 'fixed' | 'inherit'
@@ -30,7 +28,7 @@ export default function NavBar({
     let router: NextRouter | undefined | null = undefined
     if (next) router = useRouter()
 
-    const { user, login, logout, userLoaded } = auth
+    const { user, login, logout, userLoaded } = useContext(AuthContext)
 
     const [anchor, setAnchor] = useState(null)
     const [avatarAnchor, setAvatarAnchor] = useState(null)

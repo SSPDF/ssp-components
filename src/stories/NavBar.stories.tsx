@@ -14,13 +14,6 @@ type Story = StoryObj<typeof NavBar>
 
 export const Base: Story = {
     args: {
-        auth: {
-            isAuth: false,
-            login: () => console.log('LOGOU'),
-            logout: () => console.log('DESLOGOU'),
-            user: null,
-            userLoaded: true,
-        },
         links: [
             {
                 name: 'Teste',
