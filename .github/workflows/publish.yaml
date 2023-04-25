@@ -1,0 +1,35 @@
+on: push
+name: Publicar components para npm
+env:
+  PUBLISH_TOKEN:  ${{ secrets.token }}
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copiando projeto
+        uses: actions/checkout@v3
+
+      - name: Settando node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+      
+      - name: Instalando modulos
+        run: npm install
+
+      - name: Buildando typescript
+        run: npx tsc
+      
+      - name: Criando package json
+        run: cp lib-package.json dist/package.json
+      
+      - name: Criando readme
+        run: cp README.md dist/README.md
+
+      - name: Publicando
+        run: npm version patch && npm publish --access public
+        working-directory: dist
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
