@@ -2,6 +2,7 @@
     "name": "@ssplib/react-components",
     "version": "0.0.13",
     "description": "SSP React Components",
+    "private": true,
     "main": "dist/index.js",
     "files": [
         "src/**/*"
