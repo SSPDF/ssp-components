@@ -3,17 +3,18 @@ import React, { useCallback, useState } from 'react'
 import { IMaskInput } from 'react-imask'
 
 const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(props: any, ref: any) {
-    const { onChange, maskProps, onMask, maskValue, setMaskValue, ...other } = props
+    const { onChange, maskProps, onMask, maskValue, setMaskValue, ...prop } = props
 
     const [mask, setMask] = useState(maskProps.mask)
 
+    delete prop.value
+
     return (
         <IMaskInput
-            {...other}
+            {...prop}
             {...maskProps}
             mask={mask}
             inputRef={ref}
-            value={maskValue}
             onAccept={(value: string) => {
                 setMaskValue(value)
                 if (!onMask) return
