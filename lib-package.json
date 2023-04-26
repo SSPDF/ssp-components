@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -32,7 +32,7 @@
         "@types/react": "^18.0.37",
         "prop-types": "15.8.1",
         "react-dom": "18.2.0",
-        "storybook": "7.0.5",
+        "@types/node": "18.16.1",
         "@mui/types": "^7.2.4"
     },
     "repository": {
