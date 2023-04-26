@@ -58,8 +58,6 @@ export default function NavBar({
         [router]
     )
 
-    if (!userLoaded) return <></>
-
     return (
         <>
             <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
