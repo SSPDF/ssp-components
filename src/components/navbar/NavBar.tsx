@@ -17,11 +17,13 @@ export default function NavBar({
     pos = 'fixed',
     next = true,
     el,
+    menuItems,
 }: {
     links: { name: string; path: string }[]
     title: string
     img: string
     next?: boolean
+    menuItems: JSX.Element | JSX.Element[]
     el?: JSX.Element
     pos?: 'fixed' | 'inherit'
 }) {
@@ -142,83 +144,7 @@ export default function NavBar({
                                                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                                 sx={{ '.MuiMenu-paper': { borderRadius: 4 } }}
                                             >
-                                                <Box sx={{ paddingTop: 2 }}>
-                                                    <Typography textTransform='capitalize' fontFamily='Inter' fontSize={14} paddingLeft={2}>
-                                                        Minha conta
-                                                    </Typography>
-                                                    <Box sx={{ borderBottom: 1, borderColor: '#c9d1d1', marginX: 2 }} />
-                                                </Box>
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://contas.staging.acesso.gov.br/alteracao_cadastro'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Dados pessoais
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://contas.staging.acesso.gov.br/seguranca'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Segurança da Conta
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://contas.staging.acesso.gov.br/privacidade'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Privacidade
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
-
-                                                <Box>
-                                                    <Typography textTransform='capitalize' fontFamily='Inter' fontSize={14} paddingLeft={2}>
-                                                        Serviços
-                                                    </Typography>
-                                                    <Box sx={{ borderBottom: 1, borderColor: '#c9d1d1', marginX: 2 }} />
-                                                </Box>
-
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://servicos.staging.acesso.gov.br/carteira'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Carteira de Documentos
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://servicos.staging.acesso.gov.br/certidoes'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Baixar certidões
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://servicos.staging.acesso.gov.br/notificacoes'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Notificações
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
-                                                <Box sx={{ '& a': { textDecoration: 'none' } }}>
-                                                    <Link href='https://www.gov.br/governodigital/pt-br/conta-gov-br/perguntas-frequentes'>
-                                                        <MenuItem sx={{ paddingY: 2 }}>
-                                                            <Typography textTransform='capitalize' color='#3B82F6'>
-                                                                Perguntas frequentes
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </Link>
-                                                </Box>
+                                                {menuItems}
 
                                                 <MenuItem
                                                     onClick={(e) => {
