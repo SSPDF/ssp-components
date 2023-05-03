@@ -30,6 +30,8 @@ export default function TimePicker({ name, required = false, title, xs = 12, sm,
                             {...params}
                             {...context?.formRegister(name!, {
                                 validate: (v, f) => {
+                                    if (!v) v = ''
+
                                     if (v.length <= 0 && required) return 'Este campo é obrigatório'
                                     if (v.length < 5 && required) return 'A hora precisa seguir o padrão HH:MM'
                                 },

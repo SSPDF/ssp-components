@@ -56,6 +56,8 @@ export default function DatePicker({
                                 {...params}
                                 {...context?.formRegister(name!, {
                                     validate: (v, f) => {
+                                        if (!v) v = ''
+
                                         if (v.length <= 0 && required) return 'Este campo é obrigatório'
                                         if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
