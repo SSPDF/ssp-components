@@ -10,4 +10,4 @@
 
 ## Rode esse comando para fazer o setup
 
-`npm install @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-date-pickers @ssplib/react-components`
+`npm install @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-date-pickers @mui/lab @ssplib/react-components`
