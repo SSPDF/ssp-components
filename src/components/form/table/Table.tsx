@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import SearchIcon from '@mui/icons-material/Search'
-import { Box, Button, CircularProgress, LinearProgress, Link, Paper, Stack, useMediaQuery, useTheme } from '@mui/material'
+import { Autocomplete, Box, Button, CircularProgress, LinearProgress, Link, Paper, Stack, useMediaQuery, useTheme } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Pagination from '@mui/material/Pagination'
 import TextField from '@mui/material/TextField'
@@ -28,6 +28,8 @@ export function Table({
     csv,
     columnSize,
     action,
+    isPublic = false,
+    filters,
 }: {
     columns: ColumnData[]
     tableName: string
@@ -39,6 +41,8 @@ export function Table({
     fetchFunc: () => Promise<Response>
     emptyMsg?: { user: string; public: string }
     dataPath?: string
+    isPublic?: boolean
+    filters?: { key: string; options: string[]; name: string }[]
 }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | { status: number }>(null)
@@ -46,7 +50,7 @@ export function Table({
     const { user, userLoaded } = useContext(AuthContext)
 
     useEffect(() => {
-        if (userLoaded)
+        if (userLoaded || isPublic)
             fetchFunc().then((res) =>
                 res.json().then((j) => {
                     if (j.statusCode === 204) setData({ body: { data: [] } })
@@ -96,7 +100,6 @@ export function Table({
     }, [])
 
     useEffect(() => {
-        console.log('é array', getData(data))
         if (isLoading || error || !getData(data)) return
 
         setList(getData(data))
@@ -123,8 +126,8 @@ export function Table({
 
             const listData: object[] = getData(data)
 
-            setList([])
-            setListPage(1)
+            // setList([])
+            // setListPage(1)
 
             const newList: any = []
 
@@ -260,6 +263,30 @@ export function Table({
         }
     }, [])
 
+    const onFilterSelect = useCallback(
+        (key: string, newValue: string | null) => {
+            if (!newValue) {
+                setList(getData(data))
+                setPagCount(getCount(getData(data)))
+                return
+            }
+
+            const listData: object[] = getData(data)
+            const newList: any[] = []
+
+            listData.forEach((l) => {
+                if (get(l, key).toString() === newValue) newList.push(l)
+            })
+
+            setList(newList)
+            setPagCount(getCount(newList))
+
+            console.log('minha lista:', listData)
+            console.log('selecionei:', newValue, 'minha chave:', key)
+        },
+        [data]
+    )
+
     if (error)
         return (
             <Box bgcolor='#E2E8F0' padding={2} marginX={2}>
@@ -278,12 +305,12 @@ export function Table({
             </Stack>
         )
 
-    if (!userLoaded) return <LinearProgress />
+    if (!userLoaded && !isPublic) return <LinearProgress />
 
     return (
         <>
             <Box marginX={isSmall ? 0 : 4}>
-                <Box paddingBottom={2}>
+                <Stack paddingBottom={2} spacing={2} direction={{ xs: 'column', md: 'row' }}>
                     <TextField
                         InputProps={{
                             startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
@@ -292,9 +319,15 @@ export function Table({
                         onChange={onInputChange}
                         fullWidth
                         placeholder={`Pesquisar ${tableName}`}
-                        sx={{ paddingX: { xs: 2, md: 0 } }}
                     />
-                </Box>
+                    {filters?.map((f) => (
+                        <Autocomplete
+                            options={f.options.map((name) => name)}
+                            onChange={(e, newValue) => onFilterSelect(f.key, newValue)}
+                            renderInput={(args) => <TextField {...args} label={f.name} size='small' />}
+                        />
+                    ))}
+                </Stack>
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
                         <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, borderRadius: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>

@@ -2,7 +2,7 @@ import { Box, Grid, Stack } from '@mui/material'
 import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { ReactElement, useContext, useEffect, useRef } from 'react'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 import Switch from '../switch/Switch'
 import MaskInput from './MaskInput'
 
@@ -27,7 +27,7 @@ export default function FileUpload({
     sm?: number
     md?: number
 }) {
-    const context = useContext(formContext)
+    const context = useContext(FormContext)
     const switchName = `${name}-switch`
 
     let oldValue = useRef<boolean | null>(null)

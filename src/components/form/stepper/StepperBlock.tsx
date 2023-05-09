@@ -3,7 +3,7 @@ import { Box, Grid, Stack } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React, { ReactElement, useContext } from 'react'
 import Switch from '../switch/Switch'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 function childrenTree(component: ReactElement, prefix: number, idx: number): ReactElement {
     if (!component.props) return component
@@ -43,7 +43,7 @@ function childrenTree(component: ReactElement, prefix: number, idx: number): Rea
 }
 
 export function StepperBlock({ optional = false, title, prefix = 0, ...props }: { title: string; prefix?: number; children: JSX.Element | JSX.Element[]; optional?: boolean }) {
-    const context = useContext(formContext)!
+    const context = useContext(FormContext)!
     const switchName = `switch-${prefix}`
 
     const fields = Array.isArray(props.children) ? props.children : [props.children]

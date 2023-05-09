@@ -2,7 +2,7 @@ import { Grid, TextField } from '@mui/material'
 import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { useContext } from 'react'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 export default function MultInput({
     name,
@@ -22,7 +22,7 @@ export default function MultInput({
     sm?: number
     md?: number
 }) {
-    const context = useContext(formContext)!
+    const context = useContext(FormContext)!
 
     return (
         <Grid item {...{ xs, sm, md }}>

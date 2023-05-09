@@ -1,12 +1,11 @@
 import { FormControlLabel, InputLabel, Stack, Switch as MUISwitch, Typography } from '@mui/material'
 import React, { useContext, useEffect } from 'react'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 export function Switch({ defaultChecked = false, ...props }: { name: string; defaultChecked?: boolean; title?: string }) {
-    const context = useContext(formContext)
+    const context = useContext(FormContext)
 
     useEffect(() => {
-        console.log(context)
         context?.formSetValue(props.name, defaultChecked)
     }, [])
 

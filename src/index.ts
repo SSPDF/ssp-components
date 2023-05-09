@@ -25,7 +25,7 @@ import FormProvider from './components/providers/FormProvider'
 import { OAuthProvider, cookieName as AUTH_COOKIE_NAME } from './components/providers/OAuthProvider'
 
 import { AuthContext } from './context/auth'
-import FormContext from './context/form'
+import { FormContext } from './context/form'
 
 export {
     CheckBox,

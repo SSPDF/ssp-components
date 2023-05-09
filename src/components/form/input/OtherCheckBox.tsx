@@ -1,10 +1,10 @@
 import { Box, Checkbox, Grid, Stack, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext } from 'react'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, md }: { name: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
-    const context = useContext(formContext)!
+    const context = useContext(FormContext)!
     const checkName = `switch-${name}`
 
     return (

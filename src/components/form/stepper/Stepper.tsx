@@ -4,7 +4,8 @@ import SaveIcon from '@mui/icons-material/Save'
 import { LoadingButton } from '@mui/lab'
 import { Alert, Box, Button, MobileStepper, Snackbar, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { FormEvent, ReactElement, useContext, useState } from 'react'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
+import { FieldValues } from 'react-hook-form'
 
 const getKeys = (values: any, id: number) => {
     if (!values || Object.keys(values).length <= 0) return []
@@ -16,9 +17,9 @@ const getKeys = (values: any, id: number) => {
     return keys
 }
 
-export function Stepper(props: { children: ReactElement | ReactElement[] }) {
+export function Stepper(props: { children: ReactElement | ReactElement[]; debugData?: (data: FieldValues) => void }) {
     const length = Array.isArray(props.children) ? props.children.length : 1
-    const context = useContext(formContext)!
+    const context = useContext(FormContext)!
     const theme = useTheme()
 
     const [activeStep, setActiveStep] = useState(0)
@@ -32,10 +33,11 @@ export function Stepper(props: { children: ReactElement | ReactElement[] }) {
     const maxSteps = length
 
     const handleNext = async () => {
-        const result = await context!.formTrigger(getKeys(context.formGetValues(), activeStep))
+        const result = await context.formTrigger(getKeys(context.formGetValues(), activeStep))
 
         if (!result) {
             setCanPass(true)
+            console.log('teste: ', context.formGetValues())
             return
         }
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -47,6 +49,7 @@ export function Stepper(props: { children: ReactElement | ReactElement[] }) {
         if (!result) {
             e.preventDefault()
             setCanPass(true)
+            console.log('teste: ', context.formGetValues())
             return
         }
     }

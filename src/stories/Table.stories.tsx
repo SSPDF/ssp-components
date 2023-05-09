@@ -21,6 +21,7 @@ export const Base: Story = {
         csv: {
             fileName: 'Exemplo',
         },
+        isPublic: true,
         columns: [
             {
                 keyName: 'id',
@@ -36,6 +37,18 @@ export const Base: Story = {
             },
         ],
         columnSize: 4,
+        filters: [
+            {
+                key: 'id',
+                options: ['3', '4', '8'],
+                name: 'Filtro de ID',
+            },
+            {
+                key: 'userId',
+                options: ['8', '9', '12'],
+                name: 'Filtro de User Id',
+            },
+        ],
         action: (data) => (
             <Stack direction='row' spacing={1.5}>
                 <Paper elevation={12} sx={{ '& a': { textDecoration: 'none' } }}>

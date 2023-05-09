@@ -2,7 +2,7 @@ import { Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useCallback, useContext } from 'react'
 import MaskInput from './MaskInput'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 export function Input({
     type = 'input',
@@ -22,7 +22,7 @@ export function Input({
     sm?: number
     md?: number
 }) {
-    const context = useContext(formContext)
+    const context = useContext(FormContext)
 
     const chooseInput = useCallback(() => {
         const inputConfig: object = {

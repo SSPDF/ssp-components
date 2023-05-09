@@ -4,7 +4,7 @@ import get from 'lodash.get'
 import React, { SyntheticEvent, useCallback, useContext, useState } from 'react'
 import { useQuery } from 'react-query'
 import { AuthContext } from '../../../context/auth'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 interface Option {
     id: number
@@ -30,7 +30,7 @@ export default function AutoComplete({
     sm?: number
     md?: number
 }) {
-    const context = useContext(formContext)
+    const context = useContext(FormContext)
     const { user } = useContext(AuthContext)
     const [options, setOptions] = useState([])
 

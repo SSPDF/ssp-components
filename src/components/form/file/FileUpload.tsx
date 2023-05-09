@@ -9,7 +9,7 @@ import { Stack } from '@mui/system'
 import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 interface FileState {
     id: number
@@ -40,7 +40,7 @@ export default function FileUpload({
     sm?: number
     md?: number
 }) {
-    const context = useContext(formContext)!
+    const context = useContext(FormContext)!
     const { user } = useContext(AuthContext)
 
     const [files, setFiles] = useState<FileState[]>([])

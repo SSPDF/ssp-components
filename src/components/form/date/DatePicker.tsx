@@ -6,7 +6,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import ptbr from 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import React, { useContext, useState } from 'react'
-import formContext from '../../../context/form'
+import { FormContext } from '../../../context/form'
 
 export default function DatePicker({
     name,
@@ -28,7 +28,7 @@ export default function DatePicker({
     sm?: number
     md?: number
 }) {
-    const context = useContext(formContext)!
+    const context = useContext(FormContext)!
 
     const [value, setValue] = useState<Dayjs | null>(null)
 

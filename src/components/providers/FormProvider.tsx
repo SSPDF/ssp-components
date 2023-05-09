@@ -1,15 +1,17 @@
 import React, { ReactElement, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
-import Form from '../../context/form'
+import { FormContext } from '../../context/form'
 
 export default function FormProvider({
     children,
     onSubmit,
     formMethod = 'GET',
+    submiting = false,
 }: {
     children: ReactElement | ReactElement[]
     onSubmit: (data: FieldValues) => void
     formMethod?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'UPDATE'
+    submiting?: boolean
 }) {
     const {
         register,
@@ -23,7 +25,6 @@ export default function FormProvider({
         getValues,
     } = useForm()
 
-    const [submiting, setSubmiting] = useState(false)
     const [filesUid, setFilesUid] = useState<
         {
             CO_SEQ_ARQUIVO: number
@@ -32,7 +33,7 @@ export default function FormProvider({
     >([])
 
     return (
-        <Form.Provider
+        <FormContext.Provider
             value={{
                 formRegister: register,
                 formWatch: watch,
@@ -50,6 +51,6 @@ export default function FormProvider({
             <form method={formMethod} onSubmit={handleSubmit(onSubmit)}>
                 {children}
             </form>
-        </Form.Provider>
+        </FormContext.Provider>
     )
 }
