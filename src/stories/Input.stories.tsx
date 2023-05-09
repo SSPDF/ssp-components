@@ -23,5 +23,6 @@ type Story = StoryObj<typeof Input>
 export const Base: Story = {
     args: {
         name: 'teste',
+        required: true,
     },
 }

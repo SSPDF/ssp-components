@@ -15,5 +15,6 @@ type Story = StoryObj<typeof TimePicker>
 export const Base: Story = {
     args: {
         name: 'teste',
+        required: true,
     },
 }

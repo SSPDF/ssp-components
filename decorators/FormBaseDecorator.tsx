@@ -1,7 +1,7 @@
-import { Stack } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 import React from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { FormProvider } from '../src'
+import { FormProvider, Stepper, StepperBlock } from '../src'
 
 const client = new QueryClient()
 
@@ -10,7 +10,11 @@ export default function FormBaseDecorator(Story: any, el: any) {
         <FormProvider onSubmit={(d) => console.log(d)}>
             <QueryClientProvider client={client}>
                 <Stack spacing={2}>
-                    <Story />
+                    <Stepper>
+                        <StepperBlock title='Teste'>
+                            <Story />
+                        </StepperBlock>
+                    </Stepper>
                 </Stack>
             </QueryClientProvider>
         </FormProvider>

@@ -16,5 +16,6 @@ export const Base: Story = {
     args: {
         name: 'teste',
         minDt: '16/04/2023',
+        required: true,
     },
 }

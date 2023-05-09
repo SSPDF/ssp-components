@@ -1,7 +1,7 @@
-import { Grid, InputLabel, TextField } from '@mui/material'
+import { Grid, InputLabel, TextField, Typography } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 import ptbr from 'dayjs/locale/pt-br'
 import get from 'lodash.get'
@@ -43,19 +43,21 @@ export default function DatePicker({
             <Grid item {...{ xs, sm, md }}>
                 {title && <InputLabel>{title}</InputLabel>}
                 <LocalizationProvider adapterLocale={ptbr} dateAdapter={AdapterDayjs}>
-                    <DesktopDatePicker
+                    <MUIDatePicker
                         minDate={dayjs(minDt, 'DD/MM/YYYY')}
                         maxDate={dayjs(maxDt, 'DD/MM/YYYY')}
                         format='DD/MM/YYYY'
                         value={value}
                         onChange={handleChange}
                         disableHighlightToday
+                        sx={{ outline: get(context.errors, name!) ? '1px solid red' : '' }}
                         inputRef={(params: any) => (
                             <TextField
                                 size='small'
                                 {...params}
                                 {...context?.formRegister(name!, {
                                     validate: (v, f) => {
+                                        console.log('meu valor: ', v)
                                         if (!v) v = ''
 
                                         if (v.length <= 0 && required) return 'Este campo é obrigatório'
@@ -68,12 +70,12 @@ export default function DatePicker({
                                             return 'A data escolhida não é válida'
                                     },
                                 })}
-                                error={get(context.errors, name!) ? true : false}
-                                helperText={get(context.errors, name!)?.message as string}
+                                helperText='Agora nao foi'
                                 fullWidth
                             />
                         )}
                     />
+                    <Typography sx={{ color: 'red' }}>{get(context.errors, name!)?.message as string}</Typography>
                 </LocalizationProvider>
             </Grid>
         </>
