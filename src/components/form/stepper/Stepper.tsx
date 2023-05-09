@@ -37,7 +37,6 @@ export function Stepper(props: { children: ReactElement | ReactElement[]; debugD
 
         if (!result) {
             setCanPass(true)
-            console.log('teste: ', context.formGetValues())
             return
         }
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -49,7 +48,6 @@ export function Stepper(props: { children: ReactElement | ReactElement[]; debugD
         if (!result) {
             e.preventDefault()
             setCanPass(true)
-            console.log('teste: ', context.formGetValues())
             return
         }
     }
