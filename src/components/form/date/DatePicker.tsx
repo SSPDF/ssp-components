@@ -69,8 +69,8 @@ export default function DatePicker({
                                         if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
                                             return 'A data escolhida não é válida'
                                     },
+                                    shouldUnregister: true,
                                 })}
-                                helperText='Agora nao foi'
                                 fullWidth
                             />
                         )}

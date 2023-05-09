@@ -36,6 +36,7 @@ export default function TimePicker({ name, required = false, title, xs = 12, sm,
                                     if (v.length <= 0 && required) return 'Este campo é obrigatório'
                                     if (v.length < 5 && required) return 'A hora precisa seguir o padrão HH:MM'
                                 },
+                                shouldUnregister: true,
                             })}
                             fullWidth
                         />
