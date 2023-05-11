@@ -10,7 +10,7 @@ export default function FormProvider({
     submiting = false,
 }: {
     children: ReactElement | ReactElement[]
-    onSubmit: (data: FieldValues, filesUid?: FilesID) => void
+    onSubmit: (data: FieldValues, filesUid: FilesID) => void
     formMethod?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'UPDATE'
     submiting?: boolean
 }) {
@@ -26,7 +26,7 @@ export default function FormProvider({
         getValues,
     } = useForm()
 
-    const [filesId, setFilesUid] = useState<FilesID>([])
+    const [filesUid, setFilesUid] = useState<FilesID>([])
 
     return (
         <FormContext.Provider
@@ -44,7 +44,7 @@ export default function FormProvider({
                 submiting: submiting,
             }}
         >
-            <form method={formMethod} onSubmit={handleSubmit((d) => onSubmit(d, filesId))}>
+            <form method={formMethod} onSubmit={handleSubmit((d) => onSubmit(d, filesUid))}>
                 {children}
             </form>
         </FormContext.Provider>
