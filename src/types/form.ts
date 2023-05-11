@@ -66,3 +66,8 @@ export interface FormContextType {
     errors: FieldErrors<FieldValues>
     submiting: boolean
 }
+
+export type FilesID = {
+    CO_SEQ_ARQUIVO: number
+    CO_TIPO_ARQUIVO: number
+}[]
