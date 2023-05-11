@@ -22,15 +22,15 @@ export default function NavBar({
     links: { name: string; path: string }[]
     title: string
     img: string
-    next?: boolean
     menuItems: JSX.Element | JSX.Element[]
+    next?: boolean
     el?: JSX.Element
     pos?: 'fixed' | 'inherit'
 }) {
     let router: NextRouter | undefined | null = undefined
     if (next) router = useRouter()
 
-    const { user, login, logout, userLoaded } = useContext(AuthContext)
+    const { user, login, logout, type } = useContext(AuthContext)
 
     const [anchor, setAnchor] = useState(null)
     const [avatarAnchor, setAvatarAnchor] = useState(null)
@@ -165,7 +165,7 @@ export default function NavBar({
                                             <KeyboardArrowDownIcon />
                                         </Stack>
                                     </Stack>
-                                ) : (
+                                ) : type === 'govbr' ? (
                                     <Button
                                         variant='contained'
                                         size='small'
@@ -175,6 +175,18 @@ export default function NavBar({
                                     >
                                         <Typography fontWeight={600} fontSize={15} padding={0.4}>
                                             Entrar com o gov.br
+                                        </Typography>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        startIcon={<PersonIcon />}
+                                        onClick={login}
+                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                    >
+                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                            Login
                                         </Typography>
                                     </Button>
                                 )}

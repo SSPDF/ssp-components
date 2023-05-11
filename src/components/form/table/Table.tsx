@@ -372,14 +372,16 @@ export function Table({
                         ))
                     )}
                 </Stack>
-                {getMaxItems().length > 0 && csv && (
+                {getMaxItems().length > 0 && (
                     <>
-                        <Stack direction='row' justifyContent='flex-end' marginTop={2}>
-                            <Button startIcon={<FileDownloadIcon />} variant='contained' size='small' onClick={downloadCSV} sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 } }}>
-                                Salvar .CSV
-                            </Button>
-                        </Stack>
-                        <Stack direction='row' justifyContent='center' paddingBottom={4}>
+                        {csv && (
+                            <Stack direction='row' justifyContent='flex-end' marginTop={2}>
+                                <Button startIcon={<FileDownloadIcon />} variant='contained' size='small' onClick={downloadCSV} sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 } }}>
+                                    Salvar .CSV
+                                </Button>
+                            </Stack>
+                        )}
+                        <Stack direction='row' justifyContent='center' paddingY={4}>
                             <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} />
                         </Stack>
                     </>

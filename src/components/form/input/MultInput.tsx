@@ -11,6 +11,8 @@ export default function MultInput({
     customPlaceholder,
     xs = 12,
     sm,
+    inputMinLength = 3,
+    inputMaxLength = 255,
     md,
     ...props
 }: {
@@ -18,6 +20,8 @@ export default function MultInput({
     title?: string
     customPlaceholder?: string
     required?: boolean
+    inputMinLength?: number
+    inputMaxLength?: number
     xs?: number
     sm?: number
     md?: number
@@ -38,6 +42,9 @@ export default function MultInput({
                 {...context.formRegister(name!, {
                     validate: (v, f) => {
                         if (required && v.length <= 0) return 'Este campo é obrigatório'
+
+                        if (v.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
+                        if (v.length < inputMinLength && required) return `Limite mínimo de ${inputMinLength} caracteres`
                     },
                 })}
                 error={get(context.errors, name!) ? true : false}

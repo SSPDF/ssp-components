@@ -64,6 +64,7 @@ export interface AuthSspToken {
 
 export interface AuthReturnData {
     isAuth: boolean
+    type: 'govbr' | 'ad'
     user: User | null | undefined
     userLoaded: boolean
     login: () => void
