@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from '@storybook/react'
 import FormBaseDecorator from '../../decorators/FormBaseDecorator'
-import { Title } from '../components/detalhes/Category'
+import { Category } from '../components/detalhes/Category'
 
-const meta: Meta<typeof Title> = {
+const meta: Meta<typeof Category> = {
     title: 'Detalhes/Category',
-    component: Title,
+    component: Category,
     tags: ['autodocs'],
     decorators: [FormBaseDecorator],
 }
 
 export default meta
-type Story = StoryObj<typeof Title>
+type Story = StoryObj<typeof Category>
 
 export const Base: Story = {
     args: {
