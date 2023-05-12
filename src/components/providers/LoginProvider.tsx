@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AuthContext } from '../../context/auth'
-import { AuthClaims, AuthReturn, AuthSspToken } from '../../types/auth'
+import { AuthClaims, AuthReturn } from '../../types/auth'
 
 interface User {
     name: string
@@ -15,7 +15,7 @@ interface User {
 export const cookieName = 'nextauth.token'
 const userImgName = 'user-data.img'
 
-export function OAuthProvider({
+export function LoginProvider({
     children,
     AUTH_URL,
     redirectURL = '/',

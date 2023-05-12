@@ -103,7 +103,7 @@ export function OAuthProvider({
     async function saveUserData(authData: AuthReturn) {
         const token = authData.ssp_token
 
-        setCookie(cookieName, token, { expires: new Date(authData.claims.exp * 1000) })
+        setCookie(cookieName, token)
         const userData: AuthSspToken = jwt_decode(token)
 
         const idToken: AuthClaims = jwt_decode(authData.id_token)
