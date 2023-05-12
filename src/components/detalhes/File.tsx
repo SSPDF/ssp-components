@@ -3,7 +3,7 @@ import { FileDownload } from '@mui/icons-material'
 import React, { useContext } from 'react'
 import { AuthContext } from '../../context/auth'
 
-export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: string; id: number; fileURL: string; name: string; md?: number; fileExt?: string }) {
+export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: string; fileURL: string; name: string; md?: number; fileExt?: string }) {
     const { user } = useContext(AuthContext)
 
     return (
