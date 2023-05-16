@@ -20,7 +20,6 @@ export function LoginProvider({
     AUTH_URL,
     redirectURL = '/',
     validateTokenRoute,
-    testToken,
 }: {
     children: JSX.Element | JSX.Element[]
     AUTH_URL: string
@@ -61,7 +60,9 @@ export function LoginProvider({
         })
     }, [])
 
-    function adLogin(loginURL: string, data: any) {
+    function adLogin(loginURL: string, data: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setError: React.Dispatch<React.SetStateAction<boolean>>) {
+        setLoading(true)
+
         fetch(loginURL, {
             method: 'POST',
             body: JSON.stringify({
@@ -74,6 +75,7 @@ export function LoginProvider({
         }).then((res) => {
             if (res.ok) {
                 res.json().then((j) => {
+                    setError(false)
                     const token = j.accessToken
 
                     const user: AuthClaims = jwt_decode(token)
@@ -88,7 +90,11 @@ export function LoginProvider({
                     setCookie(cookieName, token)
                     router.replace(redirectURL).finally(() => setUserLoaded(true))
                 })
-            } else setUserLoaded(true)
+            } else {
+                setLoading(false)
+                setUserLoaded(true)
+                setError(true)
+            }
         })
     }
 

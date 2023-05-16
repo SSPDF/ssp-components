@@ -7,27 +7,15 @@ import * as React from 'react'
 import { useContext, useState } from 'react'
 import FormProvider from '../providers/FormProvider'
 import { AuthContext } from '../../context/auth'
+import { Input } from '../form/input/Input'
 
-export function Login({
-    imgURL = '',
-    name = 'Login',
-    children,
-    loginURL,
-    onSuccess,
-    onFail,
-}: {
-    imgURL?: string
-    loginURL: string
-    children: JSX.Element | JSX.Element[]
-    name?: string
-    onSuccess: () => void
-    onFail: () => void
-}) {
+export function Login({ imgURL = '', name = 'Login', children, loginURL }: { imgURL?: string; loginURL: string; children: JSX.Element | JSX.Element[]; name?: string }) {
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
     const { adLogin } = useContext(AuthContext)
 
     function onLogin(data: any) {
-        adLogin(loginURL, data)
+        adLogin(loginURL, data, setLoading, setError)
     }
 
     return (
@@ -46,10 +34,18 @@ export function Login({
                         {name}
                     </Typography>
                     <Stack spacing={3} width={300}>
-                        <Stack spacing={1}>{children}</Stack>
+                        <Stack spacing={1}>
+                            {children}
+                            <Input name='dsa' type='input' />
+                        </Stack>
                         <LoadingButton type='submit' fullWidth variant='contained' loading={loading}>
                             Login
                         </LoadingButton>
+                        {error && (
+                            <Box bgcolor='#ce4257' padding={2} borderRadius={2} color='white'>
+                                <Typography>Dados incorretos. Tente novamente!</Typography>
+                            </Box>
+                        )}
                     </Stack>
                 </Box>
             </Container>

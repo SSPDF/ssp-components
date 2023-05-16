@@ -68,7 +68,7 @@ export interface AuthReturnData {
     user: User | null | undefined
     userLoaded: boolean
     login: () => void
-    adLogin: (loginURL: string, data: any) => void
+    adLogin: (loginURL: string, data: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setError: React.Dispatch<React.SetStateAction<boolean>>) => void
     saveUserData: (token: AuthReturn) => void
     logout: () => void
 }
