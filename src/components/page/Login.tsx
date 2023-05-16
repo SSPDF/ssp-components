@@ -5,9 +5,8 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 import { useContext, useState } from 'react'
-import FormProvider from '../providers/FormProvider'
 import { AuthContext } from '../../context/auth'
-import { Input } from '../form/input/Input'
+import FormProvider from '../providers/FormProvider'
 
 export function Login({ imgURL = '', name = 'Login', children, loginURL }: { imgURL?: string; loginURL: string; children: JSX.Element | JSX.Element[]; name?: string }) {
     const [loading, setLoading] = useState(false)
@@ -34,10 +33,7 @@ export function Login({ imgURL = '', name = 'Login', children, loginURL }: { img
                         {name}
                     </Typography>
                     <Stack spacing={3} width={300}>
-                        <Stack spacing={1}>
-                            {children}
-                            <Input name='dsa' type='input' />
-                        </Stack>
+                        <Stack spacing={1}>{children}</Stack>
                         <LoadingButton type='submit' fullWidth variant='contained' loading={loading}>
                             Login
                         </LoadingButton>
