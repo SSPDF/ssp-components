@@ -4,7 +4,6 @@ import { IMaskInput } from 'react-imask'
 
 const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(props: any, ref: any) {
     const { onChange, maskProps, onMask, maskValue, setMaskValue, ...prop } = props
-
     const [mask, setMask] = useState(maskProps.mask)
 
     delete prop.value

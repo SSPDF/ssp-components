@@ -20,10 +20,12 @@ export default function AutoComplete({
     xs = 12,
     sm,
     md,
+    dataPath = '',
 }: {
     url: string
     name: string
     title?: string
+    dataPath?: string
     customPlaceholder?: string
     required?: boolean
     xs?: number
@@ -39,8 +41,14 @@ export default function AutoComplete({
             headers: {
                 Authorization: `Bearer ${user ? user.token : ''}`,
             },
-        }).then((x) => x.json().then((list) => setOptions(list.body.data)))
+        }).then((x) => x.json().then((list) => setOptions(getData(list))))
     )
+
+    // transformar isso em um component ou utils
+    const getData = useCallback((dt: any) => {
+        if (Array.isArray(dt)) return dt
+        if (typeof dt === 'object') return get(dt, dataPath)
+    }, [])
 
     const onSelect = useCallback(
         (e: SyntheticEvent<Element, Event>, value: Option | null) => {

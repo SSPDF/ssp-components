@@ -5,8 +5,9 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 import Input from '../form/input/Input'
+import { ReactElement } from 'react-imask/dist/mixin'
 
-export default function SignIn({ imgURL = '', name = 'Login' }: { imgURL?: string; name?: string }) {
+export default function SignIn({ imgURL = '', name = 'Login', fields }: { imgURL?: string; fields: JSX.Element | JSX.Element[]; name?: string }) {
     return (
         <Container component='main' maxWidth='xs'>
             <Box
@@ -22,10 +23,7 @@ export default function SignIn({ imgURL = '', name = 'Login' }: { imgURL?: strin
                     {name}
                 </Typography>
                 <Stack spacing={3} width={300}>
-                    <Stack spacing={1}>
-                        <Input name='username' type='input' customPlaceholder='Usuário' required />
-                        <Input name='password' type='password' customPlaceholder='Senha' required />
-                    </Stack>
+                    <Stack spacing={1}>{fields}</Stack>
                     <Button type='submit' fullWidth variant='contained'>
                         Login
                     </Button>
