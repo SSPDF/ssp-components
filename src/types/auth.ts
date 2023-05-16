@@ -68,6 +68,7 @@ export interface AuthReturnData {
     user: User | null | undefined
     userLoaded: boolean
     login: () => void
+    adLogin: (loginURL: string, data: any) => void
     saveUserData: (token: AuthReturn) => void
     logout: () => void
 }

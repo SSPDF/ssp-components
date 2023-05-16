@@ -61,24 +61,35 @@ export function LoginProvider({
         })
     }, [])
 
-    function login() {
-        // Teste em localhost
-        // if (location && location.hostname === 'localhost') {
-        //     const token = testToken
-        //     setCookie(cookieName, token, { maxAge: 60 * 60 * 24 * 500 })
-        //     setUser({
-        //         name: 'Teste',
-        //         image: '',
-        //         roles: [1],
-        //         token: token,
-        //     })
-        //     router.replace(redirectURL).finally(() => setUserLoaded(true))
-        // }
-        // //
-        // else {
-        //     setUserLoaded(false)
-        //     router.replace(govBrURL)
-        // }
+    function adLogin(loginURL: string, data: any) {
+        fetch(loginURL, {
+            method: 'POST',
+            body: JSON.stringify({
+                ...data,
+                cpf: (data.cpf as any).replaceAll(/[.-]/g, ''),
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((res) => {
+            if (res.ok) {
+                res.json().then((j) => {
+                    const token = j.accessToken
+
+                    const user: AuthClaims = jwt_decode(token)
+
+                    setUser({
+                        name: user.name,
+                        image: '',
+                        roles: user.roles.map((x) => x.code),
+                        token: token,
+                    })
+
+                    setCookie(cookieName, token)
+                    router.replace(redirectURL).finally(() => setUserLoaded(true))
+                })
+            } else setUserLoaded(true)
+        })
     }
 
     // chamado no callback de login
@@ -86,7 +97,6 @@ export function LoginProvider({
         const token = authData.ssp_token
 
         setCookie(cookieName, token)
-
         router.replace(redirectURL).finally(() => setUserLoaded(true))
     }
 
@@ -100,5 +110,5 @@ export function LoginProvider({
         router.replace(redirectURL).finally(() => setUserLoaded(true))
     }
 
-    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData, type: 'ad' }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login: () => {}, adLogin, logout, saveUserData, type: 'ad' }}>{children}</AuthContext.Provider>
 }

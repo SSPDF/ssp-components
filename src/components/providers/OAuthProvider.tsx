@@ -146,5 +146,5 @@ export function OAuthProvider({
         router.replace(redirectURL).finally(() => setUserLoaded(true))
     }
 
-    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, adLogin: () => {}, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>
 }

@@ -182,7 +182,7 @@ export default function NavBar({
                                         variant='contained'
                                         size='small'
                                         startIcon={<PersonIcon />}
-                                        onClick={login}
+                                        onClick={() => router?.push('/login')}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
                                         <Typography fontWeight={600} fontSize={15} padding={0.4}>
