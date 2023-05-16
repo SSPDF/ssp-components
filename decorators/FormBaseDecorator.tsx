@@ -10,11 +10,11 @@ export default function FormBaseDecorator(Story: any, el: any) {
         <FormProvider onSubmit={(d) => console.log(d)}>
             <QueryClientProvider client={client}>
                 <Stack spacing={2}>
-                    <Stepper>
-                        <StepperBlock title='Teste'>
-                            <Story />
-                        </StepperBlock>
-                    </Stepper>
+                    {/* <Stepper> */}
+                    {/* <StepperBlock title='Teste'> */}
+                    <Story />
+                    {/* </StepperBlock> */}
+                    {/* </Stepper> */}
                 </Stack>
             </QueryClientProvider>
         </FormProvider>

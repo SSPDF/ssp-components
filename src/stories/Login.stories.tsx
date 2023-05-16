@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 import FormBaseDecorator from '../../decorators/FormBaseDecorator'
-import Login from '../components/page/Login'
+import { Login } from '../components/page/Login'
 
 const meta: Meta<typeof Login> = {
     title: 'Page/Login',
