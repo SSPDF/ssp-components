@@ -7,7 +7,7 @@ import * as React from 'react'
 import Input from '../form/input/Input'
 import { ReactElement } from 'react-imask/dist/mixin'
 
-export default function SignIn({ imgURL = '', name = 'Login', fields }: { imgURL?: string; fields: JSX.Element | JSX.Element[]; name?: string }) {
+export function Login({ imgURL = '', name = 'Login', fields }: { imgURL?: string; fields: JSX.Element | JSX.Element[]; name?: string }) {
     return (
         <Container component='main' maxWidth='xs'>
             <Box
