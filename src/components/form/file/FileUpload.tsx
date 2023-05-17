@@ -65,7 +65,7 @@ export default function FileUpload({
                     fd.append('files', file)
                     fd.append('tipoArquivo', tipoArquivo)
 
-                    fetch(`${apiURL}/files`, {
+                    fetch(apiURL, {
                         method: 'POST',
                         body: fd,
                         headers: {
