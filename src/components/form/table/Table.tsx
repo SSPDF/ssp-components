@@ -30,9 +30,13 @@ export function Table({
     action,
     isPublic = false,
     filters,
+    statusKeyName = '',
+    csvExcludeKeys = [],
 }: {
     columns: ColumnData[]
     tableName: string
+    csvExcludeKeys?: string[]
+    statusKeyName?: string
     action: (prop: any) => JSX.Element
     csv?: {
         fileName: string
@@ -203,7 +207,7 @@ export function Table({
 
             if (list.length <= 0) return
 
-            const keys = Object.keys(list[0])
+            const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeys.includes(k))
             const header = keys.join(',') + '\n'
 
             const values = list
@@ -280,9 +284,6 @@ export function Table({
 
             setList(newList)
             setPagCount(getCount(newList))
-
-            console.log('minha lista:', listData)
-            console.log('selecionei:', newValue, 'minha chave:', key)
         },
         [data]
     )
@@ -334,15 +335,6 @@ export function Table({
                             <Typography fontSize={21} fontFamily='Inter' fontWeight={600} textAlign='center'>
                                 {user ? emptyMsg.user : emptyMsg.public}
                             </Typography>
-                            {user && (
-                                <Box sx={{ '& a': { textDecoration: 'none' }, marginTop: 2 }}>
-                                    <Link href='/cadastro'>
-                                        <Button variant='contained' startIcon={<AddIcon />} sx={{ backgroundColor: '#64748B' }}>
-                                            Cadastrar
-                                        </Button>
-                                    </Link>
-                                </Box>
-                            )}
                         </Stack>
                     ) : (
                         getMaxItems().map((x: any, index: number) => (
@@ -357,7 +349,7 @@ export function Table({
                                             </Box>
                                             <Box paddingLeft={1}>
                                                 <Typography fontSize={16} sx={{ wordWrap: 'break-word', color: '#1E293B' }} fontFamily='Inter'>
-                                                    {c.keyName === 'stEventoExterno' ? getStatusMsg(get(x, c.keyName)) : get(x, c.keyName)}
+                                                    {c.keyName === statusKeyName ? getStatusMsg(get(x, c.keyName)) : get(x, c.keyName)}
                                                 </Typography>
                                             </Box>
                                         </Grid>

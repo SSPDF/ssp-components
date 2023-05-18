@@ -36,6 +36,7 @@ export const Base: Story = {
                 title: 'Conteudo',
             },
         ],
+        csvExcludeKeys: ['body'],
         columnSize: 4,
         filters: [
             {
