@@ -32,9 +32,13 @@ export function Table({
     filters,
     statusKeyName = '',
     csvExcludeKeys = [],
+    csvCustomKeyNames = {},
 }: {
     columns: ColumnData[]
     tableName: string
+    csvCustomKeyNames?: {
+        [key: string]: string
+    }
     csvExcludeKeys?: string[]
     statusKeyName?: string
     action: (prop: any) => JSX.Element
@@ -208,7 +212,7 @@ export function Table({
             if (list.length <= 0) return
 
             const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeys.includes(k))
-            const header = keys.join(',') + '\n'
+            const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
 
             const values = list
                 .map((x: any) => {

@@ -21,6 +21,9 @@ export const Base: Story = {
         csv: {
             fileName: 'Exemplo',
         },
+        csvCustomKeyNames: {
+            title: 'RONALD MCDONALD',
+        },
         isPublic: true,
         columns: [
             {
