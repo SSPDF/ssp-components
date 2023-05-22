@@ -16,5 +16,6 @@ export const Base: Story = {
     args: {
         name: 'teste',
         title: 'Upload de arquivo',
+        clientDelete: true,
     },
 }

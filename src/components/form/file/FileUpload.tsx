@@ -29,9 +29,11 @@ export default function FileUpload({
     xs = 12,
     sm,
     md,
+    clientDelete = false,
 }: {
     name: string
     tipoArquivo: string
+    clientDelete: boolean
     title: string
     apiURL: string
     required?: boolean
@@ -72,6 +74,8 @@ export default function FileUpload({
                             Authorization: `Bearer ${user ? user.token : ''}`,
                         },
                     }).then((res) => {
+                        if (!res.ok) setFilesError((fl) => [...fl, id])
+
                         res.json().then((j: any) => {
                             if (j.status.status === 200) {
                                 const fileIdFromApi = j.data[0]
@@ -103,6 +107,13 @@ export default function FileUpload({
 
     const deleteFile = useCallback(
         (e: FormEvent, id: number) => {
+            if (clientDelete) {
+                console.log('aa')
+                setFiles(files.filter((x) => x.id !== id))
+                context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
+                return
+            }
+
             if (Object.keys(fileIds).includes(id.toString())) {
                 fetch(`${apiURL}/files/${fileIds[id]}`, {
                     method: 'DELETE',
@@ -112,6 +123,7 @@ export default function FileUpload({
                 }).then((res) => {
                     if (res.status === 200) {
                         setFiles(files.filter((x) => x.id !== id))
+                        context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
                     }
                 })
             }
@@ -209,17 +221,18 @@ export default function FileUpload({
                                         </Stack>
                                     </Box>
                                     <Box>
-                                        {filesLoaded.includes(x.id) && (
-                                            <Button
-                                                variant='contained'
-                                                size='small'
-                                                sx={{ textTransform: 'none', backgroundColor: '#d1495b', '&:hover': { backgroundColor: '#c1121f' } }}
-                                                onClick={(e) => deleteFile(e, x.id)}
-                                                startIcon={<Delete />}
-                                            >
-                                                Remover
-                                            </Button>
-                                        )}
+                                        {filesLoaded.includes(x.id) ||
+                                            (filesError.includes(x.id) && (
+                                                <Button
+                                                    variant='contained'
+                                                    size='small'
+                                                    sx={{ textTransform: 'none', backgroundColor: '#d1495b', '&:hover': { backgroundColor: '#c1121f' } }}
+                                                    onClick={(e) => deleteFile(e, x.id)}
+                                                    startIcon={<Delete />}
+                                                >
+                                                    Remover
+                                                </Button>
+                                            ))}
                                     </Box>
                                 </Stack>
                             ))}
