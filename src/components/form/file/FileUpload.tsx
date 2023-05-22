@@ -33,7 +33,7 @@ export default function FileUpload({
 }: {
     name: string
     tipoArquivo: string
-    clientDelete: boolean
+    clientDelete?: boolean
     title: string
     apiURL: string
     required?: boolean
@@ -221,18 +221,17 @@ export default function FileUpload({
                                         </Stack>
                                     </Box>
                                     <Box>
-                                        {filesLoaded.includes(x.id) ||
-                                            (filesError.includes(x.id) && (
-                                                <Button
-                                                    variant='contained'
-                                                    size='small'
-                                                    sx={{ textTransform: 'none', backgroundColor: '#d1495b', '&:hover': { backgroundColor: '#c1121f' } }}
-                                                    onClick={(e) => deleteFile(e, x.id)}
-                                                    startIcon={<Delete />}
-                                                >
-                                                    Remover
-                                                </Button>
-                                            ))}
+                                        {(filesLoaded.includes(x.id) || filesError.includes(x.id)) && (
+                                            <Button
+                                                variant='contained'
+                                                size='small'
+                                                sx={{ textTransform: 'none', backgroundColor: '#d1495b', '&:hover': { backgroundColor: '#c1121f' } }}
+                                                onClick={(e) => deleteFile(e, x.id)}
+                                                startIcon={<Delete />}
+                                            >
+                                                Remover
+                                            </Button>
+                                        )}
                                     </Box>
                                 </Stack>
                             ))}
