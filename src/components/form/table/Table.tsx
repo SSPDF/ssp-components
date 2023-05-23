@@ -430,19 +430,33 @@ export function Table({
                 {getMaxItems().length > 0 && (
                     <>
                         {csv && (
-                            <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={1}>
+                            <Stack
+                                direction={{
+                                    xs: 'column',
+                                    md: 'row',
+                                }}
+                                justifyContent='flex-end'
+                                marginTop={2}
+                                spacing={1}
+                            >
                                 {csvShowAllButton && (
                                     <Button
                                         startIcon={<FileDownloadIcon />}
                                         variant='contained'
                                         size='small'
                                         onClick={downloadCSVAll}
-                                        sx={{ backgroundColor: '#64748B', marginRight: { xs: 2, md: 0 } }}
+                                        sx={{ backgroundColor: '#64748B', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
                                     >
                                         {csvAllButtonTitle}
                                     </Button>
                                 )}
-                                <Button startIcon={<FileDownloadIcon />} variant='contained' size='small' onClick={downloadCSV} sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 } }}>
+                                <Button
+                                    startIcon={<FileDownloadIcon />}
+                                    variant='contained'
+                                    size='small'
+                                    onClick={downloadCSV}
+                                    sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
+                                >
                                     {csvButtonTitle}
                                 </Button>
                             </Stack>
