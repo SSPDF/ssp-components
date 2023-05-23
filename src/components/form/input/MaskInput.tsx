@@ -40,6 +40,7 @@ export default function MaskInput(props: {
     return (
         <TextField
             {...props.formConfig}
+            autoComplete='off'
             value={inputValue}
             onFocus={(e) => setMaskValue(e.target.value)}
             onChange={onChangeInput}

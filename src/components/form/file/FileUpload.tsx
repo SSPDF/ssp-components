@@ -180,18 +180,38 @@ export default function FileUpload({
                     }}
                 >
                     <Box sx={{ width: '100%', marginRight: { xs: 0, md: 1 }, marginBottom: { xs: 1, md: 0 } }}>
-                        <label htmlFor={name}>
-                            <Button variant='contained' disableElevation startIcon={<InsertDriveFileIcon />} component='span' sx={{ textTransform: 'none' }} fullWidth>
+                        {!multiple && files.length >= 1 ? (
+                            <Button disabled={true} variant='contained' disableElevation startIcon={<InsertDriveFileIcon />} component='span' sx={{ textTransform: 'none' }} fullWidth>
                                 {title}
                             </Button>
-                        </label>
+                        ) : (
+                            <label htmlFor={name}>
+                                <Button variant='contained' disableElevation startIcon={<InsertDriveFileIcon />} component='span' sx={{ textTransform: 'none' }} fullWidth>
+                                    {title}
+                                </Button>
+                            </label>
+                        )}
                     </Box>
                     <Box sx={{ width: '100%' }}>
-                        <label htmlFor={name + 'foto'}>
-                            <Button variant='contained' disableElevation startIcon={<CameraAltIcon />} component='span' sx={{ textTransform: 'none', backgroundColor: '#0096c7' }} fullWidth>
+                        {!multiple && files.length >= 1 ? (
+                            <Button
+                                disabled={true}
+                                variant='contained'
+                                disableElevation
+                                startIcon={<CameraAltIcon />}
+                                component='span'
+                                sx={{ textTransform: 'none', backgroundColor: '#0096c7' }}
+                                fullWidth
+                            >
                                 Tirar foto
                             </Button>
-                        </label>
+                        ) : (
+                            <label htmlFor={name + 'foto'}>
+                                <Button variant='contained' disableElevation startIcon={<CameraAltIcon />} component='span' sx={{ textTransform: 'none', backgroundColor: '#0096c7' }} fullWidth>
+                                    Tirar foto
+                                </Button>
+                            </label>
+                        )}
                     </Box>
                 </Box>
                 <Typography fontWeight={600} paddingY={1} color='black'>
