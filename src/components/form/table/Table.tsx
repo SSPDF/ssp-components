@@ -156,7 +156,7 @@ export function Table({
                 let exists = false
 
                 dataStr.forEach((key) => {
-                    const status = ['P', 'C', 'R']
+                    const status = ['P', 'C', 'A', 'R']
 
                     if (status.includes(key)) {
                         switch (key) {
@@ -166,12 +166,12 @@ export function Table({
                                 }
                                 return
                             case 'C':
-                                if ('cadastrado'.includes(searchValue.toLowerCase())) {
+                                if ('cancelado'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
                             case 'A':
-                                if ('aprovado'.includes(searchValue.toLowerCase())) {
+                                if ('cadastrado'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
