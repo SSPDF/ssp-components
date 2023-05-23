@@ -213,7 +213,8 @@ export function Table({
 
             if (list.length <= 0) return
 
-            const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeys.includes(k))
+            const originalKeys = Object.keys(list[0])
+            const keys = originalKeys.filter((k) => !csvExcludeKeys.includes(k))
             const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
 
             const values: string[] = []
@@ -221,24 +222,27 @@ export function Table({
             list.forEach((x: any) => {
                 let include = true
 
-                const value = keys
-                    .map((k: string) => {
-                        //verificar se pode incluir
-                        if (csvExcludeValidate(k, x[k])) {
-                            include = false
-                            return
-                        }
+                originalKeys.forEach((k: string) => {
+                    //verificar se pode incluir
+                    if (csvExcludeValidate(k, x[k])) {
+                        include = false
+                    }
+                })
 
-                        if (k === 'tbRa') return x[k]['NO_CIDADE']
-                        if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+                if (include) {
+                    const value = keys
+                        .map((k: string) => {
+                            if (k === 'tbRa') return x[k]['NO_CIDADE']
+                            if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
 
-                        if (typeof x[k] === 'string') return `"${x[k]}"`
+                            if (typeof x[k] === 'string') return `"${x[k]}"`
 
-                        return x[k]
-                    })
-                    .join(',')
+                            return x[k]
+                        })
+                        .join(',')
 
-                if (include) values.push(value)
+                    values.push(value)
+                }
             })
 
             const csvData = header + values.join('\n')
