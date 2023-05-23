@@ -40,6 +40,7 @@ export const Base: Story = {
             },
         ],
         csvExcludeKeys: ['body'],
+        // csvExcludeValidate: (key, value) => key === 'userId' && value !== 2,
         columnSize: 4,
         filters: [
             {

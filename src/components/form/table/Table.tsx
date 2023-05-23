@@ -33,9 +33,11 @@ export function Table({
     statusKeyName = '',
     csvExcludeKeys = [],
     csvCustomKeyNames = {},
+    csvExcludeValidate = (key, value) => false,
 }: {
     columns: ColumnData[]
     tableName: string
+    csvExcludeValidate?: (key: string, value: string | number) => boolean
     csvCustomKeyNames?: {
         [key: string]: string
     }
@@ -214,22 +216,32 @@ export function Table({
             const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeys.includes(k))
             const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
 
-            const values = list
-                .map((x: any) => {
-                    return keys
-                        .map((k: string) => {
-                            if (k === 'tbRa') return x[k]['NO_CIDADE']
-                            if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+            const values: string[] = []
 
-                            if (typeof x[k] === 'string') return `"${x[k]}"`
+            list.forEach((x: any) => {
+                let include = true
 
-                            return x[k]
-                        })
-                        .join(',')
-                })
-                .join('\n')
+                const value = keys
+                    .map((k: string) => {
+                        //verificar se pode incluir
+                        if (csvExcludeValidate(k, x[k])) {
+                            include = false
+                            return
+                        }
 
-            const csvData = header + values
+                        if (k === 'tbRa') return x[k]['NO_CIDADE']
+                        if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+
+                        if (typeof x[k] === 'string') return `"${x[k]}"`
+
+                        return x[k]
+                    })
+                    .join(',')
+
+                if (include) values.push(value)
+            })
+
+            const csvData = header + values.join('\n')
 
             // download
             const a = document.createElement('a')
