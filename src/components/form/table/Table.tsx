@@ -34,9 +34,15 @@ export function Table({
     csvExcludeKeys = [],
     csvCustomKeyNames = {},
     csvExcludeValidate = (key, value) => false,
+    csvButtonTitle = 'Salvar .CSV',
+    csvAllButtonTitle = 'Salvar Tudo como CSV',
+    csvShowAllButton = false,
 }: {
     columns: ColumnData[]
     tableName: string
+    csvShowAllButton?: boolean
+    csvAllButtonTitle?: string
+    csvButtonTitle?: string
     csvExcludeValidate?: (key: string, value: string | number) => boolean
     csvCustomKeyNames?: {
         [key: string]: string
@@ -258,6 +264,43 @@ export function Table({
         [list]
     )
 
+    const downloadCSVAll = useCallback(
+        (e: React.MouseEvent) => {
+            e.preventDefault()
+
+            if (list.length <= 0) return
+
+            const keys = Object.keys(list[0])
+            const header = keys.join(',') + '\n'
+
+            const values = list
+                .map((x: any) => {
+                    return keys
+                        .map((k: string) => {
+                            if (k === 'tbRa') return x[k]['NO_CIDADE']
+                            if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+
+                            if (typeof x[k] === 'string') return `"${x[k]}"`
+
+                            return x[k]
+                        })
+                        .join(',')
+                })
+                .join('\n')
+
+            const csvData = header + values
+
+            // download
+            const a = document.createElement('a')
+            a.href = 'data:text/csv;charset=utf-8,' + csvData
+            a.download = `${csv?.fileName}.csv`
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+        },
+        [list]
+    )
+
     const getStatusMsg = useCallback((cod: string) => {
         switch (cod) {
             case 'P':
@@ -387,9 +430,20 @@ export function Table({
                 {getMaxItems().length > 0 && (
                     <>
                         {csv && (
-                            <Stack direction='row' justifyContent='flex-end' marginTop={2}>
+                            <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={1}>
+                                {csvShowAllButton && (
+                                    <Button
+                                        startIcon={<FileDownloadIcon />}
+                                        variant='contained'
+                                        size='small'
+                                        onClick={downloadCSVAll}
+                                        sx={{ backgroundColor: '#64748B', marginRight: { xs: 2, md: 0 } }}
+                                    >
+                                        {csvAllButtonTitle}
+                                    </Button>
+                                )}
                                 <Button startIcon={<FileDownloadIcon />} variant='contained' size='small' onClick={downloadCSV} sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 } }}>
-                                    Salvar .CSV
+                                    {csvButtonTitle}
                                 </Button>
                             </Stack>
                         )}

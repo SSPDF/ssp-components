@@ -57,6 +57,7 @@ export const Base: Story = {
                 name: 'Filtro de User Id',
             },
         ],
+        csvShowAllButton: true,
         action: (data) => (
             <Stack direction='row' spacing={1.5}>
                 <Paper elevation={12} sx={{ '& a': { textDecoration: 'none' } }}>
