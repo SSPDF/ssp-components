@@ -8,6 +8,7 @@ import FileUpload from './components/form/file/FileUpload'
 import ActiveInput from './components/form/input/ActiveInput'
 
 import AutoComplete from './components/form/input/AutoComplete'
+import FetchAutoComplete from './components/form/input/FetchAutoComplete'
 import Input from './components/form/input/Input'
 import MaskInput from './components/form/input/MaskInput'
 import MultInput from './components/form/input/MultInput'
@@ -43,6 +44,7 @@ export {
     FileUpload,
     ActiveInput,
     AutoComplete,
+    FetchAutoComplete,
     Input,
     MaskInput,
     MultInput,
