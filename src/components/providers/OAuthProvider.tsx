@@ -62,6 +62,7 @@ export function OAuthProvider({
 
         fetch(`${AUTH_URL}${validateTokenRoute}`, {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -83,7 +84,7 @@ export function OAuthProvider({
         // Teste em localhost
         if (location && location.hostname === 'localhost') {
             const token = testToken
-            setCookie(cookieName, token, { maxAge: 60 * 60 * 24 * 500 })
+            setCookie(cookieName, token)
             setUser({
                 name: 'Teste',
                 image: '',
