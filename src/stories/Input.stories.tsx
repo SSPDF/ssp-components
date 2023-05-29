@@ -8,7 +8,7 @@ const meta: Meta<typeof Input> = {
     tags: ['autodocs'],
     argTypes: {
         type: {
-            options: ['cnpj', 'cpf', 'input', 'email', 'cpf_cnpj', 'phone', 'input', 'number', 'rg', 'password'],
+            options: ['cnpj', 'cpf', 'input', 'email', 'cpf_cnpj', 'phone', 'input', 'number', 'rg', 'password', 'cep'],
             control: {
                 type: 'select',
             },

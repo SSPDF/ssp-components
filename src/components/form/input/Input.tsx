@@ -14,7 +14,7 @@ export function Input({
     md,
     ...props
 }: {
-    type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password'
+    type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep'
     name: string
     title?: string
     required?: boolean
@@ -53,6 +53,10 @@ export function Input({
                         if (v.length < 14 && props.required) return 'O CPF precisa ter no mínimo 11 dígitos'
                     }
                     //
+                    else if (type === 'cep') {
+                        if (v.length < 9 && props.required) return 'O CPF precisa ter no mínimo 8 dígitos'
+                    }
+                    //
                     else if (type === 'input' || type === 'password') {
                         if (v.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
                         if (v.length < inputMinLength && props.required) return `Limite mínimo de ${inputMinLength} caracteres`
@@ -89,6 +93,15 @@ export function Input({
                         formConfig={formConfig}
                         maskProps={{
                             mask: numberMask,
+                        }}
+                    />
+                )
+            case 'cep':
+                return (
+                    <MaskInput
+                        formConfig={formConfig}
+                        maskProps={{
+                            mask: '00000-000',
                         }}
                     />
                 )

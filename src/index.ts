@@ -18,6 +18,8 @@ import Stepper from './components/form/stepper/Stepper'
 import StepperBlock from './components/form/stepper/StepperBlock'
 
 import Switch from './components/form/switch/Switch'
+import { SwitchWatch, ToggleVisibility } from './components/form/switch/ToggleVisibility'
+
 import Table from './components/form/table/Table'
 
 import NavBar from './components/navbar/NavBar'
@@ -52,6 +54,8 @@ export {
     Stepper,
     StepperBlock,
     Switch,
+    SwitchWatch,
+    ToggleVisibility,
     Table,
     NavBar,
     FormProvider,
