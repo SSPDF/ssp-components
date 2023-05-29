@@ -17,7 +17,7 @@ const getKeys = (values: any, id: number) => {
     return keys
 }
 
-export function Stepper(props: { children: ReactElement | ReactElement[]; debugData?: (data: FieldValues) => void }) {
+export function Stepper({ debugLog = false, ...props }: { children: ReactElement | ReactElement[]; debugData?: (data: FieldValues) => void; debugLog?: boolean }) {
     const length = Array.isArray(props.children) ? props.children.length : 1
     const context = useContext(FormContext)!
     const theme = useTheme()
@@ -33,6 +33,7 @@ export function Stepper(props: { children: ReactElement | ReactElement[]; debugD
     const maxSteps = length
 
     const handleNext = async () => {
+        if (debugLog) console.log(context.formGetValues())
         const result = await context.formTrigger(getKeys(context.formGetValues(), activeStep))
 
         if (!result) {

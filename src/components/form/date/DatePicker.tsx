@@ -83,7 +83,7 @@ export default function DatePicker({
                             />
                         )}
                     />
-                    <Typography sx={{ color: '#a51c30', fontSize: 15, paddingLeft: 1 }}>{get(context.errors, name!)?.message as string}dsadsadsa</Typography>
+                    <Typography sx={{ color: '#a51c30', fontSize: 14, paddingLeft: 1 }}>{get(context.errors, name!)?.message as string}</Typography>
                 </LocalizationProvider>
             </Grid>
         </>

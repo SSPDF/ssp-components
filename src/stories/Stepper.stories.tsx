@@ -16,7 +16,9 @@ export default meta
 type Story = StoryObj<typeof Stepper>
 
 export const Base: Story = {
-    args: {},
+    args: {
+        debugLog: true,
+    },
     render: (args) => (
         <Stepper>
             <StepperBlock title='Primeiro bloco'>
