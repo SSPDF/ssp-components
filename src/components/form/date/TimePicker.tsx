@@ -24,7 +24,15 @@ export default function TimePicker({ name, required = false, title, xs = 12, sm,
                     value={value}
                     ampm={false}
                     onChange={handleChange}
-                    sx={{ outline: get(context.errors, name!) ? '1px solid red' : '' }}
+                    sx={{
+                        outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                        div: {
+                            input: {
+                                paddingX: 2,
+                                paddingY: 1.05,
+                            },
+                        },
+                    }}
                     inputRef={(params: any) => (
                         <TextField
                             size='small'
@@ -42,7 +50,7 @@ export default function TimePicker({ name, required = false, title, xs = 12, sm,
                         />
                     )}
                 />
-                <Typography sx={{ color: 'red' }}>{get(context.errors, name!)?.message as string}</Typography>
+                <Typography sx={{ color: '#a51c30', fontSize: 15, paddingLeft: 1 }}>{get(context.errors, name!)?.message as string}</Typography>
             </LocalizationProvider>
         </Grid>
     )

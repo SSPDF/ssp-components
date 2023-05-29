@@ -50,7 +50,15 @@ export default function DatePicker({
                         value={value}
                         onChange={handleChange}
                         disableHighlightToday
-                        sx={{ outline: get(context.errors, name!) ? '1px solid red' : '' }}
+                        sx={{
+                            outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                            div: {
+                                input: {
+                                    paddingX: 2,
+                                    paddingY: 1.05,
+                                },
+                            },
+                        }}
                         inputRef={(params: any) => (
                             <TextField
                                 size='small'
@@ -64,7 +72,7 @@ export default function DatePicker({
                                         if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
                                         if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
-                                            return 'Inicio precisa ser no mínimo 30 dias antes e no máximo 60 dias.'
+                                            return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
 
                                         if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
                                             return 'A data escolhida não é válida'
@@ -75,7 +83,7 @@ export default function DatePicker({
                             />
                         )}
                     />
-                    <Typography sx={{ color: 'red' }}>{get(context.errors, name!)?.message as string}</Typography>
+                    <Typography sx={{ color: '#a51c30', fontSize: 15, paddingLeft: 1 }}>{get(context.errors, name!)?.message as string}dsadsadsa</Typography>
                 </LocalizationProvider>
             </Grid>
         </>
