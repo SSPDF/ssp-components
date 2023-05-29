@@ -10,6 +10,9 @@ export default function FetchAutoComplete({
     customLoadingText,
     shouldRefetch = true,
     required = false,
+    xs = 12,
+    sm,
+    md,
 }: {
     name: string
     url: string
@@ -17,6 +20,9 @@ export default function FetchAutoComplete({
     customLoadingText: string
     required?: boolean
     shouldRefetch?: boolean
+    xs?: number
+    sm?: number
+    md?: number
 }) {
     const context = useContext(FormContext)
 
@@ -50,7 +56,7 @@ export default function FetchAutoComplete({
     }
 
     return (
-        <Grid item xs={12}>
+        <Grid item {...{ xs, sm, md }}>
             <InputLabel required={required}>{title}</InputLabel>
             <Autocomplete
                 loading={loading}
