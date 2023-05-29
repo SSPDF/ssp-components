@@ -169,7 +169,7 @@ export function Table({
                     if (status.includes(key)) {
                         switch (key) {
                             case 'P':
-                                if ('pendente'.includes(searchValue.toLowerCase())) {
+                                if ('EM ANÁLISE'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
@@ -306,7 +306,7 @@ export function Table({
             case 'P':
                 return (
                     <Typography color='#F59E0B' fontWeight={600} fontFamily='Inter'>
-                        PENDENTE
+                        EM ANÁLISE
                     </Typography>
                 )
             case 'A':
