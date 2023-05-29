@@ -62,7 +62,6 @@ export function OAuthProvider({
 
         fetch(`${AUTH_URL}${validateTokenRoute}`, {
             method: 'POST',
-            mode: 'no-cors',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
