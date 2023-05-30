@@ -20,9 +20,10 @@ export const Base: Story = {
         debugLog: true,
     },
     render: (args) => (
-        <Stepper>
+        <Stepper {...args}>
             <StepperBlock title='Primeiro bloco'>
-                <Input name='primeiro' type='input' customPlaceholder='Primeiro' />
+                <Input type='input' name='nome' title='Nome' customPlaceholder='Nome' md={12} required />
+                <Input name='primeiro' type='cep' title='CEP' customPlaceholder='Primeiro' required />
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />

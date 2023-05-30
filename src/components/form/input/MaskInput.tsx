@@ -1,6 +1,7 @@
 import { TextField } from '@mui/material'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { IMaskInput } from 'react-imask'
+import { FormContext } from '../../../context/form'
 
 const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(props: any, ref: any) {
     const { onChange, maskProps, onMask, maskValue, setMaskValue, ...prop } = props
@@ -13,7 +14,6 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
             {...prop}
             {...maskProps}
             mask={mask}
-            autoComplete='off'
             inputRef={ref}
             onAccept={(value: string) => {
                 setMaskValue(value)
@@ -31,6 +31,7 @@ export default function MaskInput(props: {
     disabled?: boolean
     onMask?: (value: string, setMask: React.Dispatch<React.SetStateAction<string>>) => void
 }) {
+    const context = useContext(FormContext)!
     const [inputValue, setInputValue] = React.useState('')
     const [maskValue, setMaskValue] = useState('')
 
@@ -41,8 +42,13 @@ export default function MaskInput(props: {
     return (
         <TextField
             {...props.formConfig}
-            autoComplete='off'
             value={inputValue}
+            onInput={(e) => {
+                const name = (props.formConfig as any).name as string
+                const value = (e.target as any).value
+
+                context.formSetValue(name, value)
+            }}
             onFocus={(e) => setMaskValue(e.target.value)}
             onChange={onChangeInput}
             InputProps={{
