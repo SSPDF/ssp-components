@@ -2,6 +2,7 @@ import { Autocomplete, Grid, InputLabel, TextField, useMediaQuery, useTheme } fr
 import React, { useContext, useState } from 'react'
 import { FormContext } from '../../../context/form'
 import { AuthContext } from '../../../context/auth'
+import get from 'lodash.get'
 
 export default function FetchAutoComplete({
     name,
@@ -73,7 +74,18 @@ export default function FetchAutoComplete({
                 options={list}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => context?.formSetValue(name, v ? v.id : '')}
-                renderInput={(params) => <TextField {...params} size='small' fullWidth placeholder={title} onFocus={onFocus} required />}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        size='small'
+                        fullWidth
+                        placeholder={title}
+                        onFocus={onFocus}
+                        required
+                        error={get(context?.errors, name!) ? true : false}
+                        helperText={get(context?.errors, name!)?.message as string}
+                    />
+                )}
                 size='small'
                 fullWidth
             />
