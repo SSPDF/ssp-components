@@ -57,7 +57,16 @@ export default function FetchAutoComplete({
 
     return (
         <Grid item {...{ xs, sm, md }}>
-            <InputLabel required={required}>{title}</InputLabel>
+            {title && <InputLabel required={required}>{title}</InputLabel>}
+            <input
+                type='text'
+                {...context?.formRegister(name!, {
+                    validate: (v, f) => {
+                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                    },
+                })}
+                hidden
+            />
             <Autocomplete
                 loading={loading}
                 loadingText={loadingText}
