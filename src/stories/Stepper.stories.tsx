@@ -4,6 +4,9 @@ import Stepper from '../components/form/stepper/Stepper'
 import React from 'react'
 import { StepperBlock } from '../components/form/stepper/StepperBlock'
 import { Input } from '../components/form/input/Input'
+import CheckBox from '../components/form/checkbox/CheckBox'
+import { Box, FormGroup, Grid } from '@mui/material'
+import RequiredCheckBoxGroup from '../components/form/checkbox/RequiredCheckBoxValidator'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',
@@ -22,8 +25,19 @@ export const Base: Story = {
     render: (args) => (
         <Stepper {...args}>
             <StepperBlock title='Primeiro bloco'>
-                <Input type='input' name='nome' title='Nome' customPlaceholder='Nome' md={12} required />
-                <Input name='primeiro' type='cep' title='CEP' customPlaceholder='Primeiro' required />
+                <RequiredCheckBoxGroup name='grupo'>
+                    <CheckBox name='teste1' title='Meu teste 1' md={6} />
+                    <CheckBox name='teste2' title='Meu teste 2' md={6} />
+                    <CheckBox name='teste3' title='Meu teste 3' md={6} />
+                    <CheckBox name='teste4' title='Meu teste 4' md={6} />
+
+                    <Grid xs={12}>
+                        <CheckBox name='teste5' title='Meu teste 5' />
+                        <Box padding={5}>
+                            <CheckBox name='teste6' title='Meu teste 6' />
+                        </Box>
+                    </Grid>
+                </RequiredCheckBoxGroup>
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />
