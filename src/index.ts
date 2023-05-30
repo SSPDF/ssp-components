@@ -38,6 +38,8 @@ import { Field } from './components/detalhes/Field'
 import { FieldLabel } from './components/detalhes/FieldLabel'
 import { File } from './components/detalhes/File'
 
+import RequiredCheckBoxGroup from './components/form/checkbox/RequiredCheckBoxValidator'
+
 export {
     CheckBox,
     CheckBoxWarning,
@@ -64,6 +66,8 @@ export {
     AuthContext,
     FormContext,
     LoginProvider,
+
+    RequiredCheckBoxGroup,
 
     //detalhes
     Category,
