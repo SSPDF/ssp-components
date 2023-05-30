@@ -13,6 +13,7 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
             {...prop}
             {...maskProps}
             mask={mask}
+            autoComplete='off'
             inputRef={ref}
             onAccept={(value: string) => {
                 setMaskValue(value)

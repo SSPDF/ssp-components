@@ -108,14 +108,13 @@ export default function FileUpload({
     const deleteFile = useCallback(
         (e: FormEvent, id: number) => {
             if (clientDelete) {
-                console.log('aa')
                 setFiles(files.filter((x) => x.id !== id))
                 context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
                 return
             }
 
             if (Object.keys(fileIds).includes(id.toString())) {
-                fetch(`${apiURL}/files/${fileIds[id]}`, {
+                fetch(`${apiURL}/${fileIds[id]}`, {
                     method: 'DELETE',
                     headers: {
                         Authorization: `Bearer ${user?.token}`,
