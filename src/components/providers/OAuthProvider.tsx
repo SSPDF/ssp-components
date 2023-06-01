@@ -37,6 +37,7 @@ export function OAuthProvider({
     validateTokenRoute,
     testToken,
     testIP,
+    logoutURL = redirectURL,
 }: {
     children: JSX.Element | JSX.Element[]
     AUTH_URL: string
@@ -45,6 +46,7 @@ export function OAuthProvider({
     validateTokenRoute: string
     testToken: string
     testIP?: string
+    logoutURL?: string
 }) {
     const govBrURL = oidcConfig.authority + '/authorize?response_type=code&client_id=' + oidcConfig.client_id + '&scope=' + oidcConfig.scope + '&redirect_uri=' + oidcConfig.redirect_uri
 
@@ -69,7 +71,7 @@ export function OAuthProvider({
             },
         }).then((res) => {
             if (!res.ok) {
-                logout('/')
+                logout()
                 return
             } else {
                 const user: AuthClaims = jwt_decode(token)
@@ -138,14 +140,14 @@ export function OAuthProvider({
         router.replace(redirectURL).finally(() => setUserLoaded(true))
     }
 
-    function logout(url: string) {
+    function logout() {
         setUserLoaded(false)
 
         setUser(null)
         deleteCookie(cookieName)
         localStorage.removeItem(userImgName)
 
-        router.replace(url).finally(() => setUserLoaded(true))
+        router.replace(logoutURL).finally(() => setUserLoaded(true))
     }
 
     return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, adLogin: () => {}, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>
