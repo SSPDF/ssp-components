@@ -9,6 +9,8 @@ function getChildrenNames(children: JSX.Element[]): string[] {
     children.forEach((x) => {
         if (!x.props) return
 
+        console.log('PROPS:', x.props)
+
         if (x.props.children) {
             const childrenArr = getChildrenNames(Array.isArray(x.props.children) ? x.props.children : [x.props.children])
             arr = arr.concat(childrenArr)

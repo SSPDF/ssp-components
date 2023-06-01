@@ -5,9 +5,9 @@ import React from 'react'
 import { StepperBlock } from '../components/form/stepper/StepperBlock'
 import { Input } from '../components/form/input/Input'
 import CheckBox from '../components/form/checkbox/CheckBox'
-import { Box, FormGroup, Grid, Stack } from '@mui/material'
+import { Box, FormGroup, Grid, Stack, Typography } from '@mui/material'
 import RequiredCheckBoxGroup from '../components/form/checkbox/RequiredCheckBoxValidator'
-import { ActiveInput } from '..'
+import { ActiveInput, CheckBoxWarning, Switch, SwitchWatch } from '..'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',
@@ -26,18 +26,32 @@ export const Base: Story = {
     render: (args) => (
         <Stepper {...args}>
             <StepperBlock title='Primeiro bloco'>
-                <ActiveInput name='nuQuantidadeIngresso' title='Venda de ingresso?' required defaultChecked={true}>
-                    <>
-                        <Input name='ata' type='number' numberMask='000000000' required />
-                    </>
-                    <RequiredCheckBoxGroup name='quantidadeCheckboxGroup'>
-                        <Stack direction={'row'} sx={{ width: '100%' }}>
-                            <CheckBox name='jsTipoIngresso.abertoPublico' title='Aberto ao Público' />
-                            <CheckBox name='jsTipoIngresso.convidado' title='Convidado' />
-                            <CheckBox name='jsTipoIngresso.medianteInscricao' title='Mediante Inscrição' />
-                        </Stack>
-                    </RequiredCheckBoxGroup>
-                </ActiveInput>
+                <RequiredCheckBoxGroup name='ata'>
+                    <CheckBox name='jsNaturezaEvento.teste' title='Teste' />
+                    <CheckBoxWarning
+                        name={'jsNaturezaEvento.checkEsportivo'}
+                        title={'Titulo de teste'}
+                        customWarning={
+                            <Stack spacing={1}>
+                                <Typography>
+                                    <b>Item obrigatório</b> Selecione o tipo do evento esportivo:
+                                </Typography>
+                                <Stack>
+                                    <RequiredCheckBoxGroup name='0.requiredCheck'>
+                                        <CheckBox name='0.jsNaturezaEvento.esportivo.ciclismo' title='Ciclismo' />
+                                        <CheckBox name='0.jsNaturezaEvento.esportivo.corrida' title='Corrida' />
+                                        <CheckBox name='0.jsNaturezaEvento.esportivo.futebol' title='Jogo de Futebol' />
+                                        <CheckBox name='0.jsNaturezaEvento.esportivo.outros' title='Outros' />
+                                    </RequiredCheckBoxGroup>
+                                </Stack>
+                                <Input name='0.fodaMesmo.teste' type='input' required />
+                                <Typography>
+                                    <b>Documento obrigatório</b> Para eventos esportivos, é obrigatório anexar o mapa do percurso
+                                </Typography>
+                            </Stack>
+                        }
+                    />
+                </RequiredCheckBoxGroup>
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />

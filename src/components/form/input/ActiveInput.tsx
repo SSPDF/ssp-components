@@ -14,6 +14,7 @@ export default function FileUpload({
     title,
     defaultChecked = false,
     xs = 12,
+    unregisterNameList,
     sm,
     md,
     ...props
@@ -21,6 +22,7 @@ export default function FileUpload({
     name: string
     children?: [ReactElement, ReactElement]
     title?: string
+    unregisterNameList: string[]
     defaultChecked?: boolean
     required?: boolean
     xs?: number
@@ -39,12 +41,13 @@ export default function FileUpload({
             <Stack direction='row'>
                 <Switch name={switchName} defaultChecked={defaultChecked} />
 
-                <SwitchWatch switchId={switchName} unregisterNameList={[]}>
-                    {props.children![0]}
+                <SwitchWatch switchId={switchName} unregisterNameList={unregisterNameList}>
+                    {/* {props.children![0]} */}
+                    <Input name='ddd' type='input' />
                 </SwitchWatch>
-                <SwitchWatch switchId={switchName} unregisterNameList={[]} invert={true}>
+                {/* <SwitchWatch switchId={switchName} unregisterNameList={unregisterNameList} invert={true}>
                     {props.children![1]}
-                </SwitchWatch>
+                </SwitchWatch> */}
             </Stack>
         </Grid>
     )
