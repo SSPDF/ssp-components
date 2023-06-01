@@ -17,46 +17,6 @@ const getKeys = (values: any, id: number) => {
     return keys
 }
 
-const _getKeys = (
-    value: any
-): {
-    objs: string[]
-    literals: string[]
-} => {
-    const keys = Object.keys(value)
-
-    if (!value || keys.length <= 0) return { objs: [], literals: [] }
-
-    console.log('ATUAL KEYS:', keys)
-
-    let literalValues: string[] = []
-    let objectValues: string[] = []
-
-    let result = keys
-
-    keys.forEach((x) => {
-        console.log(x, ':', typeof value[x])
-
-        if (typeof value[x] === 'object') {
-            objectValues.push(x)
-            const obj = _getKeys(value[x])
-            objectValues = objectValues.concat(obj.objs)
-        } else {
-            literalValues.push(x)
-        }
-    })
-
-    console.log({
-        objs: objectValues,
-        literals: literalValues,
-    })
-
-    return {
-        objs: objectValues,
-        literals: literalValues,
-    }
-}
-
 export function Stepper({ debugLog = false, ...props }: { children: ReactElement | ReactElement[]; debugData?: (data: FieldValues) => void; debugLog?: boolean }) {
     const length = Array.isArray(props.children) ? props.children.length : 1
     const context = useContext(FormContext)!
@@ -74,9 +34,6 @@ export function Stepper({ debugLog = false, ...props }: { children: ReactElement
 
     const handleNext = async () => {
         if (debugLog) console.log(context.formGetValues())
-        console.log('TRIGGER:', getKeys(context.formGetValues(), activeStep))
-
-        // _getKeys(context.formGetValues()[activeStep])
 
         const result = await context.formTrigger(getKeys(context.formGetValues(), activeStep))
 

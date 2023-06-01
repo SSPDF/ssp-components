@@ -1,11 +1,18 @@
 import { Box, Checkbox, Grid, Stack, TextField } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
+import { SwitchWatch } from '../switch/ToggleVisibility'
 
 export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, md }: { name: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
     const context = useContext(FormContext)!
     const checkName = `switch-${name}`
+
+    useEffect(() => {
+        const checkValue = context.formWatch(checkName)
+
+        if (!checkValue) context.formSetValue(name, undefined)
+    }, [context])
 
     return (
         <Grid item {...{ xs, sm, md }}>

@@ -7,7 +7,7 @@ import { Input } from '../components/form/input/Input'
 import CheckBox from '../components/form/checkbox/CheckBox'
 import { Box, FormGroup, Grid, Stack, Typography } from '@mui/material'
 import RequiredCheckBoxGroup from '../components/form/checkbox/RequiredCheckBoxValidator'
-import { ActiveInput, CheckBoxWarning, Switch, SwitchWatch } from '..'
+import { ActiveInput, CheckBoxWarning, OtherCheckBox, Switch, SwitchWatch } from '..'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',
@@ -28,7 +28,8 @@ export const Base: Story = {
             <StepperBlock title='Primeiro bloco'>
                 <RequiredCheckBoxGroup name='ata'>
                     <CheckBox name='jsNaturezaEvento.teste' title='Teste' />
-                    <CheckBoxWarning
+                    <OtherCheckBox name='ronald' />
+                    {/* <CheckBoxWarning
                         name={'jsNaturezaEvento.checkEsportivo'}
                         title={'Titulo de teste'}
                         customWarning={
@@ -50,7 +51,7 @@ export const Base: Story = {
                                 </Typography>
                             </Stack>
                         }
-                    />
+                    /> */}
                 </RequiredCheckBoxGroup>
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
