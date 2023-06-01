@@ -36,6 +36,7 @@ export function OAuthProvider({
     redirectURL,
     validateTokenRoute,
     testToken,
+    testIP,
 }: {
     children: JSX.Element | JSX.Element[]
     AUTH_URL: string
@@ -43,6 +44,7 @@ export function OAuthProvider({
     redirectURL: string
     validateTokenRoute: string
     testToken: string
+    testIP?: string
 }) {
     const govBrURL = oidcConfig.authority + '/authorize?response_type=code&client_id=' + oidcConfig.client_id + '&scope=' + oidcConfig.scope + '&redirect_uri=' + oidcConfig.redirect_uri
 
@@ -81,7 +83,7 @@ export function OAuthProvider({
 
     function login() {
         // Teste em localhost
-        if (location && location.hostname === 'localhost') {
+        if (location && (location.hostname === 'localhost' || location.hostname === testIP)) {
             const token = testToken
             setCookie(cookieName, token)
             setUser({
