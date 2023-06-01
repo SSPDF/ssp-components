@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.85",
+    "version": "0.0.86",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -12,7 +12,8 @@
         "react-hook-form": "^7.43.9",
         "react-imask": "^6.6.0",
         "react-query": "^3.39.3",
-        "dayjs": "^1.11.7"
+        "dayjs": "^1.11.7",
+        "react-google-recaptcha": "^2.1.0"
     },
     "devDependencies": {
         "@types/lodash.get": "^4.4.7",
