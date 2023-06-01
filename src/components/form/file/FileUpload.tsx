@@ -167,7 +167,7 @@ export default function FileUpload({
                         },
                     })}
                     onChange={onFile}
-                    accept='image/*'
+                    accept='.jpg, .png, .jpeg'
                     style={{ display: 'none' }}
                 />
                 <Box
