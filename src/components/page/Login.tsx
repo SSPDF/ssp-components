@@ -20,7 +20,7 @@ export function Login({
     loginURL: string
     children: JSX.Element | JSX.Element[]
     name?: string
-    captchaSiteKey: string
+    captchaSiteKey?: string
 }) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -52,18 +52,20 @@ export function Login({
                     </Typography>
                     <Stack spacing={3} width={300}>
                         <Stack spacing={1}>{children}</Stack>
+                        {captchaSiteKey && (
+                            <ReCAPTCHA
+                                ref={captcha}
+                                hl='pt'
+                                sitekey={captchaSiteKey}
+                                onExpired={() => setCaptchaSolved(false)}
+                                onChange={(e) => {
+                                    setCaptchaToken(e!), e && setCaptchaSolved(true)
+                                }}
+                            />
+                        )}
                         <LoadingButton type='submit' fullWidth variant='contained' loading={loading} disabled={!captchaSolved}>
                             Login
                         </LoadingButton>
-                        <ReCAPTCHA
-                            ref={captcha}
-                            hl='pt'
-                            sitekey={captchaSiteKey}
-                            onExpired={() => setCaptchaSolved(false)}
-                            onChange={(e) => {
-                                setCaptchaToken(e!), e && setCaptchaSolved(true)
-                            }}
-                        />
 
                         {error && (
                             <Box bgcolor='#ce4257' padding={2} borderRadius={2} color='white'>

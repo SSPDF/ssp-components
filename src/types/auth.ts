@@ -70,5 +70,5 @@ export interface AuthReturnData {
     login: () => void
     adLogin: (loginURL: string, data: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setError: React.Dispatch<React.SetStateAction<boolean>>, captchaToken: string) => void
     saveUserData: (token: AuthReturn) => void
-    logout: () => void
+    logout: (url: string) => void
 }

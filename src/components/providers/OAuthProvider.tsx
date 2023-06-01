@@ -69,7 +69,7 @@ export function OAuthProvider({
             },
         }).then((res) => {
             if (!res.ok) {
-                logout()
+                logout('/')
                 return
             } else {
                 const user: AuthClaims = jwt_decode(token)
@@ -138,14 +138,14 @@ export function OAuthProvider({
         router.replace(redirectURL).finally(() => setUserLoaded(true))
     }
 
-    function logout() {
+    function logout(url: string) {
         setUserLoaded(false)
 
         setUser(null)
         deleteCookie(cookieName)
         localStorage.removeItem(userImgName)
 
-        router.replace(redirectURL).finally(() => setUserLoaded(true))
+        router.replace(url).finally(() => setUserLoaded(true))
     }
 
     return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, adLogin: () => {}, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>

@@ -18,6 +18,8 @@ export default function NavBar({
     next = true,
     el,
     menuItems,
+    logoutMsg = 'Sair',
+    logoutURL = '/',
 }: {
     links: { name: string; path: string }[]
     title: string
@@ -25,6 +27,8 @@ export default function NavBar({
     menuItems: JSX.Element | JSX.Element[]
     next?: boolean
     el?: JSX.Element
+    logoutMsg?: string
+    logoutURL?: string
     pos?: 'fixed' | 'inherit'
 }) {
     let router: NextRouter | undefined | null = undefined
@@ -149,12 +153,12 @@ export default function NavBar({
                                                 <MenuItem
                                                     onClick={(e) => {
                                                         setAvatarAnchor(null)
-                                                        logout()
+                                                        logout(logoutURL)
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
                                                         <LogoutOutlinedIcon sx={{ fill: '#545454' }} />
-                                                        <Typography textTransform='capitalize'>Sair</Typography>
+                                                        <Typography textTransform='capitalize'>{logoutMsg}</Typography>
                                                     </Stack>
                                                 </MenuItem>
                                             </Menu>
