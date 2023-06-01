@@ -143,11 +143,13 @@ export function OAuthProvider({
     function logout() {
         setUserLoaded(false)
 
-        setUser(null)
-        deleteCookie(cookieName)
-        localStorage.removeItem(userImgName)
+        router.replace(logoutURL).finally(() => {
+            setUser(null)
+            deleteCookie(cookieName)
+            localStorage.removeItem(userImgName)
 
-        router.replace(logoutURL).finally(() => setUserLoaded(true))
+            setUserLoaded(true)
+        })
     }
 
     return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, adLogin: () => {}, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>
