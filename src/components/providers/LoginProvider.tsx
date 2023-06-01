@@ -60,7 +60,7 @@ export function LoginProvider({
         })
     }, [])
 
-    function adLogin(loginURL: string, data: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setError: React.Dispatch<React.SetStateAction<boolean>>) {
+    function adLogin(loginURL: string, data: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setError: React.Dispatch<React.SetStateAction<boolean>>, captchaToken: string) {
         setLoading(true)
 
         fetch(loginURL, {
@@ -68,6 +68,7 @@ export function LoginProvider({
             body: JSON.stringify({
                 ...data,
                 cpf: (data.cpf as any).replaceAll(/[.-]/g, ''),
+                captchaToken,
             }),
             headers: {
                 'Content-Type': 'application/json',

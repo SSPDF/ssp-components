@@ -13,5 +13,7 @@ export default meta
 type Story = StoryObj<typeof Login>
 
 export const Base: Story = {
-    args: {},
+    args: {
+        captchaSiteKey: '6LdfkE0mAAAAAM0TRjxRxE3Lm6t0ximM9fEa82i_',
+    },
 }

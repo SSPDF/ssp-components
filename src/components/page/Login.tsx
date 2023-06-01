@@ -4,17 +4,35 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import { useContext, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import FormProvider from '../providers/FormProvider'
+import ReCAPTCHA from 'react-google-recaptcha'
 
-export function Login({ imgURL = '', name = 'Login', children, loginURL }: { imgURL?: string; loginURL: string; children: JSX.Element | JSX.Element[]; name?: string }) {
+export function Login({
+    imgURL = '',
+    name = 'Login',
+    children,
+    loginURL,
+    captchaSiteKey,
+}: {
+    imgURL?: string
+    loginURL: string
+    children: JSX.Element | JSX.Element[]
+    name?: string
+    captchaSiteKey: string
+}) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const [captchaSolved, setCaptchaSolved] = useState(false)
+    const [captchaToken, setCaptchaToken] = useState('')
+
+    const captcha = useRef<ReCAPTCHA>(null)
+
     const { adLogin } = useContext(AuthContext)
 
     function onLogin(data: any) {
-        adLogin(loginURL, data, setLoading, setError)
+        adLogin(loginURL, data, setLoading, setError, captchaToken)
     }
 
     return (
@@ -34,9 +52,19 @@ export function Login({ imgURL = '', name = 'Login', children, loginURL }: { img
                     </Typography>
                     <Stack spacing={3} width={300}>
                         <Stack spacing={1}>{children}</Stack>
-                        <LoadingButton type='submit' fullWidth variant='contained' loading={loading}>
+                        <LoadingButton type='submit' fullWidth variant='contained' loading={loading} disabled={!captchaSolved}>
                             Login
                         </LoadingButton>
+                        <ReCAPTCHA
+                            ref={captcha}
+                            hl='pt'
+                            sitekey={captchaSiteKey}
+                            onExpired={() => setCaptchaSolved(false)}
+                            onChange={(e) => {
+                                setCaptchaToken(e!), e && setCaptchaSolved(true)
+                            }}
+                        />
+
                         {error && (
                             <Box bgcolor='#ce4257' padding={2} borderRadius={2} color='white'>
                                 <Typography>Dados incorretos. Tente novamente!</Typography>
