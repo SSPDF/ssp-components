@@ -29,11 +29,9 @@ export default function FileUpload({
     xs = 12,
     sm,
     md,
-    clientDelete = false,
 }: {
     name: string
     tipoArquivo: string
-    clientDelete?: boolean
     title: string
     apiURL: string
     required?: boolean
@@ -105,30 +103,27 @@ export default function FileUpload({
         [files, context]
     )
 
-    const deleteFile = useCallback(
-        (e: FormEvent, id: number) => {
-            if (clientDelete) {
-                setFiles(files.filter((x) => x.id !== id))
-                context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
-                return
-            }
+    const deleteFile = (e: FormEvent, id: number) => {
+        if (filesError.includes(id)) {
+            setFiles(files.filter((x) => x.id !== id))
+            context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
+            return
+        }
 
-            if (Object.keys(fileIds).includes(id.toString())) {
-                fetch(`${apiURL}/${fileIds[id]}`, {
-                    method: 'DELETE',
-                    headers: {
-                        Authorization: `Bearer ${user?.token}`,
-                    },
-                }).then((res) => {
-                    if (res.status === 200) {
-                        setFiles(files.filter((x) => x.id !== id))
-                        context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
-                    }
-                })
-            }
-        },
-        [files, fileIds, user?.token]
-    )
+        if (Object.keys(fileIds).includes(id.toString())) {
+            fetch(`${apiURL}/${fileIds[id]}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${user?.token}`,
+                },
+            }).then((res) => {
+                if (res.status === 200) {
+                    setFiles(files.filter((x) => x.id !== id))
+                    context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
+                }
+            })
+        }
+    }
 
     useEffect(() => {
         const dt = new DataTransfer()
