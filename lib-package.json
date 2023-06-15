@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.90",
+    "version": "0.0.91",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -13,10 +13,12 @@
         "react-imask": "^6.6.0",
         "react-query": "^3.39.3",
         "dayjs": "^1.11.7",
+        "lodash.hasin": "^4.5.2",
         "react-google-recaptcha": "^2.1.0"
     },
     "devDependencies": {
         "@types/lodash.get": "^4.4.7",
+        "@types/lodash.hasin": "^4.5.7",
         "prop-types": "15.8.1"
     },
     "repository": {
