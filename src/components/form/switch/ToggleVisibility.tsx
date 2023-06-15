@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
 
 // Coloque esse componente dentro de um bloco que é retirado com o valor do input
@@ -11,7 +11,7 @@ export function ToggleVisibility({ invert = false, ...props }: { switchId: strin
                 props.unregisterNameList.forEach((x) => context.formUnregister(x))
             }
         }
-    }, [])
+    }, [props.unregisterNameList])
 
     return <></>
 }
