@@ -1,5 +1,5 @@
 import type { Context, Dispatch, SetStateAction } from 'react'
-import { FieldErrors, FieldValues, UseFormGetValues, UseFormRegister, UseFormReset, UseFormSetValue, UseFormTrigger, UseFormUnregister, UseFormWatch } from 'react-hook-form'
+import { Control, FieldErrors, FieldValues, UseFormGetValues, UseFormRegister, UseFormReset, UseFormSetValue, UseFormTrigger, UseFormUnregister, UseFormWatch } from 'react-hook-form'
 
 export enum FieldType {
     INPUT,
@@ -51,6 +51,7 @@ export interface FormContextType {
     formRegister: UseFormRegister<FieldValues>
     formWatch: UseFormWatch<FieldValues>
     formReset: UseFormReset<FieldValues>
+    formControl: Control<FieldValues, any>
     formSetValue: UseFormSetValue<FieldValues>
     formTrigger: UseFormTrigger<FieldValues>
     formUnregister: UseFormUnregister<FieldValues>

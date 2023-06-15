@@ -17,6 +17,7 @@ export default function FormProvider({
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
         reset,
         watch,
@@ -34,6 +35,7 @@ export default function FormProvider({
                 formRegister: register,
                 formWatch: watch,
                 formReset: reset,
+                formControl: control,
                 formSetValue: setValue,
                 formTrigger: trigger,
                 formUnregister: unregister,
