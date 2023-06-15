@@ -6,6 +6,7 @@ import ptbr from 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import React, { useContext, useState } from 'react'
 import { FormContext } from '../../../context/form'
+import hasIn from 'lodash.hasin'
 
 export default function TimePicker({ name, required = false, title, xs = 12, sm, md }: { name: string; title?: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
     const context = useContext(FormContext)!
@@ -39,6 +40,9 @@ export default function TimePicker({ name, required = false, title, xs = 12, sm,
                             {...params}
                             {...context?.formRegister(name!, {
                                 validate: (v, f) => {
+                                    if (!hasIn(f, name)) {
+                                        return true
+                                    }
                                     if (!v) v = ''
 
                                     if (v.length <= 0 && required) return 'Este campo é obrigatório'

@@ -5,7 +5,8 @@ import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 import ptbr from 'dayjs/locale/pt-br'
 import get from 'lodash.get'
-import React, { useContext, useState } from 'react'
+import hasIn from 'lodash.hasin'
+import React, { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
 
 export default function DatePicker({
@@ -65,7 +66,10 @@ export default function DatePicker({
                                 {...params}
                                 {...context?.formRegister(name!, {
                                     validate: (v, f) => {
-                                        console.log('meu valor: ', v)
+                                        if (!hasIn(f, name)) {
+                                            return true
+                                        }
+
                                         if (!v) v = ''
 
                                         if (v.length <= 0 && required) return 'Este campo é obrigatório'

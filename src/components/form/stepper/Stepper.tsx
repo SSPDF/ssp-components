@@ -35,6 +35,8 @@ export function Stepper({ debugLog = false, ...props }: { children: ReactElement
     const handleNext = async () => {
         if (debugLog) console.log(context.formGetValues())
 
+        // console.log('valores conferidos', getKeys(context.formGetValues(), activeStep), context.formGetValues(getKeys(context.formGetValues(), activeStep)))
+
         const result = await context.formTrigger(getKeys(context.formGetValues(), activeStep))
 
         if (!result) {
