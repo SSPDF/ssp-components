@@ -32,7 +32,7 @@ export const Base: Story = {
                 <CheckBoxWarning name='tcheck2' title='Check Warning' defaultValue={true} />
                 <DatePicker name='dt' defaultValue='10/08/2023' />
                 <TimePicker name='dt2' defaultValue='10:23' />
-                <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:3000/autocomplete' customLoadingText='Carregando...' defaultValue={1} shouldRefetch={false} required />
+                <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' defaultValue={1} shouldRefetch={false} required />
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />

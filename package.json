@@ -57,6 +57,6 @@
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",
-        "api": "json-server --watch api-test.json"
+        "api": "json-server --watch api-test.json --port 7171"
     }
 }

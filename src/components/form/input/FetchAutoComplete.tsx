@@ -58,7 +58,7 @@ export default function FetchAutoComplete({
     }, [])
 
     function onFocus() {
-        if (!defaultValue && !shouldRefetch && list.length > 0) return
+        if ((defaultValue || !shouldRefetch) && list.length > 0) return
 
         setLoading(true)
         setList([])
