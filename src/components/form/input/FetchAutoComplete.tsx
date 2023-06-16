@@ -31,8 +31,9 @@ export default function FetchAutoComplete({
     const context = useContext(FormContext)
 
     const [loading, setLoading] = useState(true)
-    const [list, setList] = useState([])
+    const [list, setList] = useState<any>([])
     const [loadingText, setLoadingText] = useState('Carregando...')
+    const [dValue, setDValue] = useState<any | null>(null)
     const { user } = useContext(AuthContext)
 
     useEffect(() => {
@@ -45,10 +46,17 @@ export default function FetchAutoComplete({
             }).then((res) => {
                 if (res.ok) {
                     res.json().then((j) => {
-                        setList(j.body.data)
-                        setLoading(false)
+                        let value = j.body.data.filter((x: any) => x.id === defaultValue)
 
-                        context?.formSetValue(name, j.body.data[defaultValue].id)
+                        if (value.length > 0) {
+                            setList(j.body.data)
+                            setLoading(false)
+
+                            context?.formSetValue(name, defaultValue)
+                            setDValue(value[0])
+                        } else {
+                            setLoadingText('Erro ao carregar dados. Valor inválido')
+                        }
                     })
                 } else {
                     setLoadingText('Erro ao carregar dados')
@@ -81,7 +89,7 @@ export default function FetchAutoComplete({
         })
     }
 
-    if (defaultValue && list.length <= 0)
+    if (defaultValue && list.length <= 0 && !dValue)
         return (
             <Grid item {...{ xs, sm, md }}>
                 <TextField size='small' fullWidth placeholder={loadingText} disabled />
@@ -104,7 +112,7 @@ export default function FetchAutoComplete({
                 loading={loading}
                 loadingText={loadingText}
                 options={list}
-                defaultValue={defaultValue ? list[defaultValue] : undefined}
+                defaultValue={dValue}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => context?.formSetValue(name, v ? v.id : '')}
                 renderInput={(params) => (

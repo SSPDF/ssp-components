@@ -23,7 +23,7 @@ export const Base: Story = {
     render: (args) => (
         <Stepper {...args}>
             <StepperBlock title='Primeiro bloco'>
-                <DatePicker name='dt' title='Teste' defaultValue='10/05/2023' />
+                {/* <DatePicker name='dt' title='Teste' defaultValue='10/05/2023' /> */}
                 {/* <Input type='input' name='teste1' defaultValue='Teste' required />
                 <Input type='number' name='teste2' defaultValue='5666' required />
                 <Input type='cpf' name='teste3' defaultValue='05513229162' required />
@@ -32,8 +32,8 @@ export const Base: Story = {
                 <CheckBox name='tcheck' title='Meu checkbox' defaultValue={true} />
                 <CheckBoxWarning name='tcheck2' title='Check Warning' defaultValue={true} />
                 <DatePicker name='dt' defaultValue='10/08/2023' />
-                <TimePicker name='dt2' defaultValue='10:23' />
-                <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' defaultValue={1} shouldRefetch={false} required /> */}
+                <TimePicker name='dt2' defaultValue='10:23' />*/}
+                <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' defaultValue={143} shouldRefetch={false} required />
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />
