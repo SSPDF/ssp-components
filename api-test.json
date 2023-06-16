@@ -1,0 +1,16 @@
+{
+    "autocomplete": {
+        "body": {
+            "data": [
+                {
+                    "label": "Teste 1",
+                    "id": 0
+                },
+                {
+                    "label": "Teste 2",
+                    "id": 1
+                }
+            ]
+        }
+    }
+}

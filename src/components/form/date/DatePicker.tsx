@@ -17,6 +17,7 @@ export default function DatePicker({
     sm,
     md,
     minDt,
+    defaultValue = '',
     maxDt,
     ...props
 }: {
@@ -25,19 +26,25 @@ export default function DatePicker({
     name: string
     title?: string
     required?: boolean
+    defaultValue?: string
     xs?: number
     sm?: number
     md?: number
 }) {
     const context = useContext(FormContext)!
 
-    const [value, setValue] = useState<Dayjs | null>(null)
+    const [value, setValue] = useState<Dayjs | null>(dayjs(defaultValue, 'DD/MM/YYYY'))
 
     const handleChange = (newValue: Dayjs | null) => {
+        console.log('mudou')
         setValue(newValue)
-
-        context?.formSetValue(name!, newValue?.format('DD/MM/YYYY'))
     }
+
+    useEffect(() => {
+        if (!value) return
+
+        context.formSetValue(name, value.format('DD/MM/YYYY'))
+    }, [value])
 
     return (
         <>
@@ -53,6 +60,7 @@ export default function DatePicker({
                         disableHighlightToday
                         sx={{
                             outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                            width: '100%',
                             div: {
                                 input: {
                                     paddingX: 2,

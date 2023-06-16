@@ -1,21 +1,43 @@
 import { Grid, InputLabel, TextField, Typography } from '@mui/material'
 import { LocalizationProvider, TimePicker as MUITimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import ptbr from 'dayjs/locale/pt-br'
 import get from 'lodash.get'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
 import hasIn from 'lodash.hasin'
 
-export default function TimePicker({ name, required = false, title, xs = 12, sm, md }: { name: string; title?: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
+export default function TimePicker({
+    name,
+    required = false,
+    title,
+    defaultValue = '',
+    xs = 12,
+    sm,
+    md,
+}: {
+    name: string
+    title?: string
+    required?: boolean
+    defaultValue?: string
+    xs?: number
+    sm?: number
+    md?: number
+}) {
     const context = useContext(FormContext)!
-    const [value, setValue] = useState<Dayjs | null>(null)
+    const [value, setValue] = useState<Dayjs | null>(dayjs(defaultValue, 'HH:mm'))
 
     const handleChange = (newValue: Dayjs | null) => {
         setValue(newValue)
         context?.formSetValue(name!, newValue?.format('HH:mm'))
     }
+
+    useEffect(() => {
+        if (!value) return
+
+        context.formSetValue(name, value.format('HH:mm'))
+    }, [])
 
     return (
         <Grid item {...{ xs, sm, md }}>
@@ -27,6 +49,7 @@ export default function TimePicker({ name, required = false, title, xs = 12, sm,
                     onChange={handleChange}
                     sx={{
                         outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                        width: '100%',
                         div: {
                             input: {
                                 paddingX: 2,

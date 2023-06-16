@@ -11,6 +11,7 @@ export function Input({
     sm,
     inputMinLength = 3,
     inputMaxLength = 255,
+    defaultValue = '',
     md,
     ...props
 }: {
@@ -20,6 +21,7 @@ export function Input({
     required?: boolean
     numberMask?: string
     customPlaceholder?: string
+    defaultValue?: string
     inputMinLength?: number
     inputMaxLength?: number
     xs?: number
@@ -84,13 +86,14 @@ export function Input({
         switch (type) {
             case 'input':
             case 'email':
-                return <TextField {...formConfig} />
+                return <TextField {...formConfig} defaultValue={defaultValue} />
             case 'password':
                 return <TextField {...formConfig} type='password' />
             case 'number':
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: numberMask,
                         }}
@@ -100,6 +103,7 @@ export function Input({
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: '00000-000',
                         }}
@@ -109,6 +113,7 @@ export function Input({
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: '(00) [#]0000-0000',
                             definitions: {
@@ -121,6 +126,7 @@ export function Input({
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: '000.000.000-00[0]',
                         }}
@@ -134,6 +140,7 @@ export function Input({
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: '000.000.000-00',
                         }}
@@ -143,6 +150,7 @@ export function Input({
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: '00.000.000/0000-00',
                         }}
@@ -152,6 +160,7 @@ export function Input({
                 return (
                     <MaskInput
                         formConfig={formConfig}
+                        defaultValue={defaultValue}
                         maskProps={{
                             mask: '00000[000000]',
                         }}

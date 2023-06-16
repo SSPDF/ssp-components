@@ -1,8 +1,9 @@
-import { Autocomplete, Grid, InputLabel, TextField, useMediaQuery, useTheme } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import { Autocomplete, Grid, InputBase, InputLabel, TextField, useMediaQuery, useTheme } from '@mui/material'
+import React, { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
 import { AuthContext } from '../../../context/auth'
 import get from 'lodash.get'
+import { Input } from './Input'
 
 export default function FetchAutoComplete({
     name,
@@ -11,6 +12,7 @@ export default function FetchAutoComplete({
     customLoadingText,
     shouldRefetch = true,
     required = false,
+    defaultValue,
     xs = 12,
     sm,
     md,
@@ -18,7 +20,8 @@ export default function FetchAutoComplete({
     name: string
     url: string
     title: string
-    customLoadingText: string
+    customLoadingText?: string
+    defaultValue?: number
     required?: boolean
     shouldRefetch?: boolean
     xs?: number
@@ -32,12 +35,34 @@ export default function FetchAutoComplete({
     const [loadingText, setLoadingText] = useState('Carregando...')
     const { user } = useContext(AuthContext)
 
+    useEffect(() => {
+        if (defaultValue) {
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${user?.token}`,
+                },
+            }).then((res) => {
+                if (res.ok) {
+                    res.json().then((j) => {
+                        setList(j.body.data)
+                        setLoading(false)
+
+                        context?.formSetValue(name, j.body.data[defaultValue].id)
+                    })
+                } else {
+                    setLoadingText('Erro ao carregar dados')
+                }
+            })
+        }
+    }, [])
+
     function onFocus() {
-        if (!shouldRefetch && list.length > 0) return
+        if (!defaultValue && !shouldRefetch && list.length > 0) return
 
         setLoading(true)
         setList([])
-        setLoadingText(customLoadingText)
+        customLoadingText && setLoadingText(customLoadingText)
 
         fetch(url, {
             method: 'GET',
@@ -56,6 +81,13 @@ export default function FetchAutoComplete({
         })
     }
 
+    if (defaultValue && list.length <= 0)
+        return (
+            <Grid item {...{ xs, sm, md }}>
+                <TextField size='small' fullWidth placeholder={loadingText} disabled />
+            </Grid>
+        )
+
     return (
         <Grid item {...{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
@@ -72,6 +104,7 @@ export default function FetchAutoComplete({
                 loading={loading}
                 loadingText={loadingText}
                 options={list}
+                defaultValue={defaultValue ? list[defaultValue] : undefined}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => context?.formSetValue(name, v ? v.id : '')}
                 renderInput={(params) => (

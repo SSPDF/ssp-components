@@ -27,6 +27,7 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
 
 export default function MaskInput(props: {
     formConfig: object
+    defaultValue?: string
     maskProps: { mask: string | RegExp; definitions?: { [key: string]: string | RegExp } }
     disabled?: boolean
     onMask?: (value: string, setMask: React.Dispatch<React.SetStateAction<string>>) => void
@@ -49,6 +50,7 @@ export default function MaskInput(props: {
 
                 context.formSetValue(name, value)
             }}
+            defaultValue={props.defaultValue}
             onFocus={(e) => setMaskValue(e.target.value)}
             onChange={onChangeInput}
             InputProps={{

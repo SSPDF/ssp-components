@@ -9,6 +9,7 @@ export default function MultInput({
     required = false,
     title,
     customPlaceholder,
+    defaultValue = '',
     xs = 12,
     sm,
     inputMinLength = 3,
@@ -20,6 +21,7 @@ export default function MultInput({
     title?: string
     customPlaceholder?: string
     required?: boolean
+    defaultValue?: string
     inputMinLength?: number
     inputMaxLength?: number
     xs?: number
@@ -39,6 +41,7 @@ export default function MultInput({
                 multiline
                 fullWidth
                 rows={3}
+                defaultValue={defaultValue}
                 {...context.formRegister(name!, {
                     validate: (v, f) => {
                         if (required && v.length <= 0) return 'Este campo é obrigatório'
