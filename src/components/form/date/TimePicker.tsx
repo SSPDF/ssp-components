@@ -26,7 +26,7 @@ export default function TimePicker({
     md?: number
 }) {
     const context = useContext(FormContext)!
-    const [value, setValue] = useState<Dayjs | null>(dayjs(defaultValue, 'HH:mm'))
+    const [value, setValue] = useState<Dayjs | null>(defaultValue ? dayjs(defaultValue, 'HH:mm') : null)
 
     const handleChange = (newValue: Dayjs | null) => {
         setValue(newValue)

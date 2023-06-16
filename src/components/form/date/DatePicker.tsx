@@ -33,7 +33,7 @@ export default function DatePicker({
 }) {
     const context = useContext(FormContext)!
 
-    const [value, setValue] = useState<Dayjs | null>(dayjs(defaultValue, 'DD/MM/YYYY'))
+    const [value, setValue] = useState<Dayjs | null>(defaultValue ? dayjs(defaultValue, 'DD/MM/YYYY') : null)
 
     const handleChange = (newValue: Dayjs | null) => {
         console.log('mudou')
