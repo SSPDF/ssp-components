@@ -51,11 +51,6 @@ export const Base: Story = {
                 options: ['3', '4', '8'],
                 name: 'Filtro de ID',
             },
-            {
-                key: 'userId',
-                options: ['8', '9', '12'],
-                name: 'Filtro de User Id',
-            },
         ],
         csvShowAllButton: true,
         action: (data) => (

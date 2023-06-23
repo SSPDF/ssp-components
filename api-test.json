@@ -3,12 +3,28 @@
         "body": {
             "data": [
                 {
-                    "label": "Teste 1",
-                    "id": 3
+                    "id": 4,
+                    "label": "CONSEG BRASÍLIA CENTRO E SIA"
                 },
                 {
-                    "label": "Teste 2",
-                    "id": 143
+                    "id": 14,
+                    "label": "CONSEG PARANOÁ"
+                },
+                {
+                    "id": 15,
+                    "label": "CONSEG PARANOÁ RURAL"
+                },
+                {
+                    "id": 31,
+                    "label": "CONSEG VARJÃO"
+                },
+                {
+                    "id": 37,
+                    "label": "CONSEG ITAPOÃ"
+                },
+                {
+                    "id": 26,
+                    "label": "CONSEG LAGO NORTE"
                 }
             ]
         }

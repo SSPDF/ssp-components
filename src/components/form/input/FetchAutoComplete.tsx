@@ -13,6 +13,7 @@ export default function FetchAutoComplete({
     shouldRefetch = true,
     required = false,
     defaultValue,
+    onChange = () => {},
     xs = 12,
     sm,
     md,
@@ -23,6 +24,7 @@ export default function FetchAutoComplete({
     customLoadingText?: string
     defaultValue?: number
     required?: boolean
+    onChange?: (id: number | undefined) => void
     shouldRefetch?: boolean
     xs?: number
     sm?: number
@@ -89,6 +91,11 @@ export default function FetchAutoComplete({
         })
     }
 
+    function handleAutoCompleteChange(value: any) {
+        context?.formSetValue(name, value ? value.id : '')
+        onChange(value ? value.id : -1)
+    }
+
     if (defaultValue && list.length <= 0 && !dValue)
         return (
             <Grid item {...{ xs, sm, md }}>
@@ -114,7 +121,7 @@ export default function FetchAutoComplete({
                 options={list}
                 defaultValue={dValue}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
-                onChange={(e, v) => context?.formSetValue(name, v ? v.id : '')}
+                onChange={(e, v) => handleAutoCompleteChange(v)}
                 renderInput={(params) => (
                     <TextField
                         {...params}
