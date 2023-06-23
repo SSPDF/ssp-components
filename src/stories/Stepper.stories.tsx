@@ -33,11 +33,11 @@ export const Base: Story = {
                 <CheckBoxWarning name='tcheck2' title='Check Warning' defaultValue={true} />
                 <DatePicker name='dt' defaultValue='10/08/2023' />
                 <TimePicker name='dt2' defaultValue='10:23' />*/}
+                <Input type='input' name='teste1' />
                 <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' required />
-                <Switch name='ata' />
+                {/* <Switch name='ata' />
                 <SwitchWatch switchId='0.fetchAL' unregisterNameList={['0.teste1']}>
-                    <Input type='input' name='teste1' />
-                </SwitchWatch>
+                </SwitchWatch> */}
             </StepperBlock>
             <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />
