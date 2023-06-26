@@ -4,12 +4,13 @@ import Delete from '@mui/icons-material/Delete'
 import DoneIcon from '@mui/icons-material/Done'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf'
-import { Box, Button, CircularProgress, Grid, Paper, TableContainer, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, FormLabel, Grid, Paper, TableContainer, Typography, useMediaQuery } from '@mui/material'
 import { Stack } from '@mui/system'
 import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
+import { useTheme } from '@mui/material'
 
 interface FileState {
     id: number
@@ -42,6 +43,9 @@ export default function FileUpload({
 }) {
     const context = useContext(FormContext)!
     const { user } = useContext(AuthContext)
+
+    const theme = useTheme()
+    const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     const [files, setFiles] = useState<FileState[]>([])
     const [filesLoaded, setFilesLoaded] = useState<number[]>([])
@@ -135,9 +139,18 @@ export default function FileUpload({
         context?.formSetValue(name!, dt.files)
     }, [files, context, name])
 
+    useEffect(() => {
+        return () => {
+            context.setFilesUid((files) => files.filter((x) => x.CO_TIPO_ARQUIVO !== parseInt(tipoArquivo)))
+        }
+    }, [])
+
     return (
         <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
-            <Box sx={{ backgroundColor: '#e2eafc', padding: 1, borderRadius: 1 }}>
+            <FormLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
+                {title}
+            </FormLabel>
+            <Box sx={{ backgroundColor: '#e2eafc', padding: 1, borderRadius: 1, marginTop: 1 }}>
                 <input
                     id={name}
                     type='file'
@@ -176,12 +189,12 @@ export default function FileUpload({
                     <Box sx={{ width: '100%', marginRight: { xs: 0, md: 1 }, marginBottom: { xs: 1, md: 0 } }}>
                         {!multiple && files.length >= 1 ? (
                             <Button disabled={true} variant='contained' disableElevation startIcon={<InsertDriveFileIcon />} component='span' sx={{ textTransform: 'none' }} fullWidth>
-                                {title}
+                                Escolher Documento
                             </Button>
                         ) : (
                             <label htmlFor={name}>
                                 <Button variant='contained' disableElevation startIcon={<InsertDriveFileIcon />} component='span' sx={{ textTransform: 'none' }} fullWidth>
-                                    {title}
+                                    Escolher Documento
                                 </Button>
                             </label>
                         )}
@@ -197,12 +210,12 @@ export default function FileUpload({
                                 sx={{ textTransform: 'none', backgroundColor: '#0096c7' }}
                                 fullWidth
                             >
-                                Tirar foto
+                                {isSmall ? 'Tirar Foto' : 'Escolher Imagem'}
                             </Button>
                         ) : (
                             <label htmlFor={name + 'foto'}>
                                 <Button variant='contained' disableElevation startIcon={<CameraAltIcon />} component='span' sx={{ textTransform: 'none', backgroundColor: '#0096c7' }} fullWidth>
-                                    Tirar foto
+                                    {isSmall ? 'Tirar Foto' : 'Escolher Imagem'}
                                 </Button>
                             </label>
                         )}

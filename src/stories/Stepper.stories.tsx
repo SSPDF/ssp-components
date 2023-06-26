@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { CheckBox, CheckBoxWarning, DatePicker, FetchAutoComplete, MultInput, Switch, SwitchWatch, TimePicker, ToggleVisibility } from '..'
+import { CheckBox, CheckBoxWarning, DatePicker, FetchAutoComplete, FileUpload, MultInput, Switch, SwitchWatch, TimePicker, ToggleVisibility } from '..'
 import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import { Input } from '../components/form/input/Input'
 import Stepper from '../components/form/stepper/Stepper'
@@ -33,15 +33,18 @@ export const Base: Story = {
                 <CheckBoxWarning name='tcheck2' title='Check Warning' defaultValue={true} />
                 <DatePicker name='dt' defaultValue='10/08/2023' />
                 <TimePicker name='dt2' defaultValue='10:23' />*/}
-                <Input type='input' name='teste1' />
-                <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' required />
-                {/* <Switch name='ata' />
-                <SwitchWatch switchId='0.fetchAL' unregisterNameList={['0.teste1']}>
-                </SwitchWatch> */}
+                {/* <Input type='input' name='teste1' /> */}
+                {/* <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' required /> */}
+
+                <Switch name='ata' defaultChecked={true} />
+                <SwitchWatch switchId='0.ata' unregisterNameList={['0.teste1']}>
+                    <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required />
+                    <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required />
+                </SwitchWatch>
             </StepperBlock>
-            <StepperBlock title='Segundo bloco' optional>
+            {/* <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />
-            </StepperBlock>
+            </StepperBlock> */}
         </Stepper>
     ),
 }

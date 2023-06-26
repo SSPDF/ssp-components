@@ -7,7 +7,7 @@ const client = new QueryClient()
 
 export default function FormBaseDecorator(Story: any, el: any) {
     return (
-        <FormProvider onSubmit={(d) => console.log(d)}>
+        <FormProvider onSubmit={(d, files) => console.log(d, files)}>
             <QueryClientProvider client={client}>
                 <Stack spacing={2}>
                     {/* <Stepper> */}
