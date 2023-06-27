@@ -169,7 +169,7 @@ export function Table({
                     if (status.includes(key)) {
                         switch (key) {
                             case 'P':
-                                if ('EM ANÁLISE'.includes(searchValue.toLowerCase())) {
+                                if ('em analise'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
@@ -185,6 +185,11 @@ export function Table({
                                 return
                             case 'R':
                                 if ('reprovado'.includes(searchValue.toLowerCase())) {
+                                    exists = true
+                                }
+                                return
+                            case 'PA':
+                                if ('pré aprovado'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
@@ -325,6 +330,12 @@ export function Table({
                 return (
                     <Typography color='#EF4444' fontWeight={600} fontFamily='Inter'>
                         REPROVADO
+                    </Typography>
+                )
+            case 'PA':
+                return (
+                    <Typography color='#6989ff' fontWeight={600} fontFamily='Inter'>
+                        PRÉ APROVADO
                     </Typography>
                 )
         }

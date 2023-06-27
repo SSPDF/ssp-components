@@ -17,7 +17,7 @@ type Story = StoryObj<typeof Table>
 
 export const Base: Story = {
     args: {
-        fetchFunc: () => fetch('https://jsonplaceholder.typicode.com/posts'),
+        fetchFunc: () => fetch('http://localhost:7171/table'),
         csv: {
             fileName: 'Exemplo',
         },
@@ -31,14 +31,15 @@ export const Base: Story = {
                 title: 'Id do post',
             },
             {
-                keyName: 'title',
-                title: 'Titulo',
+                keyName: 'name',
+                title: 'Nome',
             },
             {
-                keyName: 'body',
-                title: 'Conteudo',
+                keyName: 'status',
+                title: 'Status',
             },
         ],
+        statusKeyName: 'status',
         csvExcludeKeys: ['body'],
         csvExcludeValidate: (key, value) =>
             key === 'body' &&

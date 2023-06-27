@@ -28,5 +28,27 @@
                 }
             ]
         }
-    }
+    },
+    "table": [
+        {
+            "id": 0,
+            "name": "Teste 1",
+            "status": "A"
+        },
+        {
+            "id": 0,
+            "name": "Teste 2",
+            "status": "P"
+        },
+        {
+            "id": 0,
+            "name": "Teste 3",
+            "status": "R"
+        },
+        {
+            "id": 0,
+            "name": "Teste 2",
+            "status": "PA"
+        }
+    ]
 }
