@@ -38,8 +38,8 @@ export const Base: Story = {
 
                 <Switch name='ata' defaultChecked={true} />
                 <SwitchWatch switchId='0.ata' unregisterNameList={['0.teste1']}>
-                    <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required />
-                    <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required />
+                    <FileUpload apiURL='http://localhost:3000/files' name='arq' tipoArquivo='3' title='Teste' required />
+                    {/* <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required /> */}
                 </SwitchWatch>
             </StepperBlock>
             {/* <StepperBlock title='Segundo bloco' optional>

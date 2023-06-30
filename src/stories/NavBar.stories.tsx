@@ -21,6 +21,7 @@ export const Base: Story = {
             },
         ],
         title: 'Exemplo de navbar',
+
         pos: 'inherit',
         img: '/logo_70.png',
         next: false,

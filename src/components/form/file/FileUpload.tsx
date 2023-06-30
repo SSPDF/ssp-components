@@ -95,8 +95,9 @@ export default function FileUpload({
                                 const f: { [key: number]: number } = {}
                                 f[id] = fileId
                                 setFilesIds((ids) => ({ ...ids, ...f }))
+                            } else {
+                                setFilesError((fl) => [...fl, id])
                             }
-                            setFilesError((fl) => [...fl, id])
                         })
                     })
 
