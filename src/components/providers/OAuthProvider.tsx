@@ -13,17 +13,10 @@ interface User {
 }
 
 interface OiDcConfig {
-    response_type: string
     client_id: string
     scope: string
     redirect_uri: string
-    nonce: number
-    state: number
-    code_challenge: string
-    code_challenge_method: string
     authority: string
-    post_logout_redirect_uri: string
-    CODE_VERIFIER: string
 }
 
 export const cookieName = 'nextauth.token'
