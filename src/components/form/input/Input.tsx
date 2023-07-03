@@ -59,7 +59,7 @@ export function Input({
                         if (v.length < 9 && props.required) return 'O CPF precisa ter no mínimo 8 dígitos'
                     }
                     //
-                    else if (type === 'input' || type === 'password') {
+                    else if (type === 'input' || type === 'password' || type === 'number') {
                         if (v.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
                         if (v.length < inputMinLength && props.required) return `Limite mínimo de ${inputMinLength} caracteres`
                     }
