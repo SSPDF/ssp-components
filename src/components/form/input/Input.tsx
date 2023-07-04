@@ -9,7 +9,7 @@ export function Input({
     numberMask = '000000000000000',
     xs = 12,
     sm,
-    inputMinLength = 3,
+    inputMinLength = 1,
     inputMaxLength = 255,
     defaultValue = '',
     md,
