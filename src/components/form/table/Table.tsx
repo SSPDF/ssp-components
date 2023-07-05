@@ -188,6 +188,11 @@ export function Table({
                                     exists = true
                                 }
                                 return
+                            case 'L':
+                                if ('licenciado'.includes(searchValue.toLowerCase())) {
+                                    exists = true
+                                }
+                                return
                             case 'PA':
                                 if ('pré aprovado'.includes(searchValue.toLowerCase())) {
                                     exists = true
@@ -316,7 +321,7 @@ export function Table({
                 )
             case 'A':
                 return (
-                    <Typography color='#22C55E' fontWeight={600} fontFamily='Inter'>
+                    <Typography color='#0EA5E9' fontWeight={600} fontFamily='Inter'>
                         CADASTRADO
                     </Typography>
                 )
@@ -332,9 +337,15 @@ export function Table({
                         REPROVADO
                     </Typography>
                 )
+            case 'L':
+                return (
+                    <Typography color='#22C55E' fontWeight={600} fontFamily='Inter'>
+                        LICENCIADO
+                    </Typography>
+                )
             case 'PA':
                 return (
-                    <Typography color='#6989ff' fontWeight={600} fontFamily='Inter'>
+                    <Typography color='#6366F1' fontWeight={600} fontFamily='Inter'>
                         PRÉ APROVADO
                     </Typography>
                 )
