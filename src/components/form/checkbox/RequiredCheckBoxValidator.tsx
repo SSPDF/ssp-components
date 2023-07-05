@@ -24,7 +24,7 @@ function getChildrenNames(children: JSX.Element[]): string[] {
     return arr
 }
 
-export default function RequiredCheckBoxGroup(props: { name: string; children: JSX.Element | JSX.Element[] }) {
+export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: JSX.Element | JSX.Element[]; customText?: string }) {
     const context = useContext(FormContext)!
 
     return (
@@ -43,7 +43,7 @@ export default function RequiredCheckBoxGroup(props: { name: string; children: J
                             if (nameValue) canContinue = true
                         })
 
-                        if (!canContinue) return 'Selecione pelo menos 1 opção'
+                        if (!canContinue) return customText
 
                         return true
                     },
