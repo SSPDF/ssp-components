@@ -36,15 +36,15 @@ export const Base: Story = {
                 {/* <Input type='input' name='teste1' /> */}
                 {/* <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' required /> */}
 
-                <Switch name='ata' defaultChecked={true} />
+                <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required />
+                {/* <Switch name='ata' defaultChecked={true} />
                 <SwitchWatch switchId='0.ata' unregisterNameList={['0.teste1']}>
                     <FileUpload apiURL='http://localhost:3000/files' name='arq' tipoArquivo='3' title='Teste' required />
-                    {/* <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required /> */}
-                </SwitchWatch>
+                </SwitchWatch> */}
             </StepperBlock>
-            {/* <StepperBlock title='Segundo bloco' optional>
+            <StepperBlock title='Segundo bloco' optional>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />
-            </StepperBlock> */}
+            </StepperBlock>
         </Stepper>
     ),
 }

@@ -133,12 +133,14 @@ export default function FileUpload({
     useEffect(() => {
         const dt = new DataTransfer()
 
-        files.forEach((x) => {
-            dt.items.add(x.file)
-        })
+        files
+            .filter((x) => !filesError.includes(x.id))
+            .forEach((x) => {
+                dt.items.add(x.file)
+            })
 
         context?.formSetValue(name!, dt.files)
-    }, [files, context, name])
+    }, [files, context, filesError, name])
 
     useEffect(() => {
         return () => {
@@ -158,6 +160,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
+                            console.log('dsadsadas 1')
                             if (v.length <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
@@ -172,6 +175,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
+                            console.log('dsadsadas 2')
                             if (v.length <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
@@ -225,11 +229,6 @@ export default function FileUpload({
                 <Typography fontWeight={600} paddingY={1} color='black'>
                     Você selecionou {files.length} arquivo{files.length > 1 && 's'}
                 </Typography>
-                {get(context?.errors, name!) && (
-                    <Typography variant='caption' sx={{ color: '#e53935' }}>
-                        * O campo de arquivo é obrigatório
-                    </Typography>
-                )}
                 {files.length > 0 && (
                     <TableContainer component={Paper}>
                         <Stack direction='column'>
@@ -265,6 +264,11 @@ export default function FileUpload({
                             ))}
                         </Stack>
                     </TableContainer>
+                )}
+                {get(context?.errors, name!) && (
+                    <Typography variant='caption' color='#e53935' fontWeight={600} fontSize={14} paddingTop={2}>
+                        * O campo de arquivo é obrigatório
+                    </Typography>
                 )}
             </Box>
         </Grid>

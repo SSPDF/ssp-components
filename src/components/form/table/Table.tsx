@@ -264,12 +264,10 @@ export function Table({
             const csvData = header + values.join('\n')
 
             // download
-            const a = document.createElement('a')
-            a.href = 'data:text/csv;charset=utf-8,' + csvData
-            a.download = `${csv?.fileName}.csv`
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
+            var link = window.document.createElement('a')
+            link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData))
+            link.setAttribute('download', `${csv?.fileName}.csv`)
+            link.click()
         },
         [list]
     )
@@ -301,12 +299,10 @@ export function Table({
             const csvData = header + values
 
             // download
-            const a = document.createElement('a')
-            a.href = 'data:text/csv;charset=utf-8,' + csvData
-            a.download = `${csv?.fileName}.csv`
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
+            var link = window.document.createElement('a')
+            link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData))
+            link.setAttribute('download', `${csv?.fileName}.csv`)
+            link.click()
         },
         [list]
     )
