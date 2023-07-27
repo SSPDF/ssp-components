@@ -63,7 +63,7 @@ export function Login({
                                 }}
                             />
                         )}
-                        <LoadingButton type='submit' fullWidth variant='contained' loading={loading} disabled={!captchaSolved}>
+                        <LoadingButton type='submit' fullWidth variant='contained' loading={loading} disabled={!!captchaSiteKey ? !captchaSolved : false}>
                             Login
                         </LoadingButton>
 
