@@ -68,7 +68,7 @@ export function LoginProvider({
             body: JSON.stringify({
                 ...data,
                 cpf: (data.cpf as any).replaceAll(/[.-]/g, ''),
-                captchaToken,
+                captchaToken: captchaToken ? captchaToken : 'hmg',
             }),
             headers: {
                 'Content-Type': 'application/json',
