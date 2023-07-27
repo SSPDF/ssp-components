@@ -49,8 +49,14 @@ export const Base: Story = {
         filters: [
             {
                 key: 'id',
-                options: ['3', '4', '8'],
+                options: ['3', '4', '8', '0'],
                 name: 'Filtro de ID',
+            },
+
+            {
+                key: 'name',
+                options: ['Teste 2', 'Teste 3'],
+                name: 'Nome',
             },
         ],
         csvShowAllButton: true,

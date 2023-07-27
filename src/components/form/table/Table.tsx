@@ -67,20 +67,31 @@ export function Table({
 
     useEffect(() => {
         if (userLoaded || isPublic)
-            fetchFunc().then((res) =>
-                res.json().then((j) => {
-                    if (j.statusCode === 204) setData({ body: { data: [] } })
-                    else if (j.statusCode === 403)
+            fetchFunc()
+                .then((res) => {
+                    if (!res.ok)
                         setError({
-                            status: j.statusCode,
+                            status: 500,
                         })
-                    else setData(j)
 
-                    console.log(j.statusCode)
+                    return res.json().then((j) => {
+                        if (j.statusCode === 204) setData({ body: { data: [] } })
+                        else if (j.statusCode === 403)
+                            setError({
+                                status: j.statusCode,
+                            })
+                        else setData(j)
 
-                    setIsLoading(false)
+                        console.log(j.statusCode)
+
+                        setIsLoading(false)
+                    })
                 })
-            )
+                .catch((err) => {
+                    setError({
+                        status: 500,
+                    })
+                })
     }, [userLoaded])
 
     const [list, setList] = useState<any>([])
@@ -374,6 +385,11 @@ export function Table({
             <Box bgcolor='#E2E8F0' padding={2} marginX={2}>
                 <Typography fontSize={24} textAlign='center' fontFamily='Inter'>
                     {error.status === 403 && 'Acesso negado'}
+                    {error.status === 500 && (
+                        <Box fontWeight={500} textAlign='center'>
+                            Lamentavelmente, ocorreu um imprevisto em nosso servidor. Pedimos a sua compreensão e solicitamos que aguarde por um momento enquanto verificamos a situação.
+                        </Box>
+                    )}
                 </Typography>
             </Box>
         )
