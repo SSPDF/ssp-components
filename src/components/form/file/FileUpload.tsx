@@ -80,7 +80,9 @@ export default function FileUpload({
                             if (!res.ok) setFilesError((fl) => [...fl, id])
 
                             res.json().then((j: any) => {
-                                if (j.status.status === 200) {
+                                if (!j.status) setFilesError((fl) => [...fl, id])
+
+                                if (j.status && j.status.status === 200) {
                                     const fileIdFromApi = j.data[0]
                                     const fileId: number = fileIdFromApi['coSeqArquivo']
 
