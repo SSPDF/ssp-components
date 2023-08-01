@@ -503,8 +503,7 @@ export function Table({
                         <Stack direction='row' justifyContent='center' paddingY={4}>
                             <Stack direction='column' justifyContent='center' alignItems='center'>
                                 <Typography marginBottom={2}>
-                                    {/* Mostrando {list.length < itemsCount ? list.length : itemsCount} de um total de {list.length} */}
-                                    {getMaxItems().length < itemsCount ? getMaxItems().length : itemsCount} de {list.length}
+                                    {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
                                 </Typography>
                                 <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} />
                             </Stack>

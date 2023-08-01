@@ -59,6 +59,7 @@ export const Base: Story = {
                 name: 'Nome',
             },
         ],
+        itemCount: 20,
         csvShowAllButton: true,
         action: (data) => (
             <Stack direction='row' spacing={1.5}>
