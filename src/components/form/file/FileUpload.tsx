@@ -160,8 +160,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
-                            console.log('dsadsadas 1')
-                            if (v.length <= 0 && required) return 'O campo de arquivo é obrigatório'
+                            if (filesLoaded.length <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
                     onChange={onFile}
@@ -175,8 +174,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
-                            console.log('dsadsadas 2')
-                            if (v.length <= 0 && required) return 'O campo de arquivo é obrigatório'
+                            if (filesLoaded.length <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
                     onChange={onFile}

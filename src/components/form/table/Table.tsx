@@ -37,6 +37,7 @@ export function Table({
     csvButtonTitle = 'Salvar .CSV',
     csvAllButtonTitle = 'Salvar Tudo como CSV',
     csvShowAllButton = false,
+    itemCount = 10,
 }: {
     columns: ColumnData[]
     tableName: string
@@ -49,6 +50,7 @@ export function Table({
     }
     csvExcludeKeys?: string[]
     statusKeyName?: string
+    itemCount?: number
     action: (prop: any) => JSX.Element
     csv?: {
         fileName: string
@@ -64,6 +66,17 @@ export function Table({
     const [error, setError] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(null)
     const { user, userLoaded } = useContext(AuthContext)
+    const [list, setList] = useState<any>([])
+    //numero de items pra ser mostrado
+    const [itemsCount, setItemsCount] = useState(itemCount)
+    const [currentPage, setCurrentPage] = useState(0)
+    const [paginationCount, setPagCount] = useState(1)
+    const [listPage, setListPage] = useState(1)
+
+    const [gridSize, setGridSize] = useState<number>(12)
+
+    const theme = useTheme()
+    const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     useEffect(() => {
         if (userLoaded || isPublic)
@@ -94,21 +107,9 @@ export function Table({
                 })
     }, [userLoaded])
 
-    const [list, setList] = useState<any>([])
-    //numero de items pra ser mostrado
-    const [itemsCount, setItemsCount] = useState(20)
-    const [currentPage, setCurrentPage] = useState(0)
-    const [paginationCount, setPagCount] = useState(1)
-    const [listPage, setListPage] = useState(1)
-
-    const [gridSize, setGridSize] = useState<number>(12)
-
     useEffect(() => {
         setGridSize(12 / (columns.length + (user ? 1 : 0)))
     }, [user, columns])
-
-    const theme = useTheme()
-    const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     const getCount = useCallback(
         (countData: any[]) => {
@@ -156,6 +157,8 @@ export function Table({
             // setList([])
             // setListPage(1)
 
+            console.log(listData)
+
             const newList: any = []
 
             listData.forEach((x: any) => {
@@ -175,7 +178,7 @@ export function Table({
                 let exists = false
 
                 dataStr.forEach((key) => {
-                    const status = ['P', 'C', 'A', 'R']
+                    const status = ['P', 'C', 'A', 'R', 'L', 'PA']
 
                     if (status.includes(key)) {
                         switch (key) {
@@ -205,7 +208,7 @@ export function Table({
                                 }
                                 return
                             case 'PA':
-                                if ('pré aprovado'.includes(searchValue.toLowerCase())) {
+                                if ('pré aprovado'.includes(searchValue.toLowerCase()) || 'pre aprovado'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
@@ -224,6 +227,8 @@ export function Table({
 
             setList(newList)
             setPagCount(getCount(newList))
+            setCurrentPage(0)
+            setListPage(1)
         },
         [getCount, data]
     )
@@ -496,7 +501,13 @@ export function Table({
                             </Stack>
                         )}
                         <Stack direction='row' justifyContent='center' paddingY={4}>
-                            <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} />
+                            <Stack direction='column' justifyContent='center' alignItems='center'>
+                                <Typography marginBottom={2}>
+                                    {/* Mostrando {list.length < itemsCount ? list.length : itemsCount} de um total de {list.length} */}
+                                    {getMaxItems().length < itemsCount ? getMaxItems().length : itemsCount} de {list.length}
+                                </Typography>
+                                <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} />
+                            </Stack>
                         </Stack>
                     </>
                 )}
