@@ -80,8 +80,6 @@ export default function FileUpload({
                             if (!res.ok) setFilesError((fl) => [...fl, id])
 
                             res.json().then((j: any) => {
-                                if (!j.status) setFilesError((fl) => [...fl, id])
-
                                 if (j.status && j.status.status === 200) {
                                     const fileIdFromApi = j.data[0]
                                     const fileId: number = fileIdFromApi['coSeqArquivo']
@@ -166,8 +164,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
-                            console.log('v: ', v.length, 'filesupload: ', filesLoaded.length)
-                            if (filesLoaded.length <= 0 && required) return 'O campo de arquivo é obrigatório'
+                            if ((v.length && filesLoaded.length) <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
                     onChange={onFile}
@@ -181,8 +178,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
-                            console.log('v: ', v.length, 'filesupload: ', filesLoaded.length)
-                            if (filesLoaded.length <= 0 && required) return 'O campo de arquivo é obrigatório'
+                            if ((v.length && filesLoaded.length) <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
                     onChange={onFile}
