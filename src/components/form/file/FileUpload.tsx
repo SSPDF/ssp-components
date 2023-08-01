@@ -75,31 +75,33 @@ export default function FileUpload({
                         headers: {
                             Authorization: `Bearer ${user ? user.token : ''}`,
                         },
-                    }).then((res) => {
-                        if (!res.ok) setFilesError((fl) => [...fl, id])
-
-                        res.json().then((j: any) => {
-                            if (j.status.status === 200) {
-                                const fileIdFromApi = j.data[0]
-                                const fileId: number = fileIdFromApi['coSeqArquivo']
-
-                                context.setFilesUid((fId) => [
-                                    ...fId,
-                                    {
-                                        CO_SEQ_ARQUIVO: fileId,
-                                        CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
-                                    },
-                                ])
-                                setFilesLoaded((fl) => [...fl, id])
-
-                                const f: { [key: number]: number } = {}
-                                f[id] = fileId
-                                setFilesIds((ids) => ({ ...ids, ...f }))
-                            } else {
-                                setFilesError((fl) => [...fl, id])
-                            }
-                        })
                     })
+                        .then((res) => {
+                            if (!res.ok) setFilesError((fl) => [...fl, id])
+
+                            res.json().then((j: any) => {
+                                if (j.status.status === 200) {
+                                    const fileIdFromApi = j.data[0]
+                                    const fileId: number = fileIdFromApi['coSeqArquivo']
+
+                                    context.setFilesUid((fId) => [
+                                        ...fId,
+                                        {
+                                            CO_SEQ_ARQUIVO: fileId,
+                                            CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
+                                        },
+                                    ])
+                                    setFilesLoaded((fl) => [...fl, id])
+
+                                    const f: { [key: number]: number } = {}
+                                    f[id] = fileId
+                                    setFilesIds((ids) => ({ ...ids, ...f }))
+                                } else {
+                                    setFilesError((fl) => [...fl, id])
+                                }
+                            })
+                        })
+                        .catch((err) => console.log(err))
 
                     return { id: id, name: file.name, loading: true, error: false, file: file }
                 }),
@@ -121,12 +123,14 @@ export default function FileUpload({
                 headers: {
                     Authorization: `Bearer ${user?.token}`,
                 },
-            }).then((res) => {
-                if (res.status === 200) {
-                    setFiles(files.filter((x) => x.id !== id))
-                    context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
-                }
             })
+                .then((res) => {
+                    if (res.status === 200) {
+                        setFiles(files.filter((x) => x.id !== id))
+                        context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
+                    }
+                })
+                .catch((err) => console.log(err))
         }
     }
 
@@ -160,6 +164,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
+                            console.log('v: ', v.length, 'filesupload: ', filesLoaded.length)
                             if (filesLoaded.length <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
@@ -174,6 +179,7 @@ export default function FileUpload({
                     multiple={multiple}
                     {...context?.formRegister(name!, {
                         validate: (v, f) => {
+                            console.log('v: ', v.length, 'filesupload: ', filesLoaded.length)
                             if (filesLoaded.length <= 0 && required) return 'O campo de arquivo é obrigatório'
                         },
                     })}
