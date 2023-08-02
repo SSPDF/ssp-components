@@ -4,13 +4,12 @@ import Delete from '@mui/icons-material/Delete'
 import DoneIcon from '@mui/icons-material/Done'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf'
-import { Box, Button, CircularProgress, FormLabel, Grid, Paper, TableContainer, Typography, useMediaQuery } from '@mui/material'
+import { Box, Button, CircularProgress, Grid, InputLabel, Paper, TableContainer, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
 import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { useTheme } from '@mui/material'
 
 interface FileState {
     id: number
@@ -154,9 +153,9 @@ export default function FileUpload({
 
     return (
         <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
-            <FormLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
+            <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                 {title}
-            </FormLabel>
+            </InputLabel>
             <Box sx={{ backgroundColor: '#e2eafc', padding: 1, borderRadius: 1, marginTop: 1 }}>
                 <input
                     id={name}
