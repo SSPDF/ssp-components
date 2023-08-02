@@ -8,7 +8,7 @@ import { FormContext } from '../../../context/form'
 function childrenTree(component: ReactElement, prefix: number, idx: number): ReactElement {
     if (!component.props) return component
 
-    const children = component.props && (component.props.children as ReactElement | ReactElement[])
+    const children = component.props.children as ReactElement | ReactElement[]
 
     if (!children)
         return React.cloneElement(component, {
@@ -22,14 +22,14 @@ function childrenTree(component: ReactElement, prefix: number, idx: number): Rea
     if (Array.isArray(children)) {
         let c: ReactElement[] = []
 
-        children.forEach((x) => {
-            c.push(childrenTree(x, prefix, idx))
+        children.forEach((x, cIdx: number) => {
+            c.push(childrenTree(x, prefix, idx + (cIdx + 1)))
         })
         newChildren = c
     }
     //
     else {
-        newChildren = childrenTree(children, prefix, idx)
+        newChildren = childrenTree(children, prefix, idx + 1)
     }
 
     const newComponent = React.cloneElement(component, {

@@ -5,6 +5,7 @@ import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import { Input } from '../components/form/input/Input'
 import Stepper from '../components/form/stepper/Stepper'
 import { StepperBlock } from '../components/form/stepper/StepperBlock'
+import { Box, Typography } from '@mui/material'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',
@@ -23,6 +24,11 @@ export const Base: Story = {
     render: (args) => (
         <Stepper {...args}>
             <StepperBlock title='Primeiro bloco'>
+                <Box>
+                    Teste
+                    <Box>Teste</Box>
+                    <Typography>Teste</Typography>
+                </Box>
                 {/* <DatePicker name='dt' title='Teste' defaultValue='10/05/2023' /> */}
                 {/* <Input type='input' name='teste1' defaultValue='Teste' required />
                 <Input type='number' name='teste2' defaultValue='5666' required />
@@ -36,13 +42,15 @@ export const Base: Story = {
                 {/* <Input type='input' name='teste1' /> */}
                 {/* <FetchAutoComplete name='fetchAL' title='Teste' url='http://localhost:7171/autocomplete' customLoadingText='Carregando...' required /> */}
 
-                <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' required />
+                <FileUpload apiURL='http://localhost:3000/file' name='arq' tipoArquivo='19' title='Teste' />
                 {/* <Switch name='ata' defaultChecked={true} />
                 <SwitchWatch switchId='0.ata' unregisterNameList={['0.teste1']}>
                     <FileUpload apiURL='http://localhost:3000/files' name='arq' tipoArquivo='3' title='Teste' required />
                 </SwitchWatch> */}
             </StepperBlock>
-            <StepperBlock title='Segundo bloco' optional>
+            <StepperBlock title='Segundo bloco'>
+                <Box>Teste</Box>
+                <Box>Teste</Box>
                 <Input name='segundo' type='input' customPlaceholder='Segundo' />
             </StepperBlock>
         </Stepper>
