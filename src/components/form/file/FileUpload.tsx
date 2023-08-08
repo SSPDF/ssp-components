@@ -100,7 +100,10 @@ export default function FileUpload({
                                 }
                             })
                         })
-                        .catch((err) => console.log(err))
+                        .catch((err) => {
+                            setFilesError((fl) => [...fl, id])
+                            console.log(err)
+                        })
 
                     return { id: id, name: file.name, loading: true, error: false, file: file }
                 }),

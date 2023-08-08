@@ -46,19 +46,6 @@ export const Base: Story = {
             value ===
                 'est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla',
         columnSize: 4,
-        filters: [
-            {
-                key: 'id',
-                options: ['3', '4', '8', '0'],
-                name: 'Filtro de ID',
-            },
-
-            {
-                key: 'name',
-                options: ['Teste 2', 'Teste 3'],
-                name: 'Nome',
-            },
-        ],
         itemCount: 20,
         csvShowAllButton: true,
         action: (data) => (

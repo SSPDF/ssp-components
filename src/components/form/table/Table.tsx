@@ -24,18 +24,17 @@ export function Table({
         public: 'Nenhum dado encontrado',
     },
     dataPath = '',
-    tableName,
+    tableName = 'Dados',
     csv,
     columnSize,
     action,
     isPublic = false,
-    filters,
     statusKeyName = '',
     csvExcludeKeys = [],
     csvCustomKeyNames = {},
     csvExcludeValidate = (key, value) => false,
     csvButtonTitle = 'Salvar .CSV',
-    csvAllButtonTitle = 'Salvar Tudo como CSV',
+    csvAllButtonTitle = 'Salvar todos em CSV',
     csvShowAllButton = false,
     itemCount = 10,
 }: {
@@ -60,7 +59,7 @@ export function Table({
     emptyMsg?: { user: string; public: string }
     dataPath?: string
     isPublic?: boolean
-    filters?: { key: string; options: string[]; name: string }[]
+    filters?: { type: ''; options?: object[] }
 }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | { status: number }>(null)
@@ -413,7 +412,7 @@ export function Table({
     return (
         <>
             <Box marginX={isSmall ? 0 : 4}>
-                <Stack paddingBottom={2} spacing={2} direction={{ xs: 'column', md: 'row' }}>
+                <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
                     <TextField
                         InputProps={{
                             startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
@@ -423,28 +422,21 @@ export function Table({
                         fullWidth
                         placeholder={`Pesquisar ${tableName}`}
                     />
-                    {filters?.map((f) => (
-                        <Autocomplete
-                            options={f.options.map((name) => name)}
-                            onChange={(e, newValue) => onFilterSelect(f.key, newValue)}
-                            renderInput={(args) => <TextField {...args} label={f.name} size='small' />}
-                        />
-                    ))}
                 </Stack>
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
-                        <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, borderRadius: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
+                        <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
                             <Typography fontSize={21} fontFamily='Inter' fontWeight={600} textAlign='center'>
                                 {user ? emptyMsg.user : emptyMsg.public}
                             </Typography>
                         </Stack>
                     ) : (
                         getMaxItems().map((x: any, index: number) => (
-                            <Paper key={index} sx={{ padding: 0.5, borderRadius: 2, backgroundColor: index % 2 === 0 ? '#E2E8F0' : '#F8FAFC', paddingY: 2 }} elevation={0}>
+                            <Paper key={index} sx={{ padding: 0.5, backgroundColor: index % 2 === 0 ? '#E2E8F0' : '#F8FAFC', paddingY: 2 }} elevation={0}>
                                 <Grid container spacing={isSmall ? 2 : 0} paddingX={2}>
                                     {columns.map((c) => (
                                         <Grid key={c.keyName + index} item xs={12} md={12 / columnSize}>
-                                            <Box sx={{ width: 'max-content', borderRadius: 1, paddingX: 1 }}>
+                                            <Box sx={{ width: 'max-content', paddingX: 1 }}>
                                                 <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}
                                                 </Typography>
@@ -465,9 +457,32 @@ export function Table({
                             </Paper>
                         ))
                     )}
+                    <Stack bgcolor='#F8FAFC' direction='row' justifyContent='center' paddingY={1} borderTop={3} borderColor='#b4bfcf'>
+                        <Stack direction='column' justifyContent='center' alignItems='center'>
+                            <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} shape='rounded' />
+                        </Stack>
+                    </Stack>
                 </Stack>
                 {getMaxItems().length > 0 && (
-                    <>
+                    <Stack
+                        bgcolor='#E2E8F0'
+                        padding={1}
+                        direction={{
+                            xs: 'column',
+                            md: 'row',
+                        }}
+                        spacing={{
+                            xs: 2,
+                            md: 0,
+                        }}
+                        justifyContent='space-between'
+                        alignItems='center'
+                    >
+                        <Box height='100%' top={0} left={0} marginLeft={2}>
+                            <Stack height='100%' justifyContent='center'>
+                                {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
+                            </Stack>
+                        </Box>
                         {csv && (
                             <Stack
                                 direction={{
@@ -475,7 +490,6 @@ export function Table({
                                     md: 'row',
                                 }}
                                 justifyContent='flex-end'
-                                marginTop={2}
                                 spacing={1}
                             >
                                 {csvShowAllButton && (
@@ -500,15 +514,7 @@ export function Table({
                                 </Button>
                             </Stack>
                         )}
-                        <Stack direction='row' justifyContent='center' paddingY={4}>
-                            <Stack direction='column' justifyContent='center' alignItems='center'>
-                                <Typography marginBottom={2}>
-                                    {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
-                                </Typography>
-                                <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} />
-                            </Stack>
-                        </Stack>
-                    </>
+                    </Stack>
                 )}
             </Box>
         </>
