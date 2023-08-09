@@ -19,6 +19,11 @@ interface FileState {
     file: File
 }
 
+function bytesToMegabytes(bytes: number): number {
+    const megabytes = bytes / (1024 * 1024)
+    return megabytes
+}
+
 export default function FileUpload({
     name,
     tipoArquivo,
@@ -26,6 +31,7 @@ export default function FileUpload({
     required = false,
     multiple = false,
     apiURL,
+    sizeLimit = 4,
     xs = 12,
     sm,
     md,
@@ -36,6 +42,7 @@ export default function FileUpload({
     apiURL: string
     required?: boolean
     multiple?: boolean
+    sizeLimit?: number
     xs?: number
     sm?: number
     md?: number
@@ -49,7 +56,9 @@ export default function FileUpload({
     const [files, setFiles] = useState<FileState[]>([])
     const [filesLoaded, setFilesLoaded] = useState<number[]>([])
     const [fileIds, setFilesIds] = useState<{ [key: number]: number }>({})
-    const [filesError, setFilesError] = useState<number[]>([])
+    // const [filesError, setFilesError] = useState<number[]>([])
+
+    const [errorMsg, setErrorMsg] = useState('')
 
     const onFile = useCallback(
         (e: FormEvent) => {
@@ -58,67 +67,91 @@ export default function FileUpload({
 
             setFiles([
                 ...files,
-                ...filesTo.map((file, index) => {
-                    let id: number = Date.now() + index
+                ...filesTo
+                    .filter((file) => {
+                        if (bytesToMegabytes(file.size) > sizeLimit) {
+                            setErrorMsg(`Por favor, escolha um arquivo com tamanho inferior a ${sizeLimit} MB`)
 
-                    // fetch API
+                            setTimeout(() => {
+                                setErrorMsg('')
+                            }, 3000)
 
-                    const fd = new FormData()
+                            return false
+                        }
 
-                    fd.append('files', file)
-                    fd.append('tipoArquivo', tipoArquivo)
-
-                    fetch(apiURL, {
-                        method: 'POST',
-                        body: fd,
-                        headers: {
-                            Authorization: `Bearer ${user ? user.token : ''}`,
-                        },
+                        return true
                     })
-                        .then((res) => {
-                            if (!res.ok) setFilesError((fl) => [...fl, id])
+                    .map((file, index) => {
+                        let id: number = Date.now() + index
 
-                            res.json().then((j: any) => {
-                                if (j.status && j.status.status === 200) {
-                                    const fileIdFromApi = j.data[0]
-                                    const fileId: number = fileIdFromApi['coSeqArquivo']
+                        // fetch API
 
-                                    context.setFilesUid((fId) => [
-                                        ...fId,
-                                        {
-                                            CO_SEQ_ARQUIVO: fileId,
-                                            CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
-                                        },
-                                    ])
-                                    setFilesLoaded((fl) => [...fl, id])
+                        const fd = new FormData()
 
-                                    const f: { [key: number]: number } = {}
-                                    f[id] = fileId
-                                    setFilesIds((ids) => ({ ...ids, ...f }))
-                                } else {
-                                    setFilesError((fl) => [...fl, id])
+                        fd.append('files', file)
+                        fd.append('tipoArquivo', tipoArquivo)
+
+                        fetch(apiURL, {
+                            method: 'POST',
+                            body: fd,
+                            headers: {
+                                // Authorization: `Bearer ${user ? user.token : ''}`,
+                                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IlBlZGluIiwiZW1haWwiOiJnYWl0YWNoaTBAZ21haWwuY29tIiwicGhvbmVfbnVtYmVyIjoiNjE5OTMwNTg0MjMiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIwNTUxOTQyOTE2MiIsInJvbGVzIjpbeyJjb2RlIjoxLCJuYW1lIjoiVXNlciBFdmVudG9zIiwic3lzdGVtIjoyfSx7ImNvZGUiOjIsIm5hbWUiOiJBZG1pbiBFdmVudG9zIiwic3lzdGVtIjoyfSx7ImNvZGUiOjQsIm5hbWUiOiJDb25zZWcgVmFsaWRhZG9yIiwic3lzdGVtIjozfSx7ImNvZGUiOjYsIm5hbWUiOiJVc2VyIENvbnNlZyIsInN5c3RlbSI6M31dLCJpYXQiOjE2OTE2MDEyODksImV4cCI6MTY5MjIwNjA4OSwiYXVkIjoiVXNlcnMiLCJpc3MiOiJBdXRoU1NQIiwic3ViIjoiMDU1MTk0MjkxNjIifQ.SNU02JpcWQejBnrG6OMGVof4ALAgSEIAc3qAUnKDHSY`,
+                            },
+                        })
+                            .then((res) => {
+                                if (!res.ok) {
+                                    removeFile(id)
+                                    return
                                 }
-                            })
-                        })
-                        .catch((err) => {
-                            setFilesError((fl) => [...fl, id])
-                            console.log(err)
-                        })
 
-                    return { id: id, name: file.name, loading: true, error: false, file: file }
-                }),
+                                res.json().then((j: any) => {
+                                    if (j.status && j.status.status === 200) {
+                                        const fileIdFromApi = j.data[0]
+                                        const fileId: number = fileIdFromApi['coSeqArquivo']
+
+                                        context.setFilesUid((fId) => [
+                                            ...fId,
+                                            {
+                                                CO_SEQ_ARQUIVO: fileId,
+                                                CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
+                                            },
+                                        ])
+                                        setFilesLoaded((fl) => [...fl, id])
+
+                                        const f: { [key: number]: number } = {}
+                                        f[id] = fileId
+                                        setFilesIds((ids) => ({ ...ids, ...f }))
+                                    } else {
+                                        removeFile(id)
+                                    }
+                                })
+                            })
+                            .catch((err) => {
+                                removeFile(id)
+                            })
+
+                        return { id: id, name: file.name, loading: true, error: false, file: file }
+                    }),
             ])
         },
         [files, context]
     )
 
-    const deleteFile = (e: FormEvent, id: number) => {
-        if (filesError.includes(id)) {
-            setFiles(files.filter((x) => x.id !== id))
-            context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
-            return
-        }
+    const removeFile = (id: number, hideMsg?: boolean) => {
+        setFiles(files.filter((x) => x.id !== id))
+        context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
 
+        if (!hideMsg) {
+            setErrorMsg('Erro ao enviar arquivo. Tente novamente mais tarde')
+
+            setTimeout(() => {
+                setErrorMsg('')
+            }, 3000)
+        }
+    }
+
+    const deleteFile = (e: FormEvent, id: number) => {
         if (Object.keys(fileIds).includes(id.toString())) {
             fetch(`${apiURL}/${fileIds[id]}`, {
                 method: 'DELETE',
@@ -127,6 +160,8 @@ export default function FileUpload({
                 },
             })
                 .then((res) => {
+                    if (!res.ok) removeFile(id, true)
+
                     if (res.status === 200) {
                         setFiles(files.filter((x) => x.id !== id))
                         context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
@@ -139,14 +174,12 @@ export default function FileUpload({
     useEffect(() => {
         const dt = new DataTransfer()
 
-        files
-            .filter((x) => !filesError.includes(x.id))
-            .forEach((x) => {
-                dt.items.add(x.file)
-            })
+        files.forEach((x) => {
+            dt.items.add(x.file)
+        })
 
         context?.formSetValue(name!, dt.files)
-    }, [files, context, filesError, name])
+    }, [files, context, name])
 
     useEffect(() => {
         return () => {
@@ -240,19 +273,13 @@ export default function FileUpload({
                                 <Stack key={x.name} direction='row' justifyContent='space-between' padding={0.5}>
                                     <Box>
                                         <Stack direction='row' spacing={2}>
-                                            {filesLoaded.includes(x.id) ? (
-                                                <DoneIcon sx={{ fill: '#06d6a0' }} />
-                                            ) : filesError.includes(x.id) ? (
-                                                <ClearIcon sx={{ fill: 'red' }} />
-                                            ) : (
-                                                <CircularProgress size={22} sx={{ color: 'black' }} />
-                                            )}
+                                            {filesLoaded.includes(x.id) ? <DoneIcon sx={{ fill: '#06d6a0' }} /> : <CircularProgress size={22} sx={{ color: 'black' }} />}
                                             <PictureAsPdf color='error' />
                                             <Typography fontWeight={600}>{x.name}</Typography>
                                         </Stack>
                                     </Box>
                                     <Box>
-                                        {(filesLoaded.includes(x.id) || filesError.includes(x.id)) && (
+                                        {filesLoaded.includes(x.id) && (
                                             <Button
                                                 variant='contained'
                                                 size='small'
@@ -269,8 +296,16 @@ export default function FileUpload({
                         </Stack>
                     </TableContainer>
                 )}
+                {errorMsg && (
+                    <>
+                        <Typography variant='caption' color='#e53935' fontWeight={600} fontSize={14} paddingTop={2}>
+                            {errorMsg}
+                        </Typography>
+                        <br />
+                    </>
+                )}
                 {get(context?.errors, name!) && (
-                    <Typography variant='caption' color='#e53935' fontWeight={600} fontSize={14} paddingTop={2}>
+                    <Typography variant='caption' color='#e53935' fontWeight={600} fontSize={14}>
                         * O campo de arquivo é obrigatório
                     </Typography>
                 )}
