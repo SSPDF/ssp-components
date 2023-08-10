@@ -14,6 +14,7 @@ import { AuthContext } from '../../../context/auth'
 interface ColumnData {
     title: string
     keyName: string
+    size?: number
 }
 
 export function Table({
@@ -435,7 +436,7 @@ export function Table({
                             <Paper key={index} sx={{ padding: 0.5, backgroundColor: index % 2 === 0 ? '#E2E8F0' : '#F8FAFC', paddingY: 2 }} elevation={0}>
                                 <Grid container spacing={isSmall ? 2 : 0} paddingX={2}>
                                     {columns.map((c) => (
-                                        <Grid key={c.keyName + index} item xs={12} md={12 / columnSize}>
+                                        <Grid key={c.keyName + index} item xs={12} md={(12 / columnSize) * (!!c.size ? c.size : 1)}>
                                             <Box sx={{ width: 'max-content', paddingX: 1 }}>
                                                 <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}

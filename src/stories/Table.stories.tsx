@@ -33,6 +33,7 @@ export const Base: Story = {
             {
                 keyName: 'name',
                 title: 'Nome',
+                size: 2,
             },
             {
                 keyName: 'status',
@@ -45,7 +46,7 @@ export const Base: Story = {
             key === 'body' &&
             value ===
                 'est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla',
-        columnSize: 4,
+        columnSize: 5,
         itemCount: 20,
         csvShowAllButton: true,
         action: (data) => (
