@@ -7,7 +7,7 @@ import Pagination from '@mui/material/Pagination'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import get from 'lodash.get'
-import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react'
+import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
 
@@ -444,7 +444,7 @@ export function Table({
                                             </Box>
                                             <Box paddingLeft={1}>
                                                 <Typography fontSize={16} sx={{ wordWrap: 'break-word', color: '#1E293B' }} fontFamily='Inter'>
-                                                    {c.keyName === statusKeyName ? getStatusMsg(get(x, c.keyName)) : get(x, c.keyName)}
+                                                    {c.keyName === statusKeyName ? getStatusMsg(get(x, c.keyName)) : <div dangerouslySetInnerHTML={{ __html: get(x, c.keyName) }}></div>}
                                                 </Typography>
                                             </Box>
                                         </Grid>
