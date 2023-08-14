@@ -24,11 +24,11 @@ export const Base: Story = {
     render: (args) => (
         <Stepper {...args}>
             <StepperBlock title='Primeiro bloco'>
-                <Box>
+                {/* <Box>
                     Teste
                     <Box>Teste</Box>
                     <Typography>Teste</Typography>
-                </Box>
+                </Box> */}
                 {/* <DatePicker name='dt' title='Teste' defaultValue='10/05/2023' /> */}
                 {/* <Input type='input' name='teste1' defaultValue='Teste' required />
                 <Input type='number' name='teste2' defaultValue='5666' required />

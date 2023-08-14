@@ -138,9 +138,10 @@ export default function FileUpload({
         [files, context]
     )
 
-    const removeFile = (id: number, hideMsg?: boolean) => {
+    const removeFile = (id: number, hideMsg?: boolean, fileId?: number) => {
         setFiles(files.filter((x) => x.id !== id))
-        context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
+
+        if (fileId) context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== fileId))
 
         if (!hideMsg) {
             setErrorMsg('Erro ao enviar arquivo. Tente novamente mais tarde')
@@ -160,11 +161,10 @@ export default function FileUpload({
                 },
             })
                 .then((res) => {
-                    if (!res.ok) removeFile(id, true)
+                    if (!res.ok) removeFile(id, true, fileIds[id])
 
                     if (res.status === 200) {
-                        setFiles(files.filter((x) => x.id !== id))
-                        context.setFilesUid((fId) => fId.filter((idd) => idd.CO_SEQ_ARQUIVO !== id))
+                        removeFile(id, true, fileIds[id])
                     }
                 })
                 .catch((err) => console.log(err))
