@@ -95,8 +95,7 @@ export default function FileUpload({
                             method: 'POST',
                             body: fd,
                             headers: {
-                                // Authorization: `Bearer ${user ? user.token : ''}`,
-                                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IlBlZGluIiwiZW1haWwiOiJnYWl0YWNoaTBAZ21haWwuY29tIiwicGhvbmVfbnVtYmVyIjoiNjE5OTMwNTg0MjMiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIwNTUxOTQyOTE2MiIsInJvbGVzIjpbeyJjb2RlIjoxLCJuYW1lIjoiVXNlciBFdmVudG9zIiwic3lzdGVtIjoyfSx7ImNvZGUiOjIsIm5hbWUiOiJBZG1pbiBFdmVudG9zIiwic3lzdGVtIjoyfSx7ImNvZGUiOjQsIm5hbWUiOiJDb25zZWcgVmFsaWRhZG9yIiwic3lzdGVtIjozfSx7ImNvZGUiOjYsIm5hbWUiOiJVc2VyIENvbnNlZyIsInN5c3RlbSI6M31dLCJpYXQiOjE2OTE2MDEyODksImV4cCI6MTY5MjIwNjA4OSwiYXVkIjoiVXNlcnMiLCJpc3MiOiJBdXRoU1NQIiwic3ViIjoiMDU1MTk0MjkxNjIifQ.SNU02JpcWQejBnrG6OMGVof4ALAgSEIAc3qAUnKDHSY`,
+                                Authorization: `Bearer ${user ? user.token : ''}`,
                             },
                         })
                             .then((res) => {
