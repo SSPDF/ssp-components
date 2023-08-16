@@ -49,7 +49,7 @@ export default function DatePicker({
     return (
         <>
             <Grid item {...{ xs, sm, md }}>
-                {title && <InputLabel>{title}</InputLabel>}
+                {title && <InputLabel required={required}>{title}</InputLabel>}
                 <LocalizationProvider adapterLocale={ptbr} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
                         minDate={dayjs(minDt, 'DD/MM/YYYY')}

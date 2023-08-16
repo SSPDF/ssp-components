@@ -1,7 +1,26 @@
 import AddIcon from '@mui/icons-material/Add'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import SearchIcon from '@mui/icons-material/Search'
-import { Autocomplete, Box, Button, CircularProgress, LinearProgress, Link, Paper, Stack, useMediaQuery, useTheme } from '@mui/material'
+import {
+    Autocomplete,
+    Box,
+    Button,
+    CircularProgress,
+    Collapse,
+    LinearProgress,
+    Link,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Paper,
+    Stack,
+    SwipeableDrawer,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Pagination from '@mui/material/Pagination'
 import TextField from '@mui/material/TextField'
@@ -10,12 +29,21 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
+import { CalendarToday, Circle, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import FormProvider from '../../providers/FormProvider'
+import { Input } from '../input/Input'
+import DatePicker from '../date/DatePicker'
+import dayjs from 'dayjs'
 
 interface ColumnData {
     title: string
     keyName: string
     size?: number
 }
+
+type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval'
+
+let startData: any[] = []
 
 export function Table({
     columns,
@@ -38,6 +66,7 @@ export function Table({
     csvAllButtonTitle = 'Salvar todos em CSV',
     csvShowAllButton = false,
     itemCount = 10,
+    filters = {},
 }: {
     columns: ColumnData[]
     tableName: string
@@ -60,21 +89,23 @@ export function Table({
     emptyMsg?: { user: string; public: string }
     dataPath?: string
     isPublic?: boolean
-    filters?: { type: ''; options?: object[] }
+    filters?: { [key: string]: { type: FilterTypes; keyName: string; name: string; options?: { name: string; color: string; key: string }[] }[] }
 }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(null)
+
     const { user, userLoaded } = useContext(AuthContext)
-    const [list, setList] = useState<any>([])
+    const [list, setList] = useState<any[]>([])
     //numero de items pra ser mostrado
     const [itemsCount, setItemsCount] = useState(itemCount)
     const [currentPage, setCurrentPage] = useState(0)
     const [paginationCount, setPagCount] = useState(1)
     const [listPage, setListPage] = useState(1)
 
-    const [gridSize, setGridSize] = useState<number>(12)
-
+    // filters states
+    const [filterCollapse, setFilterCollapse] = useState<boolean[]>(Array(Object.keys(filters).length).fill(false))
+    const [filterOpen, setFilterOpen] = useState(false)
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
@@ -88,12 +119,17 @@ export function Table({
                         })
 
                     return res.json().then((j) => {
-                        if (j.statusCode === 204) setData({ body: { data: [] } })
-                        else if (j.statusCode === 403)
+                        if (j.statusCode === 204) {
+                            setData({ body: { data: [] } })
+                            startData = []
+                        } else if (j.statusCode === 403)
                             setError({
                                 status: j.statusCode,
                             })
-                        else setData(j)
+                        else {
+                            setData(j)
+                            startData = JSON.parse(JSON.stringify(j))
+                        }
 
                         console.log(j.statusCode)
 
@@ -106,10 +142,6 @@ export function Table({
                     })
                 })
     }, [userLoaded])
-
-    useEffect(() => {
-        setGridSize(12 / (columns.length + (user ? 1 : 0)))
-    }, [user, columns])
 
     const getCount = useCallback(
         (countData: any[]) => {
@@ -364,26 +396,116 @@ export function Table({
         }
     }, [])
 
-    const onFilterSelect = useCallback(
-        (key: string, newValue: string | null) => {
-            if (!newValue) {
-                setList(getData(data))
-                setPagCount(getCount(getData(data)))
-                return
-            }
+    const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+        if (event && event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
+            return
+        }
+    }
 
-            const listData: object[] = getData(data)
-            const newList: any[] = []
+    const handleFilterOption = (type: FilterTypes, keyName: string, customValue?: string) => {
+        const filtered: any[] = JSON.parse(JSON.stringify(list))
 
-            listData.forEach((l) => {
-                if (get(l, key).toString() === newValue) newList.push(l)
+        if (type === 'a-z') {
+            filtered.sort((a, b) => {
+                const aValue = a[keyName]
+                const bValue = b[keyName]
+                const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+                if (valueA < valueB) {
+                    return -1
+                }
+                if (valueA > valueB) {
+                    return 1
+                }
+                return 0
+            })
+        } //
+        else if (type === 'z-a') {
+            filtered.sort((a, b) => {
+                const aValue = a[keyName]
+                const bValue = b[keyName]
+                const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+                if (valueA < valueB) {
+                    return 1
+                }
+                if (valueA > valueB) {
+                    return -1
+                }
+                return 0
+            })
+        } //
+        else if (type === 'items') {
+            filtered.sort((a, b) => {
+                const aValue = a[keyName]
+                const bValue = b[keyName]
+                const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+
+                if (valueA === customValue) return -1
+                if (valueB === customValue) return 1
+
+                if (valueA < valueB) {
+                    return -1
+                }
+                if (valueA > valueB) {
+                    return 1
+                }
+                return 0
+            })
+        }
+
+        setList(filtered)
+        setFilterOpen(false)
+    }
+
+    const handleFilterReset = () => {
+        const value = Array.isArray(startData) ? startData : get(startData, dataPath)
+
+        console.log(value)
+        setList(value)
+        setFilterOpen(false)
+    }
+
+    const handleDateFilter = (from: string, to: string, keyName: string) => {
+        const separator = ','
+        let filtered: any[] = JSON.parse(JSON.stringify(list))
+
+        filtered = filtered.filter((x) => {
+            const dts: string[] = x[keyName].split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])
+
+            let inside = false
+
+            dts.forEach((k) => {
+                if (inside) return
+
+                const dt = dayjs(k, 'D/M/YYYY')
+                const dtFrom = dayjs(from, 'D/M/YYYY')
+
+                if (to) {
+                    const dtTo = dayjs(to, 'D/M/YYYY')
+
+                    if ((dtFrom.isBefore(dt) || dtFrom.isSame(dt)) && (dtTo.isAfter(dt) || dtTo.isSame(dt))) {
+                        inside = true
+                    }
+                } //
+                else {
+                    if (dtFrom.isBefore(dt) || dtFrom.isSame(dt)) {
+                        inside = true
+                    }
+                }
             })
 
-            setList(newList)
-            setPagCount(getCount(newList))
-        },
-        [data]
-    )
+            return inside
+        })
+
+        setList(filtered)
+        setPagCount(getCount(filtered))
+        setCurrentPage(0)
+        setListPage(1)
+
+        setFilterOpen(false)
+    }
 
     if (error)
         return (
@@ -413,7 +535,7 @@ export function Table({
     return (
         <>
             <Box marginX={isSmall ? 0 : 4}>
-                <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
+                <Stack spacing={1} direction={{ xs: 'column', md: 'row' }} marginBottom={2}>
                     <TextField
                         InputProps={{
                             startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
@@ -423,6 +545,9 @@ export function Table({
                         fullWidth
                         placeholder={`Pesquisar ${tableName}`}
                     />
+                    <Button startIcon={<FilterAlt />} variant='contained' onClick={(e) => setFilterOpen(true)}>
+                        Filtrar
+                    </Button>
                 </Stack>
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
@@ -518,6 +643,75 @@ export function Table({
                     </Stack>
                 )}
             </Box>
+
+            <SwipeableDrawer anchor={isSmall ? 'bottom' : 'right'} open={filterOpen} onClose={(e) => setFilterOpen(false)} onOpen={(e) => setFilterOpen(true)}>
+                <List sx={{ minWidth: 300 }}>
+                    {Object.keys(filters).map((f, fIndex) => (
+                        <>
+                            <ListItemButton
+                                onClick={(e) =>
+                                    setFilterCollapse((s) =>
+                                        s.map((x, idx) => {
+                                            if (idx === fIndex) return !x
+
+                                            return x
+                                        })
+                                    )
+                                }
+                                sx={{
+                                    backgroundColor: '#ebeef2',
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <Circle transform='scale(0.4)' />
+                                </ListItemIcon>
+                                <ListItemText primary={f} />
+                                {filterCollapse[fIndex] ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+
+                            <Collapse in={filterCollapse[fIndex]} timeout='auto' unmountOnExit>
+                                <List component='div' disablePadding sx={{ backgroundColor: 'white' }}>
+                                    {filters[f].map((x) => (
+                                        <>
+                                            {x.options ? (
+                                                x.options.map((o) => (
+                                                    <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
+                                                        <ListItemText primary={o.name} onClick={(e) => handleFilterOption(x.type, x.keyName, o.key)} sx={{ color: o.color, fontWeight: 600 }} />
+                                                    </ListItemButton>
+                                                ))
+                                            ) : x.type === 'date-interval' ? (
+                                                <Box padding={2}>
+                                                    <FormProvider onSubmit={(d) => handleDateFilter(d['filterDtStart'], d['filterDtEnd'], x.keyName)}>
+                                                        <DatePicker name='filterDtStart' title='A partir de:' required />
+                                                        <Box marginTop={2} />
+                                                        <DatePicker name='filterDtEnd' title='Até (opcional):' />
+
+                                                        <Stack marginTop={2}>
+                                                            <Button type='submit' variant='outlined' startIcon={<CalendarToday />}>
+                                                                Filtrar por Data
+                                                            </Button>
+                                                        </Stack>
+                                                    </FormProvider>
+                                                </Box>
+                                            ) : (
+                                                <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
+                                                    <ListItemIcon sx={{ minWidth: '25px' }}>
+                                                        {x.type === 'a-z' ? <South transform='scale(0.5)' /> : x.type === 'z-a' ? <North transform='scale(0.5)' /> : null}
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={x.name} onClick={(e) => handleFilterOption(x.type, x.keyName)} />
+                                                </ListItemButton>
+                                            )}
+                                        </>
+                                    ))}
+                                </List>
+                            </Collapse>
+                        </>
+                    ))}
+                </List>
+                <Button variant='contained' onClick={handleFilterReset} startIcon={<RestartAlt />} sx={{ marginX: 2, marginBottom: 2 }}>
+                    Reiniciar
+                </Button>
+            </SwipeableDrawer>
         </>
     )
 }
