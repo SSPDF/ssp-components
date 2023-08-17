@@ -94,6 +94,7 @@ export const Base: Story = {
                     type: 'items',
                     keyName: 'status',
                     name: '',
+                    referenceKey: 'id',
                     options: [
                         {
                             key: 'p',
@@ -130,6 +131,16 @@ export const Base: Story = {
                     type: 'date-interval',
                     keyName: 'date',
                     name: 'Intervalo de data',
+                },
+                {
+                    type: 'data-a-z',
+                    keyName: 'date',
+                    name: 'Ordem crescente',
+                },
+                {
+                    type: 'data-z-a',
+                    keyName: 'date',
+                    name: 'Ordem decrescente',
                 },
             ],
         },

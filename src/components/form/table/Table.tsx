@@ -41,7 +41,7 @@ interface ColumnData {
     size?: number
 }
 
-type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval'
+type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval' | 'data-a-z' | 'data-z-a'
 
 let startData: any[] = []
 
@@ -67,6 +67,7 @@ export function Table({
     csvShowAllButton = false,
     itemCount = 10,
     filters = {},
+    filterSeparator = '|',
 }: {
     columns: ColumnData[]
     tableName: string
@@ -89,7 +90,8 @@ export function Table({
     emptyMsg?: { user: string; public: string }
     dataPath?: string
     isPublic?: boolean
-    filters?: { [key: string]: { type: FilterTypes; keyName: string; name: string; options?: { name: string; color: string; key: string }[] }[] }
+    filters?: { [key: string]: { type: FilterTypes; keyName: string; name: string; referenceKey?: string; options?: { name: string; color: string; key: string }[] }[] }
+    filterSeparator?: string
 }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | { status: number }>(null)
@@ -402,8 +404,8 @@ export function Table({
         }
     }
 
-    const handleFilterOption = (type: FilterTypes, keyName: string, customValue?: string) => {
-        const filtered: any[] = JSON.parse(JSON.stringify(list))
+    const handleFilterOption = (type: FilterTypes, keyName: string, customValue?: string, referencekey?: string) => {
+        let filtered: any[] = JSON.parse(JSON.stringify(list))
 
         if (type === 'a-z') {
             filtered.sort((a, b) => {
@@ -442,6 +444,11 @@ export function Table({
                 const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                 const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
+                // const aRKey = a[referencekey ?? '']
+                // const bRKey = b[referencekey ?? '']
+
+                // if (valueA === customValue) console.log(valueA, valueB, aRKey, bRKey)
+
                 if (valueA === customValue) return -1
                 if (valueB === customValue) return 1
 
@@ -451,6 +458,93 @@ export function Table({
                 if (valueA > valueB) {
                     return 1
                 }
+                return 0
+            })
+
+            if (referencekey) {
+                const data: any[] = []
+
+                let newFiltered = filtered.filter((x) => {
+                    const item = x[keyName]
+                    const value = typeof item === 'number' ? item : item.toLowerCase()
+
+                    if (value === customValue) {
+                        data.push(x)
+                        return false
+                    }
+
+                    return true
+                })
+
+                data.sort((a, b) => {
+                    const aValue = a[referencekey]
+                    const bValue = b[referencekey]
+                    const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                    const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+                    if (valueA < valueB) {
+                        return 1
+                    }
+                    if (valueA > valueB) {
+                        return -1
+                    }
+                    return 0
+                })
+
+                data.forEach((x) => {
+                    newFiltered.unshift(x)
+                })
+
+                console.log(newFiltered)
+                filtered = newFiltered
+            }
+        } //
+        else if (type === 'data-a-z') {
+            filtered.sort((a, b) => {
+                const aValue = a[keyName]
+                const bValue = b[keyName]
+
+                const separator = filterSeparator
+                const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+                const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+
+                if (!aDt && !bDt) return 0
+
+                const valueA = dayjs(aDt, 'D/M/YYYY')
+                const valueB = dayjs(bDt, 'D/M/YYYY')
+
+                if (valueA.isBefore(valueB)) {
+                    return -1
+                }
+
+                if (valueA.isAfter(valueB)) {
+                    return 1
+                }
+
+                return 0
+            })
+        } //
+        else if (type === 'data-z-a') {
+            filtered.sort((a, b) => {
+                const aValue = a[keyName]
+                const bValue = b[keyName]
+
+                const separator = filterSeparator
+                const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+                const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+
+                if (!aDt && !bDt) return 0
+
+                const valueA = dayjs(aDt, 'D/M/YYYY')
+                const valueB = dayjs(bDt, 'D/M/YYYY')
+
+                if (valueA.isBefore(valueB)) {
+                    return 1
+                }
+
+                if (valueA.isAfter(valueB)) {
+                    return -1
+                }
+
                 return 0
             })
         }
@@ -468,12 +562,11 @@ export function Table({
     }
 
     const handleDateFilter = (from: string, to: string, keyName: string) => {
-        const separator = ','
+        const separator = filterSeparator
         let filtered: any[] = JSON.parse(JSON.stringify(list))
 
         filtered = filtered.filter((x) => {
             const dts: string[] = x[keyName].split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])
-
             let inside = false
 
             dts.forEach((k) => {
@@ -497,6 +590,30 @@ export function Table({
             })
 
             return inside
+        })
+
+        filtered.sort((a, b) => {
+            const aValue = a[keyName]
+            const bValue = b[keyName]
+
+            const separator = filterSeparator
+            const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+            const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+
+            if (!aDt && !bDt) return 0
+
+            const valueA = dayjs(aDt, 'D/M/YYYY')
+            const valueB = dayjs(bDt, 'D/M/YYYY')
+
+            if (valueA.isBefore(valueB)) {
+                return -1
+            }
+
+            if (valueA.isAfter(valueB)) {
+                return 1
+            }
+
+            return 0
         })
 
         setList(filtered)
@@ -676,7 +793,11 @@ export function Table({
                                             {x.options ? (
                                                 x.options.map((o) => (
                                                     <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
-                                                        <ListItemText primary={o.name} onClick={(e) => handleFilterOption(x.type, x.keyName, o.key)} sx={{ color: o.color, fontWeight: 600 }} />
+                                                        <ListItemText
+                                                            primary={o.name}
+                                                            onClick={(e) => handleFilterOption(x.type, x.keyName, o.key, x.referenceKey)}
+                                                            sx={{ color: o.color, fontWeight: 600 }}
+                                                        />
                                                     </ListItemButton>
                                                 ))
                                             ) : x.type === 'date-interval' ? (
@@ -696,7 +817,11 @@ export function Table({
                                             ) : (
                                                 <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
                                                     <ListItemIcon sx={{ minWidth: '25px' }}>
-                                                        {x.type === 'a-z' ? <South transform='scale(0.5)' /> : x.type === 'z-a' ? <North transform='scale(0.5)' /> : null}
+                                                        {x.type === 'a-z' || x.type === 'data-a-z' ? (
+                                                            <South transform='scale(0.5)' />
+                                                        ) : x.type === 'z-a' || x.type === 'data-z-a' ? (
+                                                            <North transform='scale(0.5)' />
+                                                        ) : null}
                                                     </ListItemIcon>
                                                     <ListItemText primary={x.name} onClick={(e) => handleFilterOption(x.type, x.keyName)} />
                                                 </ListItemButton>
