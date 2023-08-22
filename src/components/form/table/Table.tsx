@@ -395,6 +395,12 @@ export function Table({
                         PRÉ APROVADO
                     </Typography>
                 )
+            case 'FP':
+                return (
+                    <Typography color='#991b1b' fontWeight={600} fontFamily='Inter'>
+                        FORA DO PRAZO
+                    </Typography>
+                )
         }
     }, [])
 
