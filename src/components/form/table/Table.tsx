@@ -64,11 +64,17 @@ export function Table({
     csvExcludeValidate = (key, value) => false,
     csvButtonTitle = 'Salvar .CSV',
     csvAllButtonTitle = 'Salvar todos em CSV',
+    removeQuotes = false,
+    normalize = false,
     csvShowAllButton = false,
     itemCount = 10,
+    csvUpper = false,
     filters = {},
     filterSeparator = '|',
 }: {
+    normalize?: boolean
+    csvUpper?: boolean
+    removeQuotes?: boolean
     columns: ColumnData[]
     tableName: string
     csvShowAllButton?: boolean
@@ -301,7 +307,13 @@ export function Table({
                             if (k === 'tbRa') return x[k]['NO_CIDADE']
                             if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
 
-                            if (typeof x[k] === 'string') return `"${x[k]}"`
+                            if (typeof x[k] === 'string') {
+                                let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+
+                                item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+                                return removeQuotes ? `${item}` : `"${item}"`
+                            }
 
                             return x[k]
                         })
@@ -338,7 +350,13 @@ export function Table({
                             if (k === 'tbRa') return x[k]['NO_CIDADE']
                             if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
 
-                            if (typeof x[k] === 'string') return `"${x[k]}"`
+                            if (typeof x[k] === 'string') {
+                                let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+
+                                item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+                                return removeQuotes ? `${item}` : `"${item}"`
+                            }
 
                             return x[k]
                         })
@@ -668,9 +686,11 @@ export function Table({
                         fullWidth
                         placeholder={`Pesquisar ${tableName}`}
                     />
-                    <Button startIcon={<FilterAlt />} variant='contained' onClick={(e) => setFilterOpen(true)}>
-                        Filtrar
-                    </Button>
+                    {Object.keys(filters).length > 0 && (
+                        <Button startIcon={<FilterAlt />} variant='contained' onClick={(e) => setFilterOpen(true)}>
+                            Filtrar
+                        </Button>
+                    )}
                 </Stack>
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (

@@ -64,85 +64,88 @@ export const Base: Story = {
                 </Paper>
             </Stack>
         ),
-        filters: {
-            'Id do Post': [
-                {
-                    type: 'a-z',
-                    keyName: 'id',
-                    name: 'Ordem alfabetica: 0 -> ...',
-                },
-                {
-                    type: 'z-a',
-                    keyName: 'id',
-                    name: 'Ordem alfabetica: ... -> 0',
-                },
-            ],
-            Nome: [
-                {
-                    type: 'a-z',
-                    keyName: 'name',
-                    name: 'Ordem alfabetica: A -> Z',
-                },
-                {
-                    type: 'z-a',
-                    keyName: 'name',
-                    name: 'Ordem alfabetica: Z -> A',
-                },
-            ],
-            Status: [
-                {
-                    type: 'items',
-                    keyName: 'status',
-                    name: '',
-                    referenceKey: 'id',
-                    options: [
-                        {
-                            key: 'p',
-                            color: '#F59E0B',
-                            name: 'EM ANÁLISE',
-                        },
-                        {
-                            key: 'a',
-                            color: '#0EA5E9',
-                            name: 'CADASTRADO',
-                        },
-                        {
-                            key: 'c',
-                            color: '#a1a1a1',
-                            name: 'CANCELADO',
-                        },
-                        {
-                            key: 'r',
-                            color: '#EF4444',
-                            name: 'REPROVADO',
-                        },
-                        {
-                            key: 'l',
-                            color: '#22C55E',
-                            name: 'LICENCIADO',
-                        },
+        normalize: true,
+        csvUpper: true,
+        removeQuotes: true,
+        // filters: {
+        //     'Id do Post': [
+        //         {
+        //             type: 'a-z',
+        //             keyName: 'id',
+        //             name: 'Ordem alfabetica: 0 -> ...',
+        //         },
+        //         {
+        //             type: 'z-a',
+        //             keyName: 'id',
+        //             name: 'Ordem alfabetica: ... -> 0',
+        //         },
+        //     ],
+        //     Nome: [
+        //         {
+        //             type: 'a-z',
+        //             keyName: 'name',
+        //             name: 'Ordem alfabetica: A -> Z',
+        //         },
+        //         {
+        //             type: 'z-a',
+        //             keyName: 'name',
+        //             name: 'Ordem alfabetica: Z -> A',
+        //         },
+        //     ],
+        //     Status: [
+        //         {
+        //             type: 'items',
+        //             keyName: 'status',
+        //             name: '',
+        //             referenceKey: 'id',
+        //             options: [
+        //                 {
+        //                     key: 'p',
+        //                     color: '#F59E0B',
+        //                     name: 'EM ANÁLISE',
+        //                 },
+        //                 {
+        //                     key: 'a',
+        //                     color: '#0EA5E9',
+        //                     name: 'CADASTRADO',
+        //                 },
+        //                 {
+        //                     key: 'c',
+        //                     color: '#a1a1a1',
+        //                     name: 'CANCELADO',
+        //                 },
+        //                 {
+        //                     key: 'r',
+        //                     color: '#EF4444',
+        //                     name: 'REPROVADO',
+        //                 },
+        //                 {
+        //                     key: 'l',
+        //                     color: '#22C55E',
+        //                     name: 'LICENCIADO',
+        //                 },
 
-                        { key: 'pa', color: '#6366F1', name: 'PRÉ APROVADO' },
-                    ],
-                },
-            ],
-            Datas: [
-                {
-                    type: 'date-interval',
-                    keyName: 'date',
-                    name: 'Intervalo de data',
-                },
-                {
-                    type: 'data-a-z',
-                    keyName: 'date',
-                    name: 'Ordem crescente',
-                },
-                {
-                    type: 'data-z-a',
-                    keyName: 'date',
-                    name: 'Ordem decrescente',
-                },
-            ],
-        },
+        //                 { key: 'pa', color: '#6366F1', name: 'PRÉ APROVADO' },
+        //             ],
+        //         },
+        //     ],
+        //     Datas: [
+        //         {
+        //             type: 'date-interval',
+        //             keyName: 'date',
+        //             name: 'Intervalo de data',
+        //         },
+        //         {
+        //             type: 'data-a-z',
+        //             keyName: 'date',
+        //             name: 'Ordem crescente',
+        //         },
+        //         {
+        //             type: 'data-z-a',
+        //             keyName: 'date',
+        //             name: 'Ordem decrescente',
+        //         },
+        //     ],
+        // },
     },
 }
