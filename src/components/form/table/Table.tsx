@@ -61,6 +61,7 @@ export function Table({
     isPublic = false,
     statusKeyName = '',
     csvExcludeKeys = [],
+    csvExcludeKeysAll = [],
     csvCustomKeyNames = {},
     csvExcludeValidate = (key, value) => false,
     csvButtonTitle = 'Salvar .CSV',
@@ -90,6 +91,7 @@ export function Table({
         [key: string]: string
     }
     csvExcludeKeys?: string[]
+    csvExcludeKeysAll?: string[]
     statusKeyName?: string
     itemCount?: number
     action: (prop: any) => JSX.Element
@@ -406,7 +408,7 @@ export function Table({
 
             if (list.length <= 0) return
 
-            const keys = Object.keys(list[0])
+            const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeysAll.includes(k))
             const header = keys.join(',') + '\n'
 
             const values = list

@@ -70,6 +70,7 @@ export const Base: Story = {
         csvShowAllButton: true,
         csvButtonTitle: 'Salvar cadastrados como CSV',
         csvExcludeKeys: ['nuProtocolo', 'noRa', 'nuZonaEleitoral', 'noConseg', 'stCadastro', 'coCadastroEleitor', 'nuCelular', 'noEleitor'],
+        csvExcludeKeysAll: ['noEleitorTb'],
         dataPath: 'body.data',
         tableName: '',
         emptyMsg: { public: 'Nenhum cadastro encontrado', user: 'Nenhum cadastro encontrado' },
