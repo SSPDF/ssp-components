@@ -46,10 +46,7 @@ export const Base: Story = {
         ],
         statusKeyName: 'status',
         csvExcludeKeys: ['body'],
-        csvExcludeValidate: (key, value) =>
-            key === 'body' &&
-            value ===
-                'est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla',
+        csvExcludeValidate: (key, value) => key === 'status' && value !== 'A',
         columnSize: 6,
         itemCount: 20,
         csvShowAllButton: true,

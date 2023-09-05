@@ -83,8 +83,8 @@ export function Table({
     csvShowAllButton?: boolean
     csvAllButtonTitle?: string
     csvButtonTitle?: string
-    csvZipFileNamesKey: string
-    generateCsvZip: boolean
+    csvZipFileNamesKey?: string
+    generateCsvZip?: boolean
     csvExcludeValidate?: (key: string, value: string | number) => boolean
     csvCustomKeyNames?: {
         [key: string]: string
@@ -307,16 +307,17 @@ export function Table({
 
                 Object.keys(obj).forEach((objKey: string) => {
                     const values: string[] = []
+                    let include = true
 
                     obj[objKey].forEach((x: any) => {
-                        let include = true
-
                         originalKeys.forEach((k: string) => {
                             //verificar se pode incluir
                             if (csvExcludeValidate(k, x[k])) {
                                 include = false
                             }
                         })
+
+                        console.log(include)
 
                         if (include) {
                             const value = keys
@@ -342,7 +343,7 @@ export function Table({
 
                     const csvData = '\uFEFF' + header + values.join('\n')
 
-                    zip.file(`${objKey}.csv`, csvData)
+                    if (include) zip.file(`${objKey}.csv`, csvData)
                 })
 
                 // // download
