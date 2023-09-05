@@ -342,7 +342,7 @@ export function Table({
 
                     const csvData = '\uFEFF' + header + values.join('\n')
 
-                    if (values.length > 0) zip.file(`${objKey}.csv`, csvData)
+                    if (values.length > 0) zip.file(`${objKey.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}.csv`, csvData)
                 })
 
                 // // download
