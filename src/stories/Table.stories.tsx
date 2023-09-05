@@ -64,9 +64,11 @@ export const Base: Story = {
                 </Paper>
             </Stack>
         ),
-        normalize: true,
+        // normalize: true,
         csvUpper: true,
         removeQuotes: true,
+        generateCsvZip: true,
+        csvZipFileNamesKey: 'status',
         // filters: {
         //     'Id do Post': [
         //         {

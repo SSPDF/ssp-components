@@ -29,11 +29,12 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
-import { CalendarToday, Circle, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import { CalendarToday, Circle, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, Map, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
 import FormProvider from '../../providers/FormProvider'
 import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
 import dayjs from 'dayjs'
+import JSZip from 'jszip'
 
 interface ColumnData {
     title: string
@@ -69,6 +70,8 @@ export function Table({
     csvShowAllButton = false,
     itemCount = 10,
     csvUpper = false,
+    csvZipFileNamesKey = '',
+    generateCsvZip = false,
     filters = {},
     filterSeparator = '|',
 }: {
@@ -80,6 +83,8 @@ export function Table({
     csvShowAllButton?: boolean
     csvAllButtonTitle?: string
     csvButtonTitle?: string
+    csvZipFileNamesKey: string
+    generateCsvZip: boolean
     csvExcludeValidate?: (key: string, value: string | number) => boolean
     csvCustomKeyNames?: {
         [key: string]: string
@@ -289,47 +294,108 @@ export function Table({
             const keys = originalKeys.filter((k) => !csvExcludeKeys.includes(k))
             const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
 
-            const values: string[] = []
+            if (generateCsvZip) {
+                const zip = new JSZip()
 
-            list.forEach((x: any) => {
-                let include = true
+                const obj: any = {}
 
-                originalKeys.forEach((k: string) => {
-                    //verificar se pode incluir
-                    if (csvExcludeValidate(k, x[k])) {
-                        include = false
+                list.forEach((x: any) => {
+                    if (!obj[x[csvZipFileNamesKey]]) obj[x[csvZipFileNamesKey]] = []
+
+                    obj[x[csvZipFileNamesKey]].push(x)
+                })
+
+                Object.keys(obj).forEach((objKey: string) => {
+                    const values: string[] = []
+
+                    obj[objKey].forEach((x: any) => {
+                        let include = true
+
+                        originalKeys.forEach((k: string) => {
+                            //verificar se pode incluir
+                            if (csvExcludeValidate(k, x[k])) {
+                                include = false
+                            }
+                        })
+
+                        if (include) {
+                            const value = keys
+                                .map((k: string) => {
+                                    if (k === 'tbRa') return x[k]['NO_CIDADE']
+                                    if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+
+                                    if (typeof x[k] === 'string') {
+                                        let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+
+                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+                                        return removeQuotes ? `${item}` : `"${item}"`
+                                    }
+
+                                    return x[k]
+                                })
+                                .join(',')
+
+                            values.push(value)
+                        }
+                    })
+
+                    const csvData = '\uFEFF' + header + values.join('\n')
+
+                    zip.file(`${objKey}.csv`, csvData)
+                })
+
+                // // download
+                var link = window.document.createElement('a')
+
+                zip.generateAsync({ type: 'base64' }).then((base) => {
+                    link.setAttribute('href', 'data:application/zip;base64,' + base)
+                    link.setAttribute('download', `${csv?.fileName}.zip`)
+                    link.click()
+                })
+            } else {
+                const values: string[] = []
+
+                list.forEach((x: any) => {
+                    let include = true
+
+                    originalKeys.forEach((k: string) => {
+                        //verificar se pode incluir
+                        if (csvExcludeValidate(k, x[k])) {
+                            include = false
+                        }
+                    })
+
+                    if (include) {
+                        const value = keys
+                            .map((k: string) => {
+                                if (k === 'tbRa') return x[k]['NO_CIDADE']
+                                if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+
+                                if (typeof x[k] === 'string') {
+                                    let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+
+                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+                                    return removeQuotes ? `${item}` : `"${item}"`
+                                }
+
+                                return x[k]
+                            })
+                            .join(',')
+
+                        values.push(value)
                     }
                 })
 
-                if (include) {
-                    const value = keys
-                        .map((k: string) => {
-                            if (k === 'tbRa') return x[k]['NO_CIDADE']
-                            if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
+                const csvData = header + values.join('\n')
 
-                            if (typeof x[k] === 'string') {
-                                let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
-
-                                item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
-
-                                return removeQuotes ? `${item}` : `"${item}"`
-                            }
-
-                            return x[k]
-                        })
-                        .join(',')
-
-                    values.push(value)
-                }
-            })
-
-            const csvData = header + values.join('\n')
-
-            // download
-            var link = window.document.createElement('a')
-            link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData))
-            link.setAttribute('download', `${csv?.fileName}.csv`)
-            link.click()
+                // download
+                var link = window.document.createElement('a')
+                link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData))
+                link.setAttribute('download', `${csv?.fileName}.csv`)
+                link.click()
+            }
         },
         [list]
     )
