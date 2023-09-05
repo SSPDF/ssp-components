@@ -18,54 +18,112 @@ type Story = StoryObj<typeof Table>
 export const Base: Story = {
     args: {
         fetchFunc: () => fetch('http://localhost:7171/table'),
-        csv: {
-            fileName: 'Exemplo',
-        },
-        csvCustomKeyNames: {
-            title: 'RONALD MCDONALD',
-        },
-        isPublic: true,
+        action: (prop) => (
+            <>
+                <h1>dsadas</h1>
+            </>
+        ),
+        columnSize: 7,
         columns: [
             {
-                keyName: 'id',
-                title: 'Id do post',
+                keyName: 'nuProtocolo',
+                title: 'Protocolo',
             },
             {
-                keyName: 'date',
-                title: 'Datas',
-            },
-            {
-                keyName: 'name',
+                keyName: 'noEleitor',
                 title: 'Nome',
-                size: 2,
             },
             {
-                keyName: 'status',
-                title: 'Status',
+                keyName: 'noRa',
+                title: 'RA',
+            },
+            {
+                keyName: 'noConseg',
+                title: 'CONSEG',
+            },
+            {
+                keyName: 'nuZonaEleitoral',
+                title: 'Zona Eleitoral',
+            },
+            {
+                keyName: 'stCadastro',
+                title: 'Status do Cadastro',
             },
         ],
-        statusKeyName: 'status',
-        csvExcludeKeys: ['body'],
-        csvExcludeValidate: (key, value) => key === 'status' && value !== 'A',
-        columnSize: 6,
-        itemCount: 20,
-        csvShowAllButton: true,
-        action: (data) => (
-            <Stack direction='row' spacing={1.5}>
-                <Paper elevation={12} sx={{ '& a': { textDecoration: 'none' } }}>
-                    <Link href={`/detalhes/${data['coSeqEventoExterno']}`}>
-                        <Button variant='contained' size='small' sx={{ backgroundColor: '#64748B' }}>
-                            detalhes
-                        </Button>
-                    </Link>
-                </Paper>
-            </Stack>
-        ),
-        // normalize: true,
+        csv: {
+            fileName: 'ELEITORES',
+        },
+        normalize: true,
         csvUpper: true,
         removeQuotes: true,
+        statusKeyName: 'stCadastro',
+        csvExcludeValidate: (key, value) => key === 'stCadastro' && value !== 'A',
+        csvCustomKeyNames: {
+            nuTituloEleitor: 'Identificação Eleitor',
+            noEleitorTb: 'Nome Eleitor',
+            nuMunicipio: 'Número Município',
+            noMunicipio: 'Nome Município',
+            nuSecao: 'Seção',
+        },
         generateCsvZip: true,
-        csvZipFileNamesKey: 'status',
+        csvZipFileNamesKey: 'noMunicipio',
+        csvShowAllButton: true,
+        csvButtonTitle: 'Salvar cadastrados como CSV',
+        csvExcludeKeys: ['nuProtocolo', 'noRa', 'nuZonaEleitoral', 'noConseg', 'stCadastro', 'coCadastroEleitor', 'nuCelular', 'noEleitor'],
+        dataPath: 'body.data',
+        tableName: '',
+        emptyMsg: { public: 'Nenhum cadastro encontrado', user: 'Nenhum cadastro encontrado' },
+        isPublic: true,
+
+        // fetchFunc: () => fetch('http://localhost:7171/table'),
+        // csv: {
+        //     fileName: 'Exemplo',
+        // },
+        // csvCustomKeyNames: {
+        //     title: 'RONALD MCDONALD',
+        // },
+        // isPublic: true,
+        // columns: [
+        //     {
+        //         keyName: 'id',
+        //         title: 'Id do post',
+        //     },
+        //     {
+        //         keyName: 'date',
+        //         title: 'Datas',
+        //     },
+        //     {
+        //         keyName: 'name',
+        //         title: 'Nome',
+        //         size: 2,
+        //     },
+        //     {
+        //         keyName: 'status',
+        //         title: 'Status',
+        //     },
+        // ],
+        // statusKeyName: 'status',
+        // csvExcludeKeys: ['body'],
+        // csvExcludeValidate: (key, value) => key === 'status' && value !== 'A',
+        // columnSize: 6,
+        // itemCount: 20,
+        // csvShowAllButton: true,
+        // action: (data) => (
+        //     <Stack direction='row' spacing={1.5}>
+        //         <Paper elevation={12} sx={{ '& a': { textDecoration: 'none' } }}>
+        //             <Link href={`/detalhes/${data['coSeqEventoExterno']}`}>
+        //                 <Button variant='contained' size='small' sx={{ backgroundColor: '#64748B' }}>
+        //                     detalhes
+        //                 </Button>
+        //             </Link>
+        //         </Paper>
+        //     </Stack>
+        // ),
+        // normalize: true,
+        // csvUpper: true,
+        // removeQuotes: true,
+        // generateCsvZip: true,
+        // csvZipFileNamesKey: 'status',
         // filters: {
         //     'Id do Post': [
         //         {
