@@ -344,7 +344,7 @@ export function Table({
                         }
                     })
 
-                    const csvData = hideTitleCSV ? '\uFEFF' + header + values.join('\n') : values.join('\n')
+                    const csvData = hideTitleCSV ? values.join('\n') : '\uFEFF' + header + values.join('\n')
 
                     if (values.length > 0) zip.file(`${objKey.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}.csv`, csvData)
                 })
