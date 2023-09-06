@@ -74,6 +74,7 @@ export function Table({
     csvZipFileNamesKey = '',
     generateCsvZip = false,
     filters = {},
+    hideTitleCSV = false,
     filterSeparator = '|',
 }: {
     normalize?: boolean
@@ -91,6 +92,7 @@ export function Table({
         [key: string]: string
     }
     csvExcludeKeys?: string[]
+    hideTitleCSV?: boolean
     csvExcludeKeysAll?: string[]
     statusKeyName?: string
     itemCount?: number
@@ -342,7 +344,7 @@ export function Table({
                         }
                     })
 
-                    const csvData = '\uFEFF' + header + values.join('\n')
+                    const csvData = hideTitleCSV ? '\uFEFF' + header + values.join('\n') : values.join('\n')
 
                     if (values.length > 0) zip.file(`${objKey.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}.csv`, csvData)
                 })
