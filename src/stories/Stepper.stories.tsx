@@ -48,7 +48,7 @@ export const Base: Story = {
                     <Input name='ata' type='input' customPlaceholder='AAA' required />
                 </SwitchWatch> */}
 
-                {/* <CheckBoxAdditional
+                <CheckBoxAdditional
                     name='xxx'
                     nameList={['0.haha']}
                     content={
@@ -58,7 +58,7 @@ export const Base: Story = {
                     }
                 >
                     <CheckBox name='ronald' title='Teste' />
-                </CheckBoxAdditional> */}
+                </CheckBoxAdditional>
 
                 {/* 
                 <SwitchWatch switchId='0.ronald' unregisterNameList={['0.ronald']} invert>

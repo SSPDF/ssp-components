@@ -39,7 +39,7 @@ export default function RequiredCheckBoxGroup({
 
     const context = useContext(FormContext)!
     const children = React.cloneElement(props.children, {
-        onChange: (e) => {
+        onChange: () => {
             if (firstTime) {
                 const name = children.props.name as string
                 const value = !context.formGetValues(name)
