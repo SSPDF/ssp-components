@@ -80,12 +80,7 @@ export default function RequiredCheckBoxGroup({
             />
             {children}
             <Grid item xs={12}>
-                {firstTime && showAfterFirst && (
-                    <>
-                        <Typography sx={{ color: '#a51c30', fontSize: 16 }}>Você tem a opção de baixar e preencher o termo e enviar</Typography>
-                        {props.content}
-                    </>
-                )}
+                {firstTime && showAfterFirst && props.content}
             </Grid>
         </Grid>
     )
