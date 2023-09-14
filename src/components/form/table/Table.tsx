@@ -716,7 +716,7 @@ export function Table({
         setCurrentPage(0)
         setListPage(1)
 
-        setFilterOpen(false)
+        // setFilterOpen(false)
     }
 
     const handleFilterOption = (type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) => {
@@ -966,14 +966,14 @@ export function Table({
                 <Button variant='contained' onClick={handleFilterReset} startIcon={<RestartAlt />} sx={{ marginX: 2, marginBottom: 2 }}>
                     Reiniciar
                 </Button>
-                <Box>
+                {/* <Box>
                     <Typography>Filtros aplicados:</Typography>
                     <Stack>
                         {appliedFilters.map((x) => (
                             <Box>{JSON.stringify(x)}</Box>
                         ))}
                     </Stack>
-                </Box>
+                </Box> */}
             </SwipeableDrawer>
         </>
     )
