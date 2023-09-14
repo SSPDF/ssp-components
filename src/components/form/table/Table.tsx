@@ -29,7 +29,7 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
-import { CalendarToday, Circle, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, Map, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import { CalendarToday, Check, Circle, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
 import FormProvider from '../../providers/FormProvider'
 import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
@@ -119,6 +119,7 @@ export function Table({
     const [currentPage, setCurrentPage] = useState(0)
     const [paginationCount, setPagCount] = useState(1)
     const [listPage, setListPage] = useState(1)
+    const [appliedFilters, setAppliedFilters] = useState<any[]>([])
 
     // filters states
     const [filterCollapse, setFilterCollapse] = useState<boolean[]>(Array(Object.keys(filters).length).fill(false))
@@ -147,8 +148,6 @@ export function Table({
                             setData(j)
                             startData = JSON.parse(JSON.stringify(j))
                         }
-
-                        console.log(j.statusCode)
 
                         setIsLoading(false)
                     })
@@ -203,9 +202,6 @@ export function Table({
 
             const listData: object[] = getData(data)
 
-            // setList([])
-            // setListPage(1)
-
             console.log(listData)
 
             const newList: any = []
@@ -258,6 +254,11 @@ export function Table({
                                 return
                             case 'PA':
                                 if ('pré aprovado'.includes(searchValue.toLowerCase()) || 'pre aprovado'.includes(searchValue.toLowerCase())) {
+                                    exists = true
+                                }
+                                return
+                            case 'FP':
+                                if ('fora do prazo'.includes(searchValue.toLowerCase())) {
                                     exists = true
                                 }
                                 return
@@ -492,87 +493,38 @@ export function Table({
         }
     }, [])
 
-    const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-        if (event && event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
-            return
-        }
-    }
+    useEffect(() => {
+        filterBasedOnList(appliedFilters)
+    }, [appliedFilters])
 
-    const handleFilterOption = (type: FilterTypes, keyName: string, customValue?: string, referencekey?: string) => {
-        let filtered: any[] = JSON.parse(JSON.stringify(list))
+    const filterBasedOnList = (filteredList: any[]) => {
+        if (filteredList.length === 0) return
 
-        if (type === 'a-z') {
-            filtered.sort((a, b) => {
-                const aValue = a[keyName]
-                const bValue = b[keyName]
-                const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
-                if (valueA < valueB) {
-                    return -1
-                }
-                if (valueA > valueB) {
-                    return 1
-                }
-                return 0
-            })
-        } //
-        else if (type === 'z-a') {
-            filtered.sort((a, b) => {
-                const aValue = a[keyName]
-                const bValue = b[keyName]
-                const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
-                if (valueA < valueB) {
-                    return 1
-                }
-                if (valueA > valueB) {
-                    return -1
-                }
-                return 0
-            })
-        } //
-        else if (type === 'items') {
-            filtered.sort((a, b) => {
-                const aValue = a[keyName]
-                const bValue = b[keyName]
-                const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+        let rawList: any[] = Array.isArray(startData) ? startData : get(startData, dataPath)
 
-                // const aRKey = a[referencekey ?? '']
-                // const bRKey = b[referencekey ?? '']
+        function category(type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) {
+            if (type === 'a-z') {
+                rawList = rawList.sort((a, b) => {
+                    const aValue = a[keyName]
+                    const bValue = b[keyName]
+                    const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                    const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
-                // if (valueA === customValue) console.log(valueA, valueB, aRKey, bRKey)
-
-                if (valueA === customValue) return -1
-                if (valueB === customValue) return 1
-
-                if (valueA < valueB) {
-                    return -1
-                }
-                if (valueA > valueB) {
-                    return 1
-                }
-                return 0
-            })
-
-            if (referencekey) {
-                const data: any[] = []
-
-                let newFiltered = filtered.filter((x) => {
-                    const item = x[keyName]
-                    const value = typeof item === 'number' ? item : item.toLowerCase()
-
-                    if (value === customValue) {
-                        data.push(x)
-                        return false
+                    if (valueA < valueB) {
+                        return -1
                     }
 
-                    return true
-                })
+                    if (valueA > valueB) {
+                        return 1
+                    }
 
-                data.sort((a, b) => {
-                    const aValue = a[referencekey]
-                    const bValue = b[referencekey]
+                    return 0
+                })
+            } //
+            else if (type === 'z-a') {
+                rawList = rawList.sort((a, b) => {
+                    const aValue = a[keyName]
+                    const bValue = b[keyName]
                     const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                     const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
                     if (valueA < valueB) {
@@ -583,42 +535,153 @@ export function Table({
                     }
                     return 0
                 })
+            } //
+            else if (type === 'items') {
+                rawList = rawList
+                    .filter((x) => x[keyName].toLowerCase() === customValue)
+                    .sort((a, b) => {
+                        const aValue = a[keyName]
+                        const bValue = b[keyName]
+                        const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                        const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
-                data.forEach((x) => {
-                    newFiltered.unshift(x)
+                        // const aRKey = a[referencekey ?? '']
+                        // const bRKey = b[referencekey ?? '']
+
+                        // if (valueA === customValue) console.log(valueA, valueB, aRKey, bRKey)
+
+                        if (valueA === customValue) return -1
+                        if (valueB === customValue) return 1
+
+                        if (valueA < valueB) {
+                            return -1
+                        }
+                        if (valueA > valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+
+                if (referencekey) {
+                    const data: any[] = []
+
+                    let newFiltered = rawList.filter((x) => {
+                        const item = x[keyName]
+                        const value = typeof item === 'number' ? item : item.toLowerCase()
+
+                        if (value === customValue) {
+                            data.push(x)
+                            return false
+                        }
+
+                        return true
+                    })
+
+                    data.sort((a, b) => {
+                        const aValue = a[referencekey]
+                        const bValue = b[referencekey]
+                        const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
+                        const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+
+                        if (valueA < valueB) {
+                            return 1
+                        }
+
+                        if (valueA > valueB) {
+                            return -1
+                        }
+                        return 0
+                    })
+
+                    data.forEach((x) => {
+                        newFiltered.unshift(x)
+                    })
+
+                    rawList = newFiltered
+                }
+            } //
+            else if (type === 'data-a-z') {
+                rawList = rawList.sort((a, b) => {
+                    const aValue = a[keyName]
+                    const bValue = b[keyName]
+
+                    const separator = filterSeparator
+                    const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+                    const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+
+                    if (!aDt && !bDt) return 0
+
+                    const valueA = dayjs(aDt, 'D/M/YYYY')
+                    const valueB = dayjs(bDt, 'D/M/YYYY')
+
+                    if (valueA.isBefore(valueB)) {
+                        return -1
+                    }
+
+                    if (valueA.isAfter(valueB)) {
+                        return 1
+                    }
+
+                    return 0
+                })
+            } //
+            else if (type === 'data-z-a') {
+                rawList = rawList.sort((a, b) => {
+                    const aValue = a[keyName],
+                        bValue = b[keyName],
+                        separator = filterSeparator,
+                        aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0],
+                        bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
+
+                    if (!aDt && !bDt) return 0
+
+                    const valueA = dayjs(aDt, 'D/M/YYYY')
+                    const valueB = dayjs(bDt, 'D/M/YYYY')
+
+                    if (valueA.isBefore(valueB)) {
+                        return 1
+                    }
+
+                    if (valueA.isAfter(valueB)) {
+                        return -1
+                    }
+
+                    return 0
+                })
+            }
+        }
+
+        function date(from: string, to: string, keyName: string) {
+            const separator = filterSeparator
+
+            rawList = rawList.filter((x) => {
+                const dts: string[] = x[keyName].split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])
+                let inside = false
+
+                dts.forEach((k) => {
+                    if (inside) return
+
+                    const dt = dayjs(k, 'D/M/YYYY')
+                    const dtFrom = dayjs(from, 'D/M/YYYY')
+
+                    if (to) {
+                        const dtTo = dayjs(to, 'D/M/YYYY')
+
+                        if ((dtFrom.isBefore(dt) || dtFrom.isSame(dt)) && (dtTo.isAfter(dt) || dtTo.isSame(dt))) {
+                            inside = true
+                        }
+                    } //
+                    else {
+                        if (dtFrom.isBefore(dt) || dtFrom.isSame(dt)) {
+                            inside = true
+                        }
+                    }
                 })
 
-                console.log(newFiltered)
-                filtered = newFiltered
-            }
-        } //
-        else if (type === 'data-a-z') {
-            filtered.sort((a, b) => {
-                const aValue = a[keyName]
-                const bValue = b[keyName]
-
-                const separator = filterSeparator
-                const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-                const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-
-                if (!aDt && !bDt) return 0
-
-                const valueA = dayjs(aDt, 'D/M/YYYY')
-                const valueB = dayjs(bDt, 'D/M/YYYY')
-
-                if (valueA.isBefore(valueB)) {
-                    return -1
-                }
-
-                if (valueA.isAfter(valueB)) {
-                    return 1
-                }
-
-                return 0
+                return inside
             })
-        } //
-        else if (type === 'data-z-a') {
-            filtered.sort((a, b) => {
+
+            rawList = rawList.sort((a, b) => {
                 const aValue = a[keyName]
                 const bValue = b[keyName]
 
@@ -632,90 +695,59 @@ export function Table({
                 const valueB = dayjs(bDt, 'D/M/YYYY')
 
                 if (valueA.isBefore(valueB)) {
-                    return 1
+                    return -1
                 }
 
                 if (valueA.isAfter(valueB)) {
-                    return -1
+                    return 1
                 }
 
                 return 0
             })
         }
 
-        setList(filtered)
-        setFilterOpen(false)
-    }
-
-    const handleFilterReset = () => {
-        const value = Array.isArray(startData) ? startData : get(startData, dataPath)
-
-        console.log(value)
-        setList(value)
-        setFilterOpen(false)
-    }
-
-    const handleDateFilter = (from: string, to: string, keyName: string) => {
-        const separator = filterSeparator
-        let filtered: any[] = JSON.parse(JSON.stringify(list))
-
-        filtered = filtered.filter((x) => {
-            const dts: string[] = x[keyName].split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])
-            let inside = false
-
-            dts.forEach((k) => {
-                if (inside) return
-
-                const dt = dayjs(k, 'D/M/YYYY')
-                const dtFrom = dayjs(from, 'D/M/YYYY')
-
-                if (to) {
-                    const dtTo = dayjs(to, 'D/M/YYYY')
-
-                    if ((dtFrom.isBefore(dt) || dtFrom.isSame(dt)) && (dtTo.isAfter(dt) || dtTo.isSame(dt))) {
-                        inside = true
-                    }
-                } //
-                else {
-                    if (dtFrom.isBefore(dt) || dtFrom.isSame(dt)) {
-                        inside = true
-                    }
-                }
-            })
-
-            return inside
+        appliedFilters.map((x) => {
+            if (!x.isDate) category(x.type, x.keyName, x.uniqueName, x.customValue, x.referencekey)
+            else date(x.from, x.to, x.keyName)
         })
 
-        filtered.sort((a, b) => {
-            const aValue = a[keyName]
-            const bValue = b[keyName]
-
-            const separator = filterSeparator
-            const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-            const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-
-            if (!aDt && !bDt) return 0
-
-            const valueA = dayjs(aDt, 'D/M/YYYY')
-            const valueB = dayjs(bDt, 'D/M/YYYY')
-
-            if (valueA.isBefore(valueB)) {
-                return -1
-            }
-
-            if (valueA.isAfter(valueB)) {
-                return 1
-            }
-
-            return 0
-        })
-
-        setList(filtered)
-        setPagCount(getCount(filtered))
+        setList(rawList)
+        setPagCount(getCount(rawList))
         setCurrentPage(0)
         setListPage(1)
 
         setFilterOpen(false)
+    }
+
+    const handleFilterOption = (type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) => {
+        setAppliedFilters((s) => [
+            ...s.filter((x) => x.type !== type),
+            {
+                type,
+                keyName,
+                uniqueName,
+                customValue,
+                referencekey,
+            },
+        ])
+    }
+
+    const handleFilterReset = () => {
+        const value = Array.isArray(startData) ? startData : get(startData, dataPath)
+        setList(value)
+        setAppliedFilters([])
+    }
+
+    const handleDateFilter = (from: string, to: string, keyName: string) => {
+        setAppliedFilters((s) => [
+            ...s.filter((x) => !x.isDate),
+            {
+                isDate: true,
+                from,
+                to,
+                keyName,
+            },
+        ])
     }
 
     if (error)
@@ -858,7 +890,7 @@ export function Table({
             </Box>
 
             <SwipeableDrawer anchor={isSmall ? 'bottom' : 'right'} open={filterOpen} onClose={(e) => setFilterOpen(false)} onOpen={(e) => setFilterOpen(true)}>
-                <List sx={{ minWidth: 300 }}>
+                <List sx={{ minWidth: 310 }}>
                     {Object.keys(filters).map((f, fIndex) => (
                         <>
                             <ListItemButton
@@ -889,9 +921,10 @@ export function Table({
                                             {x.options ? (
                                                 x.options.map((o) => (
                                                     <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
+                                                        {/* <h2>{`${f}:${JSON.stringify(o)}`}</h2> */}
                                                         <ListItemText
                                                             primary={o.name}
-                                                            onClick={(e) => handleFilterOption(x.type, x.keyName, o.key, x.referenceKey)}
+                                                            onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(o)}`, o.key, x.referenceKey)}
                                                             sx={{ color: o.color, fontWeight: 600 }}
                                                         />
                                                     </ListItemButton>
@@ -912,6 +945,7 @@ export function Table({
                                                 </Box>
                                             ) : (
                                                 <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
+                                                    {/* <h2>{`${f}:${JSON.stringify(x)}`}</h2> */}
                                                     <ListItemIcon sx={{ minWidth: '25px' }}>
                                                         {x.type === 'a-z' || x.type === 'data-a-z' ? (
                                                             <South transform='scale(0.5)' />
@@ -919,7 +953,7 @@ export function Table({
                                                             <North transform='scale(0.5)' />
                                                         ) : null}
                                                     </ListItemIcon>
-                                                    <ListItemText primary={x.name} onClick={(e) => handleFilterOption(x.type, x.keyName)} />
+                                                    <ListItemText primary={x.name} onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(x)}`)} />
                                                 </ListItemButton>
                                             )}
                                         </>
@@ -932,6 +966,14 @@ export function Table({
                 <Button variant='contained' onClick={handleFilterReset} startIcon={<RestartAlt />} sx={{ marginX: 2, marginBottom: 2 }}>
                     Reiniciar
                 </Button>
+                <Box>
+                    <Typography>Filtros aplicados:</Typography>
+                    <Stack>
+                        {appliedFilters.map((x) => (
+                            <Box>{JSON.stringify(x)}</Box>
+                        ))}
+                    </Stack>
+                </Box>
             </SwipeableDrawer>
         </>
     )
