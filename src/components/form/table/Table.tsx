@@ -7,6 +7,7 @@ import {
     Button,
     CircularProgress,
     Collapse,
+    IconButton,
     LinearProgress,
     Link,
     List,
@@ -18,6 +19,7 @@ import {
     Paper,
     Stack,
     SwipeableDrawer,
+    Tooltip,
     useMediaQuery,
     useTheme,
 } from '@mui/material'
@@ -29,7 +31,7 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
-import { CalendarToday, Check, Circle, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import { Add, CalendarToday, Check, Circle, Delete, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
 import FormProvider from '../../providers/FormProvider'
 import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
@@ -147,6 +149,13 @@ export function Table({
                         else {
                             setData(j)
                             startData = JSON.parse(JSON.stringify(j))
+                            const oldFilters = localStorage.getItem('tableFilters')
+
+                            if (oldFilters) {
+                                const filters = JSON.parse(oldFilters)
+
+                                setAppliedFilters(filters)
+                            }
                         }
 
                         setIsLoading(false)
@@ -500,7 +509,7 @@ export function Table({
     const filterBasedOnList = (filteredList: any[]) => {
         if (filteredList.length === 0) return
 
-        let rawList: any[] = Array.isArray(startData) ? startData : get(startData, dataPath)
+        let rawList: any[] = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
 
         function category(type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) {
             if (type === 'a-z') {
@@ -715,39 +724,56 @@ export function Table({
         setPagCount(getCount(rawList))
         setCurrentPage(0)
         setListPage(1)
-
-        // setFilterOpen(false)
     }
 
     const handleFilterOption = (type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) => {
-        setAppliedFilters((s) => [
-            ...s.filter((x) => x.type !== type),
-            {
-                type,
-                keyName,
-                uniqueName,
-                customValue,
-                referencekey,
-            },
-        ])
+        setAppliedFilters((s) => {
+            const value = [
+                ...s.filter((x) => (x.isDate ? true : x.keyName !== keyName)),
+                {
+                    type,
+                    keyName,
+                    uniqueName,
+                    customValue,
+                    referencekey,
+                },
+            ]
+
+            localStorage.setItem('tableFilters', JSON.stringify(value))
+
+            return value
+        })
     }
 
     const handleFilterReset = () => {
-        const value = Array.isArray(startData) ? startData : get(startData, dataPath)
+        const value = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
         setList(value)
         setAppliedFilters([])
+        localStorage.setItem('tableFilters', JSON.stringify([]))
+    }
+
+    const removeFilter = (uniqueName: string) => {
+        if (uniqueName === 'isDate') setAppliedFilters((s) => s.filter((x) => !x.isDate))
+        else setAppliedFilters((s) => s.filter((x) => x.uniqueName !== uniqueName))
     }
 
     const handleDateFilter = (from: string, to: string, keyName: string) => {
-        setAppliedFilters((s) => [
-            ...s.filter((x) => !x.isDate),
-            {
-                isDate: true,
-                from,
-                to,
-                keyName,
-            },
-        ])
+        setAppliedFilters((s) => {
+            const value = [
+                ...s.filter((x) => !x.isDate),
+                {
+                    isDate: true,
+                    from,
+                    to,
+                    keyName,
+                    id: from + keyName,
+                },
+            ]
+
+            localStorage.setItem('tableFilters', JSON.stringify(value))
+
+            return value
+        })
     }
 
     if (error)
@@ -920,13 +946,34 @@ export function Table({
                                         <>
                                             {x.options ? (
                                                 x.options.map((o) => (
-                                                    <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
-                                                        {/* <h2>{`${f}:${JSON.stringify(o)}`}</h2> */}
+                                                    <ListItemButton
+                                                        sx={{
+                                                            pl: 4,
+                                                            borderBottom: 1,
+                                                            borderColor: '#ebeef2',
+                                                            ...(appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(o)}`) && {
+                                                                bgcolor: '#b7e4c7',
+                                                                ':hover': { bgcolor: '#b7e4c7' },
+                                                            }),
+                                                        }}
+                                                    >
                                                         <ListItemText
                                                             primary={o.name}
                                                             onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(o)}`, o.key, x.referenceKey)}
                                                             sx={{ color: o.color, fontWeight: 600 }}
                                                         />
+                                                        <Box>
+                                                            {appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(o)}`) && (
+                                                                <Tooltip title='Remover'>
+                                                                    <IconButton
+                                                                        sx={{ bgcolor: '#c71c1c', height: '30px', width: '30px', ':hover': { bgcolor: 'red', border: '2px solid #9e2929' } }}
+                                                                        onClick={(e) => removeFilter(`${f}:${JSON.stringify(o)}`)}
+                                                                    >
+                                                                        <Delete sx={{ fill: 'white', transform: 'scale(0.8, 0.8)' }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            )}
+                                                        </Box>
                                                     </ListItemButton>
                                                 ))
                                             ) : x.type === 'date-interval' ? (
@@ -937,24 +984,65 @@ export function Table({
                                                         <DatePicker name='filterDtEnd' title='Até (opcional):' />
 
                                                         <Stack marginTop={2}>
-                                                            <Button type='submit' variant='outlined' startIcon={<CalendarToday />}>
+                                                            <Button type='submit' variant='outlined' startIcon={<CalendarToday />} sx={{ width: '100%' }}>
                                                                 Filtrar por Data
                                                             </Button>
+                                                            <Box>
+                                                                {appliedFilters.filter((x) => x.isDate).length > 0 && (
+                                                                    <Button
+                                                                        startIcon={<Delete sx={{ fill: 'white' }} />}
+                                                                        variant='contained'
+                                                                        color='error'
+                                                                        sx={{ width: '100%', marginTop: 1 }}
+                                                                        onClick={(e) => removeFilter('isDate')}
+                                                                    >
+                                                                        Remover Filtro Data
+                                                                    </Button>
+                                                                )}
+                                                            </Box>
                                                         </Stack>
                                                     </FormProvider>
                                                 </Box>
                                             ) : (
-                                                <ListItemButton sx={{ pl: 4, borderBottom: 1, borderColor: '#ebeef2' }}>
-                                                    {/* <h2>{`${f}:${JSON.stringify(x)}`}</h2> */}
-                                                    <ListItemIcon sx={{ minWidth: '25px' }}>
-                                                        {x.type === 'a-z' || x.type === 'data-a-z' ? (
-                                                            <South transform='scale(0.5)' />
-                                                        ) : x.type === 'z-a' || x.type === 'data-z-a' ? (
-                                                            <North transform='scale(0.5)' />
-                                                        ) : null}
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={x.name} onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(x)}`)} />
-                                                </ListItemButton>
+                                                <Stack
+                                                    direction={'row'}
+                                                    sx={{
+                                                        ...(appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(x)}`) && {
+                                                            bgcolor: '#b7e4c7',
+                                                            ':hover': { bgcolor: '#b7e4c7' },
+                                                        }),
+                                                    }}
+                                                >
+                                                    <ListItemButton
+                                                        sx={{
+                                                            pl: 4,
+                                                            borderBottom: 1,
+                                                            borderColor: '#ebeef2',
+                                                        }}
+                                                        onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(x)}`)}
+                                                    >
+                                                        <ListItemIcon sx={{ minWidth: '25px' }}>
+                                                            {x.type === 'a-z' || x.type === 'data-a-z' ? (
+                                                                <South transform='scale(0.5)' />
+                                                            ) : x.type === 'z-a' || x.type === 'data-z-a' ? (
+                                                                <North transform='scale(0.5)' />
+                                                            ) : null}
+                                                        </ListItemIcon>
+                                                        <ListItemText primary={x.name} />
+                                                    </ListItemButton>
+                                                    <Stack justifyContent='center' marginX={2}>
+                                                        {appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(x)}`) && (
+                                                            <Tooltip title='Remover'>
+                                                                <IconButton
+                                                                    sx={{ bgcolor: '#c71c1c', height: '30px', width: '30px', ':hover': { bgcolor: 'red', border: '2px solid #9e2929' } }}
+                                                                    onClick={(e) => removeFilter(`${f}:${JSON.stringify(x)}`)}
+                                                                >
+                                                                    <Delete sx={{ fill: 'white', transform: 'scale(0.8, 0.8)' }} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )}
+                                                    </Stack>
+                                                </Stack>
                                             )}
                                         </>
                                     ))}
