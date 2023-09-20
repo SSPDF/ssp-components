@@ -507,9 +507,14 @@ export function Table({
     }, [appliedFilters])
 
     const filterBasedOnList = (filteredList: any[]) => {
-        if (filteredList.length === 0) return
-
         let rawList: any[] = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
+        if (filteredList.length === 0) {
+            setList(rawList)
+            setPagCount(getCount(rawList))
+            setCurrentPage(0)
+            setListPage(1)
+            return
+        }
 
         function category(type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) {
             if (type === 'a-z') {
@@ -754,7 +759,14 @@ export function Table({
 
     const removeFilter = (uniqueName: string) => {
         if (uniqueName === 'isDate') setAppliedFilters((s) => s.filter((x) => !x.isDate))
-        else setAppliedFilters((s) => s.filter((x) => x.uniqueName !== uniqueName))
+        else
+            setAppliedFilters((s) => {
+                const value = s.filter((x) => x.uniqueName !== uniqueName)
+
+                localStorage.setItem('tableFilters', JSON.stringify(value))
+
+                return value
+            })
     }
 
     const handleDateFilter = (from: string, to: string, keyName: string) => {
