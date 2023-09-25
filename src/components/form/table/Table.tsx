@@ -31,7 +31,7 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
-import { Add, CalendarToday, Check, Circle, Delete, ExpandLess, ExpandMore, FilterAlt, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import { Add, CalendarToday, Check, Circle, Delete, ExpandLess, ExpandMore, FilterAlt, FilterList, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
 import FormProvider from '../../providers/FormProvider'
 import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
@@ -508,7 +508,32 @@ export function Table({
 
     const filterBasedOnList = (filteredList: any[]) => {
         let rawList: any[] = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
-        if (filteredList.length === 0) {
+
+        if (filteredList.length <= 0 || rawList.length <= 0) {
+            setList(rawList)
+            setPagCount(getCount(rawList))
+            setCurrentPage(0)
+            setListPage(1)
+            return
+        }
+
+        let canContinue = true
+
+        // verificando todas as chaves existem, se a chave não existir, não pode continuar e nao faz nada
+        filteredList
+            .map((x) => x.keyName)
+            .forEach((x) => {
+                if (!canContinue) return
+
+                if (!Object.keys(rawList[0]).includes(x)) {
+                    canContinue = false
+                    return
+                }
+            })
+
+        if (!canContinue) {
+            setAppliedFilters([])
+            localStorage.setItem('tableFilters', JSON.stringify([]))
             setList(rawList)
             setPagCount(getCount(rawList))
             setCurrentPage(0)
@@ -720,7 +745,7 @@ export function Table({
             })
         }
 
-        appliedFilters.map((x) => {
+        appliedFilters.forEach((x) => {
             if (!x.isDate) category(x.type, x.keyName, x.uniqueName, x.customValue, x.referencekey)
             else date(x.from, x.to, x.keyName)
         })
