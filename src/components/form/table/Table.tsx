@@ -78,9 +78,11 @@ export function Table({
     filters = {},
     hideTitleCSV = false,
     filterSeparator = '|',
+    filterStorageName = 'tableFilters',
 }: {
     normalize?: boolean
     csvUpper?: boolean
+    filterStorageName?: string
     removeQuotes?: boolean
     columns: ColumnData[]
     tableName: string
@@ -149,7 +151,7 @@ export function Table({
                         else {
                             setData(j)
                             startData = JSON.parse(JSON.stringify(j))
-                            const oldFilters = localStorage.getItem('tableFilters')
+                            const oldFilters = localStorage.getItem(filterStorageName)
 
                             if (oldFilters) {
                                 const filters = JSON.parse(oldFilters)
@@ -533,7 +535,7 @@ export function Table({
 
         if (!canContinue) {
             setAppliedFilters([])
-            localStorage.setItem('tableFilters', JSON.stringify([]))
+            localStorage.setItem(filterStorageName, JSON.stringify([]))
             setList(rawList)
             setPagCount(getCount(rawList))
             setCurrentPage(0)
@@ -769,7 +771,7 @@ export function Table({
                 },
             ]
 
-            localStorage.setItem('tableFilters', JSON.stringify(value))
+            localStorage.setItem(filterStorageName, JSON.stringify(value))
 
             return value
         })
@@ -779,7 +781,7 @@ export function Table({
         const value = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
         setList(value)
         setAppliedFilters([])
-        localStorage.setItem('tableFilters', JSON.stringify([]))
+        localStorage.setItem(filterStorageName, JSON.stringify([]))
     }
 
     const removeFilter = (uniqueName: string) => {
@@ -788,7 +790,7 @@ export function Table({
             setAppliedFilters((s) => {
                 const value = s.filter((x) => x.uniqueName !== uniqueName)
 
-                localStorage.setItem('tableFilters', JSON.stringify(value))
+                localStorage.setItem(filterStorageName, JSON.stringify(value))
 
                 return value
             })
@@ -807,7 +809,7 @@ export function Table({
                 },
             ]
 
-            localStorage.setItem('tableFilters', JSON.stringify(value))
+            localStorage.setItem(filterStorageName, JSON.stringify(value))
 
             return value
         })
