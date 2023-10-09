@@ -67,10 +67,12 @@ export function Table({
     csvCustomKeyNames = {},
     csvExcludeValidate = (key, value) => false,
     csvButtonTitle = 'Salvar .CSV',
+    csvNoZipText = 'Salvar .CSV',
     csvAllButtonTitle = 'Salvar todos em CSV',
     removeQuotes = false,
     normalize = false,
     csvShowAllButton = false,
+    csvWithoutZip = false,
     itemCount = 10,
     csvUpper = false,
     csvZipFileNamesKey = '',
@@ -87,8 +89,10 @@ export function Table({
     columns: ColumnData[]
     tableName: string
     csvShowAllButton?: boolean
+    csvWithoutZip?: boolean
     csvAllButtonTitle?: string
     csvButtonTitle?: string
+    csvNoZipText?: string
     csvZipFileNamesKey?: string
     generateCsvZip?: boolean
     csvExcludeValidate?: (key: string, value: string | number) => boolean
@@ -301,7 +305,7 @@ export function Table({
 
     // download file
     const downloadCSV = useCallback(
-        (e: React.MouseEvent) => {
+        (e: React.MouseEvent, zip = false) => {
             e.preventDefault()
 
             if (list.length <= 0) return
@@ -310,7 +314,7 @@ export function Table({
             const keys = originalKeys.filter((k) => !csvExcludeKeys.includes(k))
             const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
 
-            if (generateCsvZip) {
+            if (generateCsvZip && zip) {
                 const zip = new JSZip()
 
                 const obj: any = {}
@@ -928,6 +932,17 @@ export function Table({
                                 justifyContent='flex-end'
                                 spacing={1}
                             >
+                                {csvWithoutZip && (
+                                    <Button
+                                        startIcon={<FileDownloadIcon />}
+                                        variant='contained'
+                                        size='small'
+                                        onClick={downloadCSV}
+                                        sx={{ backgroundColor: '#5a88b0', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
+                                    >
+                                        {csvButtonTitle}
+                                    </Button>
+                                )}
                                 {csvShowAllButton && (
                                     <Button
                                         startIcon={<FileDownloadIcon />}
@@ -943,7 +958,7 @@ export function Table({
                                     startIcon={<FileDownloadIcon />}
                                     variant='contained'
                                     size='small'
-                                    onClick={downloadCSV}
+                                    onClick={(e) => downloadCSV(e, true)}
                                     sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
                                 >
                                     {csvButtonTitle}

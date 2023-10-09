@@ -50,6 +50,7 @@ export const Base: Story = {
         columnSize: 6,
         itemCount: 20,
         csvShowAllButton: true,
+        csvWithoutZip: true,
         action: (data) => (
             <Stack direction='row' spacing={1.5}>
                 <Paper elevation={12} sx={{ '& a': { textDecoration: 'none' } }}>
