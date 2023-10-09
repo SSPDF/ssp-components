@@ -940,7 +940,7 @@ export function Table({
                                         onClick={downloadCSV}
                                         sx={{ backgroundColor: '#5a88b0', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
                                     >
-                                        {csvButtonTitle}
+                                        {csvNoZipText}
                                     </Button>
                                 )}
                                 {csvShowAllButton && (
