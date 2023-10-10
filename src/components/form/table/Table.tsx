@@ -443,7 +443,7 @@ export function Table({
                             if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
 
                             if (typeof x[k] === 'string') {
-                                let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+                                let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
 
                                 item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
