@@ -63,6 +63,7 @@ export function Table({
     isPublic = false,
     statusKeyName = '',
     csvExcludeKeys = [],
+    csvExcludeKeysCSV = [],
     csvExcludeKeysAll = [],
     csvCustomKeyNames = {},
     csvExcludeValidate = (key, value) => false,
@@ -79,6 +80,7 @@ export function Table({
     generateCsvZip = false,
     filters = {},
     hideTitleCSV = false,
+    csvExcludeUpper = [],
     filterSeparator = '|',
     filterStorageName = 'tableFilters',
 }: {
@@ -89,6 +91,7 @@ export function Table({
     columns: ColumnData[]
     tableName: string
     csvShowAllButton?: boolean
+    csvExcludeUpper?: string[]
     csvWithoutZip?: boolean
     csvAllButtonTitle?: string
     csvButtonTitle?: string
@@ -99,6 +102,7 @@ export function Table({
     csvCustomKeyNames?: {
         [key: string]: string
     }
+    csvExcludeKeysCSV?: string[]
     csvExcludeKeys?: string[]
     hideTitleCSV?: boolean
     csvExcludeKeysAll?: string[]
@@ -311,10 +315,10 @@ export function Table({
             if (list.length <= 0) return
 
             const originalKeys = Object.keys(list[0])
-            const keys = originalKeys.filter((k) => !csvExcludeKeys.includes(k))
-            const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
 
             if (generateCsvZip && zip) {
+                const keys = originalKeys.filter((k) => !csvExcludeKeys.includes(k))
+                const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
                 const zip = new JSZip()
 
                 const obj: any = {}
@@ -374,6 +378,8 @@ export function Table({
                     link.click()
                 })
             } else {
+                const keys = originalKeys.filter((k) => !csvExcludeKeysCSV.includes(k))
+                const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
                 const values: string[] = []
 
                 list.forEach((x: any) => {
@@ -393,7 +399,7 @@ export function Table({
                                 if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
 
                                 if (typeof x[k] === 'string') {
-                                    let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
 
                                     item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
