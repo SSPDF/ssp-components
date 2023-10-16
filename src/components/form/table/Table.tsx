@@ -589,20 +589,15 @@ export function Table({
             } //
             else if (type === 'items') {
                 rawList = rawList
-                    .filter((x) => x[keyName].toLowerCase() === customValue)
+                    .filter((x) => x[keyName].toLowerCase().includes(customValue))
                     .sort((a, b) => {
                         const aValue = a[keyName]
                         const bValue = b[keyName]
                         const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                         const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
-                        // const aRKey = a[referencekey ?? '']
-                        // const bRKey = b[referencekey ?? '']
-
-                        // if (valueA === customValue) console.log(valueA, valueB, aRKey, bRKey)
-
-                        if (valueA === customValue) return -1
-                        if (valueB === customValue) return 1
+                        if (valueA.includes(customValue)) return -1
+                        if (valueB.includes(customValue)) return 1
 
                         if (valueA < valueB) {
                             return -1

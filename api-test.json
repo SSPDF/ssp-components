@@ -30,7 +30,7 @@
         }
     },
     "table": [
-        { "id": 1, "name": "Teste 1", "status": "R", "date": "07/08/2023 - 16:20" },
+        { "id": 1, "name": "Teste 1", "status": "R X", "date": "07/08/2023 - 16:20" },
         { "id": 2, "name": "Teste 2", "status": "FP", "date": "02/08/2023 - 16:20" },
         { "id": 3, "name": "Teste 3", "status": "FP", "date": "02/08/2023 - 16:20" },
         { "id": 4, "name": "Teste 4", "status": "C", "date": "02/08/2023 - 16:20" },
