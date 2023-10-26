@@ -30,8 +30,6 @@ import { OAuthProvider, cookieName as AUTH_COOKIE_NAME } from './components/prov
 import { AuthContext } from './context/auth'
 import { FormContext } from './context/form'
 
-import { Login } from './components/page/Login'
-
 import { Category } from './components/detalhes/Category'
 import { Field } from './components/detalhes/Field'
 import { FieldLabel } from './components/detalhes/FieldLabel'
@@ -77,5 +75,4 @@ export {
     Field,
     FieldLabel,
     File,
-    Login as LoginPage
 }
