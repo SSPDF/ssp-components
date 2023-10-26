@@ -145,5 +145,5 @@ export function OAuthProvider({
         })
     }
 
-    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, adLogin: () => {}, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData, type: 'govbr' }}>{children}</AuthContext.Provider>
 }

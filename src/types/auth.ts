@@ -1,9 +1,12 @@
-export interface User {
-    name: string
-    token: string
-    roles?: number[]
+import { KeycloakTokenParsed } from "keycloak-js"
+
+export interface User extends KeycloakTokenParsed {
+    name?: string
+    token: string | undefined
+    roles?: number[] | string[]
     image?: string
 }
+
 
 export interface AuthData {
     isAuth: boolean
@@ -68,7 +71,6 @@ export interface AuthReturnData {
     user: User | null | undefined
     userLoaded: boolean
     login: () => void
-    adLogin: (loginURL: string, data: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setError: React.Dispatch<React.SetStateAction<boolean>>, captchaToken: string) => void
     saveUserData: (token: AuthReturn) => void
     logout: () => void
 }

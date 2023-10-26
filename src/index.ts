@@ -26,7 +26,6 @@ import NavBar from './components/navbar/NavBar'
 
 import FormProvider from './components/providers/FormProvider'
 import { OAuthProvider, cookieName as AUTH_COOKIE_NAME } from './components/providers/OAuthProvider'
-import { LoginProvider } from './components/providers/LoginProvider'
 
 import { AuthContext } from './context/auth'
 import { FormContext } from './context/form'
@@ -40,6 +39,8 @@ import { File } from './components/detalhes/File'
 
 import CheckBoxAdditional from './components/form/checkbox/CheckBoxAdditional'
 import RequiredCheckBoxGroup from './components/form/checkbox/RequiredCheckBoxValidator'
+
+import { KeycloakAuthProvider } from './components/providers/KeycloakAuthProvider'
 
 export {
     CheckBox,
@@ -66,7 +67,7 @@ export {
     AUTH_COOKIE_NAME,
     AuthContext,
     FormContext,
-    LoginProvider,
+    KeycloakAuthProvider,
     CheckBoxAdditional,
 
     RequiredCheckBoxGroup,

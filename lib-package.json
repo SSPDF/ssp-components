@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.148",
+    "version": "0.0.149",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -15,7 +15,8 @@
         "dayjs": "^1.11.7",
         "lodash.hasin": "^4.5.2",
         "react-google-recaptcha": "^2.1.0",
-        "jszip": "^3.10.1"
+        "jszip": "^3.10.1",
+        "keycloak-js": "^22.0.4"
     },
     "devDependencies": {
         "@types/lodash.get": "^4.4.7",

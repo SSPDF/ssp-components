@@ -24,6 +24,7 @@
         "json-server": "^0.17.3",
         "jszip": "^3.10.1",
         "jwt-decode": "^3.1.2",
+        "keycloak-js": "^22.0.4",
         "lodash.get": "^4.4.2",
         "lodash.hasin": "^4.5.2",
         "next": "^13.3.0",
