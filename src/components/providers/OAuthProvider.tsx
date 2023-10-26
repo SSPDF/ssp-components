@@ -3,14 +3,7 @@ import jwt_decode from 'jwt-decode'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AuthContext } from '../../context/auth'
-import { AuthClaims, AuthReturn, AuthSspToken } from '../../types/auth'
-
-interface User {
-    name: string
-    token: string
-    roles?: number[]
-    image?: string
-}
+import { AuthClaims, AuthReturn, AuthSspToken, User } from '../../types/auth'
 
 interface OiDcConfig {
     client_id: string
