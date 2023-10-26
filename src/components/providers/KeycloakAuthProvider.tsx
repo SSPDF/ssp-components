@@ -10,7 +10,7 @@ import { User } from '../../types/auth'
 export const cookieName = 'nextauth.token'
 const userImgName = 'user-data.img'
 
-export function KeycloakAuthProvider({ url, realm, clientId, children }: { url: string; realm: string; clientId: string; children: JSX.Element | JSX.Element[] }) {
+export function KeycloakAuthProvider({ url, realm, clientId, children, type = 'ad' }: { url: string; realm: string; clientId: string; children: JSX.Element | JSX.Element[]; type?: 'govbr' | 'ad' }) {
     const [user, setUser] = useState<User | null | undefined>()
     const [userLoaded, setUserLoaded] = useState(false)
 
@@ -88,5 +88,5 @@ export function KeycloakAuthProvider({ url, realm, clientId, children }: { url: 
         localStorage.removeItem(userImgName)
     }
 
-    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData: () => {}, type: 'ad' }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData: () => {}, type }}>{children}</AuthContext.Provider>
 }
