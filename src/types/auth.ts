@@ -2,7 +2,7 @@ import { KeycloakTokenParsed } from "keycloak-js"
 
 export interface User extends KeycloakTokenParsed {
     token: string | undefined
-    roles: number[] | string[]
+    roles: any[]
     image?: string
 }
 
