@@ -91,9 +91,10 @@ export default function FetchAutoComplete({
         })
     }
 
-    function handleAutoCompleteChange(value: any) {
+    function handleAutoCompleteChange(element: any, value: any) {
         context?.formSetValue(name, value ? value.id : '')
         onChange(value ? value.id : -1)
+        console.log('Elemento: ', element)
     }
 
     if (defaultValue && list.length <= 0 && !dValue)
@@ -121,7 +122,7 @@ export default function FetchAutoComplete({
                 options={list}
                 defaultValue={dValue}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
-                onChange={(e, v) => handleAutoCompleteChange(v)}
+                onChange={(e, v) => handleAutoCompleteChange(e.currentTarget, v)}
                 renderInput={(params) => (
                     <TextField
                         {...params}
