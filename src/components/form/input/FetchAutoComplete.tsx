@@ -94,7 +94,6 @@ export default function FetchAutoComplete({
     function handleAutoCompleteChange(element: any, value: any) {
         context?.formSetValue(name, value ? value.id : '')
         onChange(value ? value.id : -1)
-        console.log('Elemento: ', element)
     }
 
     if (defaultValue && list.length <= 0 && !dValue)
@@ -133,6 +132,11 @@ export default function FetchAutoComplete({
                         required
                         error={get(context?.errors, name!) ? true : false}
                         helperText={get(context?.errors, name!)?.message as string}
+                        onChange={(e) => {
+                            if (context) {
+                                context.formRA = e.currentTarget.value
+                            }
+                        }}
                     />
                 )}
                 size='small'
