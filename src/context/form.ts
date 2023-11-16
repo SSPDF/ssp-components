@@ -22,5 +22,5 @@ export const FormContext = createContext<{
     >
     errors: FieldErrors<FieldValues>
     submiting: boolean
-    formRA: string
+    formRA?: string
 } | null>(null)
