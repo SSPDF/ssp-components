@@ -163,7 +163,7 @@ export default function NavBar({
                                         </Box>
                                         <Stack direction='row' spacing={0.4} alignItems='center' onClick={(e) => setAvatarAnchor(e.currentTarget as any)} sx={{ userSelect: 'none' }}>
                                             <Typography>Olá,</Typography>
-                                            <Typography fontWeight={600}>{user.name}</Typography>
+                                            <Typography fontWeight={600}>{user.given_name}</Typography>
                                             <KeyboardArrowDownIcon />
                                         </Stack>
                                     </Stack>
