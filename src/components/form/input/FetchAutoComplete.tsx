@@ -1,9 +1,8 @@
-import { Autocomplete, Grid, InputBase, InputLabel, TextField, useMediaQuery, useTheme } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import { FormContext } from '../../../context/form'
-import { AuthContext } from '../../../context/auth'
+import { Autocomplete, Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
-import { Input } from './Input'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../../../context/auth'
+import { FormContext } from '../../../context/form'
 
 export default function FetchAutoComplete({
     name,
@@ -92,6 +91,10 @@ export default function FetchAutoComplete({
     }
 
     function handleAutoCompleteChange(element: any, value: any) {
+        if (context) {
+            context.formRA = element.textContent
+        }
+
         context?.formSetValue(name, value ? value.id : '')
         onChange(value ? value.id : -1)
     }
@@ -132,11 +135,6 @@ export default function FetchAutoComplete({
                         required
                         error={get(context?.errors, name!) ? true : false}
                         helperText={get(context?.errors, name!)?.message as string}
-                        onChange={(e) => {
-                            if (context) {
-                                context.formRA = e.currentTarget.value
-                            }
-                        }}
                     />
                 )}
                 size='small'
