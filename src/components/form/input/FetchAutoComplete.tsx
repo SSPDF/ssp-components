@@ -90,11 +90,7 @@ export default function FetchAutoComplete({
         })
     }
 
-    function handleAutoCompleteChange(element: any, value: any) {
-        if (context) {
-            context.formRA = element.textContent
-        }
-
+    function handleAutoCompleteChange(value: any) {
         context?.formSetValue(name, value ? value.id : '')
         onChange(value ? value.id : -1)
     }
@@ -124,7 +120,7 @@ export default function FetchAutoComplete({
                 options={list}
                 defaultValue={dValue}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
-                onChange={(e, v) => handleAutoCompleteChange(e.currentTarget, v)}
+                onChange={(e, v) => handleAutoCompleteChange(v)}
                 renderInput={(params) => (
                     <TextField
                         {...params}
