@@ -63,7 +63,7 @@ export function OAuthProvider({
                 const user: AuthClaims = jwt_decode(token)
                 const img = localStorage.getItem(userImgName) as string
 
-                setUser({ name: user.name, image: img ?? '', roles: user.roles.map((x) => x.code), token })
+                setUser({ name: user.given_name, image: img ?? '', roles: user.roles.map((x) => x.code), token })
                 setUserLoaded(true)
             }
         })

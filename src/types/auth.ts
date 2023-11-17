@@ -29,6 +29,7 @@ export interface AuthClaims {
     auth_time: number,
     scope: string[],
     name: string,
+    given_name: string,
     phone_number: string,
     exp: number,
     iat: number,
