@@ -4,9 +4,11 @@ import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
 
 function getChildrenNames(children: JSX.Element[]): string[] {
+    console.log('ENTROU NO getChildrenNames')
     let arr: string[] = []
 
     children.forEach((x) => {
+        console.log('ENTROU NO forEach DO getChildrenNames - VALOR DE x: ', x)
         if (!x.props) return
 
         if (x.props.children) {
@@ -25,22 +27,25 @@ function getChildrenNames(children: JSX.Element[]): string[] {
 }
 
 export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: JSX.Element | JSX.Element[]; customText?: string }) {
+    console.log('ENTROU NO RequiredCheckBoxGroup - VALOR DE props: ', props)
     const context = useContext(FormContext)!
 
     return (
         <Grid container sx={{ border: get(context.errors, props.name) ? '2px solid #a51c30' : '', padding: 1, borderRadius: 2 }}>
             <input
+                key={1}
                 type='text'
                 {...context.formRegister(props.name, {
-                    validate: (v, f) => {
+                    validate: (v, i) => {
                         const names = getChildrenNames(Array.isArray(props.children) ? props.children : [props.children])
 
                         let canContinue = false
 
-                        names.forEach((x) => {
+                        names.forEach((x, i) => {
                             const nameValue = context.formGetValues(x)
 
                             if (nameValue) canContinue = true
+                            console.log(`ENTROU NO forEach DO return - VALOR DE names: ${names} - VALOR ATUAL: ${x} - INDEX: ${i}`)
                         })
 
                         if (!canContinue) return customText
