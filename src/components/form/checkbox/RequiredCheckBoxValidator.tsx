@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { FormContext } from '../../../context/form'
 import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
+import { ElevatorSharp } from '@mui/icons-material'
 
 function getChildrenNames(children: JSX.Element[]): string[] {
     console.log('ENTROU NO getChildrenNames')
@@ -27,7 +28,6 @@ function getChildrenNames(children: JSX.Element[]): string[] {
 }
 
 export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: JSX.Element | JSX.Element[]; customText?: string }) {
-    console.log('ENTROU NO RequiredCheckBoxGroup - VALOR DE props: ', props)
     const context = useContext(FormContext)!
 
     return (
@@ -42,9 +42,23 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                         let canContinue = false
 
                         names.forEach((x, i) => {
+                            
                             const nameValue = context.formGetValues(x)
 
-                            if (nameValue) canContinue = true
+                            if (nameValue) {
+                                canContinue = true
+                            } else {
+                                console.log("Erro validação");
+                                console.log("names", names);
+                                console.log("x", x);
+                                console.log('i', i)
+                                console.log("nameValue", nameValue);
+
+
+                                console.log('Erro validação')
+
+                            }
+
                             console.log(`ENTROU NO forEach DO return - VALOR DE names: ${names} - VALOR ATUAL: ${x} - INDEX: ${i}`)
                         })
 
