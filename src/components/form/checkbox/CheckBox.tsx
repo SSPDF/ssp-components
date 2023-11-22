@@ -28,7 +28,7 @@ export default function CheckBox({
     const context = useContext(FormContext)
 
     const onClick = useCallback(
-        (e: React.SyntheticEvent<Element, Event>, value: any) => {
+        (e: React.SyntheticEvent<Element, Event>) => {
             context?.formSetValue(name!, !context?.formGetValues(name))
         },
         [context, name]
