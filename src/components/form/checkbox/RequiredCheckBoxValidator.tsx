@@ -47,7 +47,8 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
 
                             if (nameValue) {
                                 canContinue = true
-                            } else {
+                            } 
+                            console.log("todos os value", context.formGetValues())
                                 console.log("Erro validação");
                                 console.log("names", names);
                                 console.log("x", x);
@@ -57,7 +58,7 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
 
                                 console.log('Erro validação')
 
-                            }
+                            
 
                             console.log(`ENTROU NO forEach DO return - VALOR DE names: ${names} - VALOR ATUAL: ${x} - INDEX: ${i}`)
                         })

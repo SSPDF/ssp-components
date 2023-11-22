@@ -47,7 +47,7 @@ export const Base: Story = {
                 {/* <SwitchWatch switchId='0.ss' unregisterNameList={['ata']}>
                     <Input name='ata' type='input' customPlaceholder='AAA' required />
                 </SwitchWatch> */}
-
+                {/* 
                 <CheckBoxAdditional
                     name='xxx'
                     nameList={['0.haha']}
@@ -58,7 +58,7 @@ export const Base: Story = {
                     }
                 >
                     <CheckBox name='ronald' title='Teste' />
-                </CheckBoxAdditional>
+                </CheckBoxAdditional> */}
 
                 {/* 
                 <SwitchWatch switchId='0.ronald' unregisterNameList={['0.ronald']} invert>
@@ -79,10 +79,35 @@ export const Base: Story = {
                 >
                     <CheckBox name='ronald' title='Teste' />
                 </CheckBoxAdditional> */}
-                {/* 
-                <RequiredCheckBoxGroup name='xxx'>
+
+                {/* <RequiredCheckBoxGroup name='xxx'>
                     <CheckBoxWarning name='dsa' title='Ronald mcondal' customWarning={<Input name='dsadsa' type='input' title='SSSS' />} />
                 </RequiredCheckBoxGroup> */}
+                <RequiredCheckBoxGroup name='primeiroCheckboxGroup' key='blablsdsdcvrbtbtdsdabl'>
+                    <CheckBoxWarning
+                        key='blablsdsdsdabl'
+                        name='jsNaturezaEvento.atoPublico'
+                        title='Ato público'
+                        md={6}
+                        customWarning={
+                            <Box color='black'>
+                                <RequiredCheckBoxGroup name='0.atoChecks' customText='Você deve aceitar os termos de Ato Público' key='blablabl'>
+                                    <Typography component='span' fontWeight={600} sx={{ cursor: 'pointer' }} marginTop={1}>
+                                        <Typography display='inline' sx={{ color: 'black', textDecoration: 'none' }}>
+                                            Ler
+                                        </Typography>{' '}
+                                        <Typography display='inline' sx={{ color: 'blue', textDecoration: 'underline' }}>
+                                            Notificação
+                                        </Typography>
+                                        .
+                                    </Typography>
+                                    <CheckBox  name='0.termoAto' onClick={(e)=>console.log(e)}
+                                        title = 'Li e concordo com os termos acima definido pela SOPI e SSP.' key = 'Deus me ajuda' />
+                                </RequiredCheckBoxGroup>
+                            </Box>
+                        }
+                    />
+                </RequiredCheckBoxGroup>
                 {/* <FileUpload apiURL='http://localhost:3000/files' name='arq' tipoArquivo='19' title='Teste' required /> */}
                 {/* <Switch name='ata' defaultChecked={true} />
                 <SwitchWatch switchId='0.ata' unregisterNameList={['0.teste1']}>

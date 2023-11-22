@@ -12,6 +12,7 @@ export default function CheckBox({
     sm,
     md,
     onChange,
+    onClick,
 }: {
     name: string
     title: string | JSX.Element
@@ -20,12 +21,13 @@ export default function CheckBox({
     xs?: number
     sm?: number
     md?: number
+    onClick?: (e: React.SyntheticEvent<Element, Event>) => void
 }) {
     const context = useContext(FormContext)
 
     return (
         <Grid item {...{ xs, sm, md }}>
-            <FormControlLabel control={<Checkbox size='small' defaultChecked={defaultValue} />} label={title} {...context?.formRegister(name!)} onChange={onChange} />
+            <FormControlLabel control={<Checkbox size='small' defaultChecked={defaultValue} />} label={title} {...context?.formRegister(name!)} onChange={onChange} onClick={onClick}/>
         </Grid>
     )
 }
