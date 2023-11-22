@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel, Grid } from '@mui/material'
-import { useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
 
 import React from 'react'
@@ -12,7 +12,8 @@ export default function CheckBox({
     sm,
     md,
     onChange,
-    onClick,
+
+
 }: {
     name: string
     title: string | JSX.Element
@@ -21,13 +22,21 @@ export default function CheckBox({
     xs?: number
     sm?: number
     md?: number
-    onClick?: (e: React.SyntheticEvent<Element, Event>) => void
+
+   
 }) {
     const context = useContext(FormContext)
 
+    const onClick = useCallback(
+        (e: React.SyntheticEvent<Element, Event>, value: any) => {
+            context?.formSetValue(name!, !context?.formGetValues(name))
+        },
+        [context, name]
+    )
+
     return (
         <Grid item {...{ xs, sm, md }}>
-            <FormControlLabel control={<Checkbox size='small' defaultChecked={defaultValue} />} label={title} {...context?.formRegister(name!)} onChange={onChange} onClick={onClick}/>
+            <FormControlLabel control={<Checkbox size='small' defaultChecked={defaultValue} />} label={title} {...context?.formRegister(name!)} onChange={onChange} onClick={onClick} />
         </Grid>
     )
 }
