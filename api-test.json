@@ -30,7 +30,17 @@
         }
     },
     "table": [
-        { "id": 1, "name": "Teste 1", "status": "R X", "date": "07/08/2023 - 16:20" },
+        { "id": 1, "name": "Teste 1", "status": "R X", "date": "07/08/2023 - 16:20", "jsNaturezaEvento": {
+            "feirasExposicoes": true,
+            "carnavalesco": false,
+            "shows": false,
+            "religioso": false,
+            "atoPublico": false,
+            "cultural": false,
+            "social": false,
+            "corporativo": false,
+            "promocional": false,
+            "semFinsLucrativos": false } },
         { "id": 2, "name": "Teste 2", "status": "FP", "date": "02/08/2023 - 16:20" },
         { "id": 3, "name": "Teste 3", "status": "FP", "date": "02/08/2023 - 16:20" },
         { "id": 4, "name": "Teste 4", "status": "C", "date": "02/08/2023 - 16:20" },
@@ -39,10 +49,43 @@
         { "id": 7, "name": "Teste 7", "status": "A", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
         { "id": 8, "name": "Teste 8", "status": "P", "date": "07/08/2023 - 16:20" },
         { "id": 9, "name": "Teste 9", "status": "A", "date": "07/08/2023 - 16:20" },
-        { "id": 10, "name": "Teste 10", "status": "R", "date": "07/08/2023 - 16:20" },
+        { "id": 10, "name": "Teste 10", "status": "R", "date": "07/08/2023 - 16:20",  "jsNaturezaEvento": {
+            "feirasExposicoes": true,
+            "shows": true,
+            "religioso": true,
+            "atoPublico": true,
+            "cultural": true,
+            "social": true,
+            "corporativo": true,
+            "promocional": true,
+            "semFinsLucrativos": true,
+            "carnavalesco": true,
+            "esportivo": {
+              "ciclismo": true,
+              "corrida": true,
+              "futebol": false,
+              "outros": false
+            }
+          } },
         { "id": 11, "name": "Teste 11", "status": "R", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
         { "id": 12, "name": "Teste 12", "status": "A", "date": "07/08/2023 - 16:20" },
-        { "id": 13, "name": "Teste 13", "status": "R", "date": "07/08/2023 - 16:20" },
+        { "id": 13, "name": "Teste 13", "status": "R", "date": "07/08/2023 - 16:20", "jsNaturezaEvento": {
+            "feirasExposicoes": false,
+            "shows": false,
+            "religioso": true,
+            "atoPublico": false,
+            "cultural": false,
+            "social": false,
+            "corporativo": false,
+            "promocional": false,
+            "semFinsLucrativos": false,
+            "carnavalesco": {
+              "asaNorte": false,
+              "asaSul": true,
+              "parqueDaCidade": true,
+              "iberoAmericano": false
+            }
+          } },
         { "id": 14, "name": "Teste 14", "status": "PA", "date": "07/08/2023 - 16:20" },
         { "id": 15, "name": "Teste 15", "status": "PA", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
         { "id": 16, "name": "Teste 16", "status": "PA", "date": "09/08/2023 - 16:20" },

@@ -313,7 +313,7 @@ export function Table({
             e.preventDefault()
 
             if (list.length <= 0) return
-
+            
             const originalKeys = Object.keys(list[0])
 
             if (generateCsvZip && zip) {
@@ -378,6 +378,7 @@ export function Table({
                     link.click()
                 })
             } else {
+                
                 const keys = originalKeys.filter((k) => !csvExcludeKeysCSV.includes(k))
                 const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
                 const values: string[] = []
@@ -404,6 +405,18 @@ export function Table({
                                     item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
                                     return removeQuotes ? `${item}` : `"${item}"`
+                                } else if (
+                                    typeof x[k] === 'object' &&
+                                    !Array.isArray(x[k]) &&
+                                    x[k] !== null
+                                ) {
+                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1); // k: label (Ex.: jsNaturezaEvento)
+                               
+                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
+
+                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+                                    return removeQuotes ? `${item}` : `"${item}"`
                                 }
 
                                 return x[k]
@@ -426,10 +439,39 @@ export function Table({
         [list]
     )
 
+    function transformArrayObjectInString(o: Object){
+
+        let arrString = [];
+
+        if (
+            typeof o === 'object' &&
+            !Array.isArray(o) &&
+            o !== null
+        ) {    
+            for (let [key, value] of Object.entries(o))
+            {
+                if (
+                    typeof value === 'object' &&
+                    !Array.isArray(value) &&
+                    value !== null
+                ) {
+                    arrString.push(key + ": " + transformArrayObjectInString(value)); 
+                } else {
+                    if(value){ // Is true
+                        arrString.push(key); 
+                    }  
+                }
+            }
+        }
+
+        return "["+arrString.join(' - ')+"]";
+    };
+    
+
     const downloadCSVAll = useCallback(
         (e: React.MouseEvent) => {
             e.preventDefault()
-
+            
             if (list.length <= 0) return
 
             const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeysAll.includes(k))
