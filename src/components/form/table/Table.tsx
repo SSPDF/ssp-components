@@ -439,7 +439,7 @@ export function Table({
         [list]
     )
 
-    function transformArrayObjectInString(o: Object){
+    function transformArrayObjectInString(o: Object): String{
 
         let arrString = [];
 
