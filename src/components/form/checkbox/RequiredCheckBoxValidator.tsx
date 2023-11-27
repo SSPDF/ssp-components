@@ -5,11 +5,9 @@ import get from 'lodash.get'
 import { ElevatorSharp } from '@mui/icons-material'
 
 function getChildrenNames(children: JSX.Element[]): string[] {
-    console.log('ENTROU NO getChildrenNames')
     let arr: string[] = []
 
     children.forEach((x) => {
-        console.log('ENTROU NO forEach DO getChildrenNames - VALOR DE x: ', x)
         if (!x.props) return
 
         if (x.props.children) {
@@ -42,25 +40,19 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                         let canContinue = false
 
                         names.forEach((x, i) => {
-                            
                             const nameValue = context.formGetValues(x)
 
                             if (nameValue) {
                                 canContinue = true
-                            } 
-                            console.log("todos os value", context.formGetValues())
-                                console.log("Erro validação");
-                                console.log("names", names);
-                                console.log("x", x);
-                                console.log('i', i)
-                                console.log("nameValue", nameValue);
+                            }
+                            console.log('todos os value', context.formGetValues())
+                            console.log('Erro validação')
+                            console.log('names', names)
+                            console.log('x', x)
+                            console.log('i', i)
+                            console.log('nameValue', nameValue)
 
-
-                                console.log('Erro validação')
-
-                            
-
-                            console.log(`ENTROU NO forEach DO return - VALOR DE names: ${names} - VALOR ATUAL: ${x} - INDEX: ${i}`)
+                            console.log('Erro validação')
                         })
 
                         if (!canContinue) return customText
