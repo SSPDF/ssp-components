@@ -354,6 +354,18 @@ export function Table({
                                         item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
                                         return removeQuotes ? `${item}` : `"${item}"`
+                                    } else if (
+                                        typeof x[k] === 'object' &&
+                                        !Array.isArray(x[k]) &&
+                                        x[k] !== null
+                                    ) {
+                                        let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1); // k: label (Ex.: jsNaturezaEvento)
+                                   
+                                        let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
+    
+                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+    
+                                        return removeQuotes ? `${item}` : `"${item}"`
                                     }
 
                                     return x[k]
@@ -486,6 +498,18 @@ export function Table({
 
                             if (typeof x[k] === 'string') {
                                 let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
+
+                                item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+                                return removeQuotes ? `${item}` : `"${item}"`
+                            }else if (
+                                typeof x[k] === 'object' &&
+                                !Array.isArray(x[k]) &&
+                                x[k] !== null
+                            ) {
+                                let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1); // k: label (Ex.: jsNaturezaEvento)
+                           
+                                let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
                                 item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
