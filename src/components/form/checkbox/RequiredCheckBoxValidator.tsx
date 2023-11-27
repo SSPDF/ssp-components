@@ -45,14 +45,7 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                             if (nameValue) {
                                 canContinue = true
                             }
-                            console.log('todos os value', context.formGetValues())
-                            console.log('Erro validação')
-                            console.log('names', names)
-                            console.log('x', x)
-                            console.log('i', i)
-                            console.log('nameValue', nameValue)
-
-                            console.log('Erro validação')
+                       
                         })
 
                         if (!canContinue) return customText

@@ -332,8 +332,6 @@ export function Table({
                 Object.keys(obj).forEach((objKey: string) => {
                     const values: string[] = []
 
-                    console.log("===== downloadCSV ==== 1");
-
                     obj[objKey].forEach((x: any) => {
                         let include = true
 
@@ -347,10 +345,6 @@ export function Table({
                         if (include) {
                             const value = keys
                                 .map((k: string) => {
-
-                                    console.log(" DADOS 1 ");
-                                    console.log(x);
-
 
                                     if (k === 'tbRa') return x[k]['NO_CIDADE']
                                     if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
@@ -402,8 +396,6 @@ export function Table({
                 const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
                 const values: string[] = []
 
-                console.log("===== downloadCSV ==== 2");
-
                 list.forEach((x: any) => {
                     let include = true
 
@@ -417,10 +409,6 @@ export function Table({
                     if (include) {
                         const value = keys
                             .map((k: string) => {
-
-                                console.log(" DADOS 2 ");
-                                console.log(x);
-
 
                                 if (k === 'tbRa') return x[k]['NO_CIDADE']
                                 if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
@@ -503,16 +491,10 @@ export function Table({
             const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeysAll.includes(k))
             const header = keys.join(',') + '\n'
 
-            console.log("===== downloadCSVAll ==== 3");
-
             const values = list
                 .map((x: any) => {
                     return keys
                         .map((k: string) => {
-
-                            console.log(" DADOS 3 ");
-                            console.log(x);
-
 
                             if (k === 'tbRa') return x[k]['NO_CIDADE']
                             if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
