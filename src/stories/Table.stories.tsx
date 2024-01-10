@@ -18,13 +18,14 @@ type Story = StoryObj<typeof Table>
 export const Base: Story = {
     args: {
         fetchFunc: () => fetch('http://localhost:7171/table'),
+
         csv: {
             fileName: 'Exemplo',
         },
         csvCustomKeyNames: {
             title: 'RONALD MCDONALD',
         },
-        isPublic: true,
+        isPublic: false,
         columns: [
             {
                 keyName: 'id',

@@ -2,10 +2,16 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import SaveIcon from '@mui/icons-material/Save'
 import { LoadingButton } from '@mui/lab'
-import { Alert, Box, Button, MobileStepper, Snackbar, Typography, useMediaQuery, useTheme } from '@mui/material'
-import React, { FormEvent, ReactElement, useContext, useState } from 'react'
+import { Alert, Box, Button, MobileStepper, Snackbar, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import React, { FormEvent, ReactElement, useContext, useRef, useState } from 'react'
 import { FormContext } from '../../../context/form'
 import { FieldValues } from 'react-hook-form'
+import { StepperBlock } from './StepperBlock'
+import { Input } from '../input/Input'
+import FetchAutoComplete from '../input/FetchAutoComplete'
+import RequiredCheckBoxGroup from '../checkbox/RequiredCheckBoxValidator'
+import CheckBox from '../checkbox/CheckBox'
+import Table from '../table/Table'
 
 const getKeys = (values: any, id: number) => {
     if (!values || Object.keys(values).length <= 0) return []
@@ -17,9 +23,300 @@ const getKeys = (values: any, id: number) => {
     return keys
 }
 
-export function Stepper({ debugLog = false, ...props }: { children: ReactElement | ReactElement[]; debugData?: (data: FieldValues) => void; debugLog?: boolean }) {
+function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export function Teste() {
+    return (
+        <>
+            <Table
+                columnSize={11}
+                action={() => <></>}
+                tableName='Evento'
+                multipleDataPath='dtTableArr'
+                csv={{ fileName: 'Eventos' }}
+                isPublic={true}
+                columns={[
+                    {
+                        keyName: 'coSeqEventoExterno',
+                        title: 'Protocolo',
+                    },
+                    {
+                        keyName: 'noEvento',
+                        title: 'Nome',
+                    },
+                    {
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
+                        size: 2,
+                    },
+                    {
+                        keyName: 'dsEnderecoLocal',
+                        title: 'Local',
+                    },
+                    {
+                        keyName: 'noTableRa',
+                        title: 'RA',
+                    },
+                    {
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
+                    },
+                    {
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                    },
+                ]}
+                statusKeyName='stEventoExterno'
+                csvButtonTitle='Baixar Eventos CSV'
+                csvCustomKeyNames={{
+                    noTableRa: 'RA',
+                    protocoloProcessosei: 'Protocolo / Processo SEI',
+                    coSeqEventoExterno: 'Protocolo',
+                    noEvento: 'Nome do Evento',
+                    dtCadastro: 'Data de Solicitação',
+                    dtTableInicio: 'Data de Início',
+                    hrTableInicio: 'Hora de Início',
+                    dsEnderecoLocal: 'Endereço',
+                    nuPublicoMaximo: 'Público Máximo',
+                    nuProcessoFormatadoSei: 'Processo SEI',
+                    stTableStatus: 'Status do Evento',
+                    dtTableDates: 'Datas Cadastradas (Inicio | Termino)',
+                    dsTableNaturezas: 'Naturezas',
+                    stAcaoTransito: 'Ações de Trânsito',
+                }}
+                csvExcludeKeysCSV={['dtTableDates']}
+                csvExcludeKeys={['rlEventoData', 'stEventoExterno', 'dtTableArr']}
+                fetchFunc={() => fetch('http://localhost:7171/table')}
+                // filtros
+                filters={{
+                    Protocolo: [
+                        {
+                            keyName: 'coSeqEventoExterno',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
+                        },
+                        {
+                            keyName: 'coSeqEventoExterno',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
+                        },
+                    ],
+                    Nome: [
+                        {
+                            keyName: 'noEvento',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
+                        },
+                        {
+                            keyName: 'noEvento',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
+                        },
+                    ],
+                    Datas: [
+                        {
+                            type: 'date-interval',
+                            keyName: 'dtTableDates',
+                            name: 'Intervalo de Data',
+                        },
+                        {
+                            type: 'data-a-z',
+                            keyName: 'dtTableDates',
+                            name: 'Data crescente',
+                        },
+                        {
+                            type: 'data-z-a',
+                            keyName: 'dtTableDates',
+                            name: 'Data decrescente',
+                        },
+                    ],
+                    Local: [
+                        {
+                            keyName: 'dsEnderecoLocal',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
+                        },
+                        {
+                            keyName: 'dsEnderecoLocal',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
+                        },
+                    ],
+                    'Ato Público': [
+                        {
+                            type: 'items',
+                            keyName: 'dsTableNaturezas',
+                            name: '',
+                            referenceKey: 'coSeqEventoExterno',
+                            options: [
+                                {
+                                    key: 'atopublico',
+                                    color: 'purple',
+                                    name: 'Somente Ato Público',
+                                },
+                                {
+                                    key: 'carnavalesco',
+                                    color: 'red',
+                                    name: 'Somente Carnavalesco',
+                                },
+                            ],
+                        },
+                    ],
+                    RA: [
+                        {
+                            keyName: 'noTableRa',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
+                        },
+                        {
+                            keyName: 'noTableRa',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
+                        },
+                        {
+                            type: 'items',
+                            keyName: 'noTableRa',
+                            name: '',
+                            referenceKey: 'coSeqEventoExterno',
+                            options: [
+                                'água quente',
+                                'águas claras',
+                                'arapoanga',
+                                'arniqueira',
+                                'brazlândia',
+                                'candangolândia',
+                                'ceilândia',
+                                'cruzeiro',
+                                'fercal',
+                                'gama',
+                                'guará',
+                                'itapoã',
+                                'jardim botânico',
+                                'lago norte',
+                                'lago sul',
+                                'núcleo bandeirante',
+                                'paranoá',
+                                'park way',
+                                'planaltina',
+                                'plano piloto',
+                                'recanto das emas',
+                                'riacho fundo',
+                                'riacho fundo ii',
+                                'samambaia',
+                                'santa maria',
+                                'são sebastião',
+                                'scia/estrutural',
+                                'sia',
+                                'sobradinho',
+                                'sobradinho ii',
+                                'sol nascente e pôr do sol',
+                                'sudoeste/octogonal',
+                                'taguatinga',
+                                'varjão',
+                                'vicente pires',
+                            ].map((x) => ({
+                                key: x,
+                                color: 'black',
+                                name: x.toUpperCase(),
+                            })),
+                        },
+                    ],
+                    'Público Máximo': [
+                        {
+                            keyName: 'nuPublicoMaximo',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
+                        },
+                        {
+                            keyName: 'nuPublicoMaximo',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
+                        },
+                    ],
+                    'Data de Solicitação': [
+                        {
+                            type: 'data-a-z',
+                            keyName: 'dtCadastro',
+                            name: 'Ordem crescente',
+                        },
+                        {
+                            type: 'data-z-a',
+                            keyName: 'dtCadastro',
+                            name: 'Ordem decrescente',
+                        },
+                    ],
+                    Status: [
+                        {
+                            type: 'items',
+                            keyName: 'stEventoExterno',
+                            name: '',
+                            referenceKey: 'coSeqEventoExterno',
+                            options: [
+                                {
+                                    key: 'p',
+                                    color: '#F59E0B',
+                                    name: 'EM ANÁLISE',
+                                },
+                                {
+                                    key: 'a',
+                                    color: '#0EA5E9',
+                                    name: 'CADASTRADO',
+                                },
+                                {
+                                    key: 'c',
+                                    color: '#a1a1a1',
+                                    name: 'CANCELADO',
+                                },
+                                {
+                                    key: 'r',
+                                    color: '#EF4444',
+                                    name: 'REPROVADO',
+                                },
+                                {
+                                    key: 'l',
+                                    color: '#22C55E',
+                                    name: 'LICENCIADO',
+                                },
+                                {
+                                    key: 'fp',
+                                    color: '#991b1b',
+                                    name: 'FORA DO PRAZO',
+                                },
+                            ],
+                        },
+                    ],
+                }}
+            />
+        </>
+    )
+}
+
+export function Stepper({
+    debugLog = false,
+    test = false,
+    testConfig = {},
+    ...props
+}: {
+    children: ReactElement | ReactElement[]
+    debugData?: (data: FieldValues) => void
+    debugLog?: boolean
+    test?: boolean
+    testConfig?: { [key: number]: { [key: string]: string | number | boolean } }
+}) {
     const length = Array.isArray(props.children) ? props.children.length : 1
     const context = useContext(FormContext)!
+    // next button ref
+    const nRef = useRef<HTMLButtonElement | null>(null)
     const theme = useTheme()
 
     const [activeStep, setActiveStep] = useState(0)
@@ -55,14 +352,39 @@ export function Stepper({ debugLog = false, ...props }: { children: ReactElement
             return
         }
     }
-
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
 
+    const preencher = () => {
+        Object.keys(testConfig).forEach((id, idx) => {
+            const obj = testConfig[Number(id)]
+
+            Object.keys(obj).forEach((x) => {
+                context.formUnregister(`${id}.${x}`)
+                context.formSetValue(`${id}.${x}`, obj[x])
+            })
+
+            if (idx < Object.keys(testConfig).length - 1) {
+                sleep(100).then(() => {
+                    const bt = nRef.current!
+
+                    nRef.current?.click()
+                })
+            }
+        })
+    }
+
     return (
         <Box>
-            <Box sx={{ padding: 2, marginBottom: 10 }}>
+            {test && (
+                <Stack direction='row' justifyContent='end'>
+                    <Button variant='contained' color='error' onClick={preencher}>
+                        EXCLUIR BANCO PRODUÇÃO
+                    </Button>
+                </Stack>
+            )}
+            <Stack sx={{ padding: 2, marginBottom: 10 }}>
                 <Box>
                     {stepperBlocks.map((b, index) => (
                         <Box key={'formsB' + index} hidden={!(activeStep === index)}>
@@ -74,18 +396,19 @@ export function Stepper({ debugLog = false, ...props }: { children: ReactElement
                 <MobileStepper
                     variant='text'
                     steps={maxSteps}
-                    position={useMediaQuery(theme.breakpoints.only('xs')) ? 'bottom' : 'static'}
+                    position='bottom'
+                    // position={useMediaQuery(theme.breakpoints.only('xs')) ? 'bottom' : 'static'}
                     activeStep={activeStep}
-                    sx={{ paddingX: useMediaQuery(theme.breakpoints.only('xs')) ? 2 : 0, paddingTop: 2, paddingBottom: 4 }}
+                    sx={{ paddingX: 2, paddingTop: 2, paddingBottom: 4 }}
                     backButton={
                         <Button variant='contained' startIcon={<KeyboardArrowLeft />} onClick={handleBack} disabled={activeStep === 0} sx={{ textTransform: 'none' }}>
-                            Back
+                            Voltar
                         </Button>
                     }
                     nextButton={
                         activeStep < maxSteps - 1 ? (
-                            <Button variant='contained' endIcon={<KeyboardArrowRight />} onClick={handleNext} sx={{ textTransform: 'none' }}>
-                                Next
+                            <Button variant='contained' endIcon={<KeyboardArrowRight />} onClick={handleNext} sx={{ textTransform: 'none' }} ref={nRef}>
+                                Próximo
                             </Button>
                         ) : (
                             <Box>
@@ -104,7 +427,7 @@ export function Stepper({ debugLog = false, ...props }: { children: ReactElement
                         )
                     }
                 />
-            </Box>
+            </Stack>
             <Snackbar
                 open={canPass}
                 autoHideDuration={3000}

@@ -24,7 +24,7 @@ function getChildrenNames(children: JSX.Element[]): string[] {
     return arr
 }
 
-export default function RequiredCheckBoxGroup({
+export default function RequiredCheckBoxAdditional({
     customText = 'Selecione pelo menos 1 opção',
     ...props
 }: {

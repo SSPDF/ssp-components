@@ -128,7 +128,6 @@ export default function FetchAutoComplete({
                         fullWidth
                         placeholder={title}
                         onFocus={onFocus}
-                        required
                         error={get(context?.errors, name!) ? true : false}
                         helperText={get(context?.errors, name!)?.message as string}
                     />

@@ -30,78 +30,1810 @@
         }
     },
     "table": [
-        { "id": 1, "name": "Teste 1", "status": "R X", "date": "07/08/2023 - 16:20", "jsNaturezaEvento": {
-            "feirasExposicoes": true,
-            "carnavalesco": false,
-            "shows": false,
-            "religioso": false,
-            "atoPublico": false,
-            "cultural": false,
-            "social": false,
-            "corporativo": false,
-            "promocional": false,
-            "semFinsLucrativos": false } },
-        { "id": 2, "name": "Teste 2", "status": "FP", "date": "02/08/2023 - 16:20" },
-        { "id": 3, "name": "Teste 3", "status": "FP", "date": "02/08/2023 - 16:20" },
-        { "id": 4, "name": "Teste 4", "status": "C", "date": "02/08/2023 - 16:20" },
-        { "id": 5, "name": "Teste 5", "status": "A", "date": "02/08/2023 - 16:20" },
-        { "id": 6, "name": "Teste 6", "status": "P", "date": "02/08/2023 - 16:20" },
-        { "id": 7, "name": "Teste 7", "status": "A", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
-        { "id": 8, "name": "Teste 8", "status": "P", "date": "07/08/2023 - 16:20" },
-        { "id": 9, "name": "Teste 9", "status": "A", "date": "07/08/2023 - 16:20" },
-        { "id": 10, "name": "Teste 10", "status": "R", "date": "07/08/2023 - 16:20",  "jsNaturezaEvento": {
-            "feirasExposicoes": true,
-            "shows": true,
-            "religioso": true,
-            "atoPublico": true,
-            "cultural": true,
-            "social": true,
-            "corporativo": true,
-            "promocional": true,
-            "semFinsLucrativos": true,
-            "carnavalesco": true,
-            "esportivo": {
-              "ciclismo": true,
-              "corrida": true,
-              "futebol": false,
-              "outros": false
-            }
-          } },
-        { "id": 11, "name": "Teste 11", "status": "R", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
-        { "id": 12, "name": "Teste 12", "status": "A", "date": "07/08/2023 - 16:20" },
-        { "id": 13, "name": "Teste 13", "status": "R", "date": "07/08/2023 - 16:20", "jsNaturezaEvento": {
-            "feirasExposicoes": false,
-            "shows": false,
-            "religioso": true,
-            "atoPublico": false,
-            "cultural": false,
-            "social": false,
-            "corporativo": false,
-            "promocional": false,
-            "semFinsLucrativos": false,
-            "carnavalesco": {
-              "asaNorte": false,
-              "asaSul": true,
-              "parqueDaCidade": true,
-              "iberoAmericano": false
-            }
-          } },
-        { "id": 14, "name": "Teste 14", "status": "PA", "date": "07/08/2023 - 16:20" },
-        { "id": 15, "name": "Teste 15", "status": "PA", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
-        { "id": 16, "name": "Teste 16", "status": "PA", "date": "09/08/2023 - 16:20" },
-        { "id": 17, "name": "Teste 17", "status": "PA", "date": "07/08/2023 - 16:20" },
-        { "id": 18, "name": "Teste 18", "status": "P", "date": "07/08/2023 - 16:20" },
-        { "id": 19, "name": "Teste 19", "status": "PA", "date": "04/08/2023 - 00:00 | 07/08/2023 - 00:00" },
-        { "id": 20, "name": "Teste 20", "status": "C", "date": "18/08/2023 - 16:20" },
-        { "id": 21, "name": "Teste 21", "status": "R", "date": "05/08/2023 - 16:20" },
-        { "id": 22, "name": "Teste 22", "status": "R", "date": "05/08/2023 - 16:20" },
-        { "id": 23, "name": "Teste 23", "status": "PA", "date": "05/08/2023 - 16:20" },
-        { "id": 24, "name": "Teste 24", "status": "L", "date": "01/08/2023 - 16:20" },
-        { "id": 25, "name": "Teste 25", "status": "A", "date": "01/09/2023 - 16:20" },
-        { "id": 26, "name": "Teste 26", "status": "L", "date": "01/09/2023 - 16:20" },
-        { "id": 27, "name": "Teste 27", "status": "C", "date": "01/09/2023 - 16:20" },
-        { "id": 28, "name": "Teste 28", "status": "PA", "date": "26/09/2023 - 16:20" },
-        { "id": 29, "name": "Teste 29", "status": "L", "date": "12/08/2023 - 16:20" },
-        { "id": 30, "name": "Teste 30", "status": "P", "date": "12/08/2023 - 16:20]" }
+        {
+            "dtTableDates": "15/02/2024 - 08:00 às 10",
+            "dtTableArr": [
+                {
+                    "dtInicio": "15/02/2024",
+                    "hrInicio": "08:00",
+                    "hrTermino": "10:00"
+                }
+            ],
+            "protocoloProcessosei": "271 - 00050-00000337/2024-16",
+            "noEvento": "Acrescentar natureza carnavalesca",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Ceilandia ",
+            "dtTableInicio": "15/02/2024",
+            "hrTableInicio": "08:00",
+            "hrTableTermino": "10:00",
+            "nuPublicoMaximo": 2000,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "cultural",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00000337/2024-16",
+            "dtCadastro": "10/01/2024",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 271
+        },
+        {
+            "dtTableDates": "18/02/2024 - 10:00 às 18:00 | 19/02/2024 - 10:00 às 18:00 | 20/02/2024 - 10:00 às 18:00 | 21/02/2024 - 14:00 às 18:00 | 21/02/2024 - 10:00 às 12:00 | 22/02/2024 - 14:00 às 18:00 | 22/02/2024 - 10:00 às 12:00 | 23/02/2024 - 10:00 às 18:00 | 24/02/2024 - 14:00 às 18:00 | 24/02/2024 - 10:00 às 12:00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "19/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "20/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "21/02/2024",
+                    "hrInicio": "14:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "21/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "12:00"
+                },
+                {
+                    "dtInicio": "22/02/2024",
+                    "hrInicio": "14:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "22/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "12:00"
+                },
+                {
+                    "dtInicio": "23/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "24/02/2024",
+                    "hrInicio": "14:00",
+                    "hrTermino": "18:00"
+                },
+                {
+                    "dtInicio": "24/02/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "12:00"
+                }
+            ],
+            "protocoloProcessosei": "270 - 00050-00000336/2024-71",
+            "noEvento": "Teste Datas",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "endereço",
+            "dtTableInicio": "18/02/2024",
+            "hrTableInicio": "10:00",
+            "hrTableTermino": "18:00",
+            "nuPublicoMaximo": 1000,
+            "stAcaoTransito": "",
+            "dsTableNaturezas": "feirasExposicoes - carnavalesco",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00000336/2024-71",
+            "dtCadastro": "03/01/2024",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 270
+        },
+        {
+            "dtTableDates": "24/01/2024 - 10:00 às 15",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/01/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "15:00"
+                }
+            ],
+            "protocoloProcessosei": "269 - Sem processo",
+            "noEvento": "sei relacionado",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Ceilandia ",
+            "dtTableInicio": "24/01/2024",
+            "hrTableInicio": "10:00",
+            "hrTableTermino": "15:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco: [asaSul]",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "22/12/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 269
+        },
+        {
+            "dtTableDates": "25/01/2024 - 11:00 às 12",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/01/2024",
+                    "hrInicio": "11:00",
+                    "hrTermino": "12:00"
+                }
+            ],
+            "protocoloProcessosei": "268 - 00050-00036763/2023-15",
+            "noEvento": "ARRAIA SSP",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Asa Norte",
+            "dtTableInicio": "25/01/2024",
+            "hrTableInicio": "11:00",
+            "hrTableTermino": "12:00",
+            "nuPublicoMaximo": 11,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "atoPublico",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036763/2023-15",
+            "dtCadastro": "22/12/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 268
+        },
+        {
+            "dtTableDates": "17/01/2024 - 10:00 às 10",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/01/2024",
+                    "hrInicio": "10:00",
+                    "hrTermino": "10:01"
+                }
+            ],
+            "protocoloProcessosei": "267 - 00050-00036762/2023-62",
+            "noEvento": "teste resp",
+            "noTableRa": "CEILÂNDIA",
+            "dsEnderecoLocal": "Ceilandia ",
+            "dtTableInicio": "17/01/2024",
+            "hrTableInicio": "10:00",
+            "hrTableTermino": "10:01",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "esportivo: [corrida]",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036762/2023-62",
+            "dtCadastro": "22/12/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 267
+        },
+        {
+            "dtTableDates": "20/12/2023 - 02:00 às 03",
+            "dtTableArr": [
+                {
+                    "dtInicio": "20/12/2023",
+                    "hrInicio": "02:00",
+                    "hrTermino": "03:00"
+                }
+            ],
+            "protocoloProcessosei": "266 - 00050-00000335/2024-27",
+            "noEvento": "Roandl mconadas",
+            "noTableRa": "ITAPOÃ",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "20/12/2023",
+            "hrTableInicio": "02:00",
+            "hrTableTermino": "03:00",
+            "nuPublicoMaximo": 321,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00000335/2024-27",
+            "dtCadastro": "19/12/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 266
+        },
+        {
+            "dtTableDates": "20/12/2023 - 02:00 às 04",
+            "dtTableArr": [
+                {
+                    "dtInicio": "20/12/2023",
+                    "hrInicio": "02:00",
+                    "hrTermino": "04:00"
+                }
+            ],
+            "protocoloProcessosei": "265 - Sem processo",
+            "noEvento": "Teste de mapa",
+            "noTableRa": "ITAPOÃ",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "20/12/2023",
+            "hrTableInicio": "02:00",
+            "hrTableTermino": "04:00",
+            "nuPublicoMaximo": 1500,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "19/12/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 265
+        },
+        {
+            "dtTableDates": "14/12/2023 - 02:00 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "14/12/2023",
+                    "hrInicio": "02:00",
+                    "hrTermino": "00:05"
+                }
+            ],
+            "protocoloProcessosei": "264 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "14/12/2023",
+            "hrTableInicio": "02:00",
+            "hrTableTermino": "00:05",
+            "nuPublicoMaximo": 321,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco: [parqueDaCidade]",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "06/12/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 264
+        },
+        {
+            "dtTableDates": "02/12/2023 - 11:11 às 22",
+            "dtTableArr": [
+                {
+                    "dtInicio": "02/12/2023",
+                    "hrInicio": "11:11",
+                    "hrTermino": "22:22"
+                }
+            ],
+            "protocoloProcessosei": "263 - 00050-00036761/2023-18",
+            "noEvento": "EVENTO TESTE SEI VINCULADO 3",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Avenida das Araucárias, 4155",
+            "dtTableInicio": "02/12/2023",
+            "hrTableInicio": "11:11",
+            "hrTableTermino": "22:22",
+            "nuPublicoMaximo": 100001,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036761/2023-18",
+            "dtCadastro": "01/12/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 263
+        },
+        {
+            "dtTableDates": "23/12/2023 - 21:21 às 21",
+            "dtTableArr": [
+                {
+                    "dtInicio": "23/12/2023",
+                    "hrInicio": "21:21",
+                    "hrTermino": "21:21"
+                }
+            ],
+            "protocoloProcessosei": "262 - 00050-00036760/2023-73",
+            "noEvento": "TESTE SEI 2",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Avenida das Araucárias, 4155",
+            "dtTableInicio": "23/12/2023",
+            "hrTableInicio": "21:21",
+            "hrTableTermino": "21:21",
+            "nuPublicoMaximo": 21,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036760/2023-73",
+            "dtCadastro": "01/12/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 262
+        },
+        {
+            "dtTableDates": "02/12/2023 - 22:22 às 23",
+            "dtTableArr": [
+                {
+                    "dtInicio": "02/12/2023",
+                    "hrInicio": "22:22",
+                    "hrTermino": "23:23"
+                }
+            ],
+            "protocoloProcessosei": "261 - 00050-00036759/2023-49",
+            "noEvento": "EVENTO TESTE SEI VINCULADO",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Avenida das Araucárias, 4155",
+            "dtTableInicio": "02/12/2023",
+            "hrTableInicio": "22:22",
+            "hrTableTermino": "23:23",
+            "nuPublicoMaximo": 1,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036759/2023-49",
+            "dtCadastro": "01/12/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 261
+        },
+        {
+            "dtTableDates": "31/12/2023 - 15:00 às 20",
+            "dtTableArr": [
+                {
+                    "dtInicio": "31/12/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "20:00"
+                }
+            ],
+            "protocoloProcessosei": "260 - 00050-00036758/2023-02",
+            "noEvento": "teste doc",
+            "noTableRa": "CRUZEIRO",
+            "dsEnderecoLocal": "asa sul",
+            "dtTableInicio": "31/12/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "20:00",
+            "nuPublicoMaximo": 200,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "promocional - esportivo: []",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036758/2023-02",
+            "dtCadastro": "28/11/2023",
+            "stEventoExterno": "L",
+            "coSeqEventoExterno": 260
+        },
+        {
+            "dtTableDates": "19/12/2023 - 15:00 às 04",
+            "dtTableArr": [
+                {
+                    "dtInicio": "19/12/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "04:00"
+                }
+            ],
+            "protocoloProcessosei": "259 - 00050-00036757/2023-50",
+            "noEvento": "Teste de declaração RA grande",
+            "noTableRa": "BRAZLÂNDIA",
+            "dsEnderecoLocal": "endereço local",
+            "dtTableInicio": "19/12/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "04:00",
+            "nuPublicoMaximo": 15000,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036757/2023-50",
+            "dtCadastro": "27/11/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 259
+        },
+        {
+            "dtTableDates": "25/11/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/11/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:15"
+                }
+            ],
+            "protocoloProcessosei": "258 - 00050-00036756/2023-13",
+            "noEvento": "Teste SEI Declaração semm food truck",
+            "noTableRa": "ARNIQUEIRA",
+            "dsEnderecoLocal": "Teste",
+            "dtTableInicio": "25/11/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:15",
+            "nuPublicoMaximo": 10000,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036756/2023-13",
+            "dtCadastro": "24/11/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 258
+        },
+        {
+            "dtTableDates": "25/11/2023 - 00:10 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/11/2023",
+                    "hrInicio": "00:10",
+                    "hrTermino": "00:15"
+                }
+            ],
+            "protocoloProcessosei": "257 - 00050-00036755/2023-61",
+            "noEvento": "Teste SEI Declaração",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "teste",
+            "dtTableInicio": "25/11/2023",
+            "hrTableInicio": "00:10",
+            "hrTableTermino": "00:15",
+            "nuPublicoMaximo": 10002,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "cultural",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036755/2023-61",
+            "dtCadastro": "24/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 257
+        },
+        {
+            "dtTableDates": "24/11/2023 - 00:10 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/11/2023",
+                    "hrInicio": "00:10",
+                    "hrTermino": "00:10"
+                }
+            ],
+            "protocoloProcessosei": "256 - Sem processo",
+            "noEvento": "teste",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "asd",
+            "dtTableInicio": "24/11/2023",
+            "hrTableInicio": "00:10",
+            "hrTableTermino": "00:10",
+            "nuPublicoMaximo": 11,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "semFinsLucrativos",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "24/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 256
+        },
+        {
+            "dtTableDates": "01/01/2024 - 20:00 às 21",
+            "dtTableArr": [
+                {
+                    "dtInicio": "01/01/2024",
+                    "hrInicio": "20:00",
+                    "hrTermino": "21:00"
+                }
+            ],
+            "protocoloProcessosei": "255 - 00050-00036728/2023-98",
+            "noEvento": "dgaerfhge",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Asa Norte - ",
+            "dtTableInicio": "01/01/2024",
+            "hrTableInicio": "20:00",
+            "hrTableTermino": "21:00",
+            "nuPublicoMaximo": 10,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco: [asaSul]",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036728/2023-98",
+            "dtCadastro": "24/11/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 255
+        },
+        {
+            "dtTableDates": "30/11/2023 - 22:22 às 22",
+            "dtTableArr": [
+                {
+                    "dtInicio": "30/11/2023",
+                    "hrInicio": "22:22",
+                    "hrTermino": "22:22"
+                }
+            ],
+            "protocoloProcessosei": "254 - 00050-00036727/2023-43",
+            "noEvento": "Teste Sei Item C",
+            "noTableRa": "CRUZEIRO",
+            "dsEnderecoLocal": "Avenida das Araucárias",
+            "dtTableInicio": "30/11/2023",
+            "hrTableInicio": "22:22",
+            "hrTableTermino": "22:22",
+            "nuPublicoMaximo": 111,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "religioso - cultural - corporativo - esportivo: [corrida - futebol]",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036727/2023-43",
+            "dtCadastro": "24/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 254
+        },
+        {
+            "dtTableDates": "25/11/2023 - 10:00 às 18",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/11/2023",
+                    "hrInicio": "10:00",
+                    "hrTermino": "18:00"
+                }
+            ],
+            "protocoloProcessosei": "253 - 00050-00036726/2023-07",
+            "noEvento": "EVENTO CARNAVAL ESPORTIVO",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Avenida das Araucárias",
+            "dtTableInicio": "25/11/2023",
+            "hrTableInicio": "10:00",
+            "hrTableTermino": "18:00",
+            "nuPublicoMaximo": 1000,
+            "stAcaoTransito": "PMDF | DETRAN-DF",
+            "dsTableNaturezas": "carnavalesco: [asaNorte - iberoAmericano] - esportivo: [corrida - futebol]",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036726/2023-07",
+            "dtCadastro": "24/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 253
+        },
+        {
+            "dtTableDates": "24/12/2023 - 15:00 às 16",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/12/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "16:00"
+                }
+            ],
+            "protocoloProcessosei": "252 - 00050-00036725/2023-54",
+            "noEvento": "Teste carnaval 01",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Asa Norte",
+            "dtTableInicio": "24/12/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "16:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "carnavalesco: [asaSul]",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036725/2023-54",
+            "dtCadastro": "23/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 252
+        },
+        {
+            "dtTableDates": "29/11/2023 - 00:00 às 09",
+            "dtTableArr": [
+                {
+                    "dtInicio": "29/11/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "09:00"
+                }
+            ],
+            "protocoloProcessosei": "251 - 00050-00036724/2023-18",
+            "noEvento": "Teste de declaração 3",
+            "noTableRa": "CANDANGOLÂNDIA",
+            "dsEnderecoLocal": "endereço local",
+            "dtTableInicio": "29/11/2023",
+            "hrTableInicio": "00:00",
+            "hrTableTermino": "09:00",
+            "nuPublicoMaximo": 2500,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036724/2023-18",
+            "dtCadastro": "23/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 251
+        },
+        {
+            "dtTableDates": "27/12/2023 - 17:00 às 23",
+            "dtTableArr": [
+                {
+                    "dtInicio": "27/12/2023",
+                    "hrInicio": "17:00",
+                    "hrTermino": "23:00"
+                }
+            ],
+            "protocoloProcessosei": "250 - 00050-00036723/2023-65",
+            "noEvento": "Teste de declaração 2",
+            "noTableRa": "ARAPOANGA",
+            "dsEnderecoLocal": "endereço local",
+            "dtTableInicio": "27/12/2023",
+            "hrTableInicio": "17:00",
+            "hrTableTermino": "23:00",
+            "nuPublicoMaximo": 2500,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036723/2023-65",
+            "dtCadastro": "23/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 250
+        },
+        {
+            "dtTableDates": "24/12/2023 - 15:00 às 16",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/12/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "16:00"
+                }
+            ],
+            "protocoloProcessosei": "249 - 00050-00036719/2023-05",
+            "noEvento": "evento teste cadastro",
+            "noTableRa": "CEILÂNDIA",
+            "dsEnderecoLocal": "Asa Norte - ",
+            "dtTableInicio": "24/12/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "16:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036719/2023-05",
+            "dtCadastro": "23/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 249
+        },
+        {
+            "dtTableDates": "25/11/2023 - 11:11 às 22",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/11/2023",
+                    "hrInicio": "11:11",
+                    "hrTermino": "22:22"
+                }
+            ],
+            "protocoloProcessosei": "248 - 00050-00036720/2023-21",
+            "noEvento": "MARCELO ARRUDA DE SIQUEIRA",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Avenida das Araucárias, 4155",
+            "dtTableInicio": "25/11/2023",
+            "hrTableInicio": "11:11",
+            "hrTableTermino": "22:22",
+            "nuPublicoMaximo": 10,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "feirasExposicoes - shows - religioso - atoPublico - cultural - social - corporativo - promocional - semFinsLucrativos - carnavalesco - esportivo: [ciclismo - corrida]",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036720/2023-21",
+            "dtCadastro": "22/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 248
+        },
+        {
+            "dtTableDates": "25/11/2023 - 22:22 às 23",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/11/2023",
+                    "hrInicio": "22:22",
+                    "hrTermino": "23:23"
+                }
+            ],
+            "protocoloProcessosei": "247 - 00050-00036722/2023-11",
+            "noEvento": "Evento teste Carnavao PP2024",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "local co carna PP24",
+            "dtTableInicio": "25/11/2023",
+            "hrTableInicio": "22:22",
+            "hrTableTermino": "23:23",
+            "nuPublicoMaximo": 10,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "religioso - carnavalesco: [asaSul - parqueDaCidade]",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00036722/2023-11",
+            "dtCadastro": "22/11/2023",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 247
+        },
+        {
+            "dtTableDates": "30/11/2023 - 13:00 às 21",
+            "dtTableArr": [
+                {
+                    "dtInicio": "30/11/2023",
+                    "hrInicio": "13:00",
+                    "hrTermino": "21:00"
+                }
+            ],
+            "protocoloProcessosei": "246 - 00050-00036733/2023-09",
+            "noEvento": "Teste de declaração",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "endereço local",
+            "dtTableInicio": "30/11/2023",
+            "hrTableInicio": "13:00",
+            "hrTableTermino": "21:00",
+            "nuPublicoMaximo": 15000,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036733/2023-09",
+            "dtCadastro": "21/11/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 246
+        },
+        {
+            "dtTableDates": "22/11/2023 - 11:01 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "22/11/2023",
+                    "hrInicio": "11:01",
+                    "hrTermino": "11:01"
+                }
+            ],
+            "protocoloProcessosei": "245 - 00050-00036718/2023-52",
+            "noEvento": "Teste Nome Responsável SEI",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "Teste",
+            "dtTableInicio": "22/11/2023",
+            "hrTableInicio": "11:01",
+            "hrTableTermino": "11:01",
+            "nuPublicoMaximo": 11,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036718/2023-52",
+            "dtCadastro": "21/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 245
+        },
+        {
+            "dtTableDates": "21/11/2023 - 11:01 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "21/11/2023",
+                    "hrInicio": "11:01",
+                    "hrTermino": "11:01"
+                }
+            ],
+            "protocoloProcessosei": "244 - Sem processo",
+            "noEvento": "teste",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "teste",
+            "dtTableInicio": "21/11/2023",
+            "hrTableInicio": "11:01",
+            "hrTableTermino": "11:01",
+            "nuPublicoMaximo": 111,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "corporativo",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "21/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 244
+        },
+        {
+            "dtTableDates": "22/11/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "22/11/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:10"
+                }
+            ],
+            "protocoloProcessosei": "243 - Sem processo",
+            "noEvento": "teste",
+            "noTableRa": "ARAPOANGA",
+            "dsEnderecoLocal": "asd",
+            "dtTableInicio": "22/11/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:10",
+            "nuPublicoMaximo": 111,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "21/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 243
+        },
+        {
+            "dtTableDates": "21/11/2023 - 11:01 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "21/11/2023",
+                    "hrInicio": "11:01",
+                    "hrTermino": "11:11"
+                }
+            ],
+            "protocoloProcessosei": "242 - 00050-00036717/2023-16",
+            "noEvento": "Teste Nome Responsável SEI",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "Local Teste",
+            "dtTableInicio": "21/11/2023",
+            "hrTableInicio": "11:01",
+            "hrTableTermino": "11:11",
+            "nuPublicoMaximo": 11,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco - atoPublico",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036717/2023-16",
+            "dtCadastro": "21/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 242
+        },
+        {
+            "dtTableDates": "17/11/2023 - 09:00 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/11/2023",
+                    "hrInicio": "09:00",
+                    "hrTermino": "11:01"
+                }
+            ],
+            "protocoloProcessosei": "241 - Sem processo",
+            "noEvento": "Herberticleber Carvalho Valadares",
+            "noTableRa": "ARNIQUEIRA",
+            "dsEnderecoLocal": "Módulo 16 - Casa 03",
+            "dtTableInicio": "17/11/2023",
+            "hrTableInicio": "09:00",
+            "hrTableTermino": "11:01",
+            "nuPublicoMaximo": 123123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "17/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 241
+        },
+        {
+            "dtTableDates": "18/12/2023 - 00:00 às 00:00 | 20/12/2023 - 00:00 às 00:00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/12/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "00:00"
+                },
+                {
+                    "dtInicio": "20/12/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "00:00"
+                }
+            ],
+            "protocoloProcessosei": "240 - Sem processo",
+            "noEvento": "Bar Sexta 17",
+            "noTableRa": "PARANOÁ",
+            "dsEnderecoLocal": "Bar 17",
+            "dtTableInicio": "18/12/2023",
+            "hrTableInicio": "00:00",
+            "hrTableTermino": "00:00",
+            "nuPublicoMaximo": 20000,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "17/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 240
+        },
+        {
+            "dtTableDates": "17/11/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/11/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:10"
+                }
+            ],
+            "protocoloProcessosei": "239 - 00050-00036754/2023-16",
+            "noEvento": "teste",
+            "noTableRa": "CEILÂNDIA",
+            "dsEnderecoLocal": "teste",
+            "dtTableInicio": "17/11/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:10",
+            "nuPublicoMaximo": 11,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036754/2023-16",
+            "dtCadastro": "17/11/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 239
+        },
+        {
+            "dtTableDates": "17/11/2023 - 11:11 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/11/2023",
+                    "hrInicio": "11:11",
+                    "hrTermino": "11:11"
+                }
+            ],
+            "protocoloProcessosei": "238 - Sem processo",
+            "noEvento": "Teste Declaração",
+            "noTableRa": "PLANALTINA",
+            "dsEnderecoLocal": "Local da Declaração",
+            "dtTableInicio": "17/11/2023",
+            "hrTableInicio": "11:11",
+            "hrTableTermino": "11:11",
+            "nuPublicoMaximo": 10001,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "17/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 238
+        },
+        {
+            "dtTableDates": "24/11/2023 - 00:05 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/11/2023",
+                    "hrInicio": "00:05",
+                    "hrTermino": "11:11"
+                }
+            ],
+            "protocoloProcessosei": "237 - 00050-00036753/2023-71",
+            "noEvento": "asdasd",
+            "noTableRa": "GAMA",
+            "dsEnderecoLocal": "asdasdd",
+            "dtTableInicio": "24/11/2023",
+            "hrTableInicio": "00:05",
+            "hrTableTermino": "11:11",
+            "nuPublicoMaximo": 123123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "REPROVADO",
+            "nuProcessoFormatadoSei": "00050-00036753/2023-71",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "FP",
+            "coSeqEventoExterno": 237
+        },
+        {
+            "dtTableDates": "16/11/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "16/11/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:15"
+                }
+            ],
+            "protocoloProcessosei": "236 - Sem processo",
+            "noEvento": "asdasd",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "asdasd",
+            "dtTableInicio": "16/11/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:15",
+            "nuPublicoMaximo": 123123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 236
+        },
+        {
+            "dtTableDates": "22/11/2023 - 11:11 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "22/11/2023",
+                    "hrInicio": "11:11",
+                    "hrTermino": "11:11"
+                }
+            ],
+            "protocoloProcessosei": "235 - Sem processo",
+            "noEvento": "asdasd",
+            "noTableRa": "FERCAL",
+            "dsEnderecoLocal": "aasdasd",
+            "dtTableInicio": "22/11/2023",
+            "hrTableInicio": "11:11",
+            "hrTableTermino": "11:11",
+            "nuPublicoMaximo": 1233123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 235
+        },
+        {
+            "dtTableDates": "16/11/2023 - 00:10 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "16/11/2023",
+                    "hrInicio": "00:10",
+                    "hrTermino": "00:10"
+                }
+            ],
+            "protocoloProcessosei": "234 - Sem processo",
+            "noEvento": "asdas",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "asdasd",
+            "dtTableInicio": "16/11/2023",
+            "hrTableInicio": "00:10",
+            "hrTableTermino": "00:10",
+            "nuPublicoMaximo": 12312,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 234
+        },
+        {
+            "dtTableDates": "18/11/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/11/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:05"
+                }
+            ],
+            "protocoloProcessosei": "233 - Sem processo",
+            "noEvento": "asdasd",
+            "noTableRa": "FERCAL",
+            "dsEnderecoLocal": "asdasd",
+            "dtTableInicio": "18/11/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:05",
+            "nuPublicoMaximo": 12312312,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 233
+        },
+        {
+            "dtTableDates": "15/12/2023 - 00:00 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "15/12/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "00:00"
+                }
+            ],
+            "protocoloProcessosei": "232 - Sem processo",
+            "noEvento": "Deboxe 2023",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Estacionamento do Parque da Cidade",
+            "dtTableInicio": "15/12/2023",
+            "hrTableInicio": "00:00",
+            "hrTableTermino": "00:00",
+            "nuPublicoMaximo": 10002,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 232
+        },
+        {
+            "dtTableDates": "16/11/2023 - 00:10 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "16/11/2023",
+                    "hrInicio": "00:10",
+                    "hrTermino": "00:10"
+                }
+            ],
+            "protocoloProcessosei": "231 - Sem processo",
+            "noEvento": "asdasd",
+            "noTableRa": "CEILÂNDIA",
+            "dsEnderecoLocal": "asdasdas",
+            "dtTableInicio": "16/11/2023",
+            "hrTableInicio": "00:10",
+            "hrTableTermino": "00:10",
+            "nuPublicoMaximo": 123123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "14/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 231
+        },
+        {
+            "dtTableDates": "12/12/2023 - 15:00 às 20",
+            "dtTableArr": [
+                {
+                    "dtInicio": "12/12/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "20:00"
+                }
+            ],
+            "protocoloProcessosei": "230 - 00050-00036716/2023-63",
+            "noEvento": "Evento Esportivo teste",
+            "noTableRa": "CEILÂNDIA",
+            "dsEnderecoLocal": "asa sul",
+            "dtTableInicio": "12/12/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "20:00",
+            "nuPublicoMaximo": 500,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "esportivo: [corrida]",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036716/2023-63",
+            "dtCadastro": "06/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 230
+        },
+        {
+            "dtTableDates": "12/12/2023 - 20:00 às 23",
+            "dtTableArr": [
+                {
+                    "dtInicio": "12/12/2023",
+                    "hrInicio": "20:00",
+                    "hrTermino": "23:00"
+                }
+            ],
+            "protocoloProcessosei": "229 - 00050-00036715/2023-19",
+            "noEvento": "Teste Ato Publico + outro",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "asa sul",
+            "dtTableInicio": "12/12/2023",
+            "hrTableInicio": "20:00",
+            "hrTableTermino": "23:00",
+            "nuPublicoMaximo": 1000,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "religioso - atoPublico",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036715/2023-19",
+            "dtCadastro": "06/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 229
+        },
+        {
+            "dtTableDates": "10/12/2023 - 18:00 às 23",
+            "dtTableArr": [
+                {
+                    "dtInicio": "10/12/2023",
+                    "hrInicio": "18:00",
+                    "hrTermino": "23:00"
+                }
+            ],
+            "protocoloProcessosei": "228 - 00050-00036714/2023-74",
+            "noEvento": "Teste Ingresso",
+            "noTableRa": "CRUZEIRO",
+            "dsEnderecoLocal": "Asa Norte - ",
+            "dtTableInicio": "10/12/2023",
+            "hrTableInicio": "18:00",
+            "hrTableTermino": "23:00",
+            "nuPublicoMaximo": 1000,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036714/2023-74",
+            "dtCadastro": "06/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 228
+        },
+        {
+            "dtTableDates": "04/12/2023 - 00:00 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "04/12/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "00:00"
+                }
+            ],
+            "protocoloProcessosei": "227 - 00050-00036713/2023-20",
+            "noEvento": "Teste Ingresso",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "04/12/2023",
+            "hrTableInicio": "00:00",
+            "hrTableTermino": "00:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "social",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036713/2023-20",
+            "dtCadastro": "03/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 227
+        },
+        {
+            "dtTableDates": "04/12/2023 - 00:00 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "04/12/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "00:00"
+                }
+            ],
+            "protocoloProcessosei": "226 - 00050-00036705/2023-83",
+            "noEvento": "Teste Ingresso",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Local Ingresso",
+            "dtTableInicio": "04/12/2023",
+            "hrTableInicio": "00:00",
+            "hrTableTermino": "00:00",
+            "nuPublicoMaximo": 1000,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036705/2023-83",
+            "dtCadastro": "03/11/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 226
+        },
+        {
+            "dtTableDates": "31/10/2023 - 04:00 às 02",
+            "dtTableArr": [
+                {
+                    "dtInicio": "31/10/2023",
+                    "hrInicio": "04:00",
+                    "hrTermino": "02:00"
+                }
+            ],
+            "protocoloProcessosei": "225 - Sem processo",
+            "noEvento": "Teste FFFFFFFFFF",
+            "noTableRa": "CEILÂNDIA",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "31/10/2023",
+            "hrTableInicio": "04:00",
+            "hrTableTermino": "02:00",
+            "nuPublicoMaximo": 321312,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "30/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 225
+        },
+        {
+            "dtTableDates": "25/11/2023 - 00:05 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "25/11/2023",
+                    "hrInicio": "00:05",
+                    "hrTermino": "00:05"
+                }
+            ],
+            "protocoloProcessosei": "224 - 00050-00036700/2023-51",
+            "noEvento": "Teste Esportivo",
+            "noTableRa": "RECANTO DAS EMAS",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "25/11/2023",
+            "hrTableInicio": "00:05",
+            "hrTableTermino": "00:05",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "corporativo - esportivo: [ciclismo - corrida - futebol - outros]",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036700/2023-51",
+            "dtCadastro": "25/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 224
+        },
+        {
+            "dtTableDates": "22/11/2023 - 04:00 às 01",
+            "dtTableArr": [
+                {
+                    "dtInicio": "22/11/2023",
+                    "hrInicio": "04:00",
+                    "hrTermino": "01:00"
+                }
+            ],
+            "protocoloProcessosei": "223 - Sem processo",
+            "noEvento": "RONALD MCDONADL",
+            "noTableRa": "ARNIQUEIRA",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "22/11/2023",
+            "hrTableInicio": "04:00",
+            "hrTableTermino": "01:00",
+            "nuPublicoMaximo": 321,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "23/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 223
+        },
+        {
+            "dtTableDates": "31/10/2023 - 04:00 às 02",
+            "dtTableArr": [
+                {
+                    "dtInicio": "31/10/2023",
+                    "hrInicio": "04:00",
+                    "hrTermino": "02:00"
+                }
+            ],
+            "protocoloProcessosei": "222 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "31/10/2023",
+            "hrTableInicio": "04:00",
+            "hrTableTermino": "02:00",
+            "nuPublicoMaximo": 544,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco - religioso",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "23/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 222
+        },
+        {
+            "dtTableDates": "19/10/2023 - 12:12 às 12",
+            "dtTableArr": [
+                {
+                    "dtInicio": "19/10/2023",
+                    "hrInicio": "12:12",
+                    "hrTermino": "12:12"
+                }
+            ],
+            "protocoloProcessosei": "221 - Sem processo",
+            "noEvento": "LUCAS A PEREIRA",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "QNA 21 CASA 17",
+            "dtTableInicio": "19/10/2023",
+            "hrTableInicio": "12:12",
+            "hrTableTermino": "12:12",
+            "nuPublicoMaximo": 123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "19/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 221
+        },
+        {
+            "dtTableDates": "24/10/2023 - 05:00 às 02",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/10/2023",
+                    "hrInicio": "05:00",
+                    "hrTermino": "02:00"
+                }
+            ],
+            "protocoloProcessosei": "220 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "CRUZEIRO",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "24/10/2023",
+            "hrTableInicio": "05:00",
+            "hrTableTermino": "02:00",
+            "nuPublicoMaximo": 321,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "19/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 220
+        },
+        {
+            "dtTableDates": "08/12/2023 - 11:00 às 22",
+            "dtTableArr": [
+                {
+                    "dtInicio": "08/12/2023",
+                    "hrInicio": "11:00",
+                    "hrTermino": "22:00"
+                }
+            ],
+            "protocoloProcessosei": "219 - 00050-00036615/2023-92",
+            "noEvento": "Confra SMT",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Algum clube",
+            "dtTableInicio": "08/12/2023",
+            "hrTableInicio": "11:00",
+            "hrTableTermino": "22:00",
+            "nuPublicoMaximo": 48,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "corporativo",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036615/2023-92",
+            "dtCadastro": "18/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 219
+        },
+        {
+            "dtTableDates": "17/11/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/11/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:15"
+                }
+            ],
+            "protocoloProcessosei": "218 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "ÁGUA QUENTE",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "17/11/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:15",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "17/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 218
+        },
+        {
+            "dtTableDates": "17/11/2023 - 00:10 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/11/2023",
+                    "hrInicio": "00:10",
+                    "hrTermino": "00:10"
+                }
+            ],
+            "protocoloProcessosei": "217 - 00050-00036696/2023-21",
+            "noEvento": "Teste PDF Vazio",
+            "noTableRa": "PLANALTINA",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "17/11/2023",
+            "hrTableInicio": "00:10",
+            "hrTableTermino": "00:10",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036696/2023-21",
+            "dtCadastro": "17/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 217
+        },
+        {
+            "dtTableDates": "24/10/2023 - 04:00 às 03",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/10/2023",
+                    "hrInicio": "04:00",
+                    "hrTermino": "03:00"
+                }
+            ],
+            "protocoloProcessosei": "216 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "ARAPOANGA",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "24/10/2023",
+            "hrTableInicio": "04:00",
+            "hrTableTermino": "03:00",
+            "nuPublicoMaximo": 321312,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "11/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 216
+        },
+        {
+            "dtTableDates": "24/10/2023 - 05:00 às 03",
+            "dtTableArr": [
+                {
+                    "dtInicio": "24/10/2023",
+                    "hrInicio": "05:00",
+                    "hrTermino": "03:00"
+                }
+            ],
+            "protocoloProcessosei": "215 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "24/10/2023",
+            "hrTableInicio": "05:00",
+            "hrTableTermino": "03:00",
+            "nuPublicoMaximo": 321321,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "09/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 215
+        },
+        {
+            "dtTableDates": "29/10/2023 - 05:00 às 02",
+            "dtTableArr": [
+                {
+                    "dtInicio": "29/10/2023",
+                    "hrInicio": "05:00",
+                    "hrTermino": "02:00"
+                }
+            ],
+            "protocoloProcessosei": "214 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "FERCAL",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "29/10/2023",
+            "hrTableInicio": "05:00",
+            "hrTableTermino": "02:00",
+            "nuPublicoMaximo": 3213123,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "09/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 214
+        },
+        {
+            "dtTableDates": "23/10/2023 - 03:00 às 04",
+            "dtTableArr": [
+                {
+                    "dtInicio": "23/10/2023",
+                    "hrInicio": "03:00",
+                    "hrTermino": "04:00"
+                }
+            ],
+            "protocoloProcessosei": "212 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "ARAPOANGA",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "23/10/2023",
+            "hrTableInicio": "03:00",
+            "hrTableTermino": "04:00",
+            "nuPublicoMaximo": 312312,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "05/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 212
+        },
+        {
+            "dtTableDates": "16/10/2023 - 04:00 às 03",
+            "dtTableArr": [
+                {
+                    "dtInicio": "16/10/2023",
+                    "hrInicio": "04:00",
+                    "hrTermino": "03:00"
+                }
+            ],
+            "protocoloProcessosei": "210 - Sem processo",
+            "noEvento": "Teste",
+            "noTableRa": "FERCAL",
+            "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+            "dtTableInicio": "16/10/2023",
+            "hrTableInicio": "04:00",
+            "hrTableTermino": "03:00",
+            "nuPublicoMaximo": 654,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "religioso",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "05/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 210
+        },
+        {
+            "dtTableDates": "05/11/2023 - 15:00 às 16:00 | 05/11/2023 - 18:00 às 19:00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "05/11/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "16:00"
+                },
+                {
+                    "dtInicio": "05/11/2023",
+                    "hrInicio": "18:00",
+                    "hrTermino": "19:00"
+                }
+            ],
+            "protocoloProcessosei": "204 - 12312-31231231/2312-31",
+            "noEvento": "Mesma data",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Ceilandia ",
+            "dtTableInicio": "05/11/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "16:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "cultural",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "12312-31231231/2312-31",
+            "dtCadastro": "02/10/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 204
+        },
+        {
+            "dtTableDates": "31/10/2023 - 10:00 às 11",
+            "dtTableArr": [
+                {
+                    "dtInicio": "31/10/2023",
+                    "hrInicio": "10:00",
+                    "hrTermino": "11:00"
+                }
+            ],
+            "protocoloProcessosei": "203 - 00050-00036034/2023-51",
+            "noEvento": "natureza",
+            "noTableRa": "GUARÁ",
+            "dsEnderecoLocal": "Asa Norte - ",
+            "dtTableInicio": "31/10/2023",
+            "hrTableInicio": "10:00",
+            "hrTableTermino": "11:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "promocional",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036034/2023-51",
+            "dtCadastro": "26/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 203
+        },
+        {
+            "dtTableDates": "21/10/2023 - 00:05 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "21/10/2023",
+                    "hrInicio": "00:05",
+                    "hrTermino": "00:20"
+                }
+            ],
+            "protocoloProcessosei": "197 - 00050-00036023/2023-71",
+            "noEvento": "Teste 20/09/2023 - Ato Público",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Local Evento",
+            "dtTableInicio": "21/10/2023",
+            "hrTableInicio": "00:05",
+            "hrTableTermino": "00:20",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "atoPublico",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036023/2023-71",
+            "dtCadastro": "20/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 197
+        },
+        {
+            "dtTableDates": "21/10/2023 - 00:45 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "21/10/2023",
+                    "hrInicio": "00:45",
+                    "hrTermino": "00:25"
+                }
+            ],
+            "protocoloProcessosei": "196 - 00050-00036024/2023-15",
+            "noEvento": "Teste 20/09/2023 - Não Ato Público",
+            "noTableRa": "GAMA",
+            "dsEnderecoLocal": "Local Evento",
+            "dtTableInicio": "21/10/2023",
+            "hrTableInicio": "00:45",
+            "hrTableTermino": "00:25",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036024/2023-15",
+            "dtCadastro": "20/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 196
+        },
+        {
+            "dtTableDates": "18/10/2023 - 15:00 às 16",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/10/2023",
+                    "hrInicio": "15:00",
+                    "hrTermino": "16:00"
+                }
+            ],
+            "protocoloProcessosei": "190 - 00050-00036021/2023-81",
+            "noEvento": "Evento 2",
+            "noTableRa": "PARANOÁ",
+            "dsEnderecoLocal": "Asa Norte",
+            "dtTableInicio": "18/10/2023",
+            "hrTableInicio": "15:00",
+            "hrTableTermino": "16:00",
+            "nuPublicoMaximo": 50,
+            "stAcaoTransito": "DETRAN-DF",
+            "dsTableNaturezas": "cultural",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036021/2023-81",
+            "dtCadastro": "15/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 190
+        },
+        {
+            "dtTableDates": "18/10/2023 - 22:00 às 23",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/10/2023",
+                    "hrInicio": "22:00",
+                    "hrTermino": "23:00"
+                }
+            ],
+            "protocoloProcessosei": "189 - 00050-00036020/2023-37",
+            "noEvento": "Teste Carro de som doc",
+            "noTableRa": "CRUZEIRO",
+            "dsEnderecoLocal": "Ceilandia ",
+            "dtTableInicio": "18/10/2023",
+            "hrTableInicio": "22:00",
+            "hrTableTermino": "23:00",
+            "nuPublicoMaximo": 1,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036020/2023-37",
+            "dtCadastro": "15/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 189
+        },
+        {
+            "dtTableDates": "18/10/2023 - 00:15 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/10/2023",
+                    "hrInicio": "00:15",
+                    "hrTermino": "00:15"
+                }
+            ],
+            "protocoloProcessosei": "188 - 00050-00036694/2023-31",
+            "noEvento": "Teste 2",
+            "noTableRa": "TAGUATINGA",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "18/10/2023",
+            "hrTableInicio": "00:15",
+            "hrTableTermino": "00:15",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "atoPublico",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036694/2023-31",
+            "dtCadastro": "14/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 188
+        },
+        {
+            "dtTableDates": "18/10/2023 - 00:20 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "18/10/2023",
+                    "hrInicio": "00:20",
+                    "hrTermino": "00:20"
+                }
+            ],
+            "protocoloProcessosei": "187 - 00050-00036019/2023-11",
+            "noEvento": "Teste 1",
+            "noTableRa": "TAGUATINGA",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "18/10/2023",
+            "hrTableInicio": "00:20",
+            "hrTableTermino": "00:20",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "PMDF",
+            "dsTableNaturezas": "feirasExposicoes",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00036019/2023-11",
+            "dtCadastro": "14/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 187
+        },
+        {
+            "dtTableDates": "17/10/2023 - 06:00 às 15",
+            "dtTableArr": [
+                {
+                    "dtInicio": "17/10/2023",
+                    "hrInicio": "06:00",
+                    "hrTermino": "15:00"
+                }
+            ],
+            "protocoloProcessosei": "186 - Sem processo",
+            "noEvento": "evento teste 13",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "qna 21 ",
+            "dtTableInicio": "17/10/2023",
+            "hrTableInicio": "06:00",
+            "hrTableTermino": "15:00",
+            "nuPublicoMaximo": 1222,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "13/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 186
+        },
+        {
+            "dtTableDates": "28/10/2023 - 00:00 às 00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "28/10/2023",
+                    "hrInicio": "00:00",
+                    "hrTermino": "00:05"
+                }
+            ],
+            "protocoloProcessosei": "181 - 00050-00005781/2023-47",
+            "noEvento": "Teste 05/09/2023",
+            "noTableRa": "GAMA",
+            "dsEnderecoLocal": "Local",
+            "dtTableInicio": "28/10/2023",
+            "hrTableInicio": "00:00",
+            "hrTableTermino": "00:05",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "Sem ação",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "00050-00005781/2023-47",
+            "dtCadastro": "05/09/2023",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 181
+        }
     ]
 }

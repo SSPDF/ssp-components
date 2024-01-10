@@ -83,9 +83,11 @@ export function Table({
     csvExcludeUpper = [],
     filterSeparator = '|',
     filterStorageName = 'tableFilters',
+    multipleDataPath = '',
 }: {
     normalize?: boolean
     csvUpper?: boolean
+    multipleDataPath?: string
     filterStorageName?: string
     removeQuotes?: boolean
     columns: ColumnData[]
@@ -157,6 +159,25 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
+                            // if (multipleDataPath !== '') {
+                            //     ;(j as any[]).forEach((x) => {
+                            //         const list: any[] = x[multipleDataPath]
+
+                            //         if (list) {
+                            //             list.forEach((d) => {
+                            //                 newData.push({
+                            //                     ...x,
+                            //                     dtInicio: d.inicio,
+                            //                     hrInicio: d.hr_inicio,
+                            //                     hrTermino: d.hr_termino,
+                            //                 })
+                            //             })
+                            //         }
+                            //     })
+                            // } else {
+                            //     newData = j
+                            // }
+
                             setData(j)
                             startData = JSON.parse(JSON.stringify(j))
                             const oldFilters = localStorage.getItem(filterStorageName)
@@ -307,13 +328,33 @@ export function Table({
         return list.slice(start, start + itemsCount)
     }, [list, itemsCount, currentPage])
 
+    function defineCSVCells(key: any, cell: any): string {
+        if (typeof cell === 'string') {
+            let item = csvUpper && !csvExcludeUpper.includes(key) ? (cell as string).toUpperCase() : cell
+
+            item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+            return removeQuotes ? `${item}` : `"${item}"`
+        } else if (typeof cell === 'object' && !Array.isArray(cell) && cell !== null) {
+            let strItemAsObject = transformArrayObjectInString(cell).slice(1, -1) // key: label (Ex.: jsNaturezaEvento)
+
+            let item = csvUpper && !csvExcludeUpper.includes(key) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
+
+            item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+
+            return removeQuotes ? `${item}` : `"${item}"`
+        }
+
+        return cell
+    }
+
     // download file
     const downloadCSV = useCallback(
         (e: React.MouseEvent, zip = false) => {
             e.preventDefault()
 
             if (list.length <= 0) return
-            
+
             const originalKeys = Object.keys(list[0])
 
             if (generateCsvZip && zip) {
@@ -345,27 +386,19 @@ export function Table({
                         if (include) {
                             const value = keys
                                 .map((k: string) => {
-
-                                    if (k === 'tbRa') return x[k]['NO_CIDADE']
-                                    if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
-
                                     if (typeof x[k] === 'string') {
                                         let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
 
                                         item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
                                         return removeQuotes ? `${item}` : `"${item}"`
-                                    } else if (
-                                        typeof x[k] === 'object' &&
-                                        !Array.isArray(x[k]) &&
-                                        x[k] !== null
-                                    ) {
-                                        let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1); // k: label (Ex.: jsNaturezaEvento)
-                                   
+                                    } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
+                                        let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+
                                         let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
-    
+
                                         item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
-    
+
                                         return removeQuotes ? `${item}` : `"${item}"`
                                     }
 
@@ -391,8 +424,22 @@ export function Table({
                     link.click()
                 })
             } else {
-                
-                const keys = originalKeys.filter((k) => !csvExcludeKeysCSV.includes(k))
+                let keys = originalKeys
+                    .filter((k) => !csvExcludeKeysCSV.includes(k))
+                    .map((k) => {
+                        if (k === multipleDataPath) {
+                            return 'hrTermino'
+                        }
+
+                        return k
+                    })
+
+                if (multipleDataPath !== '') {
+                    keys = ['dtInicio', 'hrInicio', ...keys]
+                }
+
+                console.log(keys)
+
                 const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
                 const values: string[] = []
 
@@ -409,35 +456,43 @@ export function Table({
                     if (include) {
                         const value = keys
                             .map((k: string) => {
+                                if (k === 'dtInicio') return '{dtInicio}'
+                                else if (k === 'hrInicio') return '{hrInicio}'
+                                else if (k === 'hrTermino') return '{hrTermino}'
+                                else {
+                                    if (typeof x[k] === 'string') {
+                                        let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
 
-                                if (k === 'tbRa') return x[k]['NO_CIDADE']
-                                if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
-              
-                                if (typeof x[k] === 'string') {
-                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
+                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
-                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+                                        return removeQuotes ? `${item}` : `"${item}"`
+                                    } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
+                                        let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
-                                    return removeQuotes ? `${item}` : `"${item}"`
-                                } else if (
-                                    typeof x[k] === 'object' &&
-                                    !Array.isArray(x[k]) &&
-                                    x[k] !== null
-                                ) {
-                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1); // k: label (Ex.: jsNaturezaEvento)
-                               
-                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
+                                        let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
-                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
-                                    return removeQuotes ? `${item}` : `"${item}"`
+                                        return removeQuotes ? `${item}` : `"${item}"`
+                                    }
+
+                                    return x[k]
                                 }
-
-                                return x[k]
                             })
                             .join(',')
 
-                        values.push(value)
+                        if (multipleDataPath !== '') {
+                            const dates = x[multipleDataPath]
+
+                            if (dates) {
+                                console.log(dates)
+                                ;(dates as any[]).forEach((d) => {
+                                    values.push(value.replace('{dtInicio}', d.dtInicio).replace('{hrInicio}', d.hrInicio).replace('{hrTermino}', d.hrTermino))
+                                })
+                            }
+                        } else {
+                            values.push(value)
+                        }
                     }
                 })
 
@@ -453,39 +508,29 @@ export function Table({
         [list]
     )
 
-    function transformArrayObjectInString(o: Object): String{
+    function transformArrayObjectInString(o: Object): String {
+        let arrString = []
 
-        let arrString = [];
-
-        if (
-            typeof o === 'object' &&
-            !Array.isArray(o) &&
-            o !== null
-        ) {    
-            for (let [key, value] of Object.entries(o))
-            {
-                if (
-                    typeof value === 'object' &&
-                    !Array.isArray(value) &&
-                    value !== null
-                ) {
-                    arrString.push(key + ": " + transformArrayObjectInString(value)); 
+        if (typeof o === 'object' && !Array.isArray(o) && o !== null) {
+            for (let [key, value] of Object.entries(o)) {
+                if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+                    arrString.push(key + ': ' + transformArrayObjectInString(value))
                 } else {
-                    if(value){ // Is true
-                        arrString.push(key); 
-                    }  
+                    if (value) {
+                        // Is true
+                        arrString.push(key)
+                    }
                 }
             }
         }
 
-        return "["+arrString.join(' - ')+"]";
-    };
-    
+        return '[' + arrString.join(' - ') + ']'
+    }
 
     const downloadCSVAll = useCallback(
         (e: React.MouseEvent) => {
             e.preventDefault()
-            
+
             if (list.length <= 0) return
 
             const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeysAll.includes(k))
@@ -495,7 +540,6 @@ export function Table({
                 .map((x: any) => {
                     return keys
                         .map((k: string) => {
-
                             if (k === 'tbRa') return x[k]['NO_CIDADE']
                             if (k === 'rlEventoData') return `${x[k][0]['DT_INICIO']} - ${x[k][0]['HR_INICIO']}`
 
@@ -505,13 +549,9 @@ export function Table({
                                 item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
                                 return removeQuotes ? `${item}` : `"${item}"`
-                            }else if (
-                                typeof x[k] === 'object' &&
-                                !Array.isArray(x[k]) &&
-                                x[k] !== null
-                            ) {
-                                let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1); // k: label (Ex.: jsNaturezaEvento)
-                           
+                            } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
+                                let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+
                                 let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
                                 item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
