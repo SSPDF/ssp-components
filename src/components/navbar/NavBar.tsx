@@ -19,6 +19,7 @@ export default function NavBar({
     el,
     menuItems,
     logoutMsg = 'Sair',
+    ...props
 }: {
     links: { name: string; path: string }[]
     title: string
@@ -101,7 +102,7 @@ export default function NavBar({
                             <Stack direction='row' spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
                                 {links.map((x) => (
                                     <Box
-                                        key={`navigation${x}`}
+                                        key={`navigation${x.path}`}
                                         sx={{
                                             a: {
                                                 color: '#2c7da0',

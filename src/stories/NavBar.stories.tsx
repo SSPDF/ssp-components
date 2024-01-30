@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react'
 import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import NavBar from '../components/navbar/NavBar'
+import React from 'react'
+import { LinearProgress } from '@mui/material'
 
 const meta: Meta<typeof NavBar> = {
     title: 'NavBar/NavBar',
@@ -19,9 +21,13 @@ export const Base: Story = {
                 name: 'Teste',
                 path: '#',
             },
+            {
+                name: 'Test 2',
+                path: '/dd',
+            },
         ],
         title: 'Exemplo de navbar',
-
+        customLoading: <>{/* <LinearProgress /> */}</>,
         pos: 'inherit',
         img: '/logo_70.png',
         next: false,
