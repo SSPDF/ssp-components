@@ -19,7 +19,7 @@ export const Base: Story = {
         links: [
             {
                 name: 'Teste',
-                path: '/lll',
+                path: '#',
             },
             {
                 name: 'Test 2',

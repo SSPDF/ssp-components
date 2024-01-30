@@ -68,6 +68,20 @@ export default function NavBar({
         [router]
     )
 
+    function changeRoute(e: React.MouseEvent, path: string) {
+        setLoading(true)
+
+        if (router) {
+            router
+                .push({
+                    pathname: path,
+                })
+                .finally(() => setLoading(false))
+        } else {
+            setLoading(false)
+        }
+    }
+
     return (
         <>
             <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
@@ -119,9 +133,12 @@ export default function NavBar({
                                             },
                                         }}
                                     >
-                                        <Link href={x.path} onClick={() => setLoading(true)}>
+                                        {/* <Link href={x.path} onClick={changeRoute}>
                                             {x.name}
-                                        </Link>
+                                        </Link> */}
+                                        <Button onClick={(e) => changeRoute(e, x.path)} sx={{ textTransform: 'capitalize' }}>
+                                            {x.name}
+                                        </Button>
                                     </Box>
                                 ))}
                             </Stack>
