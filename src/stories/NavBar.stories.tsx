@@ -19,7 +19,7 @@ export const Base: Story = {
         links: [
             {
                 name: 'Teste',
-                path: '#',
+                path: '/lll',
             },
             {
                 name: 'Test 2',
@@ -27,7 +27,6 @@ export const Base: Story = {
             },
         ],
         title: 'Exemplo de navbar',
-        customLoading: <>{/* <LinearProgress /> */}</>,
         pos: 'inherit',
         img: '/logo_70.png',
         next: false,

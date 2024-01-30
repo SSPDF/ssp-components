@@ -56,9 +56,14 @@ export default function NavBar({
             setAnchor(null)
 
             if (router)
-                router.push({
-                    pathname: link,
-                })
+                router
+                    .push({
+                        pathname: link,
+                    })
+                    .finally(() => setLoading(false))
+            else {
+                setLoading(false)
+            }
         },
         [router]
     )
