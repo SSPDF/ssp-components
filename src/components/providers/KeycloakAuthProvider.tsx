@@ -10,7 +10,21 @@ import { User } from '../../types/auth'
 export const cookieName = 'nextauth.token'
 const userImgName = 'user-data.img'
 
-export function KeycloakAuthProvider({ url, realm, clientId, children, type = 'ad' }: { url: string; realm: string; clientId: string; children: JSX.Element | JSX.Element[]; type?: 'govbr' | 'ad' }) {
+export function KeycloakAuthProvider({
+    url,
+    realm,
+    clientId,
+    children,
+    type = 'ad',
+    resource_name = 'eventos-front',
+}: {
+    url: string
+    realm: string
+    clientId: string
+    children: JSX.Element | JSX.Element[]
+    type?: 'govbr' | 'ad'
+    resource_name?: string
+}) {
     const [user, setUser] = useState<User | null | undefined>()
     const [userLoaded, setUserLoaded] = useState(false)
 
@@ -48,7 +62,7 @@ export function KeycloakAuthProvider({ url, realm, clientId, children, type = 'a
                         const userData: User = {
                             ...tokenParsed,
                             token: keycloak.token,
-                            roles: ((tokenParsed?.resource_access ?? {})['eventos-front'] ?? []).roles,
+                            roles: ((tokenParsed?.resource_access ?? {})[resource_name] ?? []).roles,
                         }
 
                         setUser(userData)
@@ -78,9 +92,6 @@ export function KeycloakAuthProvider({ url, realm, clientId, children, type = 'a
 
     function logout() {
         setUserLoaded(false)
-
-        console.log('TENTANDO DESLOGAR')
-        console.log(kc)
 
         kc?.logout()
 
