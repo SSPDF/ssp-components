@@ -2,7 +2,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import SaveIcon from '@mui/icons-material/Save'
 import { LoadingButton } from '@mui/lab'
-import { Alert, Box, Button, MobileStepper, Snackbar, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Alert, Box, Button, MobileStepper, Snackbar, Stack, Step, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { FormEvent, ReactElement, useContext, useRef, useState } from 'react'
 import { FormContext } from '../../../context/form'
 import { FieldValues } from 'react-hook-form'
@@ -30,7 +30,7 @@ function sleep(ms: number) {
 export function Teste() {
     return (
         <>
-            <Table
+            {/* <Table
                 columnSize={11}
                 action={() => <></>}
                 tableName='Evento'
@@ -296,7 +296,12 @@ export function Teste() {
                         },
                     ],
                 }}
-            />
+            /> */}
+            {/* <Stepper>
+                <StepperBlock title='Testando'>
+                    <Input name='teste' type='input' />
+                </StepperBlock>
+            </Stepper> */}
         </>
     )
 }
@@ -396,8 +401,8 @@ export function Stepper({
                 <MobileStepper
                     variant='text'
                     steps={maxSteps}
-                    position='bottom'
-                    // position={useMediaQuery(theme.breakpoints.only('xs')) ? 'bottom' : 'static'}
+                    // position='bottom'
+                    position={useMediaQuery(theme.breakpoints.only('xs')) ? 'bottom' : 'static'}
                     activeStep={activeStep}
                     sx={{ paddingX: 2, paddingTop: 2, paddingBottom: 4 }}
                     backButton={
