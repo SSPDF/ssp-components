@@ -297,11 +297,11 @@ export function Teste() {
                     ],
                 }}
             /> */}
-            {/* <Stepper>
+            <Stepper>
                 <StepperBlock title='Testando'>
                     <Input name='teste' type='input' />
                 </StepperBlock>
-            </Stepper> */}
+            </Stepper>
         </>
     )
 }
@@ -404,7 +404,7 @@ export function Stepper({
                     // position='bottom'
                     position={useMediaQuery(theme.breakpoints.only('xs')) ? 'bottom' : 'static'}
                     activeStep={activeStep}
-                    sx={{ paddingX: 2, paddingTop: 2, paddingBottom: 4 }}
+                    sx={{ paddingTop: 2, paddingBottom: 4, paddingX: 0 }}
                     backButton={
                         <Button variant='contained' startIcon={<KeyboardArrowLeft />} onClick={handleBack} disabled={activeStep === 0} sx={{ textTransform: 'none' }}>
                             Voltar
