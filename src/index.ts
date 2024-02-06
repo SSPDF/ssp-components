@@ -39,6 +39,7 @@ import CheckBoxAdditional from './components/form/checkbox/CheckBoxAdditional'
 import RequiredCheckBoxGroup from './components/form/checkbox/RequiredCheckBoxValidator'
 
 import { KeycloakAuthProvider } from './components/providers/KeycloakAuthProvider'
+import { FixedAutoComplete } from './components/form/input/FixedAutoComplete'
 
 export {
     CheckBox,
@@ -67,9 +68,8 @@ export {
     FormContext,
     KeycloakAuthProvider,
     CheckBoxAdditional,
-
     RequiredCheckBoxGroup,
-
+    FixedAutoComplete,
     //detalhes
     Category,
     Field,

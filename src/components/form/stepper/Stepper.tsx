@@ -12,6 +12,7 @@ import FetchAutoComplete from '../input/FetchAutoComplete'
 import RequiredCheckBoxGroup from '../checkbox/RequiredCheckBoxValidator'
 import CheckBox from '../checkbox/CheckBox'
 import Table from '../table/Table'
+import { FixedAutoComplete } from '../input/FixedAutoComplete'
 
 const getKeys = (values: any, id: number) => {
     if (!values || Object.keys(values).length <= 0) return []
@@ -26,6 +27,17 @@ const getKeys = (values: any, id: number) => {
 function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+const list = [
+    {
+        id: 0,
+        label: 'Nada',
+    },
+    {
+        id: 1,
+        label: 'Nada 2',
+    },
+]
 
 export function Teste() {
     return (
@@ -300,6 +312,7 @@ export function Teste() {
             <Stepper>
                 <StepperBlock title='Testando'>
                     <Input name='teste' type='input' />
+                    <FixedAutoComplete name='haha' title='Testing' list={list} required />
                 </StepperBlock>
             </Stepper>
         </>
