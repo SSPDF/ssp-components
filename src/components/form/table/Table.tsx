@@ -197,7 +197,7 @@ export function Table({
                         status: 500,
                     })
                 })
-    }, [userLoaded])
+    }, [userLoaded, fetchFunc])
 
     const getCount = useCallback(
         (countData: any[]) => {
