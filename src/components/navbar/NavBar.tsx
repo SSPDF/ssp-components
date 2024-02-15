@@ -18,14 +18,14 @@ export default function NavBar({
     next = true,
     el,
     menuItems,
-    paddingBottom = 9,
+    paddingBottom = 0,
     logoutMsg = 'Sair',
     ...props
 }: {
     links: { name: string; path: string }[]
     title: string
     img: string
-    paddingBottom: number
+    paddingBottom?: number
     menuItems: JSX.Element | JSX.Element[]
     next?: boolean
     el?: JSX.Element
