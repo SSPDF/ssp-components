@@ -159,25 +159,6 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            // if (multipleDataPath !== '') {
-                            //     ;(j as any[]).forEach((x) => {
-                            //         const list: any[] = x[multipleDataPath]
-
-                            //         if (list) {
-                            //             list.forEach((d) => {
-                            //                 newData.push({
-                            //                     ...x,
-                            //                     dtInicio: d.inicio,
-                            //                     hrInicio: d.hr_inicio,
-                            //                     hrTermino: d.hr_termino,
-                            //                 })
-                            //             })
-                            //         }
-                            //     })
-                            // } else {
-                            //     newData = j
-                            // }
-
                             setData(j)
                             startData = JSON.parse(JSON.stringify(j))
                             const oldFilters = localStorage.getItem(filterStorageName)

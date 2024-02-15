@@ -18,12 +18,14 @@ export default function NavBar({
     next = true,
     el,
     menuItems,
+    paddingBottom = 9,
     logoutMsg = 'Sair',
     ...props
 }: {
     links: { name: string; path: string }[]
     title: string
     img: string
+    paddingBottom: number
     menuItems: JSX.Element | JSX.Element[]
     next?: boolean
     el?: JSX.Element
@@ -221,7 +223,7 @@ export default function NavBar({
                 </AppBar>
                 {loading && <LinearProgress />}
             </Box>
-            <Box paddingBottom={9} />
+            <Box paddingBottom={paddingBottom} />
         </>
     )
 }
