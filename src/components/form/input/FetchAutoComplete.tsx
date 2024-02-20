@@ -132,6 +132,9 @@ export default function FetchAutoComplete({
                         helperText={get(context?.errors, name!)?.message as string}
                     />
                 )}
+                sx={{
+                    bgcolor: 'white',
+                }}
                 size='small'
                 fullWidth
             />

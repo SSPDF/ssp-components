@@ -52,6 +52,9 @@ export default function MultInput({
                 })}
                 error={get(context.errors, name!) ? true : false}
                 helperText={get(context.errors, name!)?.message as string}
+                sx={{
+                    bgcolor: 'white',
+                }}
                 placeholder={customPlaceholder ? customPlaceholder : title}
             />
         </Grid>

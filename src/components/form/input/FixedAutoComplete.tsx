@@ -61,6 +61,9 @@ export function FixedAutoComplete({
                     <TextField {...params} size='small' fullWidth placeholder={title} error={get(context?.errors, name!) ? true : false} helperText={get(context?.errors, name!)?.message as string} />
                 )}
                 size='small'
+                sx={{
+                    bgcolor: 'white',
+                }}
                 fullWidth
             />
         </Grid>

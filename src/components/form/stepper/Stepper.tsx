@@ -13,6 +13,7 @@ import RequiredCheckBoxGroup from '../checkbox/RequiredCheckBoxValidator'
 import CheckBox from '../checkbox/CheckBox'
 import Table from '../table/Table'
 import { FixedAutoComplete } from '../input/FixedAutoComplete'
+import MultInput from '../input/MultInput'
 
 const getKeys = (values: any, id: number) => {
     if (!values || Object.keys(values).length <= 0) return []
@@ -311,8 +312,12 @@ export function Teste() {
             /> */}
             <Stepper>
                 <StepperBlock title='Testando'>
-                    <Input name='teste' type='input' />
-                    <FixedAutoComplete name='haha' title='Testing' list={list} required />
+                    <Box bgcolor='pink'>
+                        <Input name='teste' type='input' />
+                        <FixedAutoComplete name='haha' title='Testing' list={list} required />
+
+                        <MultInput name='haha' />
+                    </Box>
                 </StepperBlock>
             </Stepper>
         </>

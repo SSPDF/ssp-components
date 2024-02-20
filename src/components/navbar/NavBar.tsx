@@ -90,7 +90,7 @@ export default function NavBar({
                 <AppBar position='relative' elevation={0} sx={{ backgroundColor: '#F1F5F9', color: 'black', paddingY: 1, paddingX: { xs: 1, md: 4 } }}>
                     <Stack direction='row' justifyContent='space-between'>
                         <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', md: 'flex' }, width: '100%' }}>
-                            <Link href='/'>{next ? <Image src={img} alt='Logo dos Eventos Externos' width={40} height={40} /> : <img src={img} height={35} />}</Link>
+                            <Link href='/'>{next ? <Image src={img} alt={title} width={40} height={40} /> : <img src={img} height={35} />}</Link>
                             <Box>
                                 <Typography variant='subtitle1' fontWeight={600}>
                                     {title}

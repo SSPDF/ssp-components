@@ -81,6 +81,9 @@ export function Input({
             error,
             helperText,
             ...inputConfig,
+            sx: {
+                backgroundColor: 'white',
+            },
         }
 
         switch (type) {
