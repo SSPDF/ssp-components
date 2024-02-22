@@ -60,7 +60,7 @@ export function Table({
     csv,
     columnSize,
     action,
-    isPublic = false,
+    useKC = true,
     statusKeyName = '',
     csvExcludeKeys = [],
     csvExcludeKeysCSV = [],
@@ -118,7 +118,7 @@ export function Table({
     fetchFunc: () => Promise<Response>
     emptyMsg?: { user: string; public: string }
     dataPath?: string
-    isPublic?: boolean
+    useKC?: boolean
     filters?: { [key: string]: { type: FilterTypes; keyName: string; name: string; referenceKey?: string; options?: { name: string; color: string; key: string }[] }[] }
     filterSeparator?: string
 }) {
@@ -142,7 +142,9 @@ export function Table({
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     useEffect(() => {
-        if (userLoaded || isPublic)
+        setError(null)
+
+        if (userLoaded || !useKC)
             fetchFunc()
                 .then((res) => {
                     if (!res.ok)
@@ -933,7 +935,7 @@ export function Table({
             </Stack>
         )
 
-    if (!userLoaded && !isPublic) return <LinearProgress />
+    if (!userLoaded && useKC) return <LinearProgress />
 
     return (
         <>
