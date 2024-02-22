@@ -975,9 +975,9 @@ export function Table({
                                                 </Typography>
                                             </Box>
                                             <Box paddingLeft={1}>
-                                                <Typography fontSize={16} sx={{ wordWrap: 'break-word', color: '#1E293B' }} fontFamily='Inter'>
+                                                <Box sx={{ wordWrap: 'break-word', color: '#1E293B', fontSize: 16 }} fontFamily='Inter'>
                                                     {c.keyName === statusKeyName ? getStatusMsg(get(x, c.keyName)) : <div dangerouslySetInnerHTML={{ __html: get(x, c.keyName) }}></div>}
-                                                </Typography>
+                                                </Box>
                                             </Box>
                                         </Grid>
                                     ))}
