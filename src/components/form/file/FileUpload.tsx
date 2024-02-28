@@ -31,6 +31,7 @@ export default function FileUpload({
     required = false,
     multiple = false,
     apiURL,
+    route = '',
     sizeLimit = 4,
     xs = 12,
     sm,
@@ -40,6 +41,7 @@ export default function FileUpload({
     tipoArquivo: string
     title: string
     apiURL: string
+    route?: string
     required?: boolean
     multiple?: boolean
     sizeLimit?: number
@@ -106,7 +108,7 @@ export default function FileUpload({
 
                                 res.json().then((j: any) => {
                                     if (j.status && j.status.status === 200) {
-                                        const fileIdFromApi = j.data[0]
+                                        const fileIdFromApi = get(j, route, j)[0]
                                         const fileId: number = fileIdFromApi['coSeqArquivo']
 
                                         context.setFilesUid((fId) => [

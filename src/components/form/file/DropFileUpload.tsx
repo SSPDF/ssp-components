@@ -64,12 +64,14 @@ export default function DropFileUpload({
     xs = 12,
     sm,
     md,
+    route = '',
     tstToken = '',
 }: {
     name: string
     tipoArquivo: string
     title: string
     apiURL: string
+    route?: string
     tstToken?: string
     required?: boolean
     multiple?: boolean
@@ -122,7 +124,7 @@ export default function DropFileUpload({
                         })
                         .then((res: AxiosResponse<any, any>) => {
                             if (res.status > 200) {
-                                const fileIdFromApi = res.data.data[0]
+                                const fileIdFromApi = get(res.data, route, res.data)[0]
                                 const fileId: number = fileIdFromApi['coSeqArquivo']
 
                                 context.setFilesUid((fId) => [

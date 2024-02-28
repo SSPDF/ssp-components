@@ -12,6 +12,7 @@ export default function FetchAutoComplete({
     shouldRefetch = true,
     required = false,
     defaultValue,
+    route = '',
     onChange = () => {},
     xs = 12,
     sm,
@@ -23,6 +24,7 @@ export default function FetchAutoComplete({
     customLoadingText?: string
     defaultValue?: number
     required?: boolean
+    route?: string
     onChange?: (id: number | undefined) => void
     shouldRefetch?: boolean
     xs?: number
@@ -46,13 +48,12 @@ export default function FetchAutoComplete({
                 },
             }).then((res) => {
                 if (res.ok) {
+                    console.log('llll')
                     res.json().then((j) => {
-                        let value = j.body.data.filter((x: any) => x.id === defaultValue)
-
+                        let value = get(j, route, j).filter((x: any) => x.id === defaultValue)
                         if (value.length > 0) {
-                            setList(j.body.data)
+                            setList(get(j, route, j))
                             setLoading(false)
-
                             context?.formSetValue(name, defaultValue)
                             setDValue(value[0])
                         } else {
@@ -81,7 +82,7 @@ export default function FetchAutoComplete({
         }).then((res) => {
             if (res.ok) {
                 res.json().then((j) => {
-                    setList(j.body.data)
+                    setList(get(j, route, j))
                     setLoading(false)
                 })
             } else {

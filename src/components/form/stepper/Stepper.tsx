@@ -34,68 +34,6 @@ function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function Teste() {
-    return (
-        <Box bgcolor='#F9F9F9' py={4}>
-            {/* <NewTable
-                    fetchFunc={() => fetch('http://localhost:7171/table')}
-                    useKC={false}
-                    tableName='Teste'
-                    columns={[
-                        {
-                            keyName: 'protocolo',
-                            title: 'Procolo',
-                        },
-                    ]}
-                    action={() => <></>}
-                    columnSize={8}
-                /> */}
-            <Table
-                fetchFunc={() => fetch('http://localhost:7171/table')}
-                useKC={false}
-                tableName='Teste'
-                columns={[
-                    {
-                        keyName: 'protocolo',
-                        title: 'Procolo',
-                    },
-                    {
-                        keyName: 'titulo',
-                        title: 'Titulo',
-                    },
-                    {
-                        keyName: 'local',
-                        title: 'Local',
-                    },
-                    {
-                        keyName: 'data_abertura',
-                        title: 'Data Abertura',
-                    },
-                    {
-                        keyName: 'movimentacao_ultimo_estado',
-                        title: 'Movimentacao_ultimo_estado',
-                    },
-                    {
-                        keyName: 'estado',
-                        title: 'Estado',
-                    },
-                ]}
-                action={() => <></>}
-                filters={{
-                    protocolo: [
-                        {
-                            keyName: 'protocolo',
-                            name: 'Protocolo',
-                            type: 'a-z',
-                        },
-                    ],
-                }}
-                columnSize={6}
-            />
-        </Box>
-    )
-}
-
 export function Stepper({
     debugLog = false,
     test = false,
