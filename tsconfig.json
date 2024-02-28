@@ -5,10 +5,7 @@
         "outDir": "dist",
         "strict": true,
         "checkJs": true,
-        "declaration": true, 
+        "declaration": true
     },
-    "include": [
-        "src/*",
-        "package.json"
-    ],
+    "include": ["src/*", "package.json"]
 }
