@@ -41,6 +41,9 @@ import RequiredCheckBoxGroup from './components/form/checkbox/RequiredCheckBoxVa
 import { KeycloakAuthProvider } from './components/providers/KeycloakAuthProvider'
 import { FixedAutoComplete } from './components/form/input/FixedAutoComplete'
 
+import DropFileUpload from './components/form/file/DropFileUpload'
+import { sspModal } from './components/modal/Modal'
+
 export {
     CheckBox,
     CheckBoxWarning,
@@ -75,4 +78,8 @@ export {
     Field,
     FieldLabel,
     File,
+
+    //new
+    DropFileUpload,
+    sspModal
 }
