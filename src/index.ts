@@ -43,6 +43,7 @@ import { FixedAutoComplete } from './components/form/input/FixedAutoComplete'
 
 import DropFileUpload from './components/form/file/DropFileUpload'
 import { sspModal } from './components/modal/Modal'
+import { SspComponentsProvider } from './components/providers/SspComponentsProvider'
 
 export {
     CheckBox,
@@ -81,5 +82,6 @@ export {
 
     //new
     DropFileUpload,
-    sspModal
+    sspModal,
+    SspComponentsProvider
 }
