@@ -60,6 +60,7 @@ export default function DatePicker({
                         disableHighlightToday
                         sx={{
                             outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                            backgroundColor: 'white',
                             width: '100%',
                             div: {
                                 input: {

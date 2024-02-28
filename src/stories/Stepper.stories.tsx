@@ -22,9 +22,9 @@ export const Base: Story = {
     args: {
         debugLog: true,
     },
-    render: (args) => (
-        <>
-            <Teste />
-        </>
-    ),
+    // render: (args) => (
+    //     <Box>
+    //         <Teste />
+    //     </Box>
+    // ),
 }

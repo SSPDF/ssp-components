@@ -31,7 +31,7 @@ export default function CheckBoxWarning({
                         customWarning
                     ) : (
                         <Typography>
-                            <b>Atenção</b> Eventos da natureza <i>{title}</i> possuem regras específicas
+                            <b>Atenção</b> <i>{title}</i> possui regras específicas.
                         </Typography>
                     )}
                 </Card>

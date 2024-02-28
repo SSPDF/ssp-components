@@ -16,6 +16,7 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    PaginationItem,
     Paper,
     Stack,
     SwipeableDrawer,
@@ -37,6 +38,7 @@ import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
 import dayjs from 'dayjs'
 import JSZip from 'jszip'
+import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 
 interface ColumnData {
     title: string
@@ -939,22 +941,53 @@ export function Table({
 
     return (
         <>
-            <Box marginX={isSmall ? 0 : 4}>
-                <Stack spacing={1} direction={{ xs: 'column', md: 'row' }} marginBottom={2}>
-                    <TextField
-                        InputProps={{
-                            startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
-                        }}
-                        size='small'
-                        onChange={onInputChange}
-                        fullWidth
-                        placeholder={`Pesquisar ${tableName}`}
-                    />
-                    {Object.keys(filters).length > 0 && (
-                        <Button startIcon={<FilterAlt />} variant='contained' onClick={(e) => setFilterOpen(true)}>
-                            Filtrar
-                        </Button>
-                    )}
+            <Box marginX={isSmall ? 0 : 4} bgcolor='white' p={2} borderRadius={6}>
+                <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
+                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} marginBottom={2} height='40px' width='100%'>
+                        <TextField
+                            InputProps={{
+                                startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
+                                sx: {
+                                    '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                },
+                            }}
+                            sx={{
+                                border: 'solid 1px #CBD5E1',
+                                backgroundColor: '#F8FAFC',
+                                borderRadius: '50px',
+                                maxWidth: '600px',
+                            }}
+                            size='small'
+                            onChange={onInputChange}
+                            fullWidth
+                            placeholder={`Pesquisar ${tableName}`}
+                        />
+                        {Object.keys(filters).length > 0 && (
+                            <Button
+                                startIcon={<FilterAlt />}
+                                variant='contained'
+                                onClick={(e) => setFilterOpen(true)}
+                                sx={{
+                                    borderRadius: '8px',
+                                    paddingX: '24px',
+                                    paddingY: '8px',
+                                    backgroundColor: '#208FE8',
+                                    textTransform: 'capitalize',
+                                }}
+                            >
+                                Filtro
+                            </Button>
+                        )}
+                    </Stack>
+
+                    <Stack alignItems='end' width='100%' pb={2}>
+                        <Typography fontWeight={600}>Demandas cadastradas</Typography>
+                        <Stack justifyContent='center'>
+                            <Typography>
+                                Exibindo {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
+                            </Typography>
+                        </Stack>
+                    </Stack>
                 </Stack>
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
@@ -965,7 +998,7 @@ export function Table({
                         </Stack>
                     ) : (
                         getMaxItems().map((x: any, index: number) => (
-                            <Paper key={index} sx={{ padding: 0.5, backgroundColor: index % 2 === 0 ? '#E2E8F0' : '#F8FAFC', paddingY: 2 }} elevation={0}>
+                            <Paper key={index} sx={{ padding: 0.5, backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white', paddingY: 2, borderTop: 'solid 1.5px #E2E8F0' }} elevation={0}>
                                 <Grid container spacing={isSmall ? 2 : 0} paddingX={2}>
                                     {columns.map((c) => (
                                         <Grid key={c.keyName + index} item xs={12} md={(12 / columnSize) * (!!c.size ? c.size : 1)}>
@@ -990,15 +1023,10 @@ export function Table({
                             </Paper>
                         ))
                     )}
-                    <Stack bgcolor='#F8FAFC' direction='row' justifyContent='center' paddingY={1} borderTop={3} borderColor='#b4bfcf'>
-                        <Stack direction='column' justifyContent='center' alignItems='center'>
-                            <Pagination count={paginationCount} siblingCount={isSmall ? 0 : 1} size='large' onChange={onPaginationChange} page={listPage} shape='rounded' />
-                        </Stack>
-                    </Stack>
                 </Stack>
+
                 {getMaxItems().length > 0 && (
                     <Stack
-                        bgcolor='#E2E8F0'
                         padding={1}
                         direction={{
                             xs: 'column',
@@ -1011,11 +1039,6 @@ export function Table({
                         justifyContent='space-between'
                         alignItems='center'
                     >
-                        <Box height='100%' top={0} left={0} marginLeft={2}>
-                            <Stack height='100%' justifyContent='center'>
-                                {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
-                            </Stack>
-                        </Box>
                         {csv && (
                             <Stack
                                 direction={{
@@ -1061,6 +1084,66 @@ export function Table({
                     </Stack>
                 )}
             </Box>
+
+            <Stack direction='row' justifyContent='center' paddingY={1} paddingTop={2}>
+                <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
+                    <Button onClick={(e) => setListPage((s) => s - 1)} sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}>
+                        <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
+                    </Button>
+                    <Pagination
+                        renderItem={(item) => {
+                            if (item.type === 'page')
+                                return (
+                                    <Button
+                                        onClick={item.onClick}
+                                        sx={{
+                                            fontWeight: 600,
+                                            ...(item.selected
+                                                ? {
+                                                      bgcolor: '#33B55D',
+                                                      color: 'white',
+                                                  }
+                                                : {
+                                                      color: '#1E293B',
+                                                  }),
+                                            borderRadius: '100%',
+                                            padding: 0,
+                                            margin: 0,
+                                            minWidth: 0,
+                                            width: '40px',
+                                            height: '40px',
+
+                                            marginX: 0.25,
+                                        }}
+                                    >
+                                        {item.page}
+                                    </Button>
+                                )
+
+                            if (!['next', 'previous', 'page'].includes(item.type)) return <PaginationItem {...item} />
+                        }}
+                        count={paginationCount}
+                        siblingCount={isSmall ? 0 : 6}
+                        size='large'
+                        onChange={onPaginationChange}
+                        page={listPage}
+                        shape='circular'
+                        variant='outlined'
+                        sx={{
+                            '.MuiPagination-ul': {
+                                backgroundColor: 'white',
+                                border: 'solid 1px #E2E8F0',
+                                borderRadius: '50px',
+                                paddingX: 0.25,
+                                paddingY: 0.5,
+                            },
+                        }}
+                    />
+                    <Button onClick={(e) => setListPage((s) => s + 1)} sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}>
+                        <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />
+                    </Button>
+                </Stack>
+            </Stack>
 
             <SwipeableDrawer anchor={isSmall ? 'bottom' : 'right'} open={filterOpen} onClose={(e) => setFilterOpen(false)} onOpen={(e) => setFilterOpen(true)}>
                 <List sx={{ minWidth: 310 }}>

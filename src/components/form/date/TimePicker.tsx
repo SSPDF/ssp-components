@@ -49,6 +49,7 @@ export default function TimePicker({
                     onChange={handleChange}
                     sx={{
                         outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                        backgroundColor: 'white',
                         width: '100%',
                         div: {
                             input: {
