@@ -42,7 +42,7 @@ import { KeycloakAuthProvider } from './components/providers/KeycloakAuthProvide
 import { FixedAutoComplete } from './components/form/input/FixedAutoComplete'
 
 import DropFileUpload from './components/form/file/DropFileUpload'
-import { sspModal } from './components/modal/Modal'
+import { MODAL } from './components/modal/Modal'
 import { SspComponentsProvider } from './components/providers/SspComponentsProvider'
 
 export {
@@ -82,6 +82,6 @@ export {
 
     //new
     DropFileUpload,
-    sspModal,
+    MODAL,
     SspComponentsProvider
 }
