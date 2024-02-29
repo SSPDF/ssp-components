@@ -1087,7 +1087,18 @@ export function Table({
 
             <Stack direction='row' justifyContent='center' paddingY={1} paddingTop={2}>
                 <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
-                    <Button onClick={(e) => setListPage((s) => s - 1)} sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}>
+                    <Button
+                        onClick={(e) =>
+                            setListPage((s) => {
+                                if (s > 1) {
+                                    return s - 1
+                                }
+
+                                return 1
+                            })
+                        }
+                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
+                    >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
                     </Button>
                     <Pagination
@@ -1139,7 +1150,18 @@ export function Table({
                             },
                         }}
                     />
-                    <Button onClick={(e) => setListPage((s) => s + 1)} sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}>
+                    <Button
+                        onClick={(e) =>
+                            setListPage((s) => {
+                                if (s < paginationCount) {
+                                    return s + 1
+                                }
+
+                                return paginationCount
+                            })
+                        }
+                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
+                    >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />
                     </Button>
                 </Stack>

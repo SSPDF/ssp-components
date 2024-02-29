@@ -10,7 +10,7 @@ import DatePicker from '../form/date/DatePicker'
 import TimePicker from '../form/date/TimePicker'
 import FileUpload from '../form/file/FileUpload'
 import DropFileUpload from '../form/file/DropFileUpload'
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import Table from '../form/table/Table'
 
 import '../../css/globals.css'
@@ -68,8 +68,9 @@ export function Exemplo() {
 export default function Teste() {
     return (
         <Box bgcolor='#F9F9F9' py={4}>
-            <FetchAutoComplete name='ffddd' title='Teste' url='http://localhost:7171/autocomplete' />
-            {/* <Table
+            <Box>das</Box>
+            {/* <FetchAutoComplete name='ffddd' title='Teste' url='http://localhost:7171/autocomplete' /> */}
+            <Table
                 fetchFunc={() => fetch('http://localhost:7171/table')}
                 useKC={false}
                 tableName='Teste'
@@ -110,7 +111,7 @@ export default function Teste() {
                     ],
                 }}
                 columnSize={6}
-            /> */}
+            />
         </Box>
     )
 }

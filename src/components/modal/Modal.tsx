@@ -2,7 +2,7 @@ import { Box, Drawer, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-export let sspModal: {
+export let MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
     close: () => void
 } = {
@@ -19,12 +19,12 @@ export function CustomModalProvider() {
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
     useEffect(() => {
-        sspModal.open = (customCompoment) => {
+        MODAL.open = (customCompoment) => {
             if (customCompoment) setContent(customCompoment)
             setOpen(true)
         }
 
-        sspModal.close = handleClose
+        MODAL.close = handleClose
     }, [setOpen])
 
     return (
@@ -58,7 +58,6 @@ export function CustomModalProvider() {
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            width: 400,
                             borderRadius: 2,
                             bgcolor: 'white',
                             border: '1px solid #454545',
