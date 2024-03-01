@@ -13,6 +13,8 @@ import { FormContext } from '../../../context/form'
 import { useDropzone } from 'react-dropzone'
 import axios, { AxiosProgressEvent, AxiosResponse } from 'axios'
 
+import { PDFIcon, TrashIcon } from '../../icons/icons'
+
 interface FileState {
     id: number
     name: string
@@ -145,6 +147,7 @@ export default function DropFileUpload({
                             }
                         })
                         .catch((err) => {
+                            console.log(err)
                             setProgress(-1)
                             removeFile(id)
                         })
@@ -273,7 +276,13 @@ export default function DropFileUpload({
                         <Stack direction='row' justifyContent='space-between' border='solid 1px #E2E8F0' borderRadius={2} p={1}>
                             <Stack direction='row'>
                                 <Stack direction='row' justifyContent='center' alignItems='center' minWidth={30} pr={1.5}>
-                                    <img src='icons/file-pdf.svg' />
+                                    <PDFIcon
+                                        sx={{
+                                            filter: 'invert(42%) sepia(86%) saturate(2412%) hue-rotate(326deg) brightness(86%) contrast(102%)',
+                                            transform: 'scale(1.5)',
+                                            width: 30,
+                                        }}
+                                    />
                                 </Stack>
                                 <Stack>
                                     <Typography fontWeight={600}>{x.name}</Typography>
@@ -283,7 +292,7 @@ export default function DropFileUpload({
 
                             <Button
                                 size='small'
-                                startIcon={<img src='icons/trash.svg' />}
+                                startIcon={<TrashIcon />}
                                 variant='contained'
                                 onClick={(e) => deleteFile(e, x.id)}
                                 sx={{

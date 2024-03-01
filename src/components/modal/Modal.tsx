@@ -1,6 +1,6 @@
-import { Box, Drawer, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 
 export let MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
@@ -86,7 +86,7 @@ export function CustomModalProvider() {
                                 }}
                             />
                         </Box>
-                        <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray'>
+                        <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray' bgcolor='#F9F9F9'>
                             {content}
                         </Box>
                     </Box>
