@@ -7,18 +7,6 @@ import React, { FormEvent, ReactElement, useContext, useRef, useState } from 're
 import { FieldValues } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { FormContext } from '../../../context/form'
-import { SspComponentsProvider } from '../../providers/SspComponentsProvider'
-import CheckBox from '../checkbox/CheckBox'
-import CheckBoxWarning from '../checkbox/CheckBoxWarning'
-import RequiredCheckBoxGroup from '../checkbox/RequiredCheckBoxValidator'
-import DatePicker from '../date/DatePicker'
-import TimePicker from '../date/TimePicker'
-import DropFileUpload from '../file/DropFileUpload'
-import FileUpload from '../file/FileUpload'
-import { Input } from '../input/Input'
-import MultInput from '../input/MultInput'
-import Table from '../table/Table'
-import { StepperBlock } from './StepperBlock'
 
 const getKeys = (values: any, id: number) => {
     if (!values || Object.keys(values).length <= 0) return []
@@ -68,7 +56,7 @@ export function Stepper({
         const result = await context.formTrigger(getKeys(context.formGetValues(), activeStep))
 
         if (!result) {
-            toast('Formulário incompleto!', { type: 'warning', theme: 'light' })
+            toast('Formulário incompleto! Verifique os campos marcados e tente novamente.', { type: 'warning', theme: 'light' })
             return
         }
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -80,7 +68,7 @@ export function Stepper({
         if (!result) {
             e.preventDefault()
 
-            toast('Formulário incompleto!', { type: 'warning', theme: 'light' })
+            toast('Formulário incompleto! Verifique os campos marcados e tente novamente.', { type: 'warning', theme: 'light' })
             return
         }
     }

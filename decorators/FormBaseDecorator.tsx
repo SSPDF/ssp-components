@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { FormProvider, Stepper, StepperBlock } from '../src'
 import { SspComponentsProvider } from '../src/components/providers/SspComponentsProvider'
 
+// import '../src/css/ReactToastify.css'
+
 const client = new QueryClient()
 
 export default function FormBaseDecorator(Story: any, el: any) {
