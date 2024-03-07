@@ -106,16 +106,20 @@ export default function NavBar({
                                 },
                             }}
                         >
-                            <IconButton onClick={onMenuClick}>
-                                <MenuIcon />
-                            </IconButton>
-                            <Menu open={menuOpen} onClose={closeMenu} anchorEl={anchor}>
-                                {links.map((x) => (
-                                    <MenuItem key={`navmenu${x}`} onClick={(e) => onMenuItemClick(e, x.path)}>
-                                        <Typography textTransform='capitalize'>{x.name}</Typography>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
+                            {links.length > 0 && (
+                                <>
+                                    <IconButton onClick={onMenuClick}>
+                                        <MenuIcon />
+                                    </IconButton>
+                                    <Menu open={menuOpen} onClose={closeMenu} anchorEl={anchor}>
+                                        {links.map((x) => (
+                                            <MenuItem key={`navmenu${x}`} onClick={(e) => onMenuItemClick(e, x.path)}>
+                                                <Typography textTransform='capitalize'>{x.name}</Typography>
+                                            </MenuItem>
+                                        ))}
+                                    </Menu>
+                                </>
+                            )}
                         </Box>
 
                         {/* Desktop */}

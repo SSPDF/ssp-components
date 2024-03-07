@@ -16,16 +16,7 @@ type Story = StoryObj<typeof NavBar>
 
 export const Base: Story = {
     args: {
-        links: [
-            {
-                name: 'Teste',
-                path: '#',
-            },
-            {
-                name: 'Test 2',
-                path: '/dd',
-            },
-        ],
+        links: [],
         title: 'Exemplo de navbar',
         pos: 'inherit',
         img: '/logo_70.png',
