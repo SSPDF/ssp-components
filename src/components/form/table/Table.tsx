@@ -43,6 +43,7 @@ import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 interface ColumnData {
     title: string
     keyName: string
+    customComponent?: (content: string, obj: any) => JSX.Element
     size?: number
 }
 
@@ -1009,7 +1010,13 @@ export function Table({
                                             </Box>
                                             <Box paddingLeft={1}>
                                                 <Box sx={{ wordWrap: 'break-word', color: '#1E293B', fontSize: 16 }} fontFamily='Inter'>
-                                                    {c.keyName === statusKeyName ? getStatusMsg(get(x, c.keyName)) : <div dangerouslySetInnerHTML={{ __html: get(x, c.keyName) }}></div>}
+                                                    {c.customComponent ? (
+                                                        c.customComponent(get(x, c.keyName), x)
+                                                    ) : c.keyName === statusKeyName ? (
+                                                        getStatusMsg(get(x, c.keyName))
+                                                    ) : (
+                                                        <div dangerouslySetInnerHTML={{ __html: get(x, c.keyName) }}></div>
+                                                    )}
                                                 </Box>
                                             </Box>
                                         </Grid>

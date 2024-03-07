@@ -70,24 +70,7 @@ export function Exemplo() {
 export default function Teste() {
     return (
         <Box bgcolor='#F9F9F9' py={4}>
-            <Box>das</Box>
-            {/* <FetchAutoComplete name='ffddd' title='Teste' url='http://localhost:7171/autocomplete' /> */}
-            {/* <DropFileUpload apiURL='https://hmgsistemasexternos.ssp.df.gov.br/devolutivas/api/v1/files' name='xxx' tipoArquivo='0' title='Arquivo' tstToken={token} /> */}
-            <DropFileUpload apiURL='https://hmgapieventosexterno.ssp.df.gov.br/files' name='xxx' tipoArquivo='30' title='Arquivo' tstToken={token} route='data' />
-
-            <Button
-                variant='contained'
-                onClick={(e) => {
-                    MODAL.open(
-                        <>
-                            <h2>foda</h2>
-                        </>
-                    )
-                }}
-            >
-                Testar
-            </Button>
-            {/* <Table
+            <Table
                 fetchFunc={() => fetch('http://localhost:7171/table')}
                 useKC={false}
                 tableName='Teste'
@@ -128,7 +111,7 @@ export default function Teste() {
                     ],
                 }}
                 columnSize={6}
-            /> */}
+            />
         </Box>
     )
 }
