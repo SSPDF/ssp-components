@@ -87,6 +87,13 @@ export function KeycloakAuthProvider({
     }, [])
 
     function login() {
+        console.log('Tentando logar...')
+        console.log('KC: ', {
+            instancia: kc,
+            logado: kc?.authenticated,
+            client_id: kc?.clientId,
+        })
+
         kc?.login()
     }
 

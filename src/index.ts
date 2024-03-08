@@ -23,6 +23,7 @@ import { SwitchWatch, ToggleVisibility } from './components/form/switch/ToggleVi
 import Table from './components/form/table/Table'
 
 import NavBar from './components/navbar/NavBar'
+import TabNavBar from './components/navbar/TabNavBar'
 
 import FormProvider from './components/providers/FormProvider'
 import { OAuthProvider, cookieName as AUTH_COOKIE_NAME } from './components/providers/OAuthProvider'
@@ -83,5 +84,6 @@ export {
     //new
     DropFileUpload,
     MODAL,
-    SspComponentsProvider
+    SspComponentsProvider,
+    TabNavBar
 }

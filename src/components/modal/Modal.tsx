@@ -86,7 +86,7 @@ export function CustomModalProvider() {
                                 }}
                             />
                         </Box>
-                        <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray' bgcolor='#F9F9F9'>
+                        <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray' bgcolor='#F9F9F9' borderRadius={2}>
                             {content}
                         </Box>
                     </Box>
