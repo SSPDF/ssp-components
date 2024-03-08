@@ -107,11 +107,11 @@ export default function TabNavBar({
                                 </Typography>
                             </Box>
                         </Stack>
-                        <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2}>
+                        <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
                             {links.map((x) => (
                                 <Box
                                     // borderBottom={next ? (router?.pathname.startsWith(x.path) ? `solid 2px ${color}` : '') : `solid 2px ${color}`}
-                                    borderBottom={next ? (verificarRota(route, x.path) ? `solid 4px ${color}` : '') : verificarRota(route, x.path) ? `solid 4px ${color}` : ''}
+                                    borderBottom={next ? (verificarRota(router?.pathname ?? '', x.path) ? `solid 4px ${color}` : '') : verificarRota(route, x.path) ? `solid 4px ${color}` : ''}
                                     height='100%'
                                     paddingX={2}
                                     sx={{
