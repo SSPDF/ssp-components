@@ -15,7 +15,7 @@ export function Input({
     md,
     ...props
 }: {
-    type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep'
+    type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
     name: string
     title?: string
     required?: boolean
@@ -53,6 +53,9 @@ export function Input({
                     //
                     else if (type === 'cpf') {
                         if (v.length < 14 && props.required) return 'O CPF precisa ter no mínimo 11 dígitos'
+                    } //
+                    else if (type === 'sei') {
+                        if (v.length < 22 && props.required) return 'O Número SEI precisa ter no mínimo 19 dígitos'
                     }
                     //
                     else if (type === 'cep') {
@@ -122,6 +125,16 @@ export function Input({
                             definitions: {
                                 '#': /^9$/,
                             },
+                        }}
+                    />
+                )
+            case 'sei':
+                return (
+                    <MaskInput
+                        formConfig={formConfig}
+                        defaultValue={defaultValue}
+                        maskProps={{
+                            mask: '00000-00000000/0000-00',
                         }}
                     />
                 )
