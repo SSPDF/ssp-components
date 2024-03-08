@@ -121,7 +121,10 @@ export default function TabNavBar({
                                             userSelect: 'none',
                                         },
                                     }}
-                                    onClick={(e) => changeRoute(e, x.path)}
+                                    onClick={(e) => {
+                                        next && console.log('pathname:', router?.pathname, ':=', x.path)
+                                        changeRoute(e, x.path)
+                                    }}
                                 >
                                     <Stack height='95%' justifyContent='center'>
                                         {x.name}
