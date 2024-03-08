@@ -85,11 +85,11 @@ const getKeys = (values: any, id: number) => {
 export default function Teste() {
     return (
         <Box bgcolor='#F9F9F9' py={4}>
-            <Input name='haha' type='sei' title='Teste' required />
+            {/* <Input name='haha' type='sei' title='Teste' required />
             <Button variant='contained' type='submit'>
                 Enviar
-            </Button>
-            {/* <NavBar
+            </Button> */}
+            <NavBar
                 img=''
                 links={[
                     {
@@ -136,7 +136,7 @@ export default function Teste() {
                     </Box>
                 }
                 pos='inherit'
-            /> */}
+            />
 
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table')}

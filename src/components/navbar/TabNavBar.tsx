@@ -97,7 +97,7 @@ export default function TabNavBar({
     return (
         <>
             <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
-                <AppBar position='relative' elevation={0} sx={{ backgroundColor: 'red', color: 'black', paddingY: 1, paddingX: { xs: 1, md: 4 } }}>
+                <AppBar position='relative' elevation={0} sx={{ backgroundColor: 'white', color: 'black', paddingX: { xs: 1, md: 4 } }}>
                     <Stack direction='row' justifyContent='space-between'>
                         <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', md: 'flex' }, width: '100%' }}>
                             <Link href='/'>{next ? <Image src={img} alt={title} width={40} height={40} /> : <img src={img} height={35} />}</Link>
@@ -113,7 +113,6 @@ export default function TabNavBar({
                                     borderBottom={next ? (verificarRota(router?.pathname ?? '', x.path) ? `solid 4px ${color}` : '') : verificarRota(route, x.path) ? `solid 4px ${color}` : ''}
                                     height='100%'
                                     paddingX={2}
-                                    paddingBottom={1.4}
                                     sx={{
                                         ':hover': {
                                             backgroundColor: '#fcfcfc',
@@ -158,7 +157,7 @@ export default function TabNavBar({
                         </Box>
 
                         {/* Desktop */}
-                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { md: '100%' } }}>
+                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { md: '100%' } }} paddingY={1}>
                             <Stack direction='row' spacing={2}>
                                 <Box>{el}</Box>
 
