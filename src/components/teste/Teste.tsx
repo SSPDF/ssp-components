@@ -89,7 +89,7 @@ export default function Teste() {
             <Button variant='contained' type='submit'>
                 Enviar
             </Button> */}
-            <NavBar
+            {/* <NavBar
                 img=''
                 links={[
                     {
@@ -136,9 +136,9 @@ export default function Teste() {
                     </Box>
                 }
                 pos='inherit'
-            />
+            /> */}
 
-            {/* <Table
+            <Table
                 fetchFunc={() => fetch('http://localhost:7171/table')}
                 useKC={false}
                 tableName='Teste'
@@ -172,14 +172,14 @@ export default function Teste() {
                 filters={{
                     protocolo: [
                         {
-                            keyName: 'protocolo',
-                            name: 'Protocolo',
+                            keyName: 'teste',
+                            name: 'Teste Num',
                             type: 'a-z',
                         },
                     ],
                 }}
                 columnSize={6}
-            /> */}
+            />
         </Box>
     )
 }

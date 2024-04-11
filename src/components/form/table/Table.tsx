@@ -651,8 +651,8 @@ export function Table({
         function category(type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) {
             if (type === 'a-z') {
                 rawList = rawList.sort((a, b) => {
-                    const aValue = a[keyName]
-                    const bValue = b[keyName]
+                    const aValue = String(a[keyName])
+                    const bValue = String(b[keyName])
                     const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                     const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
@@ -669,8 +669,8 @@ export function Table({
             } //
             else if (type === 'z-a') {
                 rawList = rawList.sort((a, b) => {
-                    const aValue = a[keyName]
-                    const bValue = b[keyName]
+                    const aValue = String(a[keyName])
+                    const bValue = String(b[keyName])
                     const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                     const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
                     if (valueA < valueB) {
@@ -684,15 +684,19 @@ export function Table({
             } //
             else if (type === 'items') {
                 rawList = rawList
-                    .filter((x) => x[keyName].toLowerCase().includes(customValue))
+                    .filter((x) =>
+                        String(x[keyName])
+                            .toLowerCase()
+                            .includes(customValue ?? '')
+                    )
                     .sort((a, b) => {
-                        const aValue = a[keyName]
-                        const bValue = b[keyName]
+                        const aValue = String(a[keyName])
+                        const bValue = String(b[keyName])
                         const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                         const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
-                        if (valueA.includes(customValue)) return -1
-                        if (valueB.includes(customValue)) return 1
+                        if (valueA.includes(customValue ?? '')) return -1
+                        if (valueB.includes(customValue ?? '')) return 1
 
                         if (valueA < valueB) {
                             return -1
@@ -707,7 +711,7 @@ export function Table({
                     const data: any[] = []
 
                     let newFiltered = rawList.filter((x) => {
-                        const item = x[keyName]
+                        const item = String(x[keyName])
                         const value = typeof item === 'number' ? item : item.toLowerCase()
 
                         if (value === customValue) {
@@ -719,8 +723,8 @@ export function Table({
                     })
 
                     data.sort((a, b) => {
-                        const aValue = a[referencekey]
-                        const bValue = b[referencekey]
+                        const aValue = String(a[referencekey])
+                        const bValue = String(b[referencekey])
                         const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
                         const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
 
