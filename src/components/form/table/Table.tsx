@@ -799,8 +799,10 @@ export function Table({
         function date(from: string, to: string, keyName: string) {
             const separator = filterSeparator
 
-            rawList = rawList.filter((x) => {
-                const dts: string[] = x[keyName].split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])
+            rawList = rawList.filter((x: any) => {
+                const dts: string[] = String(x[keyName])
+                    .split(separator)
+                    .map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0] ?? '')
                 let inside = false
 
                 dts.forEach((k) => {

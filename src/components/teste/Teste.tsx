@@ -144,37 +144,17 @@ export default function Teste() {
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'protocolo',
+                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                         title: 'Procolo',
-                    },
-                    {
-                        keyName: 'titulo',
-                        title: 'Titulo',
-                    },
-                    {
-                        keyName: 'local',
-                        title: 'Local',
-                    },
-                    {
-                        keyName: 'data_abertura',
-                        title: 'Data Abertura',
-                    },
-                    {
-                        keyName: 'movimentacao_ultimo_estado',
-                        title: 'Movimentacao',
-                    },
-                    {
-                        keyName: 'estado',
-                        title: 'Estado',
                     },
                 ]}
                 action={() => <></>}
                 filters={{
-                    protocolo: [
+                    dt: [
                         {
-                            keyName: 'teste',
-                            name: 'Teste Num',
-                            type: 'a-z',
+                            keyName: 'DT_DEMANDA',
+                            name: 'Intervalo de data',
+                            type: 'date-interval',
                         },
                     ],
                 }}
