@@ -40,6 +40,16 @@ import dayjs from 'dayjs'
 import JSZip from 'jszip'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 
+function removePunctuationAndAccents(text: string) {
+    // Remove accents and diacritics
+    const normalizedText = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+    // Remove punctuation marks
+    const cleanedText = normalizedText.replace(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g, '')
+
+    return cleanedText
+}
+
 interface ColumnData {
     title: string
     keyName: string
@@ -291,7 +301,7 @@ export function Table({
                         }
                     }
 
-                    if (key.toLowerCase().includes(searchValue.toLowerCase())) {
+                    if (removePunctuationAndAccents(key.toLowerCase()).includes(removePunctuationAndAccents(searchValue.toLowerCase()))) {
                         exists = true
                     }
                 })

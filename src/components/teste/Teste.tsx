@@ -147,6 +147,10 @@ export default function Teste() {
                         keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                         title: 'Procolo',
                     },
+                    {
+                        keyName: 'NO_RESPONSAVEL',
+                        title: 'Nome',
+                    },
                 ]}
                 action={() => <></>}
                 filters={{
