@@ -157,7 +157,9 @@ export function Table({
     useEffect(() => {
         setError(null)
 
-        if (userLoaded || !useKC)
+        if (userLoaded || !useKC) {
+            setIsLoading(true)
+
             fetchFunc()
                 .then((res) => {
                     if (!res.ok)
@@ -193,6 +195,7 @@ export function Table({
                         status: 500,
                     })
                 })
+        }
     }, [userLoaded, fetchFunc])
 
     const getCount = useCallback(

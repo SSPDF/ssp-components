@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useEffect } from 'react'
+import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import Input from '../form/input/Input'
 import Stepper from '../form/stepper/Stepper'
 import StepperBlock from '../form/stepper/StepperBlock'
@@ -83,6 +83,8 @@ const getKeys = (values: any, id: number) => {
 }
 
 export default function Teste() {
+    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
+
     return (
         <Box bgcolor='#F9F9F9' py={4}>
             {/* <Input name='haha' type='sei' title='Teste' required />
@@ -138,8 +140,16 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
+            <Button
+                onClick={(e) => {
+                    setTestFunc(fetch('http://localhost:7171/table'))
+                }}
+            >
+                Mudar
+            </Button>
+
             <Table
-                fetchFunc={() => fetch('http://localhost:7171/table')}
+                fetchFunc={() => testFunc}
                 useKC={false}
                 tableName='Teste'
                 columns={[
