@@ -171,9 +171,18 @@ export default function Teste() {
                             type: 'date-interval',
                         },
                     ],
+                    teste: [
+                        {
+                            keyName: 'NO_RESPONSAVEL',
+                            name: 'Nome',
+                            type: 'a-z',
+                        },
+                    ],
                 }}
                 columnSize={6}
             />
+
+            <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} />
         </Box>
     )
 }

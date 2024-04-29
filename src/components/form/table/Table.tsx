@@ -627,7 +627,7 @@ export function Table({
     }, [appliedFilters])
 
     const filterBasedOnList = (filteredList: any[]) => {
-        let rawList: any[] = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
+        let rawList: any[] = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath) ?? '[]'))
 
         if (filteredList.length <= 0 || rawList.length <= 0) {
             setList(rawList)
