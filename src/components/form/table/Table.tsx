@@ -3,6 +3,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import SearchIcon from '@mui/icons-material/Search'
 import {
     Autocomplete,
+    AutocompleteProps,
     Box,
     Button,
     CircularProgress,
@@ -32,13 +33,14 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
-import { Add, CalendarToday, Check, Circle, Delete, ExpandLess, ExpandMore, FilterAlt, FilterList, HorizontalRule, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import { Add, CalendarToday, Check, Circle, Delete, ExpandLess, ExpandMore, FilterAlt, FilterList, HorizontalRule, Label, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
 import FormProvider from '../../providers/FormProvider'
 import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
 import dayjs from 'dayjs'
 import JSZip from 'jszip'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
+import axios from 'axios'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -57,11 +59,12 @@ interface ColumnData {
     size?: number
 }
 
-type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval' | 'data-a-z' | 'data-z-a'
+type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval' | 'data-a-z' | 'data-z-a' | 'select'
 
 let startData: any[] = []
 
 export function Table({
+    mediaQueryLG,
     columns,
     fetchFunc,
     emptyMsg = {
@@ -98,6 +101,10 @@ export function Table({
     filterStorageName = 'tableFilters',
     multipleDataPath = '',
 }: {
+    mediaQueryLG?: {
+        all: number
+        action: number
+    }
     normalize?: boolean
     csvUpper?: boolean
     multipleDataPath?: string
@@ -132,7 +139,17 @@ export function Table({
     emptyMsg?: { user: string; public: string }
     dataPath?: string
     useKC?: boolean
-    filters?: { [key: string]: { type: FilterTypes; keyName: string; name: string; referenceKey?: string; options?: { name: string; color: string; key: string }[] }[] }
+    filters?: {
+        [key: string]: {
+            type: FilterTypes
+            keyName: string
+            name: string
+            listEndpoint?: string
+            selectList?: string[]
+            referenceKey?: string
+            options?: { name: string; color: string; key: string }[]
+        }[]
+    }
     filterSeparator?: string
 }) {
     const [isLoading, setIsLoading] = useState(true)
@@ -147,12 +164,15 @@ export function Table({
     const [paginationCount, setPagCount] = useState(1)
     const [listPage, setListPage] = useState(1)
     const [appliedFilters, setAppliedFilters] = useState<any[]>([])
+    const [oldSelectState, setOldSelectState] = useState<string>('')
 
     // filters states
     const [filterCollapse, setFilterCollapse] = useState<boolean[]>(Array(Object.keys(filters).length).fill(false))
     const [filterOpen, setFilterOpen] = useState(false)
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
+
+    const lg = useMediaQuery(theme.breakpoints.up(2000))
 
     useEffect(() => {
         setError(null)
@@ -622,6 +642,10 @@ export function Table({
         }
     }, [])
 
+    async function getSelectValues(url: string): Promise<any[]> {
+        return ['dd']
+    }
+
     useEffect(() => {
         filterBasedOnList(appliedFilters)
     }, [appliedFilters])
@@ -695,7 +719,7 @@ export function Table({
                     return 0
                 })
             } //
-            else if (type === 'items') {
+            else if (type === 'items' || type === 'select') {
                 rawList = rawList
                     .filter((x) =>
                         String(x[keyName])
@@ -991,11 +1015,28 @@ export function Table({
                                     borderRadius: '8px',
                                     paddingX: '24px',
                                     paddingY: '8px',
+                                    minWidth: 200,
                                     backgroundColor: '#208FE8',
                                     textTransform: 'capitalize',
                                 }}
                             >
-                                Filtro
+                                <Stack direction='row' marginLeft={2} borderRadius={5} padding={0}>
+                                    <span>Filtro</span>
+                                    <span
+                                        style={{
+                                            whiteSpace: 'nowrap',
+                                            marginLeft: 8,
+                                            backgroundColor: '#15528f',
+                                            borderRadius: 8,
+                                            padding: '0px 8px',
+                                        }}
+                                    >
+                                        {appliedFilters.length} aplicado{appliedFilters.length > 1 ? 's' : ''}
+                                    </span>
+                                    {/* <Box paddingX={2} whiteSpace={'nowrap'}>
+                                        2 aplicados
+                                    </Box> */}
+                                </Stack>
                             </Button>
                         )}
                     </Stack>
@@ -1019,9 +1060,14 @@ export function Table({
                     ) : (
                         getMaxItems().map((x: any, index: number) => (
                             <Paper key={index} sx={{ padding: 0.5, backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white', paddingY: 2, borderTop: 'solid 1.5px #E2E8F0' }} elevation={0}>
-                                <Grid container spacing={isSmall ? 2 : 0} paddingX={2}>
+                                <Grid container spacing={isSmall ? 2 : 0} paddingX={2} rowSpacing={2}>
                                     {columns.map((c) => (
-                                        <Grid key={c.keyName + index} item xs={12} md={(12 / columnSize) * (!!c.size ? c.size : 1)}>
+                                        <Grid
+                                            key={c.keyName + index}
+                                            item
+                                            xs={12}
+                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
+                                        >
                                             <Box sx={{ width: 'max-content', paddingX: 1 }}>
                                                 <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}
@@ -1040,7 +1086,7 @@ export function Table({
                                             </Box>
                                         </Grid>
                                     ))}
-                                    <Grid item xs={12} md={12 / columnSize}>
+                                    <Grid item xs={12} md={lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize}>
                                         <Stack direction='row' alignItems='center' justifyContent={isSmall ? 'start' : 'flex-end'} sx={{ height: '100%', paddingBottom: isSmall ? 2 : 0 }}>
                                             {action(x)}
                                         </Stack>
@@ -1281,6 +1327,50 @@ export function Table({
                                                         </Stack>
                                                     </FormProvider>
                                                 </Box>
+                                            ) : x.selectList ? (
+                                                <>
+                                                    <Autocomplete
+                                                        options={x.selectList.map((x) => ({
+                                                            id: x.toLowerCase(),
+                                                            label: x,
+                                                        }))}
+                                                        onFocus={(e) => console.log('ata')}
+                                                        onChange={(e, value) => {
+                                                            console.log(value)
+
+                                                            if (value) {
+                                                                const id = `${f}:${JSON.stringify(value)}`
+                                                                handleFilterOption(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
+                                                                setOldSelectState(id)
+                                                            } else {
+                                                                removeFilter(oldSelectState)
+                                                            }
+                                                        }}
+                                                        sx={{
+                                                            margin: 1,
+                                                        }}
+                                                        size='small'
+                                                        renderInput={(params) => <TextField {...params} label='Teste' />}
+                                                    />
+                                                </>
+                                            ) : x.listEndpoint ? (
+                                                <>
+                                                    <FetchSelectAutoComplete
+                                                        url={x.listEndpoint}
+                                                        label={x.name}
+                                                        onChange={(e: any, value: any) => {
+                                                            console.log(value)
+
+                                                            if (value) {
+                                                                const id = `${f}:${JSON.stringify(value)}`
+                                                                handleFilterOption(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
+                                                                setOldSelectState(id)
+                                                            } else {
+                                                                removeFilter(oldSelectState)
+                                                            }
+                                                        }}
+                                                    />
+                                                </>
                                             ) : (
                                                 <Stack
                                                     direction={'row'}
@@ -1341,6 +1431,32 @@ export function Table({
                     </Stack>
                 </Box> */}
             </SwipeableDrawer>
+        </>
+    )
+}
+
+function FetchSelectAutoComplete(props: { url: string; onChange: any; label: string }) {
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+        axios.get(props.url).then((dt) => {
+            setData(dt.data)
+        })
+    }, [])
+
+    return (
+        <>
+            <Typography marginLeft={1}>{props.label}</Typography>
+            <Autocomplete
+                options={data}
+                onFocus={(e) => console.log('ata')}
+                onChange={props.onChange}
+                sx={{
+                    margin: 1,
+                }}
+                size='small'
+                renderInput={(params) => <TextField {...params} label={props.label} />}
+            />
         </>
     )
 }

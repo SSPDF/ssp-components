@@ -154,32 +154,89 @@ export default function Teste() {
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
-                        title: 'Procolo',
+                        keyName: 'coSeqEventoExterno',
+                        title: 'Protocolo',
                     },
                     {
-                        keyName: 'NO_RESPONSAVEL',
+                        keyName: 'noEvento',
                         title: 'Nome',
                     },
+                    {
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
+                        size: 2,
+                    },
+                    {
+                        keyName: 'dsEnderecoLocal',
+                        title: 'Local',
+                    },
+                    {
+                        keyName: 'noTableRa',
+                        title: 'RA',
+                    },
+                    {
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
+                    },
+                    {
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                        // customComponent: (txt) => getStatus(txt),
+                    },
                 ]}
-                action={() => <></>}
+                action={() => (
+                    <>
+                        <Button variant='contained'>Teste</Button>
+                    </>
+                )}
                 filters={{
-                    dt: [
+                    'teste lista': [
                         {
-                            keyName: 'DT_DEMANDA',
-                            name: 'Intervalo de data',
-                            type: 'date-interval',
+                            keyName: 'noEvento',
+                            referenceKey: 'coSeqEventoExterno',
+                            name: '',
+                            type: 'items',
+                            options: [
+                                {
+                                    color: 'black',
+                                    key: 'teste',
+                                    name: 'Teste',
+                                },
+                            ],
                         },
                     ],
-                    teste: [
+                    select: [
                         {
-                            keyName: 'NO_RESPONSAVEL',
-                            name: 'Nome',
-                            type: 'a-z',
+                            keyName: 'noEvento',
+                            referenceKey: 'coSeqEventoExterno',
+                            name: '',
+                            type: 'select',
+                            // selectList: ['teste', 'TESTE DE ESTRESSE', 'ronald3'],
+                            listEndpoint: 'http://localhost:7171/filtro3',
+                        },
+                        {
+                            keyName: 'noEvento',
+                            referenceKey: 'coSeqEventoExterno',
+                            name: 'Select 2',
+                            type: 'select',
+                            // selectList: ['teste', 'TESTE DE ESTRESSE', 'ronald3'],
+                            listEndpoint: 'http://localhost:7171/filtro2',
                         },
                     ],
                 }}
-                columnSize={6}
+                columnSize={11}
+                mediaQueryLG={{
+                    all: 3,
+                    action: 9,
+                }}
             />
 
             <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} />
