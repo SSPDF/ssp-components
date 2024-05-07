@@ -46,6 +46,12 @@ export default function DatePicker({
         context.formSetValue(name, value.format('DD/MM/YYYY'))
     }, [value])
 
+    useEffect(() => {
+        return () => {
+            context.formUnregister(name)
+        }
+    }, [])
+
     return (
         <>
             <Grid item {...{ xs, sm, md }}>

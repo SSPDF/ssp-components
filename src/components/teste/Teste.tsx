@@ -87,6 +87,22 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9' py={4}>
+            <FormProvider
+                onSubmit={(dt, files) => {
+                    console.log(dt)
+                }}
+            >
+                <Stepper debugLog>
+                    <StepperBlock optional title='Teste'>
+                        <Input name='teste' type='input' required />
+                        <DatePicker name='testeDt' title='Validade da CNH' md={6} required />
+                        <TimePicker name='testeTime' title='Validade da CNH' md={6} required />
+                    </StepperBlock>
+                    <StepperBlock optional title='Teste 2'>
+                        <Input name='teste2' type='input' required />
+                    </StepperBlock>
+                </Stepper>
+            </FormProvider>
             {/* <Input name='haha' type='sei' title='Teste' required />
             <Button variant='contained' type='submit'>
                 Enviar
@@ -140,7 +156,7 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
-            <Button
+            {/* <Button
                 onClick={(e) => {
                     setTestFunc(fetch('http://localhost:7171/table'))
                 }}
@@ -211,7 +227,7 @@ export default function Teste() {
                 }}
             />
 
-            <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} />
+            <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} /> */}
         </Box>
     )
 }

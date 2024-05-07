@@ -39,6 +39,12 @@ export default function TimePicker({
         context.formSetValue(name, value.format('HH:mm'))
     }, [])
 
+    useEffect(() => {
+        return () => {
+            context.formUnregister(name)
+        }
+    }, [])
+
     return (
         <Grid item {...{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
