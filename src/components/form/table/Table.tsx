@@ -1440,9 +1440,12 @@ function FetchSelectAutoComplete(props: { url: string; onChange: any; label: str
     const [data, setData] = useState([])
 
     useEffect(() => {
-        axios.get(props.url).then((dt) => {
-            setData(dt.data)
-        })
+        axios
+            .get(props.url)
+            .then((dt) => {
+                setData(dt.data)
+            })
+            .catch((e) => console.log('Erro ao buscar dados do filtro'))
     }, [])
 
     return (
