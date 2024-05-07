@@ -1363,7 +1363,8 @@ export function Table({
 
                                                             if (value) {
                                                                 const id = `${f}:${JSON.stringify(value)}`
-                                                                handleFilterOption(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
+                                                                console.log(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
+                                                                handleFilterOption(x.type, x.keyName, id, value?.id.toLowerCase(), x.referenceKey)
                                                                 setOldSelectState(id)
                                                             } else {
                                                                 removeFilter(oldSelectState)
@@ -1446,7 +1447,6 @@ function FetchSelectAutoComplete(props: { url: string; onChange: any; label: str
 
     return (
         <>
-            <Typography marginLeft={1}>{props.label}</Typography>
             <Autocomplete
                 options={data}
                 onFocus={(e) => console.log('ata')}

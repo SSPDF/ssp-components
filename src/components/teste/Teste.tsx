@@ -154,42 +154,22 @@ export default function Teste() {
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'coSeqEventoExterno',
+                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                         title: 'Protocolo',
                     },
                     {
-                        keyName: 'noEvento',
-                        title: 'Nome',
+                        keyName: 'NO_RISP',
+                        title: 'RISP',
                     },
                     {
-                        keyName: 'dtTableDates',
-                        title: 'Datas',
+                        keyName: 'NO_TIPO_DEVOLUTIVA',
+                        title: 'Tipo de demanda',
                         size: 2,
                     },
                     {
-                        keyName: 'dsEnderecoLocal',
+                        keyName: 'DS_ENDERECO',
                         title: 'Local',
-                    },
-                    {
-                        keyName: 'noTableRa',
-                        title: 'RA',
-                    },
-                    {
-                        keyName: 'nuPublicoMaximo',
-                        title: 'Público Máximo',
-                    },
-                    {
-                        keyName: 'dtCadastro',
-                        title: 'Data de Solicitação',
-                    },
-                    {
-                        keyName: 'nuProcessoFormatadoSei',
-                        title: 'Processo SEI',
-                    },
-                    {
-                        keyName: 'stEventoExterno',
-                        title: 'Status do Evento',
-                        // customComponent: (txt) => getStatus(txt),
+                        size: 1.5,
                     },
                 ]}
                 action={() => (
@@ -215,17 +195,9 @@ export default function Teste() {
                     ],
                     select: [
                         {
-                            keyName: 'noEvento',
+                            keyName: 'CO_CONSEG',
                             referenceKey: 'coSeqEventoExterno',
-                            name: '',
-                            type: 'select',
-                            // selectList: ['teste', 'TESTE DE ESTRESSE', 'ronald3'],
-                            listEndpoint: 'http://localhost:7171/filtro3',
-                        },
-                        {
-                            keyName: 'noEvento',
-                            referenceKey: 'coSeqEventoExterno',
-                            name: 'Select 2',
+                            name: 'Consegs',
                             type: 'select',
                             // selectList: ['teste', 'TESTE DE ESTRESSE', 'ronald3'],
                             listEndpoint: 'http://localhost:7171/filtro2',
