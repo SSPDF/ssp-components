@@ -100,11 +100,15 @@ export function Table({
     filterSeparator = '|',
     filterStorageName = 'tableFilters',
     multipleDataPath = '',
+    customMargin = 0,
+    customMarginMobile = 4,
 }: {
     mediaQueryLG?: {
         all: number
         action: number
     }
+    customMargin?: number
+    customMarginMobile?: number
     normalize?: boolean
     csvUpper?: boolean
     multipleDataPath?: string
@@ -985,7 +989,7 @@ export function Table({
 
     return (
         <>
-            <Box marginX={isSmall ? 0 : 4} bgcolor='white' p={2} borderRadius={6}>
+            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
                     <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} marginBottom={2} height='40px' width='100%'>
                         <TextField
@@ -1452,7 +1456,6 @@ function FetchSelectAutoComplete(props: { url: string; onChange: any; label: str
         <>
             <Autocomplete
                 options={data}
-                onFocus={(e) => console.log('ata')}
                 onChange={props.onChange}
                 sx={{
                     margin: 1,

@@ -86,7 +86,35 @@ export default function Teste() {
     const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
 
     return (
-        <Box bgcolor='#F9F9F9' py={4}>
+        <Box bgcolor='#F9F9F9'>
+            {/* <TabNavBar
+                img='/conoc/logossp.png'
+                color='#208FE8'
+                links={[
+                    {
+                        name: 'Meus atendimentos',
+                        path: '/ocorrencia/doUsuario',
+                    },
+                    {
+                        name: 'Validar certidão',
+                        path: '/ocorrencia/validar',
+                    },
+                    {
+                        name: 'Atendimentos recentes',
+                        path: '/ocorrencia',
+                    },
+                    {
+                        name: 'Pesquisa de atendimentos',
+                        path: '/ocorrencia/consulta',
+                    },
+                ]}
+                pos='inherit'
+                title={'Secretaria de Segurança Pública do Distrito Federal'}
+                menuItems={[]}
+                logoutMsg='Sair'
+                paddingBottom={3}
+                next={false}
+            /> */}
             {/* <FormProvider
                 onSubmit={(dt, files) => {
                     console.log(dt)
