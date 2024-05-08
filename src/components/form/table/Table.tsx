@@ -100,8 +100,8 @@ export function Table({
     filterSeparator = '|',
     filterStorageName = 'tableFilters',
     multipleDataPath = '',
-    customMargin = 0,
-    customMarginMobile = 4,
+    customMargin = 4,
+    customMarginMobile = 0,
 }: {
     mediaQueryLG?: {
         all: number
