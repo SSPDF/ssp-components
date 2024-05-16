@@ -108,11 +108,12 @@ export default function TabNavBar({
                             </Box>
                         </Stack>
                         <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            {links.map((x) => (
+                            {links.map((x, index) => (
                                 <Box
                                     borderBottom={next ? (verificarRota(router?.pathname ?? '', x.path) ? `solid 4px ${color}` : '') : verificarRota(route, x.path) ? `solid 4px ${color}` : ''}
                                     height='100%'
                                     paddingX={2}
+                                    key={JSON.stringify({ x, index })}
                                     sx={{
                                         ':hover': {
                                             backgroundColor: '#fcfcfc',
@@ -146,8 +147,8 @@ export default function TabNavBar({
                                         <MenuIcon />
                                     </IconButton>
                                     <Menu open={menuOpen} onClose={closeMenu} anchorEl={anchor}>
-                                        {links.map((x) => (
-                                            <MenuItem key={`navmenu${x}`} onClick={(e) => onMenuItemClick(e, x.path)}>
+                                        {links.map((x, index) => (
+                                            <MenuItem key={JSON.stringify({ x, index })} onClick={(e) => onMenuItemClick(e, x.path)}>
                                                 <Typography textTransform='capitalize'>{x.name}</Typography>
                                             </MenuItem>
                                         ))}

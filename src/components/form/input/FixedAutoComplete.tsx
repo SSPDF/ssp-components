@@ -13,10 +13,12 @@ export function FixedAutoComplete({
     onChange = () => {},
     xs = 12,
     sm,
+    watchValue,
     md,
 }: {
     name: string
     title: string
+    watchValue?: { id: number | string; label: string }
     list: Object[]
     customLoadingText?: string
     defaultValue?: Object
@@ -27,17 +29,27 @@ export function FixedAutoComplete({
     sm?: number
     md?: number
 }) {
-    const context = useContext(FormContext)
+    const context = useContext(FormContext)!
+    const [value, setValue] = useState<{ id: any; label: string } | null>(null)
 
     useEffect(() => {
         if (defaultValue) context?.formSetValue(name, (defaultValue as any).id)
     }, [])
 
-    function handleAutoCompleteChange(value: any) {
-        console.log(value)
+    useEffect(() => {
+        if (watchValue) {
+            setValue(watchValue)
+            context.formSetValue(name, watchValue.id)
+            onChange(watchValue.id as any)
+        }
+    }, [watchValue])
 
-        context?.formSetValue(name, value ? value.id : '')
-        onChange(value ? value.id : -1)
+    function handleAutoCompleteChange(value: any) {
+        if (value) {
+            setValue(value)
+            context.formSetValue(name, value.id)
+            onChange(value.id)
+        }
     }
 
     return (
@@ -53,8 +65,10 @@ export function FixedAutoComplete({
                 hidden
             />
             <Autocomplete
+                value={value}
                 options={list}
                 defaultValue={defaultValue}
+                getOptionLabel={(option: any) => (option.label ? option.label.toString() : 'Não Encontrado')}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => handleAutoCompleteChange(v)}
                 renderInput={(params) => (

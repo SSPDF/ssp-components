@@ -1,6 +1,6 @@
 import { Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import MaskInput from './MaskInput'
 import { FormContext } from '../../../context/form'
 
@@ -13,10 +13,12 @@ export function Input({
     inputMaxLength = 255,
     defaultValue = '',
     md,
+    watchValue = '',
     ...props
 }: {
     type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
     name: string
+    watchValue?: string
     title?: string
     required?: boolean
     numberMask?: string
@@ -28,9 +30,13 @@ export function Input({
     sm?: number
     md?: number
 }) {
-    const context = useContext(FormContext)
+    const context = useContext(FormContext)!
 
-    const chooseInput = useCallback(() => {
+    useEffect(() => {
+        context.formSetValue(props.name, watchValue)
+    }, [watchValue])
+
+    const chooseInput = () => {
         const inputConfig: object = {
             fullWidth: true,
             size: 'small',
@@ -183,7 +189,7 @@ export function Input({
                     />
                 )
         }
-    }, [props, context, type])
+    }
 
     return (
         <Grid item {...{ xs, sm, md }}>

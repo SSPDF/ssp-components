@@ -52,6 +52,24 @@ function removePunctuationAndAccents(text: string) {
     return cleanedText
 }
 
+// function ContentExpand(props: { str: string }) {
+//     const [expand, setExpand] = useState(false)
+//     const content = props.str.toString()
+
+//     if (content.length < 100 || expand)
+//         return (
+//             <>
+//                 {content} {content.length >= 100 && <Button onClick={(e) => setExpand(false)}>Mostrar Menos</Button>}
+//             </>
+//         )
+
+//     return (
+//         <>
+//             {content.substring(0, 100)}...<Button onClick={(e) => setExpand(true)}>Ver Mais</Button>
+//         </>
+//     )
+// }
+
 interface ColumnData {
     title: string
     keyName: string
@@ -169,6 +187,9 @@ export function Table({
     const [listPage, setListPage] = useState(1)
     const [appliedFilters, setAppliedFilters] = useState<any[]>([])
     const [oldSelectState, setOldSelectState] = useState<string>('')
+    const [expandObj, setExpandObj] = useState<{ [key: number]: boolean }>({})
+    const [showExpandObj, setShowExpandObj] = useState<{ [key: number]: boolean }>({})
+    const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
 
     // filters states
     const [filterCollapse, setFilterCollapse] = useState<boolean[]>(Array(Object.keys(filters).length).fill(false))
@@ -599,57 +620,6 @@ export function Table({
         [list]
     )
 
-    const getStatusMsg = useCallback((cod: string) => {
-        switch (cod) {
-            case 'P':
-                return (
-                    <Typography color='#F59E0B' fontWeight={600} fontFamily='Inter'>
-                        EM ANÁLISE
-                    </Typography>
-                )
-            case 'A':
-                return (
-                    <Typography color='#0EA5E9' fontWeight={600} fontFamily='Inter'>
-                        CADASTRADO
-                    </Typography>
-                )
-            case 'C':
-                return (
-                    <Typography color='#a1a1a1' fontWeight={600} fontFamily='Inter'>
-                        CANCELADO
-                    </Typography>
-                )
-            case 'R':
-                return (
-                    <Typography color='#EF4444' fontWeight={600} fontFamily='Inter'>
-                        REPROVADO
-                    </Typography>
-                )
-            case 'L':
-                return (
-                    <Typography color='#22C55E' fontWeight={600} fontFamily='Inter'>
-                        LICENCIADO
-                    </Typography>
-                )
-            case 'PA':
-                return (
-                    <Typography color='#6366F1' fontWeight={600} fontFamily='Inter'>
-                        PRÉ APROVADO
-                    </Typography>
-                )
-            case 'FP':
-                return (
-                    <Typography color='#991b1b' fontWeight={600} fontFamily='Inter'>
-                        FORA DO PRAZO
-                    </Typography>
-                )
-        }
-    }, [])
-
-    async function getSelectValues(url: string): Promise<any[]> {
-        return ['dd']
-    }
-
     useEffect(() => {
         filterBasedOnList(appliedFilters)
     }, [appliedFilters])
@@ -692,10 +662,20 @@ export function Table({
         function category(type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) {
             if (type === 'a-z') {
                 rawList = rawList.sort((a, b) => {
-                    const aValue = String(a[keyName])
-                    const bValue = String(b[keyName])
-                    const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                    const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+                    const aValue = a[keyName]
+                    const bValue = b[keyName]
+                    let valueA: number | string = aValue
+                    let valueB: number | string = bValue
+
+                    if (typeof aValue === 'string' || typeof bValue === 'string') {
+                        valueA = String(aValue).toLowerCase()
+                        valueB = String(bValue).toLowerCase()
+                    }
+
+                    console.table({
+                        values: valueA + ' < ' + valueB,
+                        result: valueA < valueB,
+                    })
 
                     if (valueA < valueB) {
                         return -1
@@ -710,10 +690,16 @@ export function Table({
             } //
             else if (type === 'z-a') {
                 rawList = rawList.sort((a, b) => {
-                    const aValue = String(a[keyName])
-                    const bValue = String(b[keyName])
-                    const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                    const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
+                    const aValue = a[keyName]
+                    const bValue = b[keyName]
+                    let valueA: number | string = aValue
+                    let valueB: number | string = bValue
+
+                    if (typeof aValue === 'string' || typeof bValue === 'string') {
+                        valueA = String(aValue).toLowerCase()
+                        valueB = String(bValue).toLowerCase()
+                    }
+
                     if (valueA < valueB) {
                         return 1
                     }
@@ -962,6 +948,31 @@ export function Table({
         })
     }
 
+    function expandContent(str: string, index: number) {
+        const content = str.toString()
+
+        if (content.length <= 100) {
+            return content
+        }
+
+        return expandObj[index] === true ? content : content.substring(0, 100) + '...'
+    }
+
+    // effect usado quando for mostrar "VER MAIS" e "VER MENOS"
+    useEffect(() => {
+        const start = currentPage * itemsCount
+        const newList = list.slice(start, start + itemsCount)
+        let obj: { [key: number]: boolean } = {}
+
+        newList.forEach((x, index) => {
+            columns.forEach((c) => {
+                obj[index] = obj[index] === true ? true : get(x, c.keyName).toString().length >= 100
+            })
+        })
+
+        setShowExpandObj(obj)
+    }, [list, itemsCount, currentPage])
+
     if (error)
         return (
             <Box bgcolor='#E2E8F0' padding={2} marginX={2}>
@@ -1063,7 +1074,17 @@ export function Table({
                         </Stack>
                     ) : (
                         getMaxItems().map((x: any, index: number) => (
-                            <Paper key={index} sx={{ padding: 0.5, backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white', paddingY: 2, borderTop: 'solid 1.5px #E2E8F0' }} elevation={0}>
+                            <Paper
+                                key={index}
+                                sx={{
+                                    padding: 0.5,
+                                    backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
+                                    paddingTop: 2,
+                                    borderTop: 'solid 1.5px #E2E8F0',
+                                    position: 'relative',
+                                }}
+                                elevation={0}
+                            >
                                 <Grid container spacing={isSmall ? 2 : 0} paddingX={2} rowSpacing={2}>
                                     {columns.map((c) => (
                                         <Grid
@@ -1071,22 +1092,43 @@ export function Table({
                                             item
                                             xs={12}
                                             md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
+                                            sx={{
+                                                overflow: 'hidden',
+                                            }}
                                         >
                                             <Box sx={{ width: 'max-content', paddingX: 1 }}>
                                                 <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}
                                                 </Typography>
                                             </Box>
-                                            <Box paddingLeft={1}>
-                                                <Box sx={{ wordWrap: 'break-word', color: '#1E293B', fontSize: 16 }} fontFamily='Inter'>
-                                                    {c.customComponent ? (
-                                                        c.customComponent(get(x, c.keyName), x)
-                                                    ) : c.keyName === statusKeyName ? (
-                                                        getStatusMsg(get(x, c.keyName))
-                                                    ) : (
-                                                        <div dangerouslySetInnerHTML={{ __html: get(x, c.keyName) }}></div>
-                                                    )}
-                                                </Box>
+                                            <Box paddingLeft={1} position='relative'>
+                                                <Collapse in={expandObj[index] === true} collapsedSize={100} onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}>
+                                                    <Box
+                                                        sx={{
+                                                            wordWrap: 'break-word',
+                                                            color: '#1E293B',
+                                                            fontSize: 16,
+                                                        }}
+                                                        fontFamily='Inter'
+                                                    >
+                                                        <Box>{c.customComponent ? c.customComponent(get(x, c.keyName), x) : <Box color='transparent'>{get(x, c.keyName, '')}</Box>}</Box>
+                                                        <Box position='absolute' top={0}>
+                                                            {c.customComponent ? (
+                                                                c.customComponent(get(x, c.keyName), x)
+                                                            ) : (
+                                                                <>
+                                                                    {showExpandObjOnExited[index] ? (
+                                                                        get(x, c.keyName, '')
+                                                                    ) : get(x, c.keyName, '').toString().length >= 100 ? (
+                                                                        <>{get(x, c.keyName, '').toString().substring(0, 100) + '...'}</>
+                                                                    ) : (
+                                                                        get(x, c.keyName, '')
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </Box>
+                                                    </Box>
+                                                </Collapse>
                                             </Box>
                                         </Grid>
                                     ))}
@@ -1095,6 +1137,23 @@ export function Table({
                                             {action(x)}
                                         </Stack>
                                     </Grid>
+                                    {showExpandObj[index] && (
+                                        <Stack direction='row' justifyContent='center' bottom={0} width='100%'>
+                                            <Button
+                                                onClick={(e) => {
+                                                    setExpandObj((s) => ({ ...s, [index]: !s[index] }))
+                                                    setShowExpandObjOnExited((s) => ({ ...s, [index]: true }))
+                                                }}
+                                                sx={{
+                                                    padding: 0,
+                                                    textTransform: 'capitalize',
+                                                }}
+                                                endIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
+                                            >
+                                                {expandObj[index] ? 'Ver Menos' : 'Ver Mais'}
+                                            </Button>
+                                        </Stack>
+                                    )}
                                 </Grid>
                             </Paper>
                         ))
@@ -1246,7 +1305,7 @@ export function Table({
             <SwipeableDrawer anchor={isSmall ? 'bottom' : 'right'} open={filterOpen} onClose={(e) => setFilterOpen(false)} onOpen={(e) => setFilterOpen(true)}>
                 <List sx={{ minWidth: 310 }}>
                     {Object.keys(filters).map((f, fIndex) => (
-                        <>
+                        <React.Fragment key={JSON.stringify({ f, fIndex })}>
                             <ListItemButton
                                 onClick={(e) =>
                                     setFilterCollapse((s) =>
@@ -1270,8 +1329,8 @@ export function Table({
 
                             <Collapse in={filterCollapse[fIndex]} timeout='auto' unmountOnExit>
                                 <List component='div' disablePadding sx={{ backgroundColor: 'white' }}>
-                                    {filters[f].map((x) => (
-                                        <>
+                                    {filters[f].map((x, index) => (
+                                        <React.Fragment key={JSON.stringify({ f, index })}>
                                             {x.options ? (
                                                 x.options.map((o) => (
                                                     <ListItemButton
@@ -1417,11 +1476,11 @@ export function Table({
                                                     </Stack>
                                                 </Stack>
                                             )}
-                                        </>
+                                        </React.Fragment>
                                     ))}
                                 </List>
                             </Collapse>
-                        </>
+                        </React.Fragment>
                     ))}
                 </List>
                 <Button variant='contained' onClick={handleFilterReset} startIcon={<RestartAlt />} sx={{ marginX: 2, marginBottom: 2 }}>

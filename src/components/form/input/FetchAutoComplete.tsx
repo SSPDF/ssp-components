@@ -16,11 +16,13 @@ export default function FetchAutoComplete({
     onChange = () => {},
     xs = 12,
     sm,
+    watchValue,
     md,
 }: {
     name: string
     url: string
     title: string
+    watchValue?: { id: number | string; label: string }
     customLoadingText?: string
     defaultValue?: number
     required?: boolean
@@ -31,12 +33,13 @@ export default function FetchAutoComplete({
     sm?: number
     md?: number
 }) {
-    const context = useContext(FormContext)
+    const context = useContext(FormContext)!
 
     const [loading, setLoading] = useState(true)
     const [list, setList] = useState<any>([])
     const [loadingText, setLoadingText] = useState('Carregando...')
     const [dValue, setDValue] = useState<any | null>(null)
+    const [value, setValue] = useState<{ id: any; label: string } | null>(null)
     const { user } = useContext(AuthContext)
 
     useEffect(() => {
@@ -54,7 +57,7 @@ export default function FetchAutoComplete({
                         if (value.length > 0) {
                             setList(get(j, route, j))
                             setLoading(false)
-                            context?.formSetValue(name, defaultValue)
+                            context.formSetValue(name, defaultValue)
                             setDValue(value[0])
                         } else {
                             setLoadingText('Erro ao carregar dados. Valor inválido')
@@ -66,6 +69,14 @@ export default function FetchAutoComplete({
             })
         }
     }, [])
+
+    useEffect(() => {
+        if (watchValue) {
+            setValue(watchValue)
+            context.formSetValue(name, watchValue.id)
+            onChange(watchValue.id as any)
+        }
+    }, [watchValue])
 
     function onFocus() {
         if ((defaultValue || !shouldRefetch) && list.length > 0) return
@@ -92,8 +103,11 @@ export default function FetchAutoComplete({
     }
 
     function handleAutoCompleteChange(value: any) {
-        context?.formSetValue(name, value ? value.id : '')
-        onChange(value ? value.id : -1)
+        if (value) {
+            setValue(value)
+            context.formSetValue(name, value.id)
+            onChange(value.id)
+        }
     }
 
     if (defaultValue && list.length <= 0 && !dValue)
@@ -116,6 +130,7 @@ export default function FetchAutoComplete({
                 hidden
             />
             <Autocomplete
+                value={value}
                 loading={loading}
                 loadingText={loadingText}
                 options={list}

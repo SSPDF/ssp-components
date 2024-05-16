@@ -9,8 +9,9 @@ import CheckBoxWarning from '../form/checkbox/CheckBoxWarning'
 import DatePicker from '../form/date/DatePicker'
 import TimePicker from '../form/date/TimePicker'
 import FileUpload from '../form/file/FileUpload'
+import { FixedAutoComplete } from '../form/input/FixedAutoComplete'
 import DropFileUpload from '../form/file/DropFileUpload'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Stack } from '@mui/material'
 import Table from '../form/table/Table'
 
 import '../../css/globals.css'
@@ -82,8 +83,87 @@ const getKeys = (values: any, id: number) => {
     return keys
 }
 
+function getStatus(content: string) {
+    let color = ''
+    let name = ''
+
+    switch (content) {
+        case 'P':
+            color = '#AB4812'
+            name = 'Em Análise'
+            break
+        case 'A':
+            color = '#0A549A'
+            name = 'Cadastrado'
+            break
+        case 'C':
+            color = '#a1a1a1'
+            name = 'Cancelado'
+            break
+        case 'R':
+            color = '#EF4444'
+            name = 'Reprovado'
+            break
+        case 'L':
+            color = '#22C55E'
+            name = 'Licenciado'
+            break
+        case 'PA':
+            color = '#6366F1'
+            name = 'Pré Aprovado'
+            break
+        case 'FP':
+            color = '#991b1b'
+            name = 'Fora do Prazo'
+            break
+    }
+
+    return (
+        <Stack color='white' fontWeight={600} direction='row' justifyContent='start'>
+            <Box bgcolor={color} width='128px' borderRadius='14px' paddingX={1.2} paddingY={0.6} textAlign='center'>
+                {name}
+            </Box>
+        </Stack>
+    )
+}
+
+function backup() {
+    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
+    const context = useContext(FormContext)!
+
+    const [test, setTest] = useState<{ id: number | string; label: string } | undefined>(undefined)
+
+    return (
+        <>
+            <h1>{context.formWatch('testing')}</h1>
+
+            <Input name='testing' type='input' title='Nome completo' md={8} required />
+            <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' watchValue={test} required />
+            {/* <Input name='ronald' type='cpf_cnpj' title='Valor padrao' watchValue={context.formWatch('testing')} required /> */}
+            <p>{JSON.stringify(test)}</p>
+
+            <Button type='submit' variant='contained'>
+                Enviar
+            </Button>
+            <Button
+                onClick={(e) =>
+                    setTest({
+                        id: 14,
+                        label: 'CONSEG PARANOÁ',
+                    })
+                }
+            >
+                MUDAR
+            </Button>
+        </>
+    )
+}
+
 export default function Teste() {
     const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
+    const context = useContext(FormContext)!
+
+    const [test, setTest] = useState<{ id: number | string; label: string } | undefined>(undefined)
 
     return (
         <Box bgcolor='#F9F9F9'>
@@ -156,8 +236,8 @@ export default function Teste() {
                 title='Testando'
                 next={false}
                 pos='inherit'
-            />
-            <TabNavBar
+            /> */}
+            {/* <TabNavBar
                 img=''
                 links={[
                     {
@@ -198,22 +278,42 @@ export default function Teste() {
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                        keyName: 'coSeqEventoExterno',
                         title: 'Protocolo',
                     },
                     {
-                        keyName: 'NO_RISP',
-                        title: 'RISP',
+                        keyName: 'noEvento',
+                        title: 'Nome',
                     },
                     {
-                        keyName: 'NO_TIPO_DEVOLUTIVA',
-                        title: 'Tipo de demanda',
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
                         size: 2,
                     },
                     {
-                        keyName: 'DS_ENDERECO',
+                        keyName: 'dsEnderecoLocal',
                         title: 'Local',
-                        size: 1.5,
+                    },
+                    {
+                        keyName: 'noTableRa',
+                        title: 'RA',
+                    },
+                    {
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
+                    },
+                    {
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                        customComponent: (txt) => getStatus(txt),
                     },
                 ]}
                 action={() => (
@@ -222,29 +322,16 @@ export default function Teste() {
                     </>
                 )}
                 filters={{
-                    'teste lista': [
+                    Protocolo: [
                         {
-                            keyName: 'noEvento',
-                            referenceKey: 'coSeqEventoExterno',
-                            name: '',
-                            type: 'items',
-                            options: [
-                                {
-                                    color: 'black',
-                                    key: 'teste',
-                                    name: 'Teste',
-                                },
-                            ],
+                            keyName: 'coSeqEventoExterno',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
                         },
-                    ],
-                    select: [
                         {
-                            keyName: 'CO_CONSEG',
-                            referenceKey: 'coSeqEventoExterno',
-                            name: 'Consegs',
-                            type: 'select',
-                            // selectList: ['teste', 'TESTE DE ESTRESSE', 'ronald3'],
-                            listEndpoint: 'http://localhost:7171/filtro3',
+                            keyName: 'coSeqEventoExterno',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
                         },
                     ],
                 }}
@@ -255,7 +342,7 @@ export default function Teste() {
                 }}
             />
 
-            <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} />
+            {/* <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} /> */}
         </Box>
     )
 }

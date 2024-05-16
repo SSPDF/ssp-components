@@ -1,7 +1,7 @@
 import { Grid, TextField } from '@mui/material'
 import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
 
 export default function MultInput({
@@ -12,6 +12,7 @@ export default function MultInput({
     defaultValue = '',
     xs = 12,
     sm,
+    watchValue = '',
     inputMinLength = 3,
     inputMaxLength = 255,
     md,
@@ -19,6 +20,7 @@ export default function MultInput({
 }: {
     name: string
     title?: string
+    watchValue?: string
     customPlaceholder?: string
     required?: boolean
     defaultValue?: string
@@ -29,6 +31,10 @@ export default function MultInput({
     md?: number
 }) {
     const context = useContext(FormContext)!
+
+    useEffect(() => {
+        context.formSetValue(name, watchValue)
+    }, [watchValue])
 
     return (
         <Grid item {...{ xs, sm, md }}>
