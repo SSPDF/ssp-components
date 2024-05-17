@@ -163,15 +163,22 @@ export default function Teste() {
     const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
     const context = useContext(FormContext)!
 
-    const [test, setTest] = useState<{ id: number | string; label: string } | undefined>(undefined)
+    const [test, setTest] = useState('')
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <Input name='testing' type='input' title='Nome completo' md={8} required />
+            {/* <Input name='pessoaAtendida.nmPessoa' type='input' title='Nome completo' md={8} required /> */}
+            <Input name='pessoaAtendida.nmNomeSocial' type='input' title='Nome social' customPlaceholder='Opcional' md={4} />
+            {/* <FetchAutoComplete name='pessoaAtendida.codSexo' title='Sexo' url={`http://localhost:7171/autocomplete`} md={4} required />
+            <FetchAutoComplete name='pessoaAtendida.codIdentidadeGenero' title='Identidade de gênero' url={`http://localhost:7171/autocomplete`} md={4} required /> */}
+            {/* <DatePicker name='pessoaAtendida.dtNascimento' title='Data de nascimento' md={4} required /> */}
+            <Input name='pessoaAtendida.nrCpfCnpj' type='cpf' title='CPF' md={4} watchValue={test} required />
+            <Input name='pessoaAtendida.dscProfissao' type='input' title='Profissão' customPlaceholder='Opcional' md={4} />
 
             <Button type='submit' variant='contained'>
                 Enviar
             </Button>
+            <Button onClick={(e) => setTest('19429576893')}>MUDAR</Button>
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'

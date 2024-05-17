@@ -111,6 +111,7 @@ export function Input({
                         maskProps={{
                             mask: numberMask,
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'cep':
@@ -121,6 +122,7 @@ export function Input({
                         maskProps={{
                             mask: '00000-000',
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'phone':
@@ -134,6 +136,7 @@ export function Input({
                                 '#': /^9$/,
                             },
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'sei':
@@ -144,6 +147,7 @@ export function Input({
                         maskProps={{
                             mask: '00000-00000000/0000-00',
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'cpf_cnpj':
@@ -158,6 +162,7 @@ export function Input({
                             if (value.length > 14) setMask('00.000.000/0000-00')
                             else setMask('000.000.000-00[0]')
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'cpf':
@@ -168,6 +173,7 @@ export function Input({
                         maskProps={{
                             mask: '000.000.000-00',
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'cnpj':
@@ -178,6 +184,7 @@ export function Input({
                         maskProps={{
                             mask: '00.000.000/0000-00',
                         }}
+                        watchValue={watchValue}
                     />
                 )
             case 'rg':
@@ -188,6 +195,7 @@ export function Input({
                         maskProps={{
                             mask: '00000[000000]',
                         }}
+                        watchValue={watchValue}
                     />
                 )
         }
