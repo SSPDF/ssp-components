@@ -52,24 +52,6 @@ function removePunctuationAndAccents(text: string) {
     return cleanedText
 }
 
-// function ContentExpand(props: { str: string }) {
-//     const [expand, setExpand] = useState(false)
-//     const content = props.str.toString()
-
-//     if (content.length < 100 || expand)
-//         return (
-//             <>
-//                 {content} {content.length >= 100 && <Button onClick={(e) => setExpand(false)}>Mostrar Menos</Button>}
-//             </>
-//         )
-
-//     return (
-//         <>
-//             {content.substring(0, 100)}...<Button onClick={(e) => setExpand(true)}>Ver Mais</Button>
-//         </>
-//     )
-// }
-
 interface ColumnData {
     title: string
     keyName: string
@@ -118,6 +100,8 @@ export function Table({
     filterSeparator = '|',
     filterStorageName = 'tableFilters',
     multipleDataPath = '',
+    expandTextMaxLength = 50,
+    collapsedSize = 53,
     customMargin = 4,
     customMarginMobile = 0,
 }: {
@@ -137,6 +121,7 @@ export function Table({
     csvShowAllButton?: boolean
     csvExcludeUpper?: string[]
     csvWithoutZip?: boolean
+    collapsedSize?: number
     csvAllButtonTitle?: string
     csvButtonTitle?: string
     csvNoZipText?: string
@@ -146,6 +131,7 @@ export function Table({
     csvCustomKeyNames?: {
         [key: string]: string
     }
+    expandTextMaxLength?: number
     csvExcludeKeysCSV?: string[]
     csvExcludeKeys?: string[]
     hideTitleCSV?: boolean
@@ -207,10 +193,13 @@ export function Table({
 
             fetchFunc()
                 .then((res) => {
-                    if (!res.ok)
+                    if (!res.ok) {
                         setError({
                             status: 500,
                         })
+                        setIsLoading(false)
+                        return
+                    }
 
                     return res.json().then((j) => {
                         if (j.statusCode === 204) {
@@ -221,14 +210,19 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            setData(j)
-                            startData = JSON.parse(JSON.stringify(j))
-                            const oldFilters = localStorage.getItem(filterStorageName)
+                            if (!j || !Array.isArray(j)) {
+                                setData({ body: { data: [] } })
+                                startData = []
+                            } else {
+                                setData(j)
+                                startData = JSON.parse(JSON.stringify(j))
+                                const oldFilters = localStorage.getItem(filterStorageName)
 
-                            if (oldFilters) {
-                                const filters = JSON.parse(oldFilters)
+                                if (oldFilters) {
+                                    const filters = JSON.parse(oldFilters)
 
-                                setAppliedFilters(filters)
+                                    setAppliedFilters(filters)
+                                }
                             }
                         }
 
@@ -286,15 +280,14 @@ export function Table({
 
             const listData: object[] = getData(data)
 
-            console.log(listData)
-
             const newList: any = []
 
             listData.forEach((x: any) => {
                 const dataStr: string[] = []
 
                 Object.keys(x).map((key: string) => {
-                    let value = x[key]
+                    // let value = x[key]
+                    let value = get(x, key, '')
 
                     if (typeof value === 'number') value = value.toString()
                     if (typeof value !== 'string') return
@@ -948,16 +941,6 @@ export function Table({
         })
     }
 
-    function expandContent(str: string, index: number) {
-        const content = str.toString()
-
-        if (content.length <= 100) {
-            return content
-        }
-
-        return expandObj[index] === true ? content : content.substring(0, 100) + '...'
-    }
-
     // effect usado quando for mostrar "VER MAIS" e "VER MENOS"
     useEffect(() => {
         const start = currentPage * itemsCount
@@ -966,7 +949,7 @@ export function Table({
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
-                obj[index] = obj[index] === true ? true : get(x, c.keyName).toString().length >= 100
+                obj[index] = obj[index] === true ? true : get(x, c.keyName, '').toString().length >= expandTextMaxLength
             })
         })
 
@@ -1102,7 +1085,7 @@ export function Table({
                                                 </Typography>
                                             </Box>
                                             <Box paddingLeft={1} position='relative'>
-                                                <Collapse in={expandObj[index] === true} collapsedSize={100} onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}>
+                                                <Collapse in={expandObj[index] === true} collapsedSize={collapsedSize} onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}>
                                                     <Box
                                                         sx={{
                                                             wordWrap: 'break-word',
@@ -1111,7 +1094,15 @@ export function Table({
                                                         }}
                                                         fontFamily='Inter'
                                                     >
-                                                        <Box>{c.customComponent ? c.customComponent(get(x, c.keyName), x) : <Box color='transparent'>{get(x, c.keyName, '')}</Box>}</Box>
+                                                        <Box>
+                                                            {c.customComponent ? (
+                                                                c.customComponent(get(x, c.keyName), x)
+                                                            ) : (
+                                                                <Box color='transparent' sx={{ pointerEvents: 'none', userSelect: 'none' }}>
+                                                                    {get(x, c.keyName, '')}
+                                                                </Box>
+                                                            )}
+                                                        </Box>
                                                         <Box position='absolute' top={0}>
                                                             {c.customComponent ? (
                                                                 c.customComponent(get(x, c.keyName), x)
@@ -1119,8 +1110,8 @@ export function Table({
                                                                 <>
                                                                     {showExpandObjOnExited[index] ? (
                                                                         get(x, c.keyName, '')
-                                                                    ) : get(x, c.keyName, '').toString().length >= 100 ? (
-                                                                        <>{get(x, c.keyName, '').toString().substring(0, 100) + '...'}</>
+                                                                    ) : (get(x, c.keyName, '') ?? '').toString().length >= expandTextMaxLength ? (
+                                                                        <>{(get(x, c.keyName, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
                                                                     ) : (
                                                                         get(x, c.keyName, '')
                                                                     )}
@@ -1399,8 +1390,6 @@ export function Table({
                                                         }))}
                                                         onFocus={(e) => console.log('ata')}
                                                         onChange={(e, value) => {
-                                                            console.log(value)
-
                                                             if (value) {
                                                                 const id = `${f}:${JSON.stringify(value)}`
                                                                 handleFilterOption(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
@@ -1422,8 +1411,6 @@ export function Table({
                                                         url={x.listEndpoint}
                                                         label={x.name}
                                                         onChange={(e: any, value: any) => {
-                                                            console.log(value)
-
                                                             if (value) {
                                                                 const id = `${f}:${JSON.stringify(value)}`
                                                                 console.log(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)

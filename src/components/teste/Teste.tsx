@@ -209,7 +209,7 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' />
+            {/* <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' />
             <FixedAutoComplete
                 name='ronald2'
                 title='Testando'
@@ -220,11 +220,10 @@ export default function Teste() {
                     },
                 ]}
             />
-            {/* <Box ref={ref} id='ronaldo'></Box> */}
 
             <Button type='submit' variant='contained'>
                 Enviar
-            </Button>
+            </Button> */}
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'
@@ -322,7 +321,7 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
-            {/* <Button
+            <Button
                 onClick={(e) => {
                     setTestFunc(fetch('http://localhost:7171/table'))
                 }}
@@ -398,7 +397,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            /> */}
+            />
 
             {/* <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} /> */}
         </Box>
