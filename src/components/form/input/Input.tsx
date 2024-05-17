@@ -51,39 +51,41 @@ export function Input({
         const formConfig = {
             ...context?.formRegister(name, {
                 validate: (v, f) => {
-                    if (v.length <= 0 && props.required) return 'Este campo é obrigatório'
+                    const value = v ?? ''
+
+                    if (value.length <= 0 && props.required) return 'Este campo é obrigatório'
 
                     if (type === 'cnpj') {
-                        if (v.length < 18 && props.required) return 'O CNPJ precisa ter no mínimo 14 dígitos'
+                        if (value.length < 18 && props.required) return 'O CNPJ precisa ter no mínimo 14 dígitos'
                     }
                     //
                     else if (type === 'cpf') {
-                        if (v.length < 14 && props.required) return 'O CPF precisa ter no mínimo 11 dígitos'
+                        if (value.length < 14 && props.required) return 'O CPF precisa ter no mínimo 11 dígitos'
                     } //
                     else if (type === 'sei') {
-                        if (v.length < 22 && props.required) return 'O Número SEI precisa ter no mínimo 19 dígitos'
+                        if (value.length < 22 && props.required) return 'O Número SEI precisa ter no mínimo 19 dígitos'
                     }
                     //
                     else if (type === 'cep') {
-                        if (v.length < 9 && props.required) return 'O CPF precisa ter no mínimo 8 dígitos'
+                        if (value.length < 9 && props.required) return 'O CPF precisa ter no mínimo 8 dígitos'
                     }
                     //
                     else if (type === 'input' || type === 'password' || type === 'number') {
-                        if (v.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
-                        if (v.length < inputMinLength && props.required) return `Limite mínimo de ${inputMinLength} caracteres`
+                        if (value.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
+                        if (value.length < inputMinLength && props.required) return `Limite mínimo de ${inputMinLength} caracteres`
                     }
                     //
                     else if (type === 'email') {
-                        if (v.length > 50) return 'Limite máximo de 50 caracteres'
+                        if (value.length > 50) return 'Limite máximo de 50 caracteres'
                         if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(v) && props.required) return 'O e-mail inserido não é valido'
                     }
                     //
                     else if (type === 'cpf_cnpj') {
-                        if ((v.length < 14 || (v.length > 14 && v.length < 18)) && props.required) return 'O CPF/CNPJ precisa ter no mínimo 11/14 dígitos'
+                        if ((value.length < 14 || (value.length > 14 && value.length < 18)) && props.required) return 'O CPF/CNPJ precisa ter no mínimo 11/14 dígitos'
                     }
                     //
                     else if (type === 'phone') {
-                        if (v.length < 14 && props.required) return 'O número precisa ter pelo menos 10 dígitos'
+                        if (value.length < 14 && props.required) return 'O número precisa ter pelo menos 10 dígitos'
                     }
                 },
             }),
