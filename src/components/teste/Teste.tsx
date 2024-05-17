@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useRef, useState } from 'react'
 import Input from '../form/input/Input'
 import Stepper from '../form/stepper/Stepper'
 import StepperBlock from '../form/stepper/StepperBlock'
@@ -11,8 +11,9 @@ import TimePicker from '../form/date/TimePicker'
 import FileUpload from '../form/file/FileUpload'
 import { FixedAutoComplete } from '../form/input/FixedAutoComplete'
 import DropFileUpload from '../form/file/DropFileUpload'
-import { Box, Button, Stack } from '@mui/material'
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material'
 import Table from '../form/table/Table'
+import { createPortal } from 'react-dom'
 
 import '../../css/globals.css'
 import FetchAutoComplete from '../form/input/FetchAutoComplete'
@@ -159,26 +160,71 @@ function backup() {
     )
 }
 
+interface TabPanelProps {
+    children?: React.ReactNode
+    index: number
+    value: number
+}
+
+// function CustomTabPanel(props: TabPanelProps) {
+//     const { children, value, index, ...other } = props
+
+//     return (
+//         <Box role='tabpanel' display={value !== index ? 'none' : ''} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+//             {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+//         </Box>
+//     )
+// }
+
+const CustomTabPanel = React.memo(function Custom(props: TabPanelProps) {
+    const { children, value, index, ...other } = props
+
+    return (
+        <Box role='tabpanel' display={value !== index ? 'none' : ''} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+        </Box>
+    )
+})
+
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    }
+}
+
+const okok = document.getElementById('ronaldo')
+
 export default function Teste() {
     const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState('')
+    const [value, setValue] = React.useState(0)
+    const ref = useRef<DocumentFragment | null>(null)
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue)
+    }
 
     return (
         <Box bgcolor='#F9F9F9'>
-            {/* <Input name='pessoaAtendida.nmPessoa' type='input' title='Nome completo' md={8} required /> */}
-            <Input name='pessoaAtendida.nmNomeSocial' type='input' title='Nome social' customPlaceholder='Opcional' md={4} />
-            {/* <FetchAutoComplete name='pessoaAtendida.codSexo' title='Sexo' url={`http://localhost:7171/autocomplete`} md={4} required />
-            <FetchAutoComplete name='pessoaAtendida.codIdentidadeGenero' title='Identidade de gênero' url={`http://localhost:7171/autocomplete`} md={4} required /> */}
-            {/* <DatePicker name='pessoaAtendida.dtNascimento' title='Data de nascimento' md={4} required /> */}
-            <Input name='pessoaAtendida.nrCpfCnpj' type='cpf' title='CPF' md={4} watchValue={test} required />
-            <Input name='pessoaAtendida.dscProfissao' type='input' title='Profissão' customPlaceholder='Opcional' md={4} />
+            <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' />
+            <FixedAutoComplete
+                name='ronald2'
+                title='Testando'
+                list={[
+                    {
+                        id: 0,
+                        label: 'foda',
+                    },
+                ]}
+            />
+            {/* <Box ref={ref} id='ronaldo'></Box> */}
 
             <Button type='submit' variant='contained'>
                 Enviar
             </Button>
-            <Button onClick={(e) => setTest('19429576893')}>MUDAR</Button>
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'

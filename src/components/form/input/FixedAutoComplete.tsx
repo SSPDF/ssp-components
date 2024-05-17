@@ -49,7 +49,12 @@ export function FixedAutoComplete({
             setValue(value)
             context.formSetValue(name, value.id)
             onChange(value.id)
+            return
         }
+
+        setValue(null)
+        context.formSetValue(name, '')
+        onChange(undefined)
     }
 
     return (

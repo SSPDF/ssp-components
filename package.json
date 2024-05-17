@@ -53,6 +53,7 @@
         "@types/lodash.get": "^4.4.7",
         "@types/lodash.hasin": "^4.5.7",
         "@types/react": "^18.0.37",
+        "@types/react-dom": "^18.3.0",
         "@types/react-google-recaptcha": "^2.1.5",
         "prop-types": "15.8.1",
         "react-dom": "18.2.0",

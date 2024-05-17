@@ -14,27 +14,14 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
     const context = useContext(FormContext)!
 
     useEffect(() => {
-        console.log(watchValue)
-
         if (watchValue) {
             setMyValue(watchValue)
         }
     }, [watchValue])
 
-    // useEffect(() => {
-    //     // const value = context.formGetValues(prop.name)
-    //     // console.log('VA::', value)
-    //     // if (value) {
-    //     //     setMyValue(value)
-    //     // }
-    // }, [context.formGetValues(prop.name)])
-
     useEffect(() => {
-        console.log('ddd')
         context.formSetValue(prop.name, myRef.current.element.value)
     }, [myValue])
-
-    console.log(props)
 
     delete prop.watchValue
 

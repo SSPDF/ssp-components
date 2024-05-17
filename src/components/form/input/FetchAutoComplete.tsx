@@ -107,7 +107,12 @@ export default function FetchAutoComplete({
             setValue(value)
             context.formSetValue(name, value.id)
             onChange(value.id)
+            return
         }
+
+        setValue(null)
+        context.formSetValue(name, '')
+        onChange(undefined)
     }
 
     if (defaultValue && list.length <= 0 && !dValue)
