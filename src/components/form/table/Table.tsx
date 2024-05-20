@@ -210,7 +210,9 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            if (!j || !Array.isArray(j)) {
+                            const value = get(j, dataPath)
+
+                            if (!value || !Array.isArray(value)) {
                                 setData({ body: { data: [] } })
                                 startData = []
                             } else {
@@ -250,6 +252,7 @@ export function Table({
 
     const getData = useCallback((dt: any) => {
         if (Array.isArray(dt)) return dt
+
         if (typeof dt === 'object') return get(dt, dataPath)
     }, [])
 

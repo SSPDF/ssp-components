@@ -332,42 +332,46 @@ export default function Teste() {
             <Table
                 fetchFunc={() => testFunc}
                 useKC={false}
+                dataPath='body.data'
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                        keyName: 'coSeqEventoExterno',
                         title: 'Protocolo',
                     },
                     {
-                        keyName: 'NO_RISP',
-                        title: 'RISP',
+                        keyName: 'noEvento',
+                        title: 'Nome',
                     },
                     {
-                        keyName: 'NO_TIPO_DEVOLUTIVA',
-                        title: 'Tipo de demanda',
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
                         size: 2,
                     },
                     {
-                        keyName: 'DS_ENDERECO',
+                        keyName: 'dsEnderecoLocal',
                         title: 'Local',
-                        size: 1.5,
                     },
                     {
-                        keyName: 'DT_CADASTRO',
-                        title: 'Data Abertura',
-                        customComponent: (cont) => <Box>{cont}</Box>,
+                        keyName: 'noTableRa',
+                        title: 'RA',
                     },
                     {
-                        keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
-                        title: 'Movimentação Último Estado',
-                        size: 1.5,
-                        customComponent: (cont) => <Box>{cont}</Box>,
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
                     },
                     {
-                        keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
-                        title: 'Estado - PAF',
-                        size: 0.6,
-                        customComponent: (cont, _) => getStatus(cont),
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
+                    },
+                    {
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                        customComponent: (txt) => getStatus(txt),
                     },
                 ]}
                 action={() => (
