@@ -286,8 +286,7 @@ export function Table({
                 const dataStr: string[] = []
 
                 Object.keys(x).map((key: string) => {
-                    // let value = x[key]
-                    let value = get(x, key, '')
+                    let value = get(x, key, '') ?? ''
 
                     if (typeof value === 'number') value = value.toString()
                     if (typeof value !== 'string') return
@@ -475,8 +474,6 @@ export function Table({
                     keys = ['dtInicio', 'hrInicio', ...keys]
                 }
 
-                console.log(keys)
-
                 const header = keys.map((k) => (csvCustomKeyNames[k] ? csvCustomKeyNames[k] : k)).join(',') + '\n'
                 const values: string[] = []
 
@@ -522,7 +519,6 @@ export function Table({
                             const dates = x[multipleDataPath]
 
                             if (dates) {
-                                console.log(dates)
                                 ;(dates as any[]).forEach((d) => {
                                     values.push(value.replace('{dtInicio}', d.dtInicio).replace('{hrInicio}', d.hrInicio).replace('{hrTermino}', d.hrTermino))
                                 })
@@ -949,7 +945,7 @@ export function Table({
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
-                obj[index] = obj[index] === true ? true : get(x, c.keyName, '').toString().length >= expandTextMaxLength
+                obj[index] = obj[index] === true ? true : (get(x, c.keyName, '') ?? 'Não Informado').toString().length >= expandTextMaxLength
             })
         })
 
@@ -1413,7 +1409,6 @@ export function Table({
                                                         onChange={(e: any, value: any) => {
                                                             if (value) {
                                                                 const id = `${f}:${JSON.stringify(value)}`
-                                                                console.log(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
                                                                 handleFilterOption(x.type, x.keyName, id, value?.id.toLowerCase(), x.referenceKey)
                                                                 setOldSelectState(id)
                                                             } else {

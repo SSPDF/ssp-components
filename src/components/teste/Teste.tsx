@@ -335,42 +335,39 @@ export default function Teste() {
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'coSeqEventoExterno',
+                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                         title: 'Protocolo',
                     },
                     {
-                        keyName: 'noEvento',
-                        title: 'Nome',
+                        keyName: 'NO_RISP',
+                        title: 'RISP',
                     },
                     {
-                        keyName: 'dtTableDates',
-                        title: 'Datas',
+                        keyName: 'NO_TIPO_DEVOLUTIVA',
+                        title: 'Tipo de demanda',
                         size: 2,
                     },
                     {
-                        keyName: 'dsEnderecoLocal',
+                        keyName: 'DS_ENDERECO',
                         title: 'Local',
+                        size: 1.5,
                     },
                     {
-                        keyName: 'noTableRa',
-                        title: 'RA',
+                        keyName: 'DT_CADASTRO',
+                        title: 'Data Abertura',
+                        customComponent: (cont) => <Box>{cont}</Box>,
                     },
                     {
-                        keyName: 'nuPublicoMaximo',
-                        title: 'Público Máximo',
+                        keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
+                        title: 'Movimentação Último Estado',
+                        size: 1.5,
+                        customComponent: (cont) => <Box>{cont}</Box>,
                     },
                     {
-                        keyName: 'dtCadastro',
-                        title: 'Data de Solicitação',
-                    },
-                    {
-                        keyName: 'nuProcessoFormatadoSei',
-                        title: 'Processo SEI',
-                    },
-                    {
-                        keyName: 'stEventoExterno',
-                        title: 'Status do Evento',
-                        customComponent: (txt) => getStatus(txt),
+                        keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
+                        title: 'Estado - PAF',
+                        size: 0.6,
+                        customComponent: (cont, _) => getStatus(cont),
                     },
                 ]}
                 action={() => (
@@ -381,12 +378,12 @@ export default function Teste() {
                 filters={{
                     Protocolo: [
                         {
-                            keyName: 'coSeqEventoExterno',
+                            keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                             type: 'a-z',
                             name: 'Ordernar em ordem crescente',
                         },
                         {
-                            keyName: 'coSeqEventoExterno',
+                            keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                             type: 'z-a',
                             name: 'Ordernar em ordem decrescente',
                         },
