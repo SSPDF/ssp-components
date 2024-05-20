@@ -219,11 +219,14 @@ export default function Teste() {
                         label: 'foda',
                     },
                 ]}
-            />
+            /> */}
+
+            <TimePicker name={'teste'} title='Data' md={2.6} defaultValue={'11/05/2024'} required />
+            <DatePicker name={'teste'} title='Data' md={2.6} defaultValue={'11/05/2024'} required />
 
             <Button type='submit' variant='contained'>
                 Enviar
-            </Button> */}
+            </Button>
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'
@@ -321,7 +324,7 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
-            <Button
+            {/* <Button
                 onClick={(e) => {
                     setTestFunc(fetch('http://localhost:7171/table'))
                 }}
@@ -398,7 +401,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            />
+            /> */}
 
             {/* <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} /> */}
         </Box>

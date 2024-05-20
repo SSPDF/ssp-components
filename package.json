@@ -21,7 +21,7 @@
         "@mui/x-date-pickers": "^6.2.0",
         "axios": "^1.6.7",
         "cookies-next": "^2.1.1",
-        "dayjs": "^1.11.7",
+        "dayjs": "^1.11.11",
         "json-server": "^0.17.3",
         "jszip": "^3.10.1",
         "jwt-decode": "^3.1.2",

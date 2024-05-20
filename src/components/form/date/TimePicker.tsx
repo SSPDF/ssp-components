@@ -2,8 +2,8 @@ import { Grid, InputLabel, TextField, Typography } from '@mui/material'
 import { LocalizationProvider, TimePicker as MUITimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { Dayjs } from 'dayjs'
-import ptbr from 'dayjs/locale/pt-br'
 import get from 'lodash.get'
+import 'dayjs/locale/pt-br'
 import React, { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
 import hasIn from 'lodash.hasin'
@@ -48,7 +48,7 @@ export default function TimePicker({
     return (
         <Grid item {...{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
-            <LocalizationProvider adapterLocale={ptbr} dateAdapter={AdapterDayjs}>
+            <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                 <MUITimePicker
                     value={value}
                     ampm={false}

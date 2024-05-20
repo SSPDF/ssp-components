@@ -1,9 +1,9 @@
 import { Grid, InputLabel, TextField, Typography } from '@mui/material'
-import { LocalizationProvider } from '@mui/x-date-pickers'
+import { LocalizationProvider, ptBR } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
-import ptbr from 'dayjs/locale/pt-br'
+import 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
 import React, { useContext, useEffect, useState } from 'react'
@@ -56,7 +56,7 @@ export default function DatePicker({
         <>
             <Grid item {...{ xs, sm, md }}>
                 {title && <InputLabel required={required}>{title}</InputLabel>}
-                <LocalizationProvider adapterLocale={ptbr} dateAdapter={AdapterDayjs}>
+                <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
                         minDate={dayjs(minDt, 'DD/MM/YYYY')}
                         maxDate={dayjs(maxDt, 'DD/MM/YYYY')}
