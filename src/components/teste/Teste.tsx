@@ -203,12 +203,27 @@ export default function Teste() {
     const [value, setValue] = React.useState(0)
     const ref = useRef<DocumentFragment | null>(null)
 
+    const [show, setShow] = useState(false)
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue)
     }
 
     return (
         <Box bgcolor='#F9F9F9'>
+            <Stepper>
+                <StepperBlock title='Teste 1'>
+                    <Input name='teste1' type='input' title='Teste' required />
+                </StepperBlock>
+                {show && (
+                    <StepperBlock title='Teste 2'>
+                        <Input name='teste2' type='input' title='Teste' required />
+                    </StepperBlock>
+                )}
+            </Stepper>
+
+            <Button onClick={(e) => setShow((s) => !s)}>Mudar show</Button>
+
             {/* <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' />
             <FixedAutoComplete
                 name='ronald2'
@@ -220,13 +235,13 @@ export default function Teste() {
                     },
                 ]}
             /> */}
-
+            {/* 
             <TimePicker name={'teste'} title='Data' md={2.6} defaultValue={'11/05/2024'} required />
             <DatePicker name={'teste'} title='Data' md={2.6} defaultValue={'11/05/2024'} required />
 
             <Button type='submit' variant='contained'>
                 Enviar
-            </Button>
+            </Button> */}
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'
@@ -335,7 +350,7 @@ export default function Teste() {
             <Table
                 fetchFunc={() => testFunc}
                 useKC={false}
-                dataPath='body.data'
+                // dataPath='body.data'
                 tableName='Teste'
                 columns={[
                     {

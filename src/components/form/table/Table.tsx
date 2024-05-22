@@ -41,6 +41,7 @@ import dayjs from 'dayjs'
 import JSZip from 'jszip'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 import axios from 'axios'
+import hasIn from 'lodash.hasin'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -210,9 +211,9 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            const value = get(j, dataPath)
+                            console.log('data:', get(j, 'body'))
 
-                            if (!value || !Array.isArray(value)) {
+                            if (!j || !Array.isArray(j)) {
                                 setData({ body: { data: [] } })
                                 startData = []
                             } else {

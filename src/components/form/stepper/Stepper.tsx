@@ -26,14 +26,19 @@ export function Stepper({
     debugLog = false,
     test = false,
     testConfig = {},
+    customMarginBottom = 10,
     ...props
 }: {
-    children: ReactElement | ReactElement[]
+    customMarginBottom?: number
+    children: ReactElement | (ReactElement | null | undefined | false)[]
+    // children: ReactElement | ReactElement[]
     debugData?: (data: FieldValues) => void
     debugLog?: boolean
     test?: boolean
     testConfig?: { [key: number]: { [key: string]: string | number | boolean } }
 }) {
+    props.children = Array.isArray(props.children) ? props.children.filter((x, id) => x) : props.children
+
     const length = Array.isArray(props.children) ? props.children.length : 1
     const context = useContext(FormContext)!
     // next button ref
@@ -43,9 +48,10 @@ export function Stepper({
     const [activeStep, setActiveStep] = useState(0)
 
     const blocks = Array.isArray(props.children) ? props.children : [props.children]
-    const stepperBlocks = blocks.map((x, idx) => {
+    const stepperBlocks = blocks.map((x: any, idx) => {
         return React.cloneElement(x, { ...x.props, prefix: idx })
     })
+
     const maxSteps = length
 
     const handleNext = async () => {
@@ -104,7 +110,7 @@ export function Stepper({
                     </Button>
                 </Stack>
             )}
-            <Stack sx={{ padding: 2, marginBottom: 10 }}>
+            <Stack sx={{ padding: 2, marginBottom: customMarginBottom }}>
                 <Box>
                     {stepperBlocks.map((b, index) => (
                         <Box key={'formsB' + index} hidden={!(activeStep === index)}>
