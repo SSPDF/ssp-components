@@ -211,7 +211,7 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <Stepper>
+            {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <Input name='teste1' type='input' title='Teste' required />
                 </StepperBlock>
@@ -222,7 +222,7 @@ export default function Teste() {
                 )}
             </Stepper>
 
-            <Button onClick={(e) => setShow((s) => !s)}>Mudar show</Button>
+            <Button onClick={(e) => setShow((s) => !s)}>Mudar show</Button> */}
 
             {/* <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' />
             <FixedAutoComplete
@@ -339,7 +339,7 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
-            {/* <Button
+            <Button
                 onClick={(e) => {
                     setTestFunc(fetch('http://localhost:7171/table'))
                 }}
@@ -350,11 +350,11 @@ export default function Teste() {
             <Table
                 fetchFunc={() => testFunc}
                 useKC={false}
-                // dataPath='body.data'
+                dataPath='body.data'
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'coSeqEventoExterno',
+                        keyName: 'codSituacaoRisco',
                         title: 'Protocolo',
                     },
                     {
@@ -416,7 +416,77 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            /> */}
+            />
+            <Table
+                fetchFunc={() => fetch('http://localhost:7171/table2')}
+                useKC={false}
+                // dataPath='body.data'
+                tableName='Teste'
+                columns={[
+                    {
+                        keyName: 'codSituacaoRisco',
+                        title: 'Protocolo',
+                    },
+                    {
+                        keyName: 'noEvento',
+                        title: 'Nome',
+                    },
+                    {
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
+                        size: 2,
+                    },
+                    {
+                        keyName: 'dsEnderecoLocal',
+                        title: 'Local',
+                    },
+                    {
+                        keyName: 'noTableRa',
+                        title: 'RA',
+                    },
+                    {
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
+                    },
+                    {
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                        customComponent: (txt) => getStatus(txt),
+                    },
+                ]}
+                action={() => (
+                    <>
+                        <Button variant='contained'>Teste</Button>
+                    </>
+                )}
+                filters={{
+                    Protocolo: [
+                        {
+                            keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                            type: 'a-z',
+                            name: 'Ordernar em ordem crescente',
+                        },
+                        {
+                            keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                            type: 'z-a',
+                            name: 'Ordernar em ordem decrescente',
+                        },
+                    ],
+                }}
+                columnSize={11}
+                mediaQueryLG={{
+                    all: 3,
+                    action: 9,
+                }}
+            />
 
             {/* <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} /> */}
         </Box>

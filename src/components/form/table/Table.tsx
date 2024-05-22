@@ -211,14 +211,14 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            console.log('data:', get(j, 'body'))
+                            let value = dataPath ? get(j, dataPath) : j
 
-                            if (!j || !Array.isArray(j)) {
+                            if (!value || !Array.isArray(value)) {
                                 setData({ body: { data: [] } })
                                 startData = []
                             } else {
-                                setData(j)
-                                startData = JSON.parse(JSON.stringify(j))
+                                setData(value)
+                                startData = JSON.parse(JSON.stringify(value))
                                 const oldFilters = localStorage.getItem(filterStorageName)
 
                                 if (oldFilters) {
