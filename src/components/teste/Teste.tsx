@@ -211,6 +211,7 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
+            <MultInput name='test' title='Testando' />
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <Input name='teste1' type='input' title='Teste' required />
@@ -339,7 +340,7 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
-            <Button
+            {/* <Button
                 onClick={(e) => {
                     setTestFunc(fetch('http://localhost:7171/table'))
                 }}
@@ -354,21 +355,20 @@ export default function Teste() {
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'codSituacaoRisco',
+                        keyName: 'coSeqEventoExterno',
                         title: 'Protocolo',
-                    },
-                    {
-                        keyName: 'noEvento',
-                        title: 'Nome',
-                    },
-                    {
-                        keyName: 'dtTableDates',
-                        title: 'Datas',
-                        size: 2,
                     },
                     {
                         keyName: 'dsEnderecoLocal',
                         title: 'Local',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'noEvento',
+                        title: 'Nome',
                     },
                     {
                         keyName: 'noTableRa',
@@ -379,8 +379,9 @@ export default function Teste() {
                         title: 'Público Máximo',
                     },
                     {
-                        keyName: 'dtCadastro',
-                        title: 'Data de Solicitação',
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
+                        size: 2,
                     },
                     {
                         keyName: 'nuProcessoFormatadoSei',
@@ -416,8 +417,8 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            />
-            <Table
+            /> */}
+            {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}
                 // dataPath='body.data'
@@ -486,7 +487,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            />
+            /> */}
 
             {/* <FileUpload apiURL={'https://hmgapieventosexterno.ssp.df.gov.br/files'} route='data' name='fileCroqui' title='Enviar Croqui' tipoArquivo='2' required sizeLimit={1} /> */}
         </Box>

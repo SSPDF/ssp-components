@@ -33,7 +33,26 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthData } from '../../../types/auth'
 import { AuthContext } from '../../../context/auth'
-import { Add, CalendarToday, Check, Circle, Delete, ExpandLess, ExpandMore, FilterAlt, FilterList, HorizontalRule, Label, North, RestartAlt, South, Title, ViewList } from '@mui/icons-material'
+import {
+    Add,
+    CalendarToday,
+    Check,
+    Circle,
+    Delete,
+    ExpandLess,
+    ExpandMore,
+    FilterAlt,
+    FilterList,
+    HorizontalRule,
+    KeyboardArrowDown,
+    KeyboardArrowUp,
+    Label,
+    North,
+    RestartAlt,
+    South,
+    Title,
+    ViewList,
+} from '@mui/icons-material'
 import FormProvider from '../../providers/FormProvider'
 import { Input } from '../input/Input'
 import DatePicker from '../date/DatePicker'
@@ -63,6 +82,7 @@ interface ColumnData {
 type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval' | 'data-a-z' | 'data-z-a' | 'select'
 
 let startData: any[] = []
+let isExpandAll: boolean = false
 
 export function Table({
     mediaQueryLG,
@@ -941,6 +961,19 @@ export function Table({
         })
     }
 
+    function expandAll() {
+        let obj: { [key: number]: boolean } = {}
+
+        for (let i = 0; i < itemCount; i++) {
+            obj[i] = !isExpandAll
+        }
+
+        setShowExpandObjOnExited(obj)
+        setExpandObj(obj)
+
+        isExpandAll = !isExpandAll
+    }
+
     // effect usado quando for mostrar "VER MAIS" e "VER MENOS"
     useEffect(() => {
         const start = currentPage * itemsCount
@@ -985,7 +1018,7 @@ export function Table({
         <>
             <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
-                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} marginBottom={2} height='40px' width='100%'>
+                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} marginBottom={2} height={{ md: '40px', xs: 'inherit' }} width='100%'>
                         <TextField
                             InputProps={{
                                 startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
@@ -1031,16 +1064,31 @@ export function Table({
                                     >
                                         {appliedFilters.length} aplicado{appliedFilters.length > 1 ? 's' : ''}
                                     </span>
-                                    {/* <Box paddingX={2} whiteSpace={'nowrap'}>
-                                        2 aplicados
-                                    </Box> */}
                                 </Stack>
                             </Button>
                         )}
+                        <Button
+                            variant='contained'
+                            startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                            sx={{
+                                backgroundColor: '#637082',
+                                ':hover': {
+                                    backgroundColor: '#3c4757',
+                                },
+                                textTransform: 'capitalize',
+                                borderRadius: '8px',
+                                padding: '0px 8px',
+                            }}
+                            onClick={expandAll}
+                        >
+                            {isExpandAll ? 'Recolher Todos' : 'Expandir Todos'}
+                        </Button>
                     </Stack>
 
-                    <Stack alignItems='end' width='100%' pb={2}>
-                        <Typography fontWeight={600}>Demandas cadastradas</Typography>
+                    <Stack alignItems='end' width={{ xs: '100%', md: '20%' }} pb={2} direction={{ xs: 'row', md: 'column' }} spacing={{ xs: 1, md: 0 }}>
+                        <Typography fontWeight={600} textAlign='end'>
+                            Demandas cadastradas
+                        </Typography>
                         <Stack justifyContent='center'>
                             <Typography>
                                 Exibindo {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
@@ -1129,7 +1177,7 @@ export function Table({
                                         </Stack>
                                     </Grid>
                                     {showExpandObj[index] && (
-                                        <Stack direction='row' justifyContent='center' bottom={0} width='100%'>
+                                        <Stack direction='row' justifyContent='flex-end' bottom={0} width='100%'>
                                             <Button
                                                 onClick={(e) => {
                                                     setExpandObj((s) => ({ ...s, [index]: !s[index] }))
@@ -1137,9 +1185,10 @@ export function Table({
                                                 }}
                                                 sx={{
                                                     padding: 0,
+                                                    color: '#637082',
                                                     textTransform: 'capitalize',
                                                 }}
-                                                endIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
+                                                startIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
                                             >
                                                 {expandObj[index] ? 'Ver Menos' : 'Ver Mais'}
                                             </Button>

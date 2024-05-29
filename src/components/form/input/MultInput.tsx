@@ -46,7 +46,7 @@ export default function MultInput({
             <TextField
                 multiline
                 fullWidth
-                rows={3}
+                minRows={3}
                 defaultValue={defaultValue}
                 {...context.formRegister(name!, {
                     validate: (v, f) => {

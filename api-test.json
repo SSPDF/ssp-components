@@ -202,68 +202,170 @@
         "body": {
             "data": [
                 {
-                    "codSituacaoRisco": 10,
-                    "name": "MILENA ANDRADE SOARES DE MENEZES",
-                    "codeActivation": "6582",
-                    "phone": "61981178309",
-                    "envolvidos": [],
-                    "narrativa": "",
-                    "keyActivation": "",
-                    "programa": "VIVA FLOR"
+                    "dtTableDates": "20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "20/06/2024",
+                            "hrInicio": "07:10",
+                            "hrTermino": "03:10"
+                        }
+                    ],
+                    "protocoloProcessosei": "3367 - Sem processo",
+                    "noEvento": "LUCAS A PEREIRA",
+                    "noTableRa": "LAGO NORTE",
+                    "dsEnderecoLocal": "QNA 21 CASA 17",
+                    "dtTableInicio": "20/06/2024",
+                    "hrTableInicio": "07:10",
+                    "hrTableTermino": "03:10",
+                    "nuPublicoMaximo": 123,
+                    "stAcaoTransito": "",
+                    "dsTableNaturezas": "carnavalesco",
+                    "stTableStatus": "EM ANÁLISE",
+                    "nuProcessoFormatadoSei": "Sem processo",
+                    "dtCadastro": "29/04/2024",
+                    "stEventoExterno": "P",
+                    "coSeqEventoExterno": 3367,
+                    "noResponsavelRealizacaoEvento": "Meu Nome",
+                    "nuTelefoneResponsavelRealizacaoEvento": "61996536694"
                 },
                 {
-                    "codSituacaoRisco": 11,
-                    "name": "RAYNARA MARIA DOS SANTOS LIMA",
-                    "codeActivation": "2993",
-                    "phone": "61981887383",
-                    "envolvidos": [],
-                    "narrativa": "",
-                    "keyActivation": "",
-                    "programa": "VIVA FLOR"
+                    "dtTableDates": "20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "19/04/2024",
+                            "hrInicio": "00:40",
+                            "hrTermino": "03:00"
+                        }
+                    ],
+                    "protocoloProcessosei": "3366 - Sem processo",
+                    "noEvento": "teste",
+                    "noTableRa": "ÁGUAS CLARAS",
+                    "dsEnderecoLocal": "teste",
+                    "dtTableInicio": "19/04/2024",
+                    "hrTableInicio": "00:40",
+                    "hrTableTermino": "03:00",
+                    "nuPublicoMaximo": 5,
+                    "stAcaoTransito": "",
+                    "dsTableNaturezas": "shows",
+                    "stTableStatus": "EM ANÁLISE",
+                    "nuProcessoFormatadoSei": "Sem processo",
+                    "dtCadastro": "15/04/2024",
+                    "stEventoExterno": "P",
+                    "coSeqEventoExterno": 3366,
+                    "noResponsavelRealizacaoEvento": "Herbert Valadares",
+                    "nuTelefoneResponsavelRealizacaoEvento": "61992547666"
                 },
                 {
-                    "codSituacaoRisco": 12,
-                    "name": "SAMARA DE OLIVEIRA FELIPE",
-                    "codeActivation": "5568",
-                    "phone": "61994562332",
-                    "envolvidos": [],
-                    "narrativa": "",
-                    "keyActivation": "",
-                    "programa": "VIVA FLOR"
+                    "dtTableDates": "20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | 20/06/2024 - 07:10 às 03:10 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "31/05/2024",
+                            "hrInicio": "18:00",
+                            "hrTermino": "20:00"
+                        }
+                    ],
+                    "protocoloProcessosei": "3365 - 00050-00000600/2024-77",
+                    "noEvento": "Festa Junina SSP 31",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Asa Norte",
+                    "dtTableInicio": "31/05/2024",
+                    "hrTableInicio": "18:00",
+                    "hrTableTermino": "20:00",
+                    "nuPublicoMaximo": 100,
+                    "stAcaoTransito": "",
+                    "dsTableNaturezas": "festaJunina",
+                    "stTableStatus": "APROVADO",
+                    "nuProcessoFormatadoSei": "00050-00000600/2024-77",
+                    "dtCadastro": "12/04/2024",
+                    "stEventoExterno": "A",
+                    "coSeqEventoExterno": 3365,
+                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
+                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
                 }
             ]
         }
     },
     "table2": [
         {
-            "codSituacaoRisco": 10,
-            "name": "MILENA ANDRADE SOARES DE MENEZES",
-            "codeActivation": "6582",
-            "phone": "61981178309",
-            "envolvidos": [],
-            "narrativa": "",
-            "keyActivation": "",
-            "programa": "VIVA FLOR"
+            "dtTableDates": "20/06/2024 - 07:10 às 03:10",
+            "dtTableArr": [
+                {
+                    "dtInicio": "20/06/2024",
+                    "hrInicio": "07:10",
+                    "hrTermino": "03:10"
+                }
+            ],
+            "protocoloProcessosei": "3367 - Sem processo",
+            "noEvento": "LUCAS A PEREIRA",
+            "noTableRa": "LAGO NORTE",
+            "dsEnderecoLocal": "QNA 21 CASA 17",
+            "dtTableInicio": "20/06/2024",
+            "hrTableInicio": "07:10",
+            "hrTableTermino": "03:10",
+            "nuPublicoMaximo": 123,
+            "stAcaoTransito": "",
+            "dsTableNaturezas": "carnavalesco",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "29/04/2024",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 3367,
+            "noResponsavelRealizacaoEvento": "Meu Nome",
+            "nuTelefoneResponsavelRealizacaoEvento": "61996536694"
         },
         {
-            "codSituacaoRisco": 11,
-            "name": "RAYNARA MARIA DOS SANTOS LIMA",
-            "codeActivation": "2993",
-            "phone": "61981887383",
-            "envolvidos": [],
-            "narrativa": "",
-            "keyActivation": "",
-            "programa": "VIVA FLOR"
+            "dtTableDates": "19/04/2024 - 00:40 às 03:00",
+            "dtTableArr": [
+                {
+                    "dtInicio": "19/04/2024",
+                    "hrInicio": "00:40",
+                    "hrTermino": "03:00"
+                }
+            ],
+            "protocoloProcessosei": "3366 - Sem processo",
+            "noEvento": "teste",
+            "noTableRa": "ÁGUAS CLARAS",
+            "dsEnderecoLocal": "teste",
+            "dtTableInicio": "19/04/2024",
+            "hrTableInicio": "00:40",
+            "hrTableTermino": "03:00",
+            "nuPublicoMaximo": 5,
+            "stAcaoTransito": "",
+            "dsTableNaturezas": "shows",
+            "stTableStatus": "EM ANÁLISE",
+            "nuProcessoFormatadoSei": "Sem processo",
+            "dtCadastro": "15/04/2024",
+            "stEventoExterno": "P",
+            "coSeqEventoExterno": 3366,
+            "noResponsavelRealizacaoEvento": "Herbert Valadares",
+            "nuTelefoneResponsavelRealizacaoEvento": "61992547666"
         },
         {
-            "codSituacaoRisco": 12,
-            "name": "SAMARA DE OLIVEIRA FELIPE",
-            "codeActivation": "5568",
-            "phone": "61994562332",
-            "envolvidos": [],
-            "narrativa": "",
-            "keyActivation": "",
-            "programa": "VIVA FLOR"
+            "dtTableDates": "31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | 31/05/2024 - 18:00 às 20:00 | ",
+            "dtTableArr": [
+                {
+                    "dtInicio": "31/05/2024",
+                    "hrInicio": "18:00",
+                    "hrTermino": "20:00"
+                }
+            ],
+            "protocoloProcessosei": "3365 - 00050-00000600/2024-77",
+            "noEvento": "Festa Junina SSP 31",
+            "noTableRa": "PLANO PILOTO",
+            "dsEnderecoLocal": "Asa Norte",
+            "dtTableInicio": "31/05/2024",
+            "hrTableInicio": "18:00",
+            "hrTableTermino": "20:00",
+            "nuPublicoMaximo": 100,
+            "stAcaoTransito": "",
+            "dsTableNaturezas": "festaJunina",
+            "stTableStatus": "APROVADO",
+            "nuProcessoFormatadoSei": "00050-00000600/2024-77",
+            "dtCadastro": "12/04/2024",
+            "stEventoExterno": "A",
+            "coSeqEventoExterno": 3365,
+            "noResponsavelRealizacaoEvento": "CADUSUARIO",
+            "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
         }
     ]
 }
