@@ -1,27 +1,24 @@
-import AddIcon from '@mui/icons-material/Add'
+import { DeleteRounded, ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, Refresh } from '@mui/icons-material'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
-import SearchIcon from '@mui/icons-material/Search'
+import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
+import { default as Search, default as SearchIcon } from '@mui/icons-material/Search'
 import {
+    Alert,
+    AlertTitle,
     Autocomplete,
-    AutocompleteProps,
     Box,
     Button,
     CircularProgress,
     Collapse,
+    FormControl,
     IconButton,
     LinearProgress,
-    Link,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
     Menu,
     MenuItem,
     PaginationItem,
     Paper,
+    Select,
     Stack,
-    SwipeableDrawer,
-    Tooltip,
     useMediaQuery,
     useTheme,
 } from '@mui/material'
@@ -29,38 +26,16 @@ import Grid from '@mui/material/Grid'
 import Pagination from '@mui/material/Pagination'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import get from 'lodash.get'
-import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
-import { AuthData } from '../../../types/auth'
-import { AuthContext } from '../../../context/auth'
-import {
-    Add,
-    CalendarToday,
-    Check,
-    Circle,
-    Delete,
-    ExpandLess,
-    ExpandMore,
-    FilterAlt,
-    FilterList,
-    HorizontalRule,
-    KeyboardArrowDown,
-    KeyboardArrowUp,
-    Label,
-    North,
-    RestartAlt,
-    South,
-    Title,
-    ViewList,
-} from '@mui/icons-material'
-import FormProvider from '../../providers/FormProvider'
-import { Input } from '../input/Input'
-import DatePicker from '../date/DatePicker'
-import dayjs from 'dayjs'
-import JSZip from 'jszip'
-import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import axios from 'axios'
-import hasIn from 'lodash.hasin'
+import dayjs from 'dayjs'
+import JSZip, { filter } from 'jszip'
+import get from 'lodash.get'
+import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { AuthContext } from '../../../context/auth'
+import { MODAL } from '../../modal/Modal'
+import { createPortal } from 'react-dom'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -115,21 +90,23 @@ export function Table({
     csvUpper = false,
     csvZipFileNamesKey = '',
     generateCsvZip = false,
-    filters = {},
+    // filters = {},
+    // filterSeparator = '|',
     hideTitleCSV = false,
     csvExcludeUpper = [],
-    filterSeparator = '|',
     filterStorageName = 'tableFilters',
     multipleDataPath = '',
     expandTextMaxLength = 50,
     collapsedSize = 53,
     customMargin = 4,
     customMarginMobile = 0,
+    filters = [],
 }: {
     mediaQueryLG?: {
         all: number
         action: number
     }
+    filters?: FilterValue[]
     customMargin?: number
     customMarginMobile?: number
     normalize?: boolean
@@ -168,18 +145,18 @@ export function Table({
     emptyMsg?: { user: string; public: string }
     dataPath?: string
     useKC?: boolean
-    filters?: {
-        [key: string]: {
-            type: FilterTypes
-            keyName: string
-            name: string
-            listEndpoint?: string
-            selectList?: string[]
-            referenceKey?: string
-            options?: { name: string; color: string; key: string }[]
-        }[]
-    }
-    filterSeparator?: string
+    // filters?: {
+    //     [key: string]: {
+    //         type: FilterTypes
+    //         keyName: string
+    //         name: string
+    //         listEndpoint?: string
+    //         selectList?: string[]
+    //         referenceKey?: string
+    //         options?: { name: string; color: string; key: string }[]
+    //     }[]
+    // }
+    // filterSeparator?: string
 }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | { status: number }>(null)
@@ -187,22 +164,20 @@ export function Table({
 
     const { user, userLoaded } = useContext(AuthContext)
     const [list, setList] = useState<any[]>([])
+    const [listClone, setListClone] = useState<any[]>([])
     //numero de items pra ser mostrado
     const [itemsCount, setItemsCount] = useState(itemCount)
     const [currentPage, setCurrentPage] = useState(0)
     const [paginationCount, setPagCount] = useState(1)
     const [listPage, setListPage] = useState(1)
-    const [appliedFilters, setAppliedFilters] = useState<any[]>([])
     const [oldSelectState, setOldSelectState] = useState<string>('')
     const [expandObj, setExpandObj] = useState<{ [key: number]: boolean }>({})
     const [showExpandObj, setShowExpandObj] = useState<{ [key: number]: boolean }>({})
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
-
-    // filters states
-    const [filterCollapse, setFilterCollapse] = useState<boolean[]>(Array(Object.keys(filters).length).fill(false))
-    const [filterOpen, setFilterOpen] = useState(false)
+    const [filterKey, setFilterKey] = useState('filterKey')
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
+    const filterContainer = useRef(null)
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
@@ -239,13 +214,6 @@ export function Table({
                             } else {
                                 setData(value)
                                 startData = JSON.parse(JSON.stringify(value))
-                                const oldFilters = localStorage.getItem(filterStorageName)
-
-                                if (oldFilters) {
-                                    const filters = JSON.parse(oldFilters)
-
-                                    setAppliedFilters(filters)
-                                }
                             }
                         }
 
@@ -280,8 +248,15 @@ export function Table({
     useEffect(() => {
         if (isLoading || error || !getData(data)) return
 
-        setList(getData(data))
-        setPagCount(getCount(getData(data)))
+        const value = getData(data)
+
+        setList(value)
+        setListClone(value)
+        setPagCount(getCount(value))
+
+        if (localStorage.getItem('tableFilter')) {
+            filtrar(JSON.parse(localStorage.getItem('tableFilter') as string) as FilterValue[])
+        }
     }, [itemsCount, isLoading, data, getCount, error])
 
     useEffect(() => {
@@ -292,96 +267,94 @@ export function Table({
         setListPage(page)
     }, [])
 
-    const onInputChange = useCallback(
-        (e: ChangeEvent) => {
-            const searchValue = (e.target as HTMLInputElement).value
+    function onInputChange(e: ChangeEvent) {
+        console.log(listClone)
+        const searchValue = (e.target as HTMLInputElement).value
 
-            if (searchValue === '') {
-                setList(getData(data))
-                setPagCount(getCount(getData(data)))
-                return
-            }
+        if (searchValue === '') {
+            setList(listClone)
+            setPagCount(getCount(getData(list)))
+            return
+        }
 
-            const listData: object[] = getData(data)
+        const listData: object[] = getData(list)
 
-            const newList: any = []
+        const newList: any = []
 
-            listData.forEach((x: any) => {
-                const dataStr: string[] = []
+        listData.forEach((x: any) => {
+            const dataStr: string[] = []
 
-                Object.keys(x).map((key: string) => {
-                    let value = get(x, key, '') ?? ''
+            Object.keys(x).map((key: string) => {
+                let value = get(x, key, '') ?? ''
 
-                    if (typeof value === 'number') value = value.toString()
-                    if (typeof value !== 'string') return
+                if (typeof value === 'number') value = value.toString()
+                if (typeof value !== 'string') return
 
-                    dataStr.push(value)
-                })
-
-                if (dataStr.length <= 0) return
-
-                let exists = false
-
-                dataStr.forEach((key) => {
-                    const status = ['P', 'C', 'A', 'R', 'L', 'PA']
-
-                    if (status.includes(key)) {
-                        switch (key) {
-                            case 'P':
-                                if ('em analise'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                            case 'C':
-                                if ('cancelado'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                            case 'A':
-                                if ('cadastrado'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                            case 'R':
-                                if ('reprovado'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                            case 'L':
-                                if ('licenciado'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                            case 'PA':
-                                if ('pré aprovado'.includes(searchValue.toLowerCase()) || 'pre aprovado'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                            case 'FP':
-                                if ('fora do prazo'.includes(searchValue.toLowerCase())) {
-                                    exists = true
-                                }
-                                return
-                        }
-                    }
-
-                    if (removePunctuationAndAccents(key.toLowerCase()).includes(removePunctuationAndAccents(searchValue.toLowerCase()))) {
-                        exists = true
-                    }
-                })
-
-                if (!exists) return
-
-                newList.push(x)
+                dataStr.push(value)
             })
 
-            setList(newList)
-            setPagCount(getCount(newList))
-            setCurrentPage(0)
-            setListPage(1)
-        },
-        [getCount, data]
-    )
+            if (dataStr.length <= 0) return
+
+            let exists = false
+
+            dataStr.forEach((key) => {
+                const status = ['P', 'C', 'A', 'R', 'L', 'PA']
+
+                if (status.includes(key)) {
+                    switch (key) {
+                        case 'P':
+                            if ('em analise'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                        case 'C':
+                            if ('cancelado'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                        case 'A':
+                            if ('cadastrado'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                        case 'R':
+                            if ('reprovado'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                        case 'L':
+                            if ('licenciado'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                        case 'PA':
+                            if ('pré aprovado'.includes(searchValue.toLowerCase()) || 'pre aprovado'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                        case 'FP':
+                            if ('fora do prazo'.includes(searchValue.toLowerCase())) {
+                                exists = true
+                            }
+                            return
+                    }
+                }
+
+                if (removePunctuationAndAccents(key.toLowerCase()).includes(removePunctuationAndAccents(searchValue.toLowerCase()))) {
+                    exists = true
+                }
+            })
+
+            if (!exists) return
+
+            newList.push(x)
+        })
+
+        setList(newList)
+        setPagCount(getCount(newList))
+        setCurrentPage(0)
+        setListPage(1)
+    }
 
     const getMaxItems = useCallback(() => {
         const start = currentPage * itemsCount
@@ -633,334 +606,6 @@ export function Table({
         [list]
     )
 
-    useEffect(() => {
-        filterBasedOnList(appliedFilters)
-    }, [appliedFilters])
-
-    const filterBasedOnList = (filteredList: any[]) => {
-        let rawList: any[] = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath) ?? '[]'))
-
-        if (filteredList.length <= 0 || rawList.length <= 0) {
-            setList(rawList)
-            setPagCount(getCount(rawList))
-            setCurrentPage(0)
-            setListPage(1)
-            return
-        }
-
-        let canContinue = true
-
-        // verificando todas as chaves existem, se a chave não existir, não pode continuar e nao faz nada
-        filteredList
-            .map((x) => x.keyName)
-            .forEach((x) => {
-                if (!canContinue) return
-
-                if (!Object.keys(rawList[0]).includes(x)) {
-                    canContinue = false
-                    return
-                }
-            })
-
-        if (!canContinue) {
-            setAppliedFilters([])
-            localStorage.setItem(filterStorageName, JSON.stringify([]))
-            setList(rawList)
-            setPagCount(getCount(rawList))
-            setCurrentPage(0)
-            setListPage(1)
-            return
-        }
-
-        function category(type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) {
-            if (type === 'a-z') {
-                rawList = rawList.sort((a, b) => {
-                    const aValue = a[keyName]
-                    const bValue = b[keyName]
-                    let valueA: number | string = aValue
-                    let valueB: number | string = bValue
-
-                    if (typeof aValue === 'string' || typeof bValue === 'string') {
-                        valueA = String(aValue).toLowerCase()
-                        valueB = String(bValue).toLowerCase()
-                    }
-
-                    console.table({
-                        values: valueA + ' < ' + valueB,
-                        result: valueA < valueB,
-                    })
-
-                    if (valueA < valueB) {
-                        return -1
-                    }
-
-                    if (valueA > valueB) {
-                        return 1
-                    }
-
-                    return 0
-                })
-            } //
-            else if (type === 'z-a') {
-                rawList = rawList.sort((a, b) => {
-                    const aValue = a[keyName]
-                    const bValue = b[keyName]
-                    let valueA: number | string = aValue
-                    let valueB: number | string = bValue
-
-                    if (typeof aValue === 'string' || typeof bValue === 'string') {
-                        valueA = String(aValue).toLowerCase()
-                        valueB = String(bValue).toLowerCase()
-                    }
-
-                    if (valueA < valueB) {
-                        return 1
-                    }
-                    if (valueA > valueB) {
-                        return -1
-                    }
-                    return 0
-                })
-            } //
-            else if (type === 'items' || type === 'select') {
-                rawList = rawList
-                    .filter((x) =>
-                        String(x[keyName])
-                            .toLowerCase()
-                            .includes(customValue ?? '')
-                    )
-                    .sort((a, b) => {
-                        const aValue = String(a[keyName])
-                        const bValue = String(b[keyName])
-                        const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                        const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
-
-                        if (valueA.includes(customValue ?? '')) return -1
-                        if (valueB.includes(customValue ?? '')) return 1
-
-                        if (valueA < valueB) {
-                            return -1
-                        }
-                        if (valueA > valueB) {
-                            return 1
-                        }
-                        return 0
-                    })
-
-                if (referencekey) {
-                    const data: any[] = []
-
-                    let newFiltered = rawList.filter((x) => {
-                        const item = String(x[keyName])
-                        const value = typeof item === 'number' ? item : item.toLowerCase()
-
-                        if (value === customValue) {
-                            data.push(x)
-                            return false
-                        }
-
-                        return true
-                    })
-
-                    data.sort((a, b) => {
-                        const aValue = String(a[referencekey])
-                        const bValue = String(b[referencekey])
-                        const valueA = typeof aValue === 'number' ? aValue : aValue.toLowerCase()
-                        const valueB = typeof bValue === 'number' ? bValue : bValue.toLowerCase()
-
-                        if (valueA < valueB) {
-                            return 1
-                        }
-
-                        if (valueA > valueB) {
-                            return -1
-                        }
-                        return 0
-                    })
-
-                    data.forEach((x) => {
-                        newFiltered.unshift(x)
-                    })
-
-                    rawList = newFiltered
-                }
-            } //
-            else if (type === 'data-a-z') {
-                rawList = rawList.sort((a, b) => {
-                    const aValue = a[keyName]
-                    const bValue = b[keyName]
-
-                    const separator = filterSeparator
-                    const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-                    const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-
-                    if (!aDt && !bDt) return 0
-
-                    const valueA = dayjs(aDt, 'D/M/YYYY')
-                    const valueB = dayjs(bDt, 'D/M/YYYY')
-
-                    if (valueA.isBefore(valueB)) {
-                        return -1
-                    }
-
-                    if (valueA.isAfter(valueB)) {
-                        return 1
-                    }
-
-                    return 0
-                })
-            } //
-            else if (type === 'data-z-a') {
-                rawList = rawList.sort((a, b) => {
-                    const aValue = a[keyName],
-                        bValue = b[keyName],
-                        separator = filterSeparator,
-                        aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0],
-                        bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-
-                    if (!aDt && !bDt) return 0
-
-                    const valueA = dayjs(aDt, 'D/M/YYYY')
-                    const valueB = dayjs(bDt, 'D/M/YYYY')
-
-                    if (valueA.isBefore(valueB)) {
-                        return 1
-                    }
-
-                    if (valueA.isAfter(valueB)) {
-                        return -1
-                    }
-
-                    return 0
-                })
-            }
-        }
-
-        function date(from: string, to: string, keyName: string) {
-            const separator = filterSeparator
-
-            rawList = rawList.filter((x: any) => {
-                const dts: string[] = String(x[keyName])
-                    .split(separator)
-                    .map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0] ?? '')
-                let inside = false
-
-                dts.forEach((k) => {
-                    if (inside) return
-
-                    const dt = dayjs(k, 'D/M/YYYY')
-                    const dtFrom = dayjs(from, 'D/M/YYYY')
-
-                    if (to) {
-                        const dtTo = dayjs(to, 'D/M/YYYY')
-
-                        if ((dtFrom.isBefore(dt) || dtFrom.isSame(dt)) && (dtTo.isAfter(dt) || dtTo.isSame(dt))) {
-                            inside = true
-                        }
-                    } //
-                    else {
-                        if (dtFrom.isBefore(dt) || dtFrom.isSame(dt)) {
-                            inside = true
-                        }
-                    }
-                })
-
-                return inside
-            })
-
-            rawList = rawList.sort((a, b) => {
-                const aValue = a[keyName]
-                const bValue = b[keyName]
-
-                const separator = filterSeparator
-                const aDt = aValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-                const bDt = bValue.split(separator).map((k: string) => (k.match(/[0-9]+\/[0-9]+\/[0-9]+/) ?? [])[0])[0]
-
-                if (!aDt && !bDt) return 0
-
-                const valueA = dayjs(aDt, 'D/M/YYYY')
-                const valueB = dayjs(bDt, 'D/M/YYYY')
-
-                if (valueA.isBefore(valueB)) {
-                    return -1
-                }
-
-                if (valueA.isAfter(valueB)) {
-                    return 1
-                }
-
-                return 0
-            })
-        }
-
-        appliedFilters.forEach((x) => {
-            if (!x.isDate) category(x.type, x.keyName, x.uniqueName, x.customValue, x.referencekey)
-            else date(x.from, x.to, x.keyName)
-        })
-
-        setList(rawList)
-        setPagCount(getCount(rawList))
-        setCurrentPage(0)
-        setListPage(1)
-    }
-
-    const handleFilterOption = (type: FilterTypes, keyName: string, uniqueName: string, customValue?: string, referencekey?: string) => {
-        setAppliedFilters((s) => {
-            const value = [
-                ...s.filter((x) => (x.isDate ? true : x.keyName !== keyName)),
-                {
-                    type,
-                    keyName,
-                    uniqueName,
-                    customValue,
-                    referencekey,
-                },
-            ]
-
-            localStorage.setItem(filterStorageName, JSON.stringify(value))
-
-            return value
-        })
-    }
-
-    const handleFilterReset = () => {
-        const value = JSON.parse(JSON.stringify(Array.isArray(startData) ? startData : get(startData, dataPath)))
-        setList(value)
-        setAppliedFilters([])
-        localStorage.setItem(filterStorageName, JSON.stringify([]))
-    }
-
-    const removeFilter = (uniqueName: string) => {
-        if (uniqueName === 'isDate') setAppliedFilters((s) => s.filter((x) => !x.isDate))
-        else
-            setAppliedFilters((s) => {
-                const value = s.filter((x) => x.uniqueName !== uniqueName)
-
-                localStorage.setItem(filterStorageName, JSON.stringify(value))
-
-                return value
-            })
-    }
-
-    const handleDateFilter = (from: string, to: string, keyName: string) => {
-        setAppliedFilters((s) => {
-            const value = [
-                ...s.filter((x) => !x.isDate),
-                {
-                    isDate: true,
-                    from,
-                    to,
-                    keyName,
-                    id: from + keyName,
-                },
-            ]
-
-            localStorage.setItem(filterStorageName, JSON.stringify(value))
-
-            return value
-        })
-    }
-
     function expandAll() {
         let obj: { [key: number]: boolean } = {}
 
@@ -972,6 +617,129 @@ export function Table({
         setExpandObj(obj)
 
         isExpandAll = !isExpandAll
+    }
+
+    function reset() {
+        // setData(baseFilters)
+        // setResetFields((s) => !s)
+        setList(startData)
+        setListClone(startData)
+        localStorage.removeItem('tableFilter')
+        setFilterKey(new Date().getTime().toString())
+    }
+
+    function filtrar(filterData: FilterValue[]) {
+        console.log(startData)
+        if (!startData) return
+
+        let currentData: any[] = JSON.parse(JSON.stringify(startData))
+
+        filterData
+            .filter((dt) => dt.value)
+            .forEach((dt) => {
+                let filteredData: any[] = []
+
+                switch (dt.type) {
+                    case 'number':
+                        switch (dt.operator) {
+                            case 'igual':
+                                currentData.forEach((cd) => {
+                                    const value = Number(get(cd, dt.keyName, ''))
+                                    if (value === Number(dt.value)) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'maior que':
+                                currentData.forEach((cd) => {
+                                    const value = Number(get(cd, dt.keyName, ''))
+
+                                    if (value > Number(dt.value)) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'menor que':
+                                currentData.forEach((cd) => {
+                                    const value = Number(get(cd, dt.keyName, ''))
+
+                                    if (value < Number(dt.value)) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                        }
+                        break
+                    case 'string':
+                        switch (dt.operator) {
+                            case 'igual':
+                                currentData.forEach((cd) => {
+                                    const value = get(cd, dt.keyName, '')
+
+                                    if (value === dt.value) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'contem':
+                                currentData.forEach((cd) => {
+                                    const value: string = get(cd, dt.keyName, '')
+
+                                    if (value.includes(dt.value as string)) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'tem um dos':
+                                currentData.forEach((cd) => {
+                                    const value: string = get(cd, dt.keyName, '')
+
+                                    if (dt.value.includes(value)) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                        }
+                        break
+                    case 'date':
+                        switch (dt.operator) {
+                            case 'data exata':
+                                currentData.forEach((cd) => {
+                                    const value = dayjs(get(cd, dt.keyName, ''), 'DD/MM/YYYY')
+
+                                    if (!value.isValid()) return
+
+                                    if (value.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'entre':
+                                currentData.forEach((cd) => {
+                                    const value = dayjs(get(cd, dt.keyName, ''), 'DD/MM/YYYY')
+                                    const dateA = dayjs(dt.value as string, 'DD/MM/YYYY')
+                                    const dateB = dayjs(dt.value2 as string, 'DD/MM/YYYY')
+
+                                    console.log(dateA.isValid(), dateB.isValid())
+
+                                    if (!dateA.isValid() || !dateB.isValid()) return
+
+                                    if ((value.isAfter(dateA) || value.isSame(dateA)) && (value.isBefore(dateB) || value.isSame(dateB))) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                        }
+                        break
+                }
+                console.log('filtred: ', filteredData)
+
+                currentData = filteredData
+            })
+
+        setList(currentData)
+        localStorage.setItem('tableFilter', JSON.stringify(filterData))
+        setListClone(currentData)
     }
 
     // effect usado quando for mostrar "VER MAIS" e "VER MENOS"
@@ -988,6 +756,10 @@ export function Table({
 
         setShowExpandObj(obj)
     }, [list, itemsCount, currentPage])
+
+    useEffect(() => {
+        console.log(filterContainer.current)
+    }, [filterContainer.current])
 
     if (error)
         return (
@@ -1018,7 +790,7 @@ export function Table({
         <>
             <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
-                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} marginBottom={2} height={{ md: '40px', xs: 'inherit' }} width='100%'>
+                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} height={{ md: '40px', xs: 'inherit' }} width='100%'>
                         <TextField
                             InputProps={{
                                 startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
@@ -1037,36 +809,34 @@ export function Table({
                             fullWidth
                             placeholder={`Pesquisar ${tableName}`}
                         />
-                        {Object.keys(filters).length > 0 && (
-                            <Button
-                                startIcon={<FilterAlt />}
-                                variant='contained'
-                                onClick={(e) => setFilterOpen(true)}
-                                sx={{
-                                    borderRadius: '8px',
-                                    paddingX: '24px',
-                                    paddingY: '8px',
-                                    minWidth: 200,
-                                    backgroundColor: '#208FE8',
-                                    textTransform: 'capitalize',
-                                }}
-                            >
-                                <Stack direction='row' marginLeft={2} borderRadius={5} padding={0}>
-                                    <span>Filtro</span>
-                                    <span
-                                        style={{
-                                            whiteSpace: 'nowrap',
-                                            marginLeft: 8,
-                                            backgroundColor: '#15528f',
-                                            borderRadius: 8,
-                                            padding: '0px 8px',
-                                        }}
-                                    >
-                                        {appliedFilters.length} aplicado{appliedFilters.length > 1 ? 's' : ''}
-                                    </span>
-                                </Stack>
-                            </Button>
+
+                        {MODAL.reparent(
+                            <CriarFiltro
+                                key={filterKey}
+                                reset={reset}
+                                filtrar={filtrar}
+                                baseFilters={[...filters]}
+                                filters={localStorage.getItem('tableFilter') ? (JSON.parse(localStorage.getItem('tableFilter')!) as FilterValue[]) : [...filters]}
+                            />,
+                            0
                         )}
+
+                        <Button
+                            startIcon={<FilterAlt />}
+                            variant='contained'
+                            onClick={(e) => MODAL.openReparented(0)}
+                            sx={{
+                                borderRadius: '8px',
+                                paddingX: '24px',
+                                paddingY: '8px',
+                                backgroundColor: '#208FE8',
+                                textTransform: 'capitalize',
+                            }}
+                        >
+                            <Stack direction='row' borderRadius={5} padding={0}>
+                                <span>Filtrar</span>
+                            </Stack>
+                        </Button>
                         <Button
                             variant='contained'
                             startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -1085,9 +855,9 @@ export function Table({
                         </Button>
                     </Stack>
 
-                    <Stack alignItems='end' width={{ xs: '100%', md: '20%' }} pb={2} direction={{ xs: 'row', md: 'column' }} spacing={{ xs: 1, md: 0 }}>
+                    <Stack alignItems='end' width={{ xs: '100%', md: '20%' }} direction={{ xs: 'row', md: 'column' }} spacing={{ xs: 1, md: 0 }}>
                         <Typography fontWeight={600} textAlign='end'>
-                            Demandas cadastradas
+                            Registro de {tableName}s
                         </Typography>
                         <Stack justifyContent='center'>
                             <Typography>
@@ -1096,6 +866,22 @@ export function Table({
                         </Stack>
                     </Stack>
                 </Stack>
+
+                {localStorage.getItem('tableFilter') && (
+                    <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
+                        {(JSON.parse(localStorage.getItem('tableFilter') ?? '[]') as FilterValue[])
+                            .filter((x) => x.value)
+                            .map((x) => (
+                                <Stack direction='row' spacing={1} bgcolor='#4e85c1' color='white' width='fit-content' paddingY={0.5} borderRadius={2} paddingX={1} m={0.5}>
+                                    <Typography fontWeight={700}>{x.label}</Typography>
+                                    <Typography fontStyle='italic'>{x.operator}</Typography>
+                                    <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
+                                        {x.value.toString()}
+                                    </Typography>
+                                </Stack>
+                            ))}
+                    </Box>
+                )}
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
                         <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
@@ -1341,224 +1127,385 @@ export function Table({
                     </Button>
                 </Stack>
             </Stack>
-
-            <SwipeableDrawer anchor={isSmall ? 'bottom' : 'right'} open={filterOpen} onClose={(e) => setFilterOpen(false)} onOpen={(e) => setFilterOpen(true)}>
-                <List sx={{ minWidth: 310 }}>
-                    {Object.keys(filters).map((f, fIndex) => (
-                        <React.Fragment key={JSON.stringify({ f, fIndex })}>
-                            <ListItemButton
-                                onClick={(e) =>
-                                    setFilterCollapse((s) =>
-                                        s.map((x, idx) => {
-                                            if (idx === fIndex) return !x
-
-                                            return x
-                                        })
-                                    )
-                                }
-                                sx={{
-                                    backgroundColor: '#ebeef2',
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <Circle transform='scale(0.4)' />
-                                </ListItemIcon>
-                                <ListItemText primary={f} />
-                                {filterCollapse[fIndex] ? <ExpandLess /> : <ExpandMore />}
-                            </ListItemButton>
-
-                            <Collapse in={filterCollapse[fIndex]} timeout='auto' unmountOnExit>
-                                <List component='div' disablePadding sx={{ backgroundColor: 'white' }}>
-                                    {filters[f].map((x, index) => (
-                                        <React.Fragment key={JSON.stringify({ f, index })}>
-                                            {x.options ? (
-                                                x.options.map((o) => (
-                                                    <ListItemButton
-                                                        sx={{
-                                                            pl: 4,
-                                                            borderBottom: 1,
-                                                            borderColor: '#ebeef2',
-                                                            ...(appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(o)}`) && {
-                                                                bgcolor: '#b7e4c7',
-                                                                ':hover': { bgcolor: '#b7e4c7' },
-                                                            }),
-                                                        }}
-                                                    >
-                                                        <ListItemText
-                                                            primary={o.name}
-                                                            onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(o)}`, o.key, x.referenceKey)}
-                                                            sx={{ color: o.color, fontWeight: 600 }}
-                                                        />
-                                                        <Box>
-                                                            {appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(o)}`) && (
-                                                                <Tooltip title='Remover'>
-                                                                    <IconButton
-                                                                        sx={{ bgcolor: '#c71c1c', height: '30px', width: '30px', ':hover': { bgcolor: 'red', border: '2px solid #9e2929' } }}
-                                                                        onClick={(e) => removeFilter(`${f}:${JSON.stringify(o)}`)}
-                                                                    >
-                                                                        <Delete sx={{ fill: 'white', transform: 'scale(0.8, 0.8)' }} />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            )}
-                                                        </Box>
-                                                    </ListItemButton>
-                                                ))
-                                            ) : x.type === 'date-interval' ? (
-                                                <Box padding={2}>
-                                                    <FormProvider onSubmit={(d) => handleDateFilter(d['filterDtStart'], d['filterDtEnd'], x.keyName)}>
-                                                        <DatePicker name='filterDtStart' title='A partir de:' required />
-                                                        <Box marginTop={2} />
-                                                        <DatePicker name='filterDtEnd' title='Até (opcional):' />
-
-                                                        <Stack marginTop={2}>
-                                                            <Button type='submit' variant='outlined' startIcon={<CalendarToday />} sx={{ width: '100%' }}>
-                                                                Filtrar por Data
-                                                            </Button>
-                                                            <Box>
-                                                                {appliedFilters.filter((x) => x.isDate).length > 0 && (
-                                                                    <Button
-                                                                        startIcon={<Delete sx={{ fill: 'white' }} />}
-                                                                        variant='contained'
-                                                                        color='error'
-                                                                        sx={{ width: '100%', marginTop: 1 }}
-                                                                        onClick={(e) => removeFilter('isDate')}
-                                                                    >
-                                                                        Remover Filtro Data
-                                                                    </Button>
-                                                                )}
-                                                            </Box>
-                                                        </Stack>
-                                                    </FormProvider>
-                                                </Box>
-                                            ) : x.selectList ? (
-                                                <>
-                                                    <Autocomplete
-                                                        options={x.selectList.map((x) => ({
-                                                            id: x.toLowerCase(),
-                                                            label: x,
-                                                        }))}
-                                                        onFocus={(e) => console.log('ata')}
-                                                        onChange={(e, value) => {
-                                                            if (value) {
-                                                                const id = `${f}:${JSON.stringify(value)}`
-                                                                handleFilterOption(x.type, x.keyName, id, value?.label.toLowerCase(), x.referenceKey)
-                                                                setOldSelectState(id)
-                                                            } else {
-                                                                removeFilter(oldSelectState)
-                                                            }
-                                                        }}
-                                                        sx={{
-                                                            margin: 1,
-                                                        }}
-                                                        size='small'
-                                                        renderInput={(params) => <TextField {...params} label='Teste' />}
-                                                    />
-                                                </>
-                                            ) : x.listEndpoint ? (
-                                                <>
-                                                    <FetchSelectAutoComplete
-                                                        url={x.listEndpoint}
-                                                        label={x.name}
-                                                        onChange={(e: any, value: any) => {
-                                                            if (value) {
-                                                                const id = `${f}:${JSON.stringify(value)}`
-                                                                handleFilterOption(x.type, x.keyName, id, value?.id.toLowerCase(), x.referenceKey)
-                                                                setOldSelectState(id)
-                                                            } else {
-                                                                removeFilter(oldSelectState)
-                                                            }
-                                                        }}
-                                                    />
-                                                </>
-                                            ) : (
-                                                <Stack
-                                                    direction={'row'}
-                                                    sx={{
-                                                        ...(appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(x)}`) && {
-                                                            bgcolor: '#b7e4c7',
-                                                            ':hover': { bgcolor: '#b7e4c7' },
-                                                        }),
-                                                    }}
-                                                >
-                                                    <ListItemButton
-                                                        sx={{
-                                                            pl: 4,
-                                                            borderBottom: 1,
-                                                            borderColor: '#ebeef2',
-                                                        }}
-                                                        onClick={(e) => handleFilterOption(x.type, x.keyName, `${f}:${JSON.stringify(x)}`)}
-                                                    >
-                                                        <ListItemIcon sx={{ minWidth: '25px' }}>
-                                                            {x.type === 'a-z' || x.type === 'data-a-z' ? (
-                                                                <South transform='scale(0.5)' />
-                                                            ) : x.type === 'z-a' || x.type === 'data-z-a' ? (
-                                                                <North transform='scale(0.5)' />
-                                                            ) : null}
-                                                        </ListItemIcon>
-                                                        <ListItemText primary={x.name} />
-                                                    </ListItemButton>
-                                                    <Stack justifyContent='center' marginX={2}>
-                                                        {appliedFilters.map((x) => x.uniqueName).includes(`${f}:${JSON.stringify(x)}`) && (
-                                                            <Tooltip title='Remover'>
-                                                                <IconButton
-                                                                    sx={{ bgcolor: '#c71c1c', height: '30px', width: '30px', ':hover': { bgcolor: 'red', border: '2px solid #9e2929' } }}
-                                                                    onClick={(e) => removeFilter(`${f}:${JSON.stringify(x)}`)}
-                                                                >
-                                                                    <Delete sx={{ fill: 'white', transform: 'scale(0.8, 0.8)' }} />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )}
-                                                    </Stack>
-                                                </Stack>
-                                            )}
-                                        </React.Fragment>
-                                    ))}
-                                </List>
-                            </Collapse>
-                        </React.Fragment>
-                    ))}
-                </List>
-                <Button variant='contained' onClick={handleFilterReset} startIcon={<RestartAlt />} sx={{ marginX: 2, marginBottom: 2 }}>
-                    Reiniciar
-                </Button>
-                {/* <Box>
-                    <Typography>Filtros aplicados:</Typography>
-                    <Stack>
-                        {appliedFilters.map((x) => (
-                            <Box>{JSON.stringify(x)}</Box>
-                        ))}
-                    </Stack>
-                </Box> */}
-            </SwipeableDrawer>
         </>
     )
 }
 
-function FetchSelectAutoComplete(props: { url: string; onChange: any; label: string }) {
-    const [data, setData] = useState([])
+/* -------------------------------------------------------------------------- */
+/*                                   FILTRO                                   */
+/* -------------------------------------------------------------------------- */
 
-    useEffect(() => {
-        axios
-            .get(props.url)
-            .then((dt) => {
-                setData(dt.data)
-            })
-            .catch((e) => console.log('Erro ao buscar dados do filtro'))
-    }, [])
+type FilterType = 'string' | 'number' | 'date'
+type FilterOperators = 'igual' | 'contem' | 'maior que' | 'menor que' | 'data exata' | 'após' | 'antes de' | 'entre' | 'tem um dos'
+
+interface FilterValue {
+    label: string
+    keyName: string
+    type: FilterType
+    operator: FilterOperators
+    operators: FilterOperators[]
+    value: string | any[]
+    value2?: string | any[]
+    useList?: string[]
+}
+
+function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
+    const [data, setData] = useState<FilterValue[]>(filters)
+    const [resetFields, setResetFields] = useState(false)
+
+    function addRule(filter: FilterValue) {
+        setData((dt) => {
+            return [...dt, filter]
+        })
+    }
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const open = Boolean(anchorEl)
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget)
+    }
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+
+    console.log('RERENDERIZIU')
 
     return (
-        <>
-            <Autocomplete
-                options={data}
-                onChange={props.onChange}
-                sx={{
-                    margin: 1,
-                }}
-                size='small'
-                renderInput={(params) => <TextField {...params} label={props.label} />}
-            />
-        </>
+        <Box width={800}>
+            <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                {baseFilters.map((x) => (
+                    <MenuItem
+                        onClick={(e) => {
+                            addRule(x)
+                            setAnchorEl(null)
+                        }}
+                    >
+                        {x.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+
+            <Stack direction='row' justifyContent='space-between'>
+                {/* <Button
+                    variant='contained'
+                    onClick={handleClick}
+                    sx={{
+                        marginBottom: 2,
+                        textTransform: 'capitalize',
+                    }}
+                    endIcon={<ExpandMore />}
+                >
+                    Adicionar Regra
+                </Button> */}
+                <Typography fontWeight={700} fontSize={18}>
+                    Filtrar
+                </Typography>
+                <Button
+                    startIcon={<Refresh />}
+                    sx={{
+                        textTransform: 'capitalize',
+                    }}
+                    onClick={reset}
+                >
+                    Limpar
+                </Button>
+            </Stack>
+
+            <Box marginBottom={1}>
+                <Alert severity='warning'>Preencha apenas os campos que deseja filtrar.</Alert>
+            </Box>
+
+            <Stack>
+                {resetFields ? (
+                    data.map((d, idx) => (
+                        <FilterRow
+                            filterValue={d}
+                            setReset={setResetFields}
+                            idx={idx}
+                            setDt={(valueData) => {
+                                setData((dt) => {
+                                    let arr = [...dt]
+                                    arr[idx] = valueData
+                                    return arr
+                                })
+                            }}
+                            removeDt={() => {
+                                setData((dt) => {
+                                    let arr = [...dt]
+                                    arr.splice(idx, 1)
+                                    return arr
+                                })
+                            }}
+                        />
+                    ))
+                ) : (
+                    <Box>
+                        {data.map((d, idx) => (
+                            <FilterRow
+                                filterValue={d}
+                                setReset={setResetFields}
+                                idx={idx}
+                                setDt={(valueData) => {
+                                    setData((dt) => {
+                                        let arr = [...dt]
+                                        arr[idx] = valueData
+                                        return arr
+                                    })
+                                }}
+                                removeDt={() => {
+                                    setData((dt) => {
+                                        let arr = [...dt]
+                                        arr.splice(idx, 1)
+                                        return arr
+                                    })
+                                }}
+                            />
+                        ))}
+                    </Box>
+                )}
+            </Stack>
+            <Stack direction='row' justifyContent='flex-end' marginTop={1}>
+                <Button
+                    variant='contained'
+                    color='success'
+                    startIcon={<Search />}
+                    sx={{
+                        textTransform: 'capitalize',
+                    }}
+                    onClick={(e) => filtrar(data)}
+                >
+                    Filtrar
+                </Button>
+            </Stack>
+
+            {/* <h4>{JSON.stringify(data.map((x) => ({ ...x, filter: undefined })))}</h4> */}
+        </Box>
     )
+}
+
+function FilterRow({
+    filterValue,
+    setDt,
+    removeDt,
+    idx,
+    setReset,
+}: {
+    filterValue: FilterValue
+    setDt: (value: any) => void
+    removeDt: () => void
+    idx: number
+    setReset: React.Dispatch<React.SetStateAction<boolean>>
+}) {
+    const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
+    const [data, setData] = useState<FilterValue>(filterValue)
+
+    useEffect(() => {
+        setDt(data)
+    }, [data])
+
+    return (
+        <Stack direction='row' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
+            <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
+                {filterValue.label}
+            </Typography>
+            <FormControl
+                sx={{
+                    width: '100%',
+                }}
+            >
+                <Select
+                    onChange={(e) => {
+                        const value = e.target.value
+
+                        setData((obj) => ({ ...obj, operator: value as FilterOperators, value: '' }))
+                        setCurrentOperator(value as FilterOperators)
+                    }}
+                    defaultValue={currentOperator}
+                    size='small'
+                    sx={{
+                        bgcolor: 'white',
+                    }}
+                    fullWidth
+                >
+                    {filterValue.operators.map((x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+            <FilterField
+                filterValue={filterValue}
+                operator={data.operator}
+                onChange={(value, type: 'value' | 'value2' = 'value') => {
+                    setData((obj) => ({ ...obj, [type]: value }))
+                }}
+            />
+            <IconButton
+                onClick={(e) => {
+                    setDt({ ...data, value: '' })
+                    setReset((s) => !s)
+                }}
+            >
+                <Refresh />
+            </IconButton>
+        </Stack>
+    )
+}
+
+function FilterField({ filterValue, operator, onChange }: { filterValue: FilterValue; operator: FilterOperators; onChange: (value: string | any[], type?: 'value' | 'value2') => void }) {
+    switch (filterValue.type) {
+        case 'number':
+            return (
+                <TextField
+                    type='number'
+                    size='small'
+                    placeholder='Valor'
+                    defaultValue={filterValue.value}
+                    onChange={(e) => {
+                        onChange(e.target.value)
+                    }}
+                    sx={{
+                        bgcolor: 'white',
+                    }}
+                    fullWidth
+                />
+            )
+        case 'string':
+            if (filterValue.useList) {
+                switch (operator) {
+                    case 'tem um dos':
+                        return (
+                            <Autocomplete
+                                multiple
+                                id='tags-standard'
+                                onChange={(e, value) => {
+                                    onChange(value)
+                                }}
+                                options={filterValue.useList}
+                                defaultValue={Array.isArray(filterValue.value) ? filterValue.value : []}
+                                renderInput={(params) => <TextField {...params} variant='standard' placeholder='Escolha os valores' fullWidth />}
+                                fullWidth
+                            />
+                        )
+                    case 'contem':
+                        return (
+                            <Box width='100%'>
+                                <Autocomplete
+                                    options={filterValue.useList.map((name) => ({ id: name, label: name }))}
+                                    onChange={(e, value) => {
+                                        onChange(value ? (value.label as string) : '')
+                                    }}
+                                    defaultValue={
+                                        filterValue.value && typeof filterValue.value === 'string'
+                                            ? {
+                                                  id: filterValue.value,
+                                                  label: filterValue.value,
+                                              }
+                                            : undefined
+                                    }
+                                    isOptionEqualToValue={(option, value) => option.label === value.label}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            size='small'
+                                            placeholder='Escolha um valor'
+                                            fullWidth
+                                            sx={{
+                                                bgcolor: 'white',
+                                            }}
+                                        />
+                                    )}
+                                    fullWidth
+                                />
+                            </Box>
+                        )
+                }
+            }
+
+            return (
+                <TextField
+                    size='small'
+                    placeholder='Valor'
+                    defaultValue={filterValue.value}
+                    onChange={(e) => {
+                        onChange(e.target.value)
+                    }}
+                    sx={{
+                        bgcolor: 'white',
+                    }}
+                    fullWidth
+                />
+            )
+        case 'date':
+            switch (operator) {
+                case 'data exata':
+                    return (
+                        <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                format='DD/MM/YYYY'
+                                onChange={(dt: any) => {
+                                    onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
+                                }}
+                                defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
+                                sx={{
+                                    div: {
+                                        input: {
+                                            paddingX: 2,
+                                            paddingY: 1.05,
+                                        },
+                                    },
+                                    width: '100%',
+                                    bgcolor: 'white',
+                                }}
+                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
+                            />
+                        </LocalizationProvider>
+                    )
+                case 'entre':
+                    return (
+                        <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                format='DD/MM/YYYY'
+                                onChange={(dt: any) => {
+                                    onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
+                                }}
+                                defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
+                                sx={{
+                                    div: {
+                                        input: {
+                                            paddingX: 2,
+                                            paddingY: 1.05,
+                                        },
+                                    },
+                                    width: '100%',
+                                    bgcolor: 'white',
+                                }}
+                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
+                            />
+                            <DatePicker
+                                format='DD/MM/YYYY'
+                                onChange={(dt: any) => {
+                                    onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '', 'value2')
+                                }}
+                                defaultValue={filterValue.value2 ? dayjs(filterValue.value2 as string, 'DD/MM/YYYY') : undefined}
+                                sx={{
+                                    div: {
+                                        input: {
+                                            paddingX: 2,
+                                            paddingY: 1.05,
+                                        },
+                                    },
+                                    width: '100%',
+                                    bgcolor: 'white',
+                                }}
+                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
+                            />
+                        </LocalizationProvider>
+                    )
+            }
+            break
+    }
+
+    return <></>
 }
 
 export default React.memo(Table)

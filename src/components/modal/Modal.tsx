@@ -1,26 +1,54 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Box, Button, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 export let MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
+    reparent: (child: JSX.Element, id: string | number) => JSX.Element
+    openReparented: (id: string | number) => void
     close: () => void
 } = {
     open: () => {},
     close: () => {},
+    openReparented: () => {},
+    reparent: () => <></>,
+}
+
+function ReparentHelper() {
+    const ref = useRef(null)
+
+    return <div ref={ref}></div>
 }
 
 export function CustomModalProvider() {
     const [open, setOpen] = useState(false)
-    const [content, setContent] = useState<JSX.Element | JSX.Element[]>(<></>)
+    const [content, setContent] = useState<any>(null)
+    // const contentRef = useRef<JSX.Element | JSX.Element[]>(<></>)
     const handleClose = () => setOpen(false)
+    const containerRef = useRef(null)
 
     const theme = useTheme()
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
+    const [idRef, setIdRef] = useState<{ [id: string | number]: JSX.Element }>({})
+    const [currentId, setCurrentId] = useState<string | number>(-1321465654)
+
     useEffect(() => {
         MODAL.open = (customCompoment) => {
             if (customCompoment) setContent(customCompoment)
+            setCurrentId(-1321465654)
+            setOpen(true)
+        }
+
+        MODAL.reparent = (element, id) => {
+            setIdRef((obj) => ({ ...obj, [id]: <>{element}</> }))
+            return <></>
+        }
+
+        MODAL.openReparented = (id) => {
+            setCurrentId(id)
+            setContent(null)
             setOpen(true)
         }
 
@@ -48,6 +76,7 @@ export function CustomModalProvider() {
                     </Stack>
                     <Box p={2} maxHeight='92vh' bgcolor='white' overflow='auto'>
                         {content}
+                        {idRef[currentId]}
                     </Box>
                 </SwipeableDrawer>
             ) : (
@@ -88,6 +117,7 @@ export function CustomModalProvider() {
                         </Box>
                         <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray' bgcolor='#F9F9F9' borderRadius={2}>
                             {content}
+                            {idRef[currentId]}
                         </Box>
                     </Box>
                 </Modal>

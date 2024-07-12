@@ -211,7 +211,7 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <MultInput name='test' title='Testando' />
+            {/* <MultInput name='test' title='Testando' /> */}
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <Input name='teste1' type='input' title='Teste' required />
@@ -340,7 +340,7 @@ export default function Teste() {
                 pos='inherit'
             /> */}
 
-            {/* <Button
+            <Button
                 onClick={(e) => {
                     setTestFunc(fetch('http://localhost:7171/table'))
                 }}
@@ -398,26 +398,47 @@ export default function Teste() {
                         <Button variant='contained'>Teste</Button>
                     </>
                 )}
-                filters={{
-                    Protocolo: [
-                        {
-                            keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
-                            type: 'a-z',
-                            name: 'Ordernar em ordem crescente',
-                        },
-                        {
-                            keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
-                            type: 'z-a',
-                            name: 'Ordernar em ordem decrescente',
-                        },
-                    ],
-                }}
+                filters={[
+                    {
+                        label: 'Protocolo',
+                        type: 'number',
+                        keyName: 'coSeqEventoExterno',
+                        operator: 'igual',
+                        operators: ['igual', 'maior que', 'menor que'],
+                        value: '',
+                    },
+                    {
+                        label: 'Nome do Evento',
+                        type: 'string',
+                        keyName: 'noEvento',
+                        operator: 'contem',
+                        operators: ['igual', 'contem'],
+                        value: '',
+                    },
+                    {
+                        label: 'Data de Solicitação',
+                        type: 'date',
+                        keyName: 'dtCadastro',
+                        operator: 'data exata',
+                        operators: ['data exata', 'entre'],
+                        value: '',
+                    },
+                    {
+                        label: 'RA',
+                        type: 'string',
+                        keyName: 'noTableRa',
+                        operator: 'contem',
+                        operators: ['contem', 'tem um dos'],
+                        useList: ['PLANO PILOTO', 'LAGO NORTE'],
+                        value: '',
+                    },
+                ]}
                 columnSize={11}
                 mediaQueryLG={{
                     all: 3,
                     action: 9,
                 }}
-            /> */}
+            />
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}
