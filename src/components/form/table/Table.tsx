@@ -1,10 +1,10 @@
-import { DeleteRounded, ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, Refresh } from '@mui/icons-material'
+import { ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, Refresh } from '@mui/icons-material'
+import Clear from '@mui/icons-material/Clear'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 import { default as Search, default as SearchIcon } from '@mui/icons-material/Search'
 import {
     Alert,
-    AlertTitle,
     Autocomplete,
     Box,
     Button,
@@ -28,14 +28,13 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import axios from 'axios'
 import dayjs from 'dayjs'
-import JSZip, { filter } from 'jszip'
+import JSZip from 'jszip'
 import get from 'lodash.get'
 import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
-import { createPortal } from 'react-dom'
+import CustomMenu from '../../utils//CustomMenu'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -54,10 +53,16 @@ interface ColumnData {
     size?: number
 }
 
-type FilterTypes = 'a-z' | 'z-a' | 'items' | 'date-interval' | 'data-a-z' | 'data-z-a' | 'select'
+interface OrderBy {
+    label: string
+    key: string
+    type: 'string' | 'number'
+}
 
 let startData: any[] = []
 let isExpandAll: boolean = false
+let localTableName = ''
+let orderAsc = false
 
 export function Table({
     mediaQueryLG,
@@ -94,25 +99,27 @@ export function Table({
     // filterSeparator = '|',
     hideTitleCSV = false,
     csvExcludeUpper = [],
-    filterStorageName = 'tableFilters',
     multipleDataPath = '',
     expandTextMaxLength = 50,
     collapsedSize = 53,
     customMargin = 4,
     customMarginMobile = 0,
     filters = [],
+    orderBy = [],
+    id,
 }: {
+    id: string
     mediaQueryLG?: {
         all: number
         action: number
     }
     filters?: FilterValue[]
+    orderBy?: OrderBy[]
     customMargin?: number
     customMarginMobile?: number
     normalize?: boolean
     csvUpper?: boolean
     multipleDataPath?: string
-    filterStorageName?: string
     removeQuotes?: boolean
     columns: ColumnData[]
     tableName: string
@@ -180,6 +187,8 @@ export function Table({
     const filterContainer = useRef(null)
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
+
+    localTableName = `tableFilter_${id}`
 
     useEffect(() => {
         setError(null)
@@ -254,8 +263,8 @@ export function Table({
         setListClone(value)
         setPagCount(getCount(value))
 
-        if (localStorage.getItem('tableFilter')) {
-            filtrar(JSON.parse(localStorage.getItem('tableFilter') as string) as FilterValue[])
+        if (localStorage.getItem(localTableName)) {
+            filtrar(JSON.parse(localStorage.getItem(localTableName) as string) as FilterValue[])
         }
     }, [itemsCount, isLoading, data, getCount, error])
 
@@ -624,7 +633,7 @@ export function Table({
         // setResetFields((s) => !s)
         setList(startData)
         setListClone(startData)
-        localStorage.removeItem('tableFilter')
+        localStorage.removeItem(localTableName)
         setFilterKey(new Date().getTime().toString())
     }
 
@@ -738,8 +747,31 @@ export function Table({
             })
 
         setList(currentData)
-        localStorage.setItem('tableFilter', JSON.stringify(filterData))
+        localStorage.setItem(localTableName, JSON.stringify(filterData))
         setListClone(currentData)
+    }
+
+    function ordenar(order: OrderBy) {
+        let oldList = [...list]
+
+        oldList.sort((a, b) => {
+            const aValue = order.type === 'string' ? get(a, order.key, '') : Number(get(a, order.key, 0))
+            const bValue = order.type === 'string' ? get(b, order.key, '') : Number(get(b, order.key, 0))
+
+            if (orderAsc) {
+                if (aValue < bValue) return -1
+                if (aValue > bValue) return 1
+            } else {
+                if (aValue > bValue) return -1
+                if (aValue < bValue) return 1
+            }
+
+            return 0
+        })
+
+        orderAsc = !orderAsc
+
+        setList(oldList)
     }
 
     // effect usado quando for mostrar "VER MAIS" e "VER MENOS"
@@ -816,7 +848,7 @@ export function Table({
                                 reset={reset}
                                 filtrar={filtrar}
                                 baseFilters={[...filters]}
-                                filters={localStorage.getItem('tableFilter') ? (JSON.parse(localStorage.getItem('tableFilter')!) as FilterValue[]) : [...filters]}
+                                filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
                             />,
                             0
                         )}
@@ -826,7 +858,7 @@ export function Table({
                             variant='contained'
                             onClick={(e) => MODAL.openReparented(0)}
                             sx={{
-                                borderRadius: '8px',
+                                borderRadius: 3,
                                 paddingX: '24px',
                                 paddingY: '8px',
                                 backgroundColor: '#208FE8',
@@ -837,22 +869,41 @@ export function Table({
                                 <span>Filtrar</span>
                             </Stack>
                         </Button>
-                        <Button
-                            variant='contained'
-                            startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                            sx={{
-                                backgroundColor: '#637082',
-                                ':hover': {
-                                    backgroundColor: '#3c4757',
-                                },
-                                textTransform: 'capitalize',
-                                borderRadius: '8px',
-                                padding: '0px 8px',
-                            }}
-                            onClick={expandAll}
-                        >
-                            {isExpandAll ? 'Recolher Todos' : 'Expandir Todos'}
-                        </Button>
+
+                        <Stack direction='row' spacing={1}>
+                            <CustomMenu
+                                data={orderBy.map((x) => ({
+                                    name: x.label,
+                                    onClick: () => ordenar(x),
+                                }))}
+                                btProps={{
+                                    startIcon: <KeyboardArrowDown />,
+                                    fullWidth: true,
+                                }}
+                            >
+                                Ordenar
+                            </CustomMenu>
+
+                            <Button
+                                variant='contained'
+                                fullWidth
+                                startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                                sx={{
+                                    backgroundColor: '#637082',
+                                    ':hover': {
+                                        backgroundColor: '#3c4757',
+                                    },
+                                    textTransform: 'capitalize',
+                                    borderRadius: 3,
+                                    padding: {
+                                        md: '0px 8px',
+                                    },
+                                }}
+                                onClick={expandAll}
+                            >
+                                {isExpandAll ? 'Recolher' : 'Expandir'}
+                            </Button>
+                        </Stack>
                     </Stack>
 
                     <Stack alignItems='end' width={{ xs: '100%', md: '20%' }} direction={{ xs: 'row', md: 'column' }} spacing={{ xs: 1, md: 0 }}>
@@ -867,9 +918,9 @@ export function Table({
                     </Stack>
                 </Stack>
 
-                {localStorage.getItem('tableFilter') && (
+                {localStorage.getItem(localTableName) && (
                     <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
-                        {(JSON.parse(localStorage.getItem('tableFilter') ?? '[]') as FilterValue[])
+                        {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
                             .filter((x) => x.value)
                             .map((x) => (
                                 <Stack direction='row' spacing={1} bgcolor='#4e85c1' color='white' width='fit-content' paddingY={0.5} borderRadius={2} paddingX={1} m={0.5}>
@@ -878,6 +929,31 @@ export function Table({
                                     <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
                                         {x.value.toString()}
                                     </Typography>
+                                    <IconButton
+                                        onClick={(e) => {
+                                            let currentValue = JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]
+
+                                            currentValue = currentValue.map((item) => {
+                                                if (item.label === x.label) {
+                                                    return { ...item, value: '', ...(item.value2 ? { value2: '' } : {}) }
+                                                }
+
+                                                return item
+                                            })
+
+                                            filtrar(currentValue)
+                                        }}
+                                        size='small'
+                                        sx={{
+                                            padding: 0,
+                                        }}
+                                    >
+                                        <Clear
+                                            sx={{
+                                                fill: 'white',
+                                            }}
+                                        />
+                                    </IconButton>
                                 </Stack>
                             ))}
                     </Box>
@@ -1146,7 +1222,7 @@ interface FilterValue {
     operators: FilterOperators[]
     value: string | any[]
     value2?: string | any[]
-    useList?: string[]
+    useList?: { id: string; label: string }[]
 }
 
 function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
@@ -1168,10 +1244,8 @@ function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => vo
         setAnchorEl(null)
     }
 
-    console.log('RERENDERIZIU')
-
     return (
-        <Box width={800}>
+        <Box>
             <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
                 {baseFilters.map((x) => (
                     <MenuItem
@@ -1272,13 +1346,14 @@ function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => vo
                     sx={{
                         textTransform: 'capitalize',
                     }}
-                    onClick={(e) => filtrar(data)}
+                    onClick={(e) => {
+                        filtrar(data)
+                        MODAL.close()
+                    }}
                 >
                     Filtrar
                 </Button>
             </Stack>
-
-            {/* <h4>{JSON.stringify(data.map((x) => ({ ...x, filter: undefined })))}</h4> */}
         </Box>
     )
 }
@@ -1298,21 +1373,26 @@ function FilterRow({
 }) {
     const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
     const [data, setData] = useState<FilterValue>(filterValue)
+    const theme = useTheme()
+    const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     useEffect(() => {
         setDt(data)
     }, [data])
 
     return (
-        <Stack direction='row' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
-            <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
-                {filterValue.label}
-            </Typography>
+        <Stack direction='row' alignItems='end' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
+            {!isSmall && (
+                <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
+                    {filterValue.label}
+                </Typography>
+            )}
             <FormControl
                 sx={{
                     width: '100%',
                 }}
             >
+                {isSmall && <Typography>{filterValue.label}</Typography>}
                 <Select
                     onChange={(e) => {
                         const value = e.target.value
@@ -1390,18 +1470,11 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         return (
                             <Box width='100%'>
                                 <Autocomplete
-                                    options={filterValue.useList.map((name) => ({ id: name, label: name }))}
+                                    options={filterValue.useList}
                                     onChange={(e, value) => {
-                                        onChange(value ? (value.label as string) : '')
+                                        onChange(value ? value.id : '')
                                     }}
-                                    defaultValue={
-                                        filterValue.value && typeof filterValue.value === 'string'
-                                            ? {
-                                                  id: filterValue.value,
-                                                  label: filterValue.value,
-                                              }
-                                            : undefined
-                                    }
+                                    defaultValue={filterValue.value && typeof filterValue.value === 'string' ? filterValue.useList.find((item) => item.id === filterValue.value) : undefined}
                                     isOptionEqualToValue={(option, value) => option.label === value.label}
                                     renderInput={(params) => (
                                         <TextField
