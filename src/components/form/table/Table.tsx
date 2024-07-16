@@ -694,8 +694,14 @@ export function Table({
                                 currentData.forEach((cd) => {
                                     const value: string = get(cd, dt.keyName, '')
 
-                                    if (value.includes(dt.value as string)) {
-                                        filteredData.push(cd)
+                                    if (dt.useList) {
+                                        if (value.includes(dt.value.id)) {
+                                            filteredData.push(cd)
+                                        }
+                                    } else {
+                                        if (value.includes(dt.value as string)) {
+                                            filteredData.push(cd)
+                                        }
                                     }
                                 })
                                 break
@@ -929,7 +935,11 @@ export function Table({
                                     <Typography fontWeight={700}>{x.label}</Typography>
                                     <Typography fontStyle='italic'>{x.operator}</Typography>
                                     <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
-                                        {x.operator === 'tem um dos' ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ') : x.value.toString()}
+                                        {Array.isArray(x.value)
+                                            ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
+                                            : typeof x.value === 'object'
+                                            ? (x.value as { id: string; label: string }).label
+                                            : x.value.toString()}
                                     </Typography>
                                     <IconButton
                                         onClick={(e) => {
@@ -1222,8 +1232,8 @@ interface FilterValue {
     type: FilterType
     operator: FilterOperators
     operators: FilterOperators[]
-    value: string | any[]
-    value2?: string | any[]
+    value: string | any
+    value2?: string | any
     useList?: { id: string; label: string }[]
 }
 
@@ -1463,6 +1473,11 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                 multiple
                                 id='tags-standard'
                                 onChange={(e, value) => {
+                                    if (value.length <= 0) {
+                                        onChange('')
+                                        return
+                                    }
+
                                     onChange(value)
                                 }}
                                 options={filterValue.useList}
@@ -1477,9 +1492,9 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                 <Autocomplete
                                     options={filterValue.useList}
                                     onChange={(e, value) => {
-                                        onChange(value ? value.id : '')
+                                        onChange(value as any)
                                     }}
-                                    defaultValue={filterValue.value && typeof filterValue.value === 'string' ? filterValue.useList.find((item) => item.id === filterValue.value) : undefined}
+                                    defaultValue={typeof filterValue.value === 'object' ? filterValue.value : undefined}
                                     isOptionEqualToValue={(option, value) => option.label === value.label}
                                     renderInput={(params) => (
                                         <TextField

@@ -448,8 +448,8 @@ export default function Teste() {
                         operator: 'tem um dos',
                         operators: ['contem', 'tem um dos'],
                         useList: [
-                            { id: 'A', label: 'ARAPOANGA' },
-                            { id: 'A2', label: 'ARAPOANGA 2' },
+                            { id: 'ARAPOANGA', label: 'ARAPOANGA' },
+                            { id: 'ARAPOANGA 2', label: 'ARAPOANGA 2' },
                         ],
                         value: '',
                     },
