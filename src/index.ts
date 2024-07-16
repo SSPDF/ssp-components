@@ -46,6 +46,9 @@ import DropFileUpload from './components/form/file/DropFileUpload'
 import { MODAL } from './components/modal/Modal'
 import { SspComponentsProvider } from './components/providers/SspComponentsProvider'
 
+import Button from './components/utils/Bt'
+import Menu from './components/utils/CustomMenu'
+
 export {
     CheckBox,
     CheckBoxWarning,
@@ -85,5 +88,7 @@ export {
     DropFileUpload,
     MODAL,
     SspComponentsProvider,
-    TabNavBar
+    TabNavBar,
+    Button,
+    Menu
 }

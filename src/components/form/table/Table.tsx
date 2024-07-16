@@ -629,16 +629,16 @@ export function Table({
     }
 
     function reset() {
-        // setData(baseFilters)
-        // setResetFields((s) => !s)
         setList(startData)
         setListClone(startData)
+        setPagCount(getCount(startData))
+        setCurrentPage(0)
+        setListPage(1)
         localStorage.removeItem(localTableName)
         setFilterKey(new Date().getTime().toString())
     }
 
     function filtrar(filterData: FilterValue[]) {
-        console.log(startData)
         if (!startData) return
 
         let currentData: any[] = JSON.parse(JSON.stringify(startData))
@@ -703,7 +703,7 @@ export function Table({
                                 currentData.forEach((cd) => {
                                     const value: string = get(cd, dt.keyName, '')
 
-                                    if (dt.value.includes(value)) {
+                                    if ((dt.value as { id: any; label: string }[]).map((x) => x.id).includes(value)) {
                                         filteredData.push(cd)
                                     }
                                 })
@@ -747,6 +747,9 @@ export function Table({
             })
 
         setList(currentData)
+        setPagCount(getCount(currentData))
+        setCurrentPage(0)
+        setListPage(1)
         localStorage.setItem(localTableName, JSON.stringify(filterData))
         setListClone(currentData)
     }
@@ -927,7 +930,7 @@ export function Table({
                                     <Typography fontWeight={700}>{x.label}</Typography>
                                     <Typography fontStyle='italic'>{x.operator}</Typography>
                                     <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
-                                        {x.value.toString()}
+                                        {x.operator === 'tem um dos' ? (x.value as { id: string; label: string }[]).map((x) => x.id).join(' - ') : x.value.toString()}
                                     </Typography>
                                     <IconButton
                                         onClick={(e) => {
@@ -1279,7 +1282,10 @@ function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => vo
                     sx={{
                         textTransform: 'capitalize',
                     }}
-                    onClick={reset}
+                    onClick={(e) => {
+                        reset()
+                        MODAL.close()
+                    }}
                 >
                     Limpar
                 </Button>

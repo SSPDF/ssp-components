@@ -103,8 +103,8 @@ function getStatus(content: string) {
             name = 'Cancelado'
             break
         case 'R':
-            color = '#EF4444'
-            name = 'Reprovado'
+            color = '#1c4d54'
+            name = 'Com Pendência'
             break
         case 'L':
             color = '#22C55E'
@@ -410,41 +410,46 @@ export default function Teste() {
                 filters={[
                     {
                         label: 'Protocolo',
-                        type: 'number',
                         keyName: 'coSeqEventoExterno',
                         operator: 'igual',
                         operators: ['igual', 'maior que', 'menor que'],
+                        type: 'number',
+                        value: '',
+                    },
+                    {
+                        label: 'Local',
+                        keyName: 'dsEnderecoLocal',
+                        operator: 'contem',
+                        operators: ['igual', 'contem'],
+                        type: 'number',
+                        value: '',
+                    },
+                    {
+                        label: 'Data da Solicitação',
+                        keyName: 'dtCadastro',
+                        operator: 'data exata',
+                        operators: ['data exata', 'entre'],
+                        type: 'date',
                         value: '',
                     },
                     {
                         label: 'Nome do Evento',
-                        type: 'string',
                         keyName: 'noEvento',
                         operator: 'contem',
                         operators: ['igual', 'contem'],
-                        value: '',
-                    },
-                    {
-                        label: 'Data de Solicitação',
-                        type: 'date',
-                        keyName: 'dtCadastro',
-                        operator: 'data exata',
-                        operators: ['data exata', 'entre'],
+                        type: 'string',
                         value: '',
                     },
                     {
                         label: 'RA',
                         type: 'string',
                         keyName: 'noTableRa',
-                        operator: 'contem',
+                        operator: 'tem um dos',
                         operators: ['contem', 'tem um dos'],
                         useList: [
-                            {
-                                id: 'LAGO NORTE',
-                                label: 'LAGO NORTE',
-                            },
+                            { id: 'ARAPOANGA', label: 'ARAPOANGA' },
+                            { id: 'ARAPOANGA 2', label: 'ARAPOANGA 2' },
                         ],
-                        // useList: ['PLANO PILOTO', 'LAGO NORTE'],
                         value: '',
                     },
                 ]}
