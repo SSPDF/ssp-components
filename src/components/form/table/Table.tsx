@@ -845,21 +845,20 @@ export function Table({
                             placeholder={`Pesquisar ${tableName}`}
                         />
 
-                        {MODAL.reparent(
-                            <CriarFiltro
-                                key={filterKey}
-                                reset={reset}
-                                filtrar={filtrar}
-                                baseFilters={[...filters]}
-                                filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
-                            />,
-                            0
-                        )}
-
                         <Button
                             startIcon={<FilterAlt />}
                             variant='contained'
-                            onClick={(e) => MODAL.openReparented(0)}
+                            onClick={(e) =>
+                                MODAL.open(
+                                    <CriarFiltro
+                                        key={filterKey}
+                                        reset={reset}
+                                        filtrar={filtrar}
+                                        baseFilters={[...filters]}
+                                        filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
+                                    />
+                                )
+                            }
                             sx={{
                                 borderRadius: 3,
                                 paddingX: '24px',
@@ -930,7 +929,7 @@ export function Table({
                                     <Typography fontWeight={700}>{x.label}</Typography>
                                     <Typography fontStyle='italic'>{x.operator}</Typography>
                                     <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
-                                        {x.operator === 'tem um dos' ? (x.value as { id: string; label: string }[]).map((x) => x.id).join(' - ') : x.value.toString()}
+                                        {x.operator === 'tem um dos' ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ') : x.value.toString()}
                                     </Typography>
                                     <IconButton
                                         onClick={(e) => {
