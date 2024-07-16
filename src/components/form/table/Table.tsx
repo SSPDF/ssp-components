@@ -694,6 +694,8 @@ export function Table({
                                 currentData.forEach((cd) => {
                                     const value: string = get(cd, dt.keyName, '')
 
+                                    if (!value) return
+
                                     if (dt.useList) {
                                         if (value.includes(dt.value.id)) {
                                             filteredData.push(cd)
@@ -708,6 +710,8 @@ export function Table({
                             case 'tem um dos':
                                 currentData.forEach((cd) => {
                                     const value: string = get(cd, dt.keyName, '')
+
+                                    if (!value) return
 
                                     if ((dt.value as { id: any; label: string }[]).map((x) => x.id).includes(value)) {
                                         filteredData.push(cd)
@@ -734,8 +738,6 @@ export function Table({
                                     const value = dayjs(get(cd, dt.keyName, ''), 'DD/MM/YYYY')
                                     const dateA = dayjs(dt.value as string, 'DD/MM/YYYY')
                                     const dateB = dayjs(dt.value2 as string, 'DD/MM/YYYY')
-
-                                    console.log(dateA.isValid(), dateB.isValid())
 
                                     if (!dateA.isValid() || !dateB.isValid()) return
 
