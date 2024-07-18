@@ -63,6 +63,7 @@ let startData: any[] = []
 let isExpandAll: boolean = false
 let localTableName = ''
 let orderAsc = false
+let filtersFuncData: { [key: string]: (value: string) => any } = {}
 
 export function Table({
     mediaQueryLG,
@@ -104,6 +105,7 @@ export function Table({
     collapsedSize = 53,
     customMargin = 4,
     customMarginMobile = 0,
+    filtersFunc,
     filters = [],
     orderBy = [],
     id,
@@ -113,6 +115,7 @@ export function Table({
         all: number
         action: number
     }
+    filtersFunc?: { [key: string]: (value: string) => any }
     filters?: FilterValue[]
     orderBy?: OrderBy[]
     customMargin?: number
@@ -189,6 +192,7 @@ export function Table({
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
     localTableName = `tableFilter_${id}`
+    filtersFuncData = filtersFunc ?? {}
 
     useEffect(() => {
         setError(null)
@@ -748,8 +752,48 @@ export function Table({
                                 break
                         }
                         break
+                    case 'dates':
+                        switch (dt.operator) {
+                            case 'data inicio':
+                                currentData.forEach((cd) => {
+                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+
+                                    if (dates.length <= 0) return
+
+                                    var inicioDate = dates[0]
+                                    var inicioValue = dayjs(inicioDate, 'DD/MM/YYYY')
+
+                                    if (inicioValue.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'data fim':
+                                currentData.forEach((cd) => {
+                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+
+                                    if (dates.length <= 0) return
+
+                                    var fimDate = dates[dates.length - 1]
+                                    var fimValue = dayjs(fimDate, 'DD/MM/YYYY')
+
+                                    if (fimValue.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                            case 'tem a data':
+                                currentData.forEach((cd) => {
+                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+
+                                    if (dates.includes(dt.value)) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
+                        }
+                        break
                 }
-                console.log('filtred: ', filteredData)
 
                 currentData = filteredData
             })
@@ -1225,8 +1269,22 @@ export function Table({
 /*                                   FILTRO                                   */
 /* -------------------------------------------------------------------------- */
 
-type FilterType = 'string' | 'number' | 'date'
-type FilterOperators = 'igual' | 'contem' | 'maior que' | 'menor que' | 'data exata' | 'após' | 'antes de' | 'entre' | 'tem um dos'
+type FilterType = 'string' | 'number' | 'date' | 'dates'
+type FilterOperators =
+    | 'igual'
+    | 'contem'
+    | 'maior que'
+    | 'menor que'
+    | 'data exata'
+    | 'após'
+    | 'antes de'
+    | 'entre'
+    | 'tem um dos'
+    | 'depois de'
+    | 'antes de'
+    | 'data inicio'
+    | 'data fim'
+    | 'tem a data'
 
 interface FilterValue {
     label: string
@@ -1237,6 +1295,7 @@ interface FilterValue {
     value: string | any
     value2?: string | any
     useList?: { id: string; label: string }[]
+    customFunc?: string
 }
 
 function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
@@ -1531,8 +1590,12 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                 />
             )
         case 'date':
+        case 'dates':
             switch (operator) {
                 case 'data exata':
+                case 'data fim':
+                case 'data inicio':
+                case 'tem a data':
                     return (
                         <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                             <DatePicker

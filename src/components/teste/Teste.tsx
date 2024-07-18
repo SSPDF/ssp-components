@@ -198,7 +198,7 @@ function a11yProps(index: number) {
 const okok = document.getElementById('ronaldo')
 
 export default function Teste() {
-    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table2'))
+    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState('')
@@ -354,84 +354,84 @@ export default function Teste() {
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
-                // dataPath='body.data'
+                dataPath='body.data'
                 tableName='Teste'
                 columns={[
-                    // {
-                    //     keyName: 'coSeqEventoExterno',
-                    //     title: 'Protocolo',
-                    // },
-                    // {
-                    //     keyName: 'dsEnderecoLocal',
-                    //     title: 'Local',
-                    // },
-                    // {
-                    //     keyName: 'dtCadastro',
-                    //     title: 'Data de Solicitação',
-                    // },
-                    // {
-                    //     keyName: 'noEvento',
-                    //     title: 'Nome',
-                    // },
-                    // {
-                    //     keyName: 'noTableRa',
-                    //     title: 'RA',
-                    // },
-                    // {
-                    //     keyName: 'nuPublicoMaximo',
-                    //     title: 'Público Máximo',
-                    // },
-                    // {
-                    //     keyName: 'dtTableDates',
-                    //     title: 'Datas',
-                    //     size: 2,
-                    // },
-                    // {
-                    //     keyName: 'nuProcessoFormatadoSei',
-                    //     title: 'Processo SEI',
-                    // },
-                    // {
-                    //     keyName: 'stEventoExterno',
-                    //     title: 'Status do Evento',
-                    //     customComponent: (txt) => getStatus(txt),
-                    // },
                     {
-                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                        keyName: 'coSeqEventoExterno',
                         title: 'Protocolo',
-                        size: 0.7,
                     },
                     {
-                        keyName: 'DS_DESCRICAO',
-                        title: 'Descrição',
+                        keyName: 'dsEnderecoLocal',
+                        title: 'Local',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+                    {
+                        keyName: 'noEvento',
+                        title: 'Nome',
+                    },
+                    {
+                        keyName: 'noTableRa',
+                        title: 'RA',
+                    },
+                    {
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
+                    },
+                    {
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
                         size: 2,
                     },
                     {
-                        keyName: 'NO_RISP',
-                        title: 'RISP',
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
                     },
                     {
-                        keyName: 'NO_TIPO_DEVOLUTIVA',
-                        title: 'Tipo de demanda',
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                        customComponent: (txt) => getStatus(txt),
                     },
-                    {
-                        keyName: 'DS_CONSEG',
-                        title: 'Conseg',
-                        size: 1.5,
-                    },
-                    {
-                        keyName: 'DT_CADASTRO',
-                        title: 'Data Abertura',
-                    },
-                    {
-                        keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
-                        title: 'Movimentação Último Estado',
-                        size: 1.5,
-                    },
-                    {
-                        keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
-                        title: 'Estado - PAF',
-                        size: 0.8,
-                    },
+                    // {
+                    //     keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                    //     title: 'Protocolo',
+                    //     size: 0.7,
+                    // },
+                    // {
+                    //     keyName: 'DS_DESCRICAO',
+                    //     title: 'Descrição',
+                    //     size: 2,
+                    // },
+                    // {
+                    //     keyName: 'NO_RISP',
+                    //     title: 'RISP',
+                    // },
+                    // {
+                    //     keyName: 'NO_TIPO_DEVOLUTIVA',
+                    //     title: 'Tipo de demanda',
+                    // },
+                    // {
+                    //     keyName: 'DS_CONSEG',
+                    //     title: 'Conseg',
+                    //     size: 1.5,
+                    // },
+                    // {
+                    //     keyName: 'DT_CADASTRO',
+                    //     title: 'Data Abertura',
+                    // },
+                    // {
+                    //     keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
+                    //     title: 'Movimentação Último Estado',
+                    //     size: 1.5,
+                    // },
+                    // {
+                    //     keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
+                    //     title: 'Estado - PAF',
+                    //     size: 0.8,
+                    // },
                 ]}
                 action={() => (
                     <>
@@ -445,188 +445,203 @@ export default function Teste() {
                         type: 'number',
                     },
                 ]}
+                filtersFunc={{
+                    datas: (value) => {
+                        const new_value = value.split(' | ').map((x) => x.split(' - ')[0])
+                        return new_value
+                    },
+                }}
                 filters={[
-                    // {
-                    //     label: 'Protocolo',
-                    //     keyName: 'coSeqEventoExterno',
-                    //     operator: 'igual',
-                    //     operators: ['igual', 'maior que', 'menor que'],
-                    //     type: 'number',
-                    //     value: '',
-                    // },
-                    // {
-                    //     label: 'Local',
-                    //     keyName: 'dsEnderecoLocal',
-                    //     operator: 'contem',
-                    //     operators: ['igual', 'contem'],
-                    //     type: 'number',
-                    //     value: '',
-                    // },
-                    // {
-                    //     label: 'Data da Solicitação',
-                    //     keyName: 'dtCadastro',
-                    //     operator: 'data exata',
-                    //     operators: ['data exata', 'entre'],
-                    //     type: 'date',
-                    //     value: '',
-                    // },
-                    // {
-                    //     label: 'Nome do Evento',
-                    //     keyName: 'noEvento',
-                    //     operator: 'contem',
-                    //     operators: ['igual', 'contem'],
-                    //     type: 'string',
-                    //     value: '',
-                    // },
-                    // {
-                    //     label: 'RA x',
-                    //     type: 'string',
-                    //     keyName: 'noTableRa',
-                    //     operator: 'tem um dos',
-                    //     operators: ['contem', 'tem um dos'],
-                    //     useList: [
-                    //         { id: 'ARAPOANGA', label: 'ARAPOANGA' },
-                    //         { id: 'ARAPOANGA 2', label: 'ARAPOANGA 2' },
-                    //     ],
-                    //     value: '',
-                    // },
-                    // {
-                    //     label: 'Público Máximo',
-                    //     keyName: 'nuPublicoMaximo',
-                    //     operator: 'igual',
-                    //     operators: ['igual', 'maior que', 'menor que'],
-                    //     type: 'number',
-                    //     value: '',
-                    // },
                     {
                         label: 'Protocolo',
-                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                        keyName: 'coSeqEventoExterno',
                         operator: 'igual',
                         operators: ['igual', 'maior que', 'menor que'],
                         type: 'number',
                         value: '',
                     },
                     {
-                        label: 'Descrição',
-                        keyName: 'DS_DESCRICAO',
+                        label: 'Local',
+                        keyName: 'dsEnderecoLocal',
+                        operator: 'contem',
+                        operators: ['igual', 'contem'],
+                        type: 'number',
+                        value: '',
+                    },
+                    {
+                        label: 'Data da Solicitação',
+                        keyName: 'dtCadastro',
+                        operator: 'data exata',
+                        operators: ['data exata', 'entre', 'antes de', 'depois de'],
+                        type: 'date',
+                        value: '',
+                    },
+                    {
+                        label: 'Datas',
+                        keyName: 'dtTableDates',
+                        operator: 'data inicio',
+                        operators: ['data inicio', 'data fim', 'tem a data'],
+                        type: 'dates',
+                        customFunc: 'datas',
+                        value: '',
+                    },
+                    {
+                        label: 'Nome do Evento',
+                        keyName: 'noEvento',
                         operator: 'contem',
                         operators: ['igual', 'contem'],
                         type: 'string',
                         value: '',
                     },
                     {
-                        label: 'Data Abertura',
-                        keyName: 'DT_CADASTRO',
-                        operator: 'data exata',
-                        operators: ['data exata', 'entre'],
-                        type: 'date',
-                        value: '',
-                    },
-                    {
-                        label: 'Movimentação Último Estado',
-                        keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
-                        operator: 'data exata',
-                        operators: ['data exata', 'entre'],
-                        type: 'date',
-                        value: '',
-                    },
-                    {
-                        label: 'Estado - PAF',
-                        keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
-                        operator: 'contem',
-                        operators: ['contem', 'tem um dos'],
+                        label: 'RA x',
                         type: 'string',
+                        keyName: 'noTableRa',
+                        operator: 'tem um dos',
+                        operators: ['contem', 'tem um dos'],
                         useList: [
-                            { id: 'Pendente', label: 'Pendente' },
-                            { id: 'Iniciado', label: 'Iniciado' },
-                            { id: 'Finalizado', label: 'Finalizado' },
+                            { id: 'ARAPOANGA', label: 'ARAPOANGA' },
+                            { id: 'ARAPOANGA 2', label: 'ARAPOANGA 2' },
                         ],
                         value: '',
                     },
                     {
-                        label: 'RISP',
-                        keyName: 'NO_RISP',
-                        operator: 'contem',
-                        operators: ['contem', 'tem um dos'],
-                        type: 'string',
-                        useList: [
-                            { id: 'RISP LESTE', label: 'RISP LESTE' },
-                            { id: 'RISP METROPOLITANA', label: 'RISP METROPOLITANA' },
-                            { id: 'RISP OESTE', label: 'RISP OESTE' },
-                            { id: 'RISP SUL', label: 'RISP SUL' },
-                        ],
+                        label: 'Público Máximo',
+                        keyName: 'nuPublicoMaximo',
+                        operator: 'igual',
+                        operators: ['igual', 'maior que', 'menor que'],
+                        type: 'number',
                         value: '',
                     },
-                    {
-                        label: 'Tipo',
-                        keyName: 'NO_TIPO_DEVOLUTIVA',
-                        operator: 'contem',
-                        operators: ['contem', 'tem um dos'],
-                        type: 'string',
-                        useList: [
-                            {
-                                id: 'POLUIÇÃO SONORA',
-                                label: 'POLUIÇÃO SONORA',
-                            },
-                            {
-                                id: 'POLICIAMENTO OSTENSIVO',
-                                label: 'POLICIAMENTO OSTENSIVO',
-                            },
-                            {
-                                id: 'CARCAÇA',
-                                label: 'CARCAÇA',
-                            },
-                            {
-                                id: 'ILUMINAÇÃO PÚBLICA',
-                                label: 'ILUMINAÇÃO PÚBLICA',
-                            },
-                            {
-                                id: 'SINALIZAÇÃO TRÂNSITO',
-                                label: 'SINALIZAÇÃO TRÂNSITO',
-                            },
-                            {
-                                id: 'MELHORIA DO ASFALTO',
-                                label: 'MELHORIA DO ASFALTO',
-                            },
-                            {
-                                id: 'POLICIAMENTO INVESTIGATIVO',
-                                label: 'POLICIAMENTO INVESTIGATIVO',
-                            },
-                            {
-                                id: 'PODA DE ÁRVORE',
-                                label: 'PODA DE ÁRVORE',
-                            },
-                            {
-                                id: 'TRÁFICO DE DROGAS',
-                                label: 'TRÁFICO DE DROGAS',
-                            },
-                            {
-                                id: 'DESORDEM SOCIAL',
-                                label: 'DESORDEM SOCIAL',
-                            },
-                            {
-                                id: 'CALÇAMENTO',
-                                label: 'CALÇAMENTO',
-                            },
-                            {
-                                id: 'INVASÃO DE TERRA',
-                                label: 'INVASÃO DE TERRA',
-                            },
-                            {
-                                id: 'FISCALIZAÇÃO DE TRÂNSITO',
-                                label: 'FISCALIZAÇÃO DE TRÂNSITO',
-                            },
-                            {
-                                id: 'ENGENHARIA DE TRÂNSITO',
-                                label: 'ENGENHARIA DE TRÂNSITO',
-                            },
-                            {
-                                id: 'OUTROS',
-                                label: 'OUTROS',
-                            },
-                        ],
-                        value: '',
-                    },
+                    // {
+                    //     label: 'Protocolo',
+                    //     keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                    //     operator: 'igual',
+                    //     operators: ['igual', 'maior que', 'menor que'],
+                    //     type: 'number',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Descrição',
+                    //     keyName: 'DS_DESCRICAO',
+                    //     operator: 'contem',
+                    //     operators: ['igual', 'contem'],
+                    //     type: 'string',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Data Abertura',
+                    //     keyName: 'DT_CADASTRO',
+                    //     operator: 'data exata',
+                    //     operators: ['data exata', 'entre'],
+                    //     type: 'date',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Movimentação Último Estado',
+                    //     keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
+                    //     operator: 'data exata',
+                    //     operators: ['data exata', 'entre'],
+                    //     type: 'date',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Estado - PAF',
+                    //     keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
+                    //     operator: 'contem',
+                    //     operators: ['contem', 'tem um dos'],
+                    //     type: 'string',
+                    //     useList: [
+                    //         { id: 'Pendente', label: 'Pendente' },
+                    //         { id: 'Iniciado', label: 'Iniciado' },
+                    //         { id: 'Finalizado', label: 'Finalizado' },
+                    //     ],
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'RISP',
+                    //     keyName: 'NO_RISP',
+                    //     operator: 'contem',
+                    //     operators: ['contem', 'tem um dos'],
+                    //     type: 'string',
+                    //     useList: [
+                    //         { id: 'RISP LESTE', label: 'RISP LESTE' },
+                    //         { id: 'RISP METROPOLITANA', label: 'RISP METROPOLITANA' },
+                    //         { id: 'RISP OESTE', label: 'RISP OESTE' },
+                    //         { id: 'RISP SUL', label: 'RISP SUL' },
+                    //     ],
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Tipo',
+                    //     keyName: 'NO_TIPO_DEVOLUTIVA',
+                    //     operator: 'contem',
+                    //     operators: ['contem', 'tem um dos'],
+                    //     type: 'string',
+                    //     useList: [
+                    //         {
+                    //             id: 'POLUIÇÃO SONORA',
+                    //             label: 'POLUIÇÃO SONORA',
+                    //         },
+                    //         {
+                    //             id: 'POLICIAMENTO OSTENSIVO',
+                    //             label: 'POLICIAMENTO OSTENSIVO',
+                    //         },
+                    //         {
+                    //             id: 'CARCAÇA',
+                    //             label: 'CARCAÇA',
+                    //         },
+                    //         {
+                    //             id: 'ILUMINAÇÃO PÚBLICA',
+                    //             label: 'ILUMINAÇÃO PÚBLICA',
+                    //         },
+                    //         {
+                    //             id: 'SINALIZAÇÃO TRÂNSITO',
+                    //             label: 'SINALIZAÇÃO TRÂNSITO',
+                    //         },
+                    //         {
+                    //             id: 'MELHORIA DO ASFALTO',
+                    //             label: 'MELHORIA DO ASFALTO',
+                    //         },
+                    //         {
+                    //             id: 'POLICIAMENTO INVESTIGATIVO',
+                    //             label: 'POLICIAMENTO INVESTIGATIVO',
+                    //         },
+                    //         {
+                    //             id: 'PODA DE ÁRVORE',
+                    //             label: 'PODA DE ÁRVORE',
+                    //         },
+                    //         {
+                    //             id: 'TRÁFICO DE DROGAS',
+                    //             label: 'TRÁFICO DE DROGAS',
+                    //         },
+                    //         {
+                    //             id: 'DESORDEM SOCIAL',
+                    //             label: 'DESORDEM SOCIAL',
+                    //         },
+                    //         {
+                    //             id: 'CALÇAMENTO',
+                    //             label: 'CALÇAMENTO',
+                    //         },
+                    //         {
+                    //             id: 'INVASÃO DE TERRA',
+                    //             label: 'INVASÃO DE TERRA',
+                    //         },
+                    //         {
+                    //             id: 'FISCALIZAÇÃO DE TRÂNSITO',
+                    //             label: 'FISCALIZAÇÃO DE TRÂNSITO',
+                    //         },
+                    //         {
+                    //             id: 'ENGENHARIA DE TRÂNSITO',
+                    //             label: 'ENGENHARIA DE TRÂNSITO',
+                    //         },
+                    //         {
+                    //             id: 'OUTROS',
+                    //             label: 'OUTROS',
+                    //         },
+                    //     ],
+                    //     value: '',
+                    // },
                 ]}
                 columnSize={11}
                 mediaQueryLG={{
