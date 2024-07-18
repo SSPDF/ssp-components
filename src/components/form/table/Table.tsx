@@ -64,6 +64,7 @@ let isExpandAll: boolean = false
 let localTableName = ''
 let orderAsc = false
 let filtersFuncData: { [key: string]: (value: string) => any } = {}
+let localTableNameCache = ''
 
 export function Table({
     mediaQueryLG,
@@ -192,7 +193,17 @@ export function Table({
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
     localTableName = `tableFilter_${id}`
+    localTableNameCache = `tableFilterCache_${id}`
     filtersFuncData = filtersFunc ?? {}
+
+    if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+
+    console.log('DTTTTTTTT: ', localStorage.getItem(localTableNameCache) === JSON.stringify(filters))
+
+    if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
+        localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+        localStorage.removeItem(localTableName)
+    }
 
     useEffect(() => {
         setError(null)
