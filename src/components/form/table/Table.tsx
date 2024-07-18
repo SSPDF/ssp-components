@@ -198,8 +198,6 @@ export function Table({
 
     if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
 
-    console.log('DTTTTTTTT: ', localStorage.getItem(localTableNameCache) === JSON.stringify(filters))
-
     if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
         localStorage.setItem(localTableNameCache, JSON.stringify(filters))
         localStorage.removeItem(localTableName)
