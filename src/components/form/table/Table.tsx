@@ -666,7 +666,7 @@ export function Table({
         let currentData: any[] = JSON.parse(JSON.stringify(startData))
 
         filterData
-            .filter((dt) => dt.value)
+            .filter((dt) => dt.value || (dt.operator === 'entre' && (dt.value || dt.value2)))
             .forEach((dt) => {
                 let filteredData: any[] = []
 
@@ -765,12 +765,11 @@ export function Table({
                                 })
                                 break
                             case 'entre':
+                                const dateA = dt.value ? dayjs(dt.value as string, 'DD/MM/YYYY') : dayjs('01/01/2000', 'DD/MM/YYYY')
+                                const dateB = dt.value2 ? dayjs(dt.value2 as string, 'DD/MM/YYYY') : dayjs('31/12/2030', 'DD/MM/YYYY')
+
                                 currentData.forEach((cd) => {
                                     const value = dayjs(get(cd, dt.keyName, ''), 'DD/MM/YYYY')
-                                    const dateA = dayjs(dt.value as string, 'DD/MM/YYYY')
-                                    const dateB = dayjs(dt.value2 as string, 'DD/MM/YYYY')
-
-                                    if (!dateA.isValid() || !dateB.isValid()) return
 
                                     if ((value.isAfter(dateA) || value.isSame(dateA)) && (value.isBefore(dateB) || value.isSame(dateB))) {
                                         filteredData.push(cd)
@@ -819,14 +818,13 @@ export function Table({
                                 })
                                 break
                             case 'entre':
+                                const dateA = dt.value ? dayjs(dt.value as string, 'DD/MM/YYYY') : dayjs('01/01/2000', 'DD/MM/YYYY')
+                                const dateB = dt.value2 ? dayjs(dt.value2 as string, 'DD/MM/YYYY') : dayjs('31/12/2030', 'DD/MM/YYYY')
+
                                 currentData.forEach((cd) => {
                                     const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
-                                    const dateA = dayjs(dt.value as string, 'DD/MM/YYYY')
-                                    const dateB = dayjs(dt.value2 as string, 'DD/MM/YYYY')
 
                                     let isBetween = false
-
-                                    if (!dateA.isValid() || !dateB.isValid()) return
 
                                     dates.forEach((dtStr) => {
                                         if (isBetween) return
@@ -1029,7 +1027,7 @@ export function Table({
                 {localStorage.getItem(localTableName) && (
                     <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
                         {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
-                            .filter((x) => x.value)
+                            .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2)))
                             .map((x) => (
                                 <Stack direction='row' spacing={1} bgcolor='#4e85c1' color='white' width='fit-content' paddingY={0.5} borderRadius={2} paddingX={1} m={0.5}>
                                     <Typography fontWeight={700}>{x.label}</Typography>
@@ -1039,8 +1037,8 @@ export function Table({
                                             ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
                                             : typeof x.value === 'object'
                                             ? (x.value as { id: string; label: string }).label
-                                            : x.value2
-                                            ? `${x.value} e ${x.value2}`
+                                            : x.operator === 'entre'
+                                            ? `${x.value ? x.value : 'Antes'} e ${x.value2 ? x.value2 : 'Depois'}`
                                             : x.value.toString()}
                                     </Typography>
                                     <IconButton
