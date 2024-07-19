@@ -4,6 +4,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 
+let useDefault = true
+
 export function FixedAutoComplete({
     name,
     title,
@@ -37,7 +39,7 @@ export function FixedAutoComplete({
     }, [])
 
     useEffect(() => {
-        if (watchValue) {
+        if (watchValue && useDefault) {
             setValue(watchValue)
             context.formSetValue(name, watchValue.id)
             onChange(watchValue.id as any)
@@ -45,6 +47,8 @@ export function FixedAutoComplete({
     }, [watchValue])
 
     function handleAutoCompleteChange(value: any) {
+        useDefault = false
+
         if (value) {
             setValue(value)
             context.formSetValue(name, value.id)

@@ -211,8 +211,55 @@ export default function Teste() {
         setValue(newValue)
     }
 
+    const valor = {
+        id: 14,
+        label: 'CONSEG PARANOÁ',
+    }
+
     return (
         <Box bgcolor='#F9F9F9'>
+            <Stepper>
+                <StepperBlock title='Teste 1'>
+                    <FetchAutoComplete name='coRA' title='RA:' customLoadingText='Carregando RA' url={`http://localhost:7171/autocomplete`} watchValue={valor} md={6} required />
+                    <FixedAutoComplete
+                        name='coRA2'
+                        title='RA:'
+                        customLoadingText='Carregando RA'
+                        list={[
+                            {
+                                id: 4,
+                                label: 'CONSEG BRASÍLIA CENTRO E SIA',
+                            },
+                            {
+                                id: 14,
+                                label: 'CONSEG PARANOÁ',
+                            },
+                            {
+                                id: 15,
+                                label: 'CONSEG PARANOÁ RURAL',
+                            },
+                            {
+                                id: 31,
+                                label: 'CONSEG VARJÃO',
+                            },
+                            {
+                                id: 37,
+                                label: 'CONSEG ITAPOÃ',
+                            },
+                            {
+                                id: 26,
+                                label: 'CONSEG LAGO NORTE',
+                            },
+                        ]}
+                        watchValue={valor}
+                        md={6}
+                        required
+                    />
+                </StepperBlock>
+                <StepperBlock title='Teste 1'>
+                    <Input name='teste1' type='input' title='Teste' />
+                </StepperBlock>
+            </Stepper>
             {/* <MultInput name='test' title='Testando' /> */}
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
@@ -350,7 +397,7 @@ export default function Teste() {
                 Mudar
             </Button> */}
 
-            <Table
+            {/* <Table
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
@@ -1748,7 +1795,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            />
+            /> */}
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}

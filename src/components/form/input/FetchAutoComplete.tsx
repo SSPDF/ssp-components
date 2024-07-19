@@ -4,6 +4,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 
+let useDefault = true
+
 export default function FetchAutoComplete({
     name,
     url,
@@ -71,7 +73,7 @@ export default function FetchAutoComplete({
     }, [])
 
     useEffect(() => {
-        if (watchValue) {
+        if (watchValue && useDefault) {
             setValue(watchValue)
             context.formSetValue(name, watchValue.id)
             onChange(watchValue.id as any)
@@ -103,6 +105,8 @@ export default function FetchAutoComplete({
     }
 
     function handleAutoCompleteChange(value: any) {
+        useDefault = false
+
         if (value) {
             setValue(value)
             context.formSetValue(name, value.id)
