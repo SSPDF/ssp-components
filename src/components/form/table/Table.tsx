@@ -35,6 +35,7 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useStat
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils//CustomMenu'
+import { toast } from 'react-toastify'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -817,6 +818,33 @@ export function Table({
                                     }
                                 })
                                 break
+                            case 'entre':
+                                currentData.forEach((cd) => {
+                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+                                    const dateA = dayjs(dt.value as string, 'DD/MM/YYYY')
+                                    const dateB = dayjs(dt.value2 as string, 'DD/MM/YYYY')
+
+                                    let isBetween = false
+
+                                    if (!dateA.isValid() || !dateB.isValid()) return
+
+                                    dates.forEach((dtStr) => {
+                                        if (isBetween) return
+
+                                        const dt = dayjs(dtStr, 'DD/MM/YYYY')
+
+                                        if (!dt.isValid()) return
+
+                                        if ((dt.isAfter(dateA) || dt.isSame(dateA)) && (dt.isBefore(dateB) || dt.isSame(dateB))) {
+                                            isBetween = true
+                                        }
+                                    })
+
+                                    if (isBetween) {
+                                        filteredData.push(cd)
+                                    }
+                                })
+                                break
                         }
                         break
                 }
@@ -1011,6 +1039,8 @@ export function Table({
                                             ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
                                             : typeof x.value === 'object'
                                             ? (x.value as { id: string; label: string }).label
+                                            : x.value2
+                                            ? `${x.value} e ${x.value2}`
                                             : x.value.toString()}
                                     </Typography>
                                     <IconButton
