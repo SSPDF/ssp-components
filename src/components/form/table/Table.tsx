@@ -51,6 +51,7 @@ function formatarString(str: string) {
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
+        .trim()
 }
 
 interface ColumnData {
@@ -668,6 +669,8 @@ export function Table({
             .forEach((dt) => {
                 let filteredData: any[] = []
 
+                console.log(dt)
+
                 switch (dt.type) {
                     case 'number':
                         switch (dt.operator) {
@@ -700,6 +703,7 @@ export function Table({
                         }
                         break
                     case 'string':
+                        console.log('ata: ', dt.operator)
                         switch (dt.operator) {
                             case 'igual':
                                 currentData.forEach((cd) => {
@@ -1334,7 +1338,12 @@ function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => vo
     }
 
     return (
-        <Box>
+        <Box
+            width={{
+                xs: 'inherit',
+                md: 850,
+            }}
+        >
             <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
                 {baseFilters.map((x) => (
                     <MenuItem
@@ -1511,14 +1520,14 @@ function FilterRow({
                     setData((obj) => ({ ...obj, [type]: value }))
                 }}
             />
-            <IconButton
+            {/* <IconButton
                 onClick={(e) => {
                     setDt({ ...data, value: '' })
                     setReset((s) => !s)
                 }}
             >
                 <Refresh />
-            </IconButton>
+            </IconButton> */}
         </Stack>
     )
 }

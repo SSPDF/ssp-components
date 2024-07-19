@@ -198,7 +198,7 @@ function a11yProps(index: number) {
 const okok = document.getElementById('ronaldo')
 
 export default function Teste() {
-    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
+    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table2'))
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState('')
@@ -354,84 +354,84 @@ export default function Teste() {
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
-                dataPath='body.data'
+                // dataPath='body.data'
                 tableName='Teste'
                 columns={[
-                    {
-                        keyName: 'coSeqEventoExterno',
-                        title: 'Protocolo',
-                    },
-                    {
-                        keyName: 'dsEnderecoLocal',
-                        title: 'Local',
-                    },
-                    {
-                        keyName: 'dtCadastro',
-                        title: 'Data de Solicitação',
-                    },
-                    {
-                        keyName: 'noEvento',
-                        title: 'Nome',
-                    },
-                    {
-                        keyName: 'noTableRa',
-                        title: 'RA',
-                    },
-                    {
-                        keyName: 'nuPublicoMaximo',
-                        title: 'Público Máximo',
-                    },
-                    {
-                        keyName: 'dtTableDates',
-                        title: 'Datas',
-                        size: 2,
-                    },
-                    {
-                        keyName: 'nuProcessoFormatadoSei',
-                        title: 'Processo SEI',
-                    },
-                    {
-                        keyName: 'stEventoExterno',
-                        title: 'Status do Evento',
-                        customComponent: (txt) => getStatus(txt),
-                    },
                     // {
-                    //     keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                    //     keyName: 'coSeqEventoExterno',
                     //     title: 'Protocolo',
-                    //     size: 0.7,
                     // },
                     // {
-                    //     keyName: 'DS_DESCRICAO',
-                    //     title: 'Descrição',
+                    //     keyName: 'dsEnderecoLocal',
+                    //     title: 'Local',
+                    // },
+                    // {
+                    //     keyName: 'dtCadastro',
+                    //     title: 'Data de Solicitação',
+                    // },
+                    // {
+                    //     keyName: 'noEvento',
+                    //     title: 'Nome',
+                    // },
+                    // {
+                    //     keyName: 'noTableRa',
+                    //     title: 'RA',
+                    // },
+                    // {
+                    //     keyName: 'nuPublicoMaximo',
+                    //     title: 'Público Máximo',
+                    // },
+                    // {
+                    //     keyName: 'dtTableDates',
+                    //     title: 'Datas',
                     //     size: 2,
                     // },
                     // {
-                    //     keyName: 'NO_RISP',
-                    //     title: 'RISP',
+                    //     keyName: 'nuProcessoFormatadoSei',
+                    //     title: 'Processo SEI',
                     // },
                     // {
-                    //     keyName: 'NO_TIPO_DEVOLUTIVA',
-                    //     title: 'Tipo de demanda',
+                    //     keyName: 'stEventoExterno',
+                    //     title: 'Status do Evento',
+                    //     customComponent: (txt) => getStatus(txt),
                     // },
-                    // {
-                    //     keyName: 'DS_CONSEG',
-                    //     title: 'Conseg',
-                    //     size: 1.5,
-                    // },
-                    // {
-                    //     keyName: 'DT_CADASTRO',
-                    //     title: 'Data Abertura',
-                    // },
-                    // {
-                    //     keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
-                    //     title: 'Movimentação Último Estado',
-                    //     size: 1.5,
-                    // },
-                    // {
-                    //     keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
-                    //     title: 'Estado - PAF',
-                    //     size: 0.8,
-                    // },
+                    {
+                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                        title: 'Protocolo',
+                        size: 0.7,
+                    },
+                    {
+                        keyName: 'DS_DESCRICAO',
+                        title: 'Descrição',
+                        size: 2,
+                    },
+                    {
+                        keyName: 'NO_RISP',
+                        title: 'RISP',
+                    },
+                    {
+                        keyName: 'NO_TIPO_DEVOLUTIVA',
+                        title: 'Tipo de demanda',
+                    },
+                    {
+                        keyName: 'DS_CONSEG',
+                        title: 'Conseg',
+                        size: 1.5,
+                    },
+                    {
+                        keyName: 'DT_CADASTRO',
+                        title: 'Data Abertura',
+                    },
+                    {
+                        keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
+                        title: 'Movimentação Último Estado',
+                        size: 1.5,
+                    },
+                    {
+                        keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
+                        title: 'Estado - PAF',
+                        size: 0.8,
+                    },
                 ]}
                 action={() => (
                     <>
@@ -452,196 +452,1118 @@ export default function Teste() {
                     },
                 }}
                 filters={[
-                    {
-                        label: 'Protocolo',
-                        keyName: 'coSeqEventoExterno',
-                        operator: 'igual',
-                        operators: ['igual', 'maior que', 'menor que'],
-                        type: 'number',
-                        value: '',
-                    },
-                    {
-                        label: 'Local',
-                        keyName: 'dsEnderecoLocal',
-                        operator: 'contem',
-                        operators: ['igual', 'contem'],
-                        type: 'string',
-                        value: '',
-                    },
-                    {
-                        label: 'Data da Solicitação',
-                        keyName: 'dtCadastro',
-                        operator: 'data exata',
-                        operators: ['data exata', 'entre', 'antes de', 'depois de'],
-                        type: 'date',
-                        value: '',
-                    },
-                    {
-                        label: 'Datas',
-                        keyName: 'dtTableDates',
-                        operator: 'data inicio',
-                        operators: ['data inicio', 'data fim', 'tem a data'],
-                        type: 'dates',
-                        customFunc: 'datas',
-                        value: '',
-                    },
-                    {
-                        label: 'Nome do Evento',
-                        keyName: 'noEvento',
-                        operator: 'contem',
-                        operators: ['igual', 'contem'],
-                        type: 'string',
-                        value: '',
-                    },
-                    {
-                        label: 'RA x',
-                        type: 'string',
-                        keyName: 'noTableRa',
-                        operator: 'tem um dos',
-                        operators: ['contem', 'tem um dos'],
-                        useList: [
-                            { id: 'ARAPOANGA', label: 'ARAPOANGA' },
-                            { id: 'ARAPOANGA 2', label: 'ARAPOANGA 2' },
-                        ],
-                        value: '',
-                    },
-                    {
-                        label: 'Público Máximo',
-                        keyName: 'nuPublicoMaximo',
-                        operator: 'igual',
-                        operators: ['igual', 'maior que', 'menor que'],
-                        type: 'number',
-                        value: '',
-                    },
                     // {
                     //     label: 'Protocolo',
-                    //     keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                    //     keyName: 'coSeqEventoExterno',
                     //     operator: 'igual',
                     //     operators: ['igual', 'maior que', 'menor que'],
                     //     type: 'number',
                     //     value: '',
                     // },
                     // {
-                    //     label: 'Descrição',
-                    //     keyName: 'DS_DESCRICAO',
+                    //     label: 'Local',
+                    //     keyName: 'dsEnderecoLocal',
                     //     operator: 'contem',
                     //     operators: ['igual', 'contem'],
                     //     type: 'string',
                     //     value: '',
                     // },
                     // {
-                    //     label: 'Data Abertura',
-                    //     keyName: 'DT_CADASTRO',
+                    //     label: 'Data da Solicitação',
+                    //     keyName: 'dtCadastro',
                     //     operator: 'data exata',
-                    //     operators: ['data exata', 'entre'],
+                    //     operators: ['data exata', 'entre', 'antes de', 'depois de'],
                     //     type: 'date',
                     //     value: '',
                     // },
                     // {
-                    //     label: 'Movimentação Último Estado',
-                    //     keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
-                    //     operator: 'data exata',
-                    //     operators: ['data exata', 'entre'],
-                    //     type: 'date',
+                    //     label: 'Datas',
+                    //     keyName: 'dtTableDates',
+                    //     operator: 'data inicio',
+                    //     operators: ['data inicio', 'data fim', 'tem a data'],
+                    //     type: 'dates',
+                    //     customFunc: 'datas',
                     //     value: '',
                     // },
                     // {
-                    //     label: 'Estado - PAF',
-                    //     keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
+                    //     label: 'Nome do Evento',
+                    //     keyName: 'noEvento',
                     //     operator: 'contem',
-                    //     operators: ['contem', 'tem um dos'],
+                    //     operators: ['igual', 'contem'],
                     //     type: 'string',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'RA x',
+                    //     type: 'string',
+                    //     keyName: 'noTableRa',
+                    //     operator: 'tem um dos',
+                    //     operators: ['contem', 'tem um dos'],
                     //     useList: [
-                    //         { id: 'Pendente', label: 'Pendente' },
-                    //         { id: 'Iniciado', label: 'Iniciado' },
-                    //         { id: 'Finalizado', label: 'Finalizado' },
+                    //         { id: 'ARAPOANGA', label: 'ARAPOANGA' },
+                    //         { id: 'ARAPOANGA 2', label: 'ARAPOANGA 2' },
                     //     ],
                     //     value: '',
                     // },
                     // {
-                    //     label: 'RISP',
-                    //     keyName: 'NO_RISP',
-                    //     operator: 'contem',
-                    //     operators: ['contem', 'tem um dos'],
-                    //     type: 'string',
-                    //     useList: [
-                    //         { id: 'RISP LESTE', label: 'RISP LESTE' },
-                    //         { id: 'RISP METROPOLITANA', label: 'RISP METROPOLITANA' },
-                    //         { id: 'RISP OESTE', label: 'RISP OESTE' },
-                    //         { id: 'RISP SUL', label: 'RISP SUL' },
-                    //     ],
+                    //     label: 'Público Máximo',
+                    //     keyName: 'nuPublicoMaximo',
+                    //     operator: 'igual',
+                    //     operators: ['igual', 'maior que', 'menor que'],
+                    //     type: 'number',
                     //     value: '',
                     // },
-                    // {
-                    //     label: 'Tipo',
-                    //     keyName: 'NO_TIPO_DEVOLUTIVA',
-                    //     operator: 'contem',
-                    //     operators: ['contem', 'tem um dos'],
-                    //     type: 'string',
-                    //     useList: [
-                    //         {
-                    //             id: 'POLUIÇÃO SONORA',
-                    //             label: 'POLUIÇÃO SONORA',
-                    //         },
-                    //         {
-                    //             id: 'POLICIAMENTO OSTENSIVO',
-                    //             label: 'POLICIAMENTO OSTENSIVO',
-                    //         },
-                    //         {
-                    //             id: 'CARCAÇA',
-                    //             label: 'CARCAÇA',
-                    //         },
-                    //         {
-                    //             id: 'ILUMINAÇÃO PÚBLICA',
-                    //             label: 'ILUMINAÇÃO PÚBLICA',
-                    //         },
-                    //         {
-                    //             id: 'SINALIZAÇÃO TRÂNSITO',
-                    //             label: 'SINALIZAÇÃO TRÂNSITO',
-                    //         },
-                    //         {
-                    //             id: 'MELHORIA DO ASFALTO',
-                    //             label: 'MELHORIA DO ASFALTO',
-                    //         },
-                    //         {
-                    //             id: 'POLICIAMENTO INVESTIGATIVO',
-                    //             label: 'POLICIAMENTO INVESTIGATIVO',
-                    //         },
-                    //         {
-                    //             id: 'PODA DE ÁRVORE',
-                    //             label: 'PODA DE ÁRVORE',
-                    //         },
-                    //         {
-                    //             id: 'TRÁFICO DE DROGAS',
-                    //             label: 'TRÁFICO DE DROGAS',
-                    //         },
-                    //         {
-                    //             id: 'DESORDEM SOCIAL',
-                    //             label: 'DESORDEM SOCIAL',
-                    //         },
-                    //         {
-                    //             id: 'CALÇAMENTO',
-                    //             label: 'CALÇAMENTO',
-                    //         },
-                    //         {
-                    //             id: 'INVASÃO DE TERRA',
-                    //             label: 'INVASÃO DE TERRA',
-                    //         },
-                    //         {
-                    //             id: 'FISCALIZAÇÃO DE TRÂNSITO',
-                    //             label: 'FISCALIZAÇÃO DE TRÂNSITO',
-                    //         },
-                    //         {
-                    //             id: 'ENGENHARIA DE TRÂNSITO',
-                    //             label: 'ENGENHARIA DE TRÂNSITO',
-                    //         },
-                    //         {
-                    //             id: 'OUTROS',
-                    //             label: 'OUTROS',
-                    //         },
-                    //     ],
-                    //     value: '',
-                    // },
+                    {
+                        label: 'Protocolo',
+                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
+                        operator: 'igual',
+                        operators: ['igual', 'maior que', 'menor que'],
+                        type: 'number',
+                        value: '',
+                    },
+                    {
+                        label: 'Descrição',
+                        keyName: 'DS_DESCRICAO',
+                        operator: 'contem',
+                        operators: ['igual', 'contem'],
+                        type: 'string',
+                        value: '',
+                    },
+                    {
+                        label: 'Órgão',
+                        keyName: 'IOA_LIST',
+                        operator: 'contem',
+                        operators: ['contem', 'tem um dos'],
+                        useList: [
+                            {
+                                id: 'sspdf',
+                                label: 'SSPDF - SECRETARIA DE ESTADO DA SEGURANÇA PÚBLICA DO DF',
+                            },
+                            {
+                                id: 'dpf',
+                                label: 'DPF - DEPARTAMENTO DE POLÍCIA FEDERAL',
+                            },
+                            {
+                                id: 'detran-df',
+                                label: 'DETRAN-DF - DEPARTAMENTO DE TRÂNSITO DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'sefaz',
+                                label: 'SEFAZ - SECRETARIA DE ESTADO DE FAZENDA DO DF',
+                            },
+                            {
+                                id: 'tcb',
+                                label: 'TCB - TRANSPORTE COLETIVO DE BRASILIA',
+                            },
+                            {
+                                id: 'derdf',
+                                label: 'DERDF - DEPARTAMENTO DE ESTRADAS DE RODAGEM DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'sejus',
+                                label: 'SEJUS - SECRETARIA DE JUSTIÇA E CIDADANIA',
+                            },
+                            {
+                                id: 'slu',
+                                label: 'SLU - SERVIÇO DE LIMPEZA URBANA',
+                            },
+                            {
+                                id: 'samu',
+                                label: 'SAMU - SERVIÇO DE ATENDIMENTO MOVÉL DE URGÊNCIA',
+                            },
+                            {
+                                id: 'ciob',
+                                label: 'CIOB - CENTRO INTEGRADO DE OPERAÇÕES DE BRASÍLIA',
+                            },
+                            {
+                                id: 'prf',
+                                label: 'PRF - POLÍCIA RODOVIÁRIA FEDERAL',
+                            },
+                            {
+                                id: 'semob',
+                                label: 'SEMOB - SECRETARIA DE TRANSPORTE E MOBILIDADE',
+                            },
+                            {
+                                id: 'sesipe-df',
+                                label: 'SESIPE-DF - SUBSECRETARIA DO SISTEMA PENITENCIÁRIO DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'ses',
+                                label: 'SES - SECRETARIA DE SAÚDE',
+                            },
+                            {
+                                id: 'metro-df',
+                                label: 'METRO-DF - COMPANHIA DO METROPOLITANO DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'abin ',
+                                label: 'ABIN  - AGÊNCIA BRASILEIRA DE INTELIGÊNCIA',
+                            },
+                            {
+                                id: 'anac',
+                                label: 'ANAC - AGÊNCIA NACIONAL DE AVIAÇÃO CIVIL',
+                            },
+                            {
+                                id: 'anatel ',
+                                label: 'ANATEL  - AGÊNCIA NACIONAL DE TELECOMUNICAÇÕES',
+                            },
+                            {
+                                id: 'aneel ',
+                                label: 'ANEEL  - AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA',
+                            },
+                            {
+                                id: 'antt ',
+                                label: 'ANTT  - AGÊNCIA NACIONAL DE TRANSPORTES TERRESTRES',
+                            },
+                            {
+                                id: 'anvisa ',
+                                label: 'ANVISA  - AGÊNCIA NACIONAL DE VIGILÂNCIA SANITÁRIA',
+                            },
+                            {
+                                id: 'ascom',
+                                label: 'ASCOM - ASSESSORIA DE COMUNICAÇÃO',
+                            },
+                            {
+                                id: 'caesb ',
+                                label: 'CAESB  - COMPANHIA DE SANEAMENTO AMBIENTAL DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'casa civil ',
+                                label: 'CASA CIVIL  - CASA CIVIL DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'casa militar ',
+                                label: 'CASA MILITAR  - CASA MILITAR DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'ceb ',
+                                label: 'CEB  - COMPANHIA ENERGÉTICA DE BRASÍLIA',
+                            },
+                            {
+                                id: 'cmp ',
+                                label: 'CMP  - COMANDO MILITAR DO PLANALTO',
+                            },
+                            {
+                                id: 'depol - câmara dos deputados',
+                                label: 'DEPOL - CÂMARA DOS DEPUTADOS - DEPARTAMENTO DE POLÍCIA LEGISLATIVA',
+                            },
+                            {
+                                id: 'dftrans',
+                                label: 'DFTRANS - TRANSPORTE URBANO DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'fab ',
+                                label: 'FAB  - FORÇA AÉREA BRASILEIRA',
+                            },
+                            {
+                                id: 'fnsp ',
+                                label: 'FNSP  - FORÇA NACIONAL DE SEGURANÇA',
+                            },
+                            {
+                                id: 'ibram ',
+                                label: 'IBRAM  - INSTITUTO BRASÍLIA AMBIENTAL',
+                            },
+                            {
+                                id: 'mb ',
+                                label: 'MB  - MARINHA DO BRASIL',
+                            },
+                            {
+                                id: 'md ',
+                                label: 'MD  - MINISTÉRIO DA DEFESA',
+                            },
+                            {
+                                id: 'mj ',
+                                label: 'MJ  - MISTÉRIO DA JUSTIÇA',
+                            },
+                            {
+                                id: 'mre ',
+                                label: 'MRE  - MINISTÉRIO DAS RELAÇÕES EXTERIORES',
+                            },
+                            {
+                                id: 'novacap ',
+                                label: 'NOVACAP  - COMPANHIA URBANIZADORA DA NOVA CAPITAL',
+                            },
+                            {
+                                id: 'pf ',
+                                label: 'PF  - POLÍCIA FEDERAL',
+                            },
+                            {
+                                id: 'stf ',
+                                label: 'STF  - SUPREMO TRIBUNAL FEDERAL',
+                            },
+                            {
+                                id: 'tjdf ',
+                                label: 'TJDF  - TRIBUNAL DE JUSTIÇA DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'vij ',
+                                label: 'VIJ  - VARA DA INFÂNCIA E JUVENTUDE',
+                            },
+                            {
+                                id: 'tre-df',
+                                label: 'TRE-DF - TRIBUNAL REGIONAL ELEITORAL',
+                            },
+                            {
+                                id: 'tse',
+                                label: 'TSE - TRIBUNAL SUPERIOR ELEITORAL',
+                            },
+                            {
+                                id: 'si/sspdf',
+                                label: 'SI/SSPDF - SUBSECRETARIA DE INTELIGÊNCIA',
+                            },
+                            {
+                                id: 'seagri',
+                                label: 'SEAGRI - SECRETARIA DE AGRICULTURA DO DF',
+                            },
+                            {
+                                id: 'secult',
+                                label: 'SECULT - SUB SECRETÁRIA DE CULTURA',
+                            },
+                            {
+                                id: 'sedes',
+                                label: 'SEDES - SECRETARIA DE DESENVOLVIMENTO SOCIAL DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'codhab',
+                                label: 'CODHAB - COMPANHIA DE DESENVOLVIMENTO HABITACIONAL',
+                            },
+                            {
+                                id: 'secretaria da mulher',
+                                label: 'SECRETARIA DA MULHER - SECRETARIA DA MULHER',
+                            },
+                            {
+                                id: 'mec - ministério da educação',
+                                label: 'MEC - MINISTÉRIO DA EDUCAÇÃO - MINISTÉRIO DA EDUCAÇÃO',
+                            },
+                            {
+                                id: 'secti',
+                                label: 'SECTI - SECRETARIA DE CIÊNCIA, TECNOLOGIA E INOVAÇÃO',
+                            },
+                            {
+                                id: 'df legal',
+                                label: 'DF LEGAL - DF LEGAL',
+                            },
+                            {
+                                id: 'terracap',
+                                label: 'TERRACAP - TERRACAP - Agência de Desenvolvimento do Distrito Federal',
+                            },
+                            {
+                                id: 'suprec/ssp',
+                                label: 'SUPREC/SSP - SUBSECRETARIA DE PREVENÇÃO A CRIMINALIDADE',
+                            },
+                            {
+                                id: 'secid',
+                                label: 'SECID - SECRETARIA EXECUTIVA DAS CIDADES',
+                            },
+                            {
+                                id: 'gsi',
+                                label: 'GSI - GABINETE DE SEGURANÇA INSTITUCIONAL',
+                            },
+                            {
+                                id: 'adm erb',
+                                label: 'ADM ERB - ADMINISTRAÇÃO DA ESTAÇÃO RODOVIÁRIA DE BRASÍLIA',
+                            },
+                            {
+                                id: 'ra - i',
+                                label: 'RA - I - ADMINISTRAÇÃO REGIONAL DO PLANO PILOTO',
+                            },
+                            {
+                                id: 'cime',
+                                label: 'CIME - CENTRO DE MONITORAÇÃO ELETRÔNICA',
+                            },
+                            {
+                                id: 'gsi',
+                                label: 'GSI - GABINETE DE SEGURANÇA INSTITUCIONAL',
+                            },
+                            {
+                                id: 'ra - xxxii',
+                                label: 'RA - XXXII - ADMINISTRAÇÃO REGIONAL DO SOL NASCENTE E PÔR DO SOL',
+                            },
+                            {
+                                id: 'ibama',
+                                label: 'IBAMA - INSTITUTO BRASILEIRO DO MEIO AMBIENTE E DOS RECURSOS NATURAIS RENOVÁVEIS',
+                            },
+                            {
+                                id: 'dnit',
+                                label: 'DNIT - DEPARTAMENTO NACIONAL DE INFRAESTRUTURA DE TRANSPORTES',
+                            },
+                            {
+                                id: 'sema',
+                                label: 'SEMA - SECRETARIA DE ESTADO DO MEIO AMBIENTE DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'inmetro',
+                                label: 'INMETRO - INSTITUTO NACIONAL DE METROLOGIA, QUALIDADE E TECNOLOGIA',
+                            },
+                            {
+                                id: 'anp',
+                                label: 'ANP - AGÊNCIA NACIONAL DO PETRÓLEO',
+                            },
+                            {
+                                id: 'funai',
+                                label: 'FUNAI - FUNDAÇÃO NACIONAL DO ÍNDIO',
+                            },
+                            {
+                                id: 'ra - iii',
+                                label: 'RA - III - ADMINISTRAÇÃO REGIONAL DE TAGUATINGA',
+                            },
+                            {
+                                id: 'fgv',
+                                label: 'FGV - FUNDAÇÃO GETÚLIO VARGAS',
+                            },
+                            {
+                                id: 'see/df',
+                                label: 'SEE/DF - SECRETARIA DE ESTADO DE EDUCAÇÃO',
+                            },
+                            {
+                                id: 'cesl',
+                                label: 'CESL - CAMPO DA ESPERANÇA SERVIÇOS LTDA',
+                            },
+                            {
+                                id: 'ect',
+                                label: 'ECT - EMPRESA BRASILEIRA DE CORREIOS E TELÉGRAFOS',
+                            },
+                            {
+                                id: 'inep',
+                                label: 'INEP - INSTITUTO NACIONAL DE ESTUDOS E PESQUISAS',
+                            },
+                            {
+                                id: 'ra - xv',
+                                label: 'RA - XV - ADMINISTRAÇÃO REGIONAL DO RECANTO DAS EMAS',
+                            },
+                            {
+                                id: 'ra - xiv',
+                                label: 'RA - XIV - ADMINISTRAÇÃO REGIONAL DE SÃO SEBASTIÃO',
+                            },
+                            {
+                                id: 'ra - xii',
+                                label: 'RA - XII - ADMINISTRAÇÃO REGIONAL DE SAMAMBAIA',
+                            },
+                            {
+                                id: 'eb',
+                                label: 'EB - EXÉRCITO BRASILEIRO',
+                            },
+                            {
+                                id: 'sodf',
+                                label: 'SODF - SECRETARIA DE ESTADO DE OBRAS E INFRAESTRUTURA DO DISTRITO FEDERAL',
+                            },
+                            {
+                                id: 'ra - xxix',
+                                label: 'RA - XXIX - ADMINISTRAÇÃO REGIONAL DO SETOR DE INDÚSTRIA E ABASTECIMENTO',
+                            },
+                            {
+                                id: 'sbi',
+                                label: 'SBI - Subsecretaria de inteligência',
+                            },
+                            {
+                                id: 'ra - ii',
+                                label: 'RA - II - ADMINISTRAÇÃO REGIONAL DO GAMA',
+                            },
+                            {
+                                id: 'ra - iv',
+                                label: 'RA - IV - ADMINISTRAÇÃO REGIONAL DE BRAZLÂNDIA',
+                            },
+                            {
+                                id: 'ra - v',
+                                label: 'RA - V - ADMINISTRAÇÃO REGIONAL DE SOBRADINHO',
+                            },
+                            {
+                                id: 'ra - vi',
+                                label: 'RA - VI - ADMINISTRAÇÃO REGIONAL DE PLANALTINA',
+                            },
+                            {
+                                id: 'ra - vii',
+                                label: 'RA - VII - ADMINISTRAÇÃO REGIONAL DO PARANOÁ',
+                            },
+                            {
+                                id: 'ra - vii',
+                                label: 'RA - VII - ADMINISTRAÇÃO REGIONAL DO NÚCLEO BANDEIRANTE',
+                            },
+                            {
+                                id: 'ra - ix',
+                                label: 'RA - IX - ADMINISTRAÇÃO REGIONAL DE CEILÂNDIA',
+                            },
+                            {
+                                id: 'ra - x',
+                                label: 'RA - X - ADMINISTRAÇÃO REGIONAL DO GUARÁ',
+                            },
+                            {
+                                id: 'ra - xi',
+                                label: 'RA - XI - ADMINISTRAÇÃO REGIONAL DO CRUZEIRO',
+                            },
+                            {
+                                id: 'ra - xiii',
+                                label: 'RA - XIII - ADMINISTRAÇÃO REGIONAL DE SANTA MARIA',
+                            },
+                            {
+                                id: 'ra - xvi',
+                                label: 'RA - XVI - ADMINISTRAÇÃO REGIONAL DO LAGO SUL',
+                            },
+                            {
+                                id: 'ra - xvii',
+                                label: 'RA - XVII - ADMINISTRAÇÃO REGIONAL DO RIACHO FUNDO',
+                            },
+                            {
+                                id: 'ra - xvii',
+                                label: 'RA - XVII - ADMINISTRAÇÃO REGIONAL DO LAGO NORTE',
+                            },
+                            {
+                                id: 'ra - xix',
+                                label: 'RA - XIX - ADMINISTRAÇÃO REGIONAL DA CANDANGOLÂNDIA',
+                            },
+                            {
+                                id: 'ra - xx',
+                                label: 'RA - XX - ADMINISTRAÇÃO REGIONAL DE ÁGUAS CLARAS',
+                            },
+                            {
+                                id: 'ra - xxi',
+                                label: 'RA - XXI - ADMINISTRAÇÃO REGIONAL DO RIACHO FUNDO II',
+                            },
+                            {
+                                id: 'ra - xxii',
+                                label: 'RA - XXII - ADMINISTRAÇÃO REGIONAL DO SUDOESTE/OCTOGONAL',
+                            },
+                            {
+                                id: 'ra - xxiii',
+                                label: 'RA - XXIII - ADMINISTRAÇÃO REGIONAL DO VARJÃO',
+                            },
+                            {
+                                id: 'ra - xxiv',
+                                label: 'RA - XXIV - ADMINISTRAÇÃO REGIONAL DO PARK WAY',
+                            },
+                            {
+                                id: 'ra - xxv',
+                                label: 'RA - XXV - ADMINISTRAÇÃO REGIONAL DO SCIA/ESTRUTURAL',
+                            },
+                            {
+                                id: 'ra - xxvi',
+                                label: 'RA - XXVI - ADMINISTRAÇÃO REGIONAL DE SOBRADINHO II',
+                            },
+                            {
+                                id: 'ra - xxvii',
+                                label: 'RA - XXVII - ADMINISTRAÇÃO REGIONAL DO JARDIM BOTÂNICO',
+                            },
+                            {
+                                id: 'ra - xxvii',
+                                label: 'RA - XXVII - ADMINISTRAÇÃO REGIONAL DO ITAPOÃ',
+                            },
+                            {
+                                id: 'ra - xxx',
+                                label: 'RA - XXX - ADMINISTRAÇÃO REGIONAL DE VICENTE PIRES',
+                            },
+                            {
+                                id: 'ra - xxxi',
+                                label: 'RA - XXXI - ADMINISTRAÇÃO REGIONAL DA FERCAL',
+                            },
+                            {
+                                id: 'ra - xxxiii',
+                                label: 'RA - XXXIII - ADMINISTRAÇÃO REGIONAL DE ARNIQUEIRA',
+                            },
+                            {
+                                id: 'ra - xxxiv',
+                                label: 'RA - XXXIV - ADMINISTRAÇÃO REGIONAL DE ARAPOANGA',
+                            },
+                            {
+                                id: 'ra - xxxv',
+                                label: 'RA - XXXV - ADMINISTRAÇÃO REGIONAL DE ÁGUA QUENTE',
+                            },
+                            {
+                                id: 'regional de ensino',
+                                label: 'Regional de Ensino - Regional de Ensino',
+                            },
+                            {
+                                id: '1º bpm/pmdf',
+                                label: '1º BPM/PMDF - Asa Sul e Vila Telebrasília',
+                            },
+                            {
+                                id: '2º bpm/pmdf',
+                                label: '2º BPM/PMDF - Taguatinga e Taguaparque',
+                            },
+                            {
+                                id: '3º bpm/pmdf',
+                                label: '3º BPM/PMDF - Asa Norte e Noroeste',
+                            },
+                            {
+                                id: '4º bpm/pmdf',
+                                label: '4º BPM/PMDF - Guára I e II',
+                            },
+                            {
+                                id: '5º bpm/pmdf',
+                                label: '5º BPM/PMDF - Lago Sul e Aeroporto',
+                            },
+                            {
+                                id: '6º bpm/pmdf',
+                                label: '6º BPM/PMDF - Área Central, Esplanada dos Ministérios, Vila Planalto e Setor de Clubes Esportivos Norte',
+                            },
+                            {
+                                id: '7º bpm/pmdf',
+                                label: '7º BPM/PMDF - Cruzeiro, Sudoeste e Octogonal',
+                            },
+                            {
+                                id: '8º bpm/pmdf',
+                                label: '8º BPM/PMDF - Ceilândia Sul e Norte, Pôr do Sol, Sol Nascente e Pró-DF',
+                            },
+                            {
+                                id: '9º bpm/pmdf',
+                                label: '9º BPM/PMDF - Gama, Ponte Alta e Engenho das Lajes Urbano',
+                            },
+                            {
+                                id: '10º bpm/pmdf',
+                                label: '10º BPM/PMDF - Ceilândia Norte, Condomínio Privê e Sol Nascente',
+                            },
+                            {
+                                id: '11º bpm/pmdf',
+                                label: '11º BPM/PMDF - Samambaia',
+                            },
+                            {
+                                id: '13º bpm/pmdf',
+                                label: '13º BPM/PMDF - Sobradinho e Sobradinho II, Grande Colorado, Condomínio RK, Vila Basevi e Fercal',
+                            },
+                            {
+                                id: '14º bpm/pmdf',
+                                label: '14º BPM/PMDF - Planaltina, Arapoanga, Mestre DArmas e Vale do Amanhecer',
+                            },
+                            {
+                                id: '15º bpm/pmdf',
+                                label: '15º BPM/PMDF - Estrutural, SCIA, SIA, Colônia Agrícola 26 de Setembro, Colônia Agrícola Cabeceira do Valo e Núcleo Rural Cana do Reino',
+                            },
+                            {
+                                id: '16º bpm/pmdf',
+                                label: '16º BPM/PMDF - Brazlândia e Incra 08',
+                            },
+                            {
+                                id: '17º bpm/pmdf',
+                                label: '17º BPM/PMDF - Águas Claras, Vicente Pires, Jockey Club e Park Way',
+                            },
+                            {
+                                id: '20º bpm/pmdf',
+                                label: '20º BPM/PMDF - Paranoá e Itapoã',
+                            },
+                            {
+                                id: '21º bpm/pmdf',
+                                label: '21º BPM/PMDF - São Sebastião, Jardim Botânico, Jardins Magueiral e Núcleo Rural Café sem Troco',
+                            },
+                            {
+                                id: '24º bpm/pmdf',
+                                label: '24º BPM/PMDF - Lago Norte, Varjão, Taquari e Granja do Torto',
+                            },
+                            {
+                                id: '25º bpm/pmdf',
+                                label: '25º BPM/PMDF - Núcelo Bandeirante, Candangolândia, Metropolitana e Setor de Mansões Park Way',
+                            },
+                            {
+                                id: '26º bpm/pmdf',
+                                label: '26º BPM/PMDF - Santa Maria, Porto Rico e DVO',
+                            },
+                            {
+                                id: '27º bpm/pmdf',
+                                label: '27º BPM/PMDF - Recanto das Emas, Água Quente e Tororó',
+                            },
+                            {
+                                id: '28º bpm/pmdf',
+                                label: '28º BPM/PMDF - Riacho Fundo I e II, CAUB',
+                            },
+                            {
+                                id: 'bpma/pmdf',
+                                label: 'BPMA/PMDF - Batalhão de Polícia Militar Ambiental',
+                            },
+                            {
+                                id: 'bpr/pmdf',
+                                label: 'BPR/PMDF - Batalhão de Policiamento Rural',
+                            },
+                            {
+                                id: 'bpesc/pmdf',
+                                label: 'BPESC/PMDF - Batalhão de Policiamento Escolar',
+                            },
+                            {
+                                id: 'bptran/pmdf',
+                                label: 'BPTRAN/PMDF - Batalhão de Policiamento de Trânsito',
+                            },
+                            {
+                                id: 'bprv/pmdf',
+                                label: 'BPRV/PMDF - Batalhão de Policiamento Rodoviário',
+                            },
+                            {
+                                id: 'copom/pmdf',
+                                label: 'COPOM/PMDF - Centro de Operações',
+                            },
+                            {
+                                id: 'cpp/pmdf',
+                                label: 'CPP/PMDF - Centro de Políticas de Segurança Pública',
+                            },
+                            {
+                                id: 'outros/pmdf',
+                                label: 'Outros/PMDF - Demais não contemplados especificamente',
+                            },
+                            {
+                                id: '1º gbm/cbmdf',
+                                label: '1º GBM/CBMDF - Brasília',
+                            },
+                            {
+                                id: '2º gbm/cbmdf',
+                                label: '2º GBM/CBMDF - Taguatinga',
+                            },
+                            {
+                                id: '3º gbm/cbmdf',
+                                label: '3º GBM/CBMDF - SIA',
+                            },
+                            {
+                                id: '4º gbm/cbmdf',
+                                label: '4º GBM/CBMDF - Asa Norte',
+                            },
+                            {
+                                id: '6º gbm/cbmdf',
+                                label: '6º GBM/CBMDF - Núcleo Bandeirante',
+                            },
+                            {
+                                id: '7º gbm/cbmdf',
+                                label: '7º GBM/CBMDF - Brazlândia',
+                            },
+                            {
+                                id: '8º gbm/cbmdf',
+                                label: '8º GBM/CBMDF - Ceilândia',
+                            },
+                            {
+                                id: '9º gbm/cbmdf',
+                                label: '9º GBM/CBMDF - Planaltina',
+                            },
+                            {
+                                id: '10º gbm/cbmdf',
+                                label: '10º GBM/CBMDF - Paranoá',
+                            },
+                            {
+                                id: '11º gbm/cbmdf',
+                                label: '11º GBM/CBMDF - Lago Sul',
+                            },
+                            {
+                                id: '12º gbm/cbmdf',
+                                label: '12º GBM/CBMDF - Samambaia',
+                            },
+                            {
+                                id: '13º gbm/cbmdf',
+                                label: '13º GBM/CBMDF - Guara I',
+                            },
+                            {
+                                id: '15º gbm/cbmdf',
+                                label: '15º GBM/CBMDF - Asa Sul',
+                            },
+                            {
+                                id: '16º gbm/cbmdf',
+                                label: '16º GBM/CBMDF - Gama',
+                            },
+                            {
+                                id: '17º gbm/cbmdf',
+                                label: '17º GBM/CBMDF - São Sebastião',
+                            },
+                            {
+                                id: '18º gbm/cbmdf',
+                                label: '18º GBM/CBMDF - Santa Maria',
+                            },
+                            {
+                                id: '19º gbm/cbmdf',
+                                label: '19º GBM/CBMDF - Candangolândia',
+                            },
+                            {
+                                id: '20º gbm/cbmdf',
+                                label: '20º GBM/CBMDF - Recanto das Emas',
+                            },
+                            {
+                                id: '21º gbm/cbmdf',
+                                label: '21º GBM/CBMDF - Riacho Fundo',
+                            },
+                            {
+                                id: '22º gbm/cbmdf',
+                                label: '22º GBM/CBMDF - Sobradinho',
+                            },
+                            {
+                                id: '25º gbm/cbmdf',
+                                label: '25º GBM/CBMDF - Águas Claras',
+                            },
+                            {
+                                id: '34º gbm/cbmdf',
+                                label: '34º GBM/CBMDF - Lago Norte',
+                            },
+                            {
+                                id: '36º gbm/cbmdf',
+                                label: '36º GBM/CBMDF - Recanto das Emas Centro',
+                            },
+                            {
+                                id: '37º gbm/cbmdf',
+                                label: '37º GBM/CBMDF - Samambaia Centro',
+                            },
+                            {
+                                id: '41º gbm/cbmdf',
+                                label: '41º GBM/CBMDF - Setor de Indústria de Ceilândia',
+                            },
+                            {
+                                id: '45º gbm/cbmdf',
+                                label: '45º GBM/CBMDF - Sudoeste e Octogonal',
+                            },
+                            {
+                                id: 'gaeph/cbmdf',
+                                label: 'GAEPH/CBMDF - Grupamento de Atendimento de Emergência Pré-Hospitalar',
+                            },
+                            {
+                                id: 'gbs/cbmdf',
+                                label: 'GBS/CBMDF - Grupamento de Busca e Salvamento',
+                            },
+                            {
+                                id: 'gpciu/cbmdf',
+                                label: 'GPCIU/CBMDF - Grupamento de Prevenção e Combate a Incêndio Urbano',
+                            },
+                            {
+                                id: 'gpram/cbmdf',
+                                label: 'GPRAM/CBMDF - Grupamento de Proteção Ambiental',
+                            },
+                            {
+                                id: 'gpciv',
+                                label: 'GPCIV - Grupamento de Proteção Civil',
+                            },
+                            {
+                                id: 'gavop',
+                                label: 'GAVOP - Grupamento de Aviação Operacional',
+                            },
+                            {
+                                id: 'outros/cbmdf',
+                                label: 'Outros/CBMDF - Demais unidades não contempladas especificamente',
+                            },
+                            {
+                                id: '1ª dp/pcdf',
+                                label: '1ª DP/PCDF - Asa Sul',
+                            },
+                            {
+                                id: '2ª dp/pcdf',
+                                label: '2ª DP/PCDF - Asa Norte',
+                            },
+                            {
+                                id: '3ª dp/pcdf',
+                                label: '3ª DP/PCDF - Cruzeiro Velho',
+                            },
+                            {
+                                id: '4ª dp/pcdf',
+                                label: '4ª DP/PCDF - Guára II',
+                            },
+                            {
+                                id: '5ª dp/pcdf',
+                                label: '5ª DP/PCDF - Setor de Grandes Áreas Norte',
+                            },
+                            {
+                                id: '6ª dp/pcdf',
+                                label: '6ª DP/PCDF - Paranoá',
+                            },
+                            {
+                                id: '8ª dp/pcdf',
+                                label: '8ª DP/PCDF - Setor Complementar de Indústria e Abastecimento',
+                            },
+                            {
+                                id: '9ª dp/pcdf',
+                                label: '9ª DP/PCDF - Lago Norte',
+                            },
+                            {
+                                id: '10ª dp/pcdf',
+                                label: '10ª DP/PCDF - Lago Sul',
+                            },
+                            {
+                                id: '11ª dp/pcdf',
+                                label: '11ª DP/PCDF - Núcleo Bandeirante',
+                            },
+                            {
+                                id: '12ª dp/pcdf',
+                                label: '12ª DP/PCDF - Taguacentro Centro',
+                            },
+                            {
+                                id: '13ª dp/pcdf',
+                                label: '13ª DP/PCDF - Sobradinho',
+                            },
+                            {
+                                id: '14ª dp/pcdf',
+                                label: '14ª DP/PCDF - Gama',
+                            },
+                            {
+                                id: '15ª dp/pcdf',
+                                label: '15ª DP/PCDF - Ceilândia Centro',
+                            },
+                            {
+                                id: '16ª dp/pcdf',
+                                label: '16ª DP/PCDF - Planaltina',
+                            },
+                            {
+                                id: '17ª dp/pcdf',
+                                label: '17ª DP/PCDF - Taguatiga Norte',
+                            },
+                            {
+                                id: '18ª dp/pcdf',
+                                label: '18ª DP/PCDF - Brazlândia',
+                            },
+                            {
+                                id: '19ª dp/pcdf',
+                                label: '19ª DP/PCDF - Setor "P" Norte da Ceilândia',
+                            },
+                            {
+                                id: '20ª dp/pcdf',
+                                label: '20ª DP/PCDF - Gama',
+                            },
+                            {
+                                id: '21ª dp/pcdf',
+                                label: '21ª DP/PCDF - Taguatinga Sul',
+                            },
+                            {
+                                id: '23ª dp/pcdf',
+                                label: '23ª DP/PCDF - Setor "P" Sul da Ceilândia',
+                            },
+                            {
+                                id: '24ª dp/pcdf',
+                                label: '24ª DP/PCDF - Setor "O" da Ceilândia',
+                            },
+                            {
+                                id: '26ª dp/pcdf',
+                                label: '26ª DP/PCDF - Samambaia Norte',
+                            },
+                            {
+                                id: '27ª dp/pcdf',
+                                label: '27ª DP/PCDF - Recanto das Emas',
+                            },
+                            {
+                                id: '29ª dp/pcdf',
+                                label: '29ª DP/PCDF - Riacho Fundo',
+                            },
+                            {
+                                id: '30ª dp/pcdf',
+                                label: '30ª DP/PCDF - São Sebastião',
+                            },
+                            {
+                                id: '31ª dp/pcdf',
+                                label: '31ª DP/PCDF - Planaltina',
+                            },
+                            {
+                                id: '32ª dp/pcdf',
+                                label: '32ª DP/PCDF - Samambaia Sul',
+                            },
+                            {
+                                id: '33ª dp/pcdf',
+                                label: '33ª DP/PCDF - Santa Maria',
+                            },
+                            {
+                                id: '35ª dp/pcdf',
+                                label: '35ª DP/PCDF - Sobradinho II',
+                            },
+                            {
+                                id: '38ª dp/pcdf',
+                                label: '38ª DP/PCDF - Vicente Pires',
+                            },
+                            {
+                                id: 'cord/pcdf',
+                                label: 'CORD/PCDF - Coordenação de Repressão às Drogas',
+                            },
+                            {
+                                id: 'chpp/pcdf',
+                                label: 'CHPP/PCDF - Coordenação de Repressão a Homicídios e de Proteção à Pessoa',
+                            },
+                            {
+                                id: 'corf/pcdf',
+                                label: 'CORF/PCDF - Coordenação de Repressão ao Crime contra o Consumidor, a Propriedade Imaterial e a Fraudes',
+                            },
+                            {
+                                id: 'corpatri/pcdf',
+                                label: 'CORPATRI/PCDF - Coordenação de Repressão aos Crimes Patrimonias',
+                            },
+                            {
+                                id: 'dca i/pcdf',
+                                label: 'DCA I/PCDF - Delegacia da Criança e do Adolescente I',
+                            },
+                            {
+                                id: 'dca ii/pcdf',
+                                label: 'DCA II/PCDF - Delegacia da Criança e do Adolescente II',
+                            },
+                            {
+                                id: 'deam i/pcdf',
+                                label: 'DEAM I/PCDF - Delegacia Especial de Atendimento à Mulher I',
+                            },
+                            {
+                                id: 'deam ii/pcdf',
+                                label: 'DEAM II/PCDF - Delegacia Especial de Atendimento à Mulher II',
+                            },
+                            {
+                                id: 'cepema/pcdf',
+                                label: 'CEPEMA/PCDF - Coordenação Especial de Proteção ao Meio Ambiente, à Ordem Urbanística e ao Animal',
+                            },
+                            {
+                                id: 'dpca/pcdf',
+                                label: 'DPCA/PCDF - Delegacia de Proteção à Criança e ao Adolescente',
+                            },
+                            {
+                                id: 'decrin/pcdf',
+                                label: 'DECRIN/PCDF - Delegacia Especial de Repressão aos Crimes por Discriminação Racial, Religiosa ou por Orientação Sexual contra a Pessoa Idosa ou com Deficiência',
+                            },
+                            {
+                                id: 'drcc/pcdf',
+                                label: 'DRCC/PCDF - Delegacia Especial de Repressão aos Crimes Cibernéticos',
+                            },
+                            {
+                                id: 'outros/pcdf',
+                                label: 'Outros/PCDF - Demais unidades não contempladas especificamente',
+                            },
+                            {
+                                id: 'gab/sspdf',
+                                label: 'GAB/SSPDF - Gabinete',
+                            },
+                            {
+                                id: 'si/sspdf',
+                                label: 'SI/SSPDF - Subsecretaria de Inteligência',
+                            },
+                            {
+                                id: 'sudec/sspdf',
+                                label: 'SUDEC/SSPDF - Subsecretaria do Sistema de Defesa Civil',
+                            },
+                            {
+                                id: 'subisp/sspdf',
+                                label: 'SUBISP/SSPDF - Subsecretária de Integração de Políticas em Segurança Pública',
+                            },
+                            {
+                                id: 'suprec/sspdf',
+                                label: 'SUPREC/SSPDF - Subsecretaria de Prevenção à Criminalidade',
+                            },
+                            {
+                                id: 'sopi/sspdf',
+                                label: 'SOPI/SSPDF - Subsecretaria de Operações Integradas',
+                            },
+                            {
+                                id: 'sgi/sspdf',
+                                label: 'SGI/SSPDF - Subsecretaria de Gestão da Informação',
+                            },
+                            {
+                                id: 'segecom/sspdf',
+                                label: 'SEGECOM/SSPDF - Subsecretaria de Escolas de Gestão Compartilhada',
+                            },
+                            {
+                                id: 'suag/sspdf',
+                                label: 'SUAG/SSPDF - Subsecretaria de Administração Geral',
+                            },
+                            {
+                                id: 'suegep/pcdf',
+                                label: 'SUEGEP/PCDF - Subsecretaria de Ensino e Gestão de Pessoas',
+                            },
+                            {
+                                id: 'smt/sspdf',
+                                label: 'SMT/SSPDF - Subsecretaria de Modernização Tecnológica',
+                            },
+                        ],
+                        type: 'string',
+                        value: '',
+                    },
+                    {
+                        label: 'Data Abertura',
+                        keyName: 'DT_CADASTRO',
+                        operator: 'data exata',
+                        operators: ['data exata', 'entre'],
+                        type: 'date',
+                        value: '',
+                    },
+                    {
+                        label: 'Movimentação Último Estado',
+                        keyName: 'TB_HISTORICO_ESTADO.0.DT_CADASTRO',
+                        operator: 'data exata',
+                        operators: ['data exata', 'entre'],
+                        type: 'date',
+                        value: '',
+                    },
+                    {
+                        label: 'Estado - PAF',
+                        keyName: 'TB_HISTORICO_ESTADO.0.DS_ESTADO',
+                        operator: 'contem',
+                        operators: ['contem', 'tem um dos'],
+                        type: 'string',
+                        useList: [
+                            { id: 'Pendente', label: 'Pendente' },
+                            { id: 'Iniciado', label: 'Iniciado' },
+                            { id: 'Finalizado', label: 'Finalizado' },
+                        ],
+                        value: '',
+                    },
+                    {
+                        label: 'RISP',
+                        keyName: 'NO_RISP',
+                        operator: 'contem',
+                        operators: ['contem', 'tem um dos'],
+                        type: 'string',
+                        useList: [
+                            { id: 'RISP LESTE', label: 'RISP LESTE' },
+                            { id: 'RISP METROPOLITANA', label: 'RISP METROPOLITANA' },
+                            { id: 'RISP OESTE', label: 'RISP OESTE' },
+                            { id: 'RISP SUL', label: 'RISP SUL' },
+                        ],
+                        value: '',
+                    },
+                    {
+                        label: 'Tipo',
+                        keyName: 'NO_TIPO_DEVOLUTIVA',
+                        operator: 'contem',
+                        operators: ['contem', 'tem um dos'],
+                        type: 'string',
+                        useList: [
+                            {
+                                id: 'POLUIÇÃO SONORA',
+                                label: 'POLUIÇÃO SONORA',
+                            },
+                            {
+                                id: 'POLICIAMENTO OSTENSIVO',
+                                label: 'POLICIAMENTO OSTENSIVO',
+                            },
+                            {
+                                id: 'CARCAÇA',
+                                label: 'CARCAÇA',
+                            },
+                            {
+                                id: 'ILUMINAÇÃO PÚBLICA',
+                                label: 'ILUMINAÇÃO PÚBLICA',
+                            },
+                            {
+                                id: 'SINALIZAÇÃO TRÂNSITO',
+                                label: 'SINALIZAÇÃO TRÂNSITO',
+                            },
+                            {
+                                id: 'MELHORIA DO ASFALTO',
+                                label: 'MELHORIA DO ASFALTO',
+                            },
+                            {
+                                id: 'POLICIAMENTO INVESTIGATIVO',
+                                label: 'POLICIAMENTO INVESTIGATIVO',
+                            },
+                            {
+                                id: 'PODA DE ÁRVORE',
+                                label: 'PODA DE ÁRVORE',
+                            },
+                            {
+                                id: 'TRÁFICO DE DROGAS',
+                                label: 'TRÁFICO DE DROGAS',
+                            },
+                            {
+                                id: 'DESORDEM SOCIAL',
+                                label: 'DESORDEM SOCIAL',
+                            },
+                            {
+                                id: 'CALÇAMENTO',
+                                label: 'CALÇAMENTO',
+                            },
+                            {
+                                id: 'INVASÃO DE TERRA',
+                                label: 'INVASÃO DE TERRA',
+                            },
+                            {
+                                id: 'FISCALIZAÇÃO DE TRÂNSITO',
+                                label: 'FISCALIZAÇÃO DE TRÂNSITO',
+                            },
+                            {
+                                id: 'ENGENHARIA DE TRÂNSITO',
+                                label: 'ENGENHARIA DE TRÂNSITO',
+                            },
+                            {
+                                id: 'OUTROS',
+                                label: 'OUTROS',
+                            },
+                        ],
+                        value: '',
+                    },
                 ]}
                 columnSize={11}
                 mediaQueryLG={{
