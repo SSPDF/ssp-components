@@ -670,8 +670,6 @@ export function Table({
             .forEach((dt) => {
                 let filteredData: any[] = []
 
-                console.log(dt)
-
                 switch (dt.type) {
                     case 'number':
                         switch (dt.operator) {
