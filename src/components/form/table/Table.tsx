@@ -709,8 +709,14 @@ export function Table({
                                 currentData.forEach((cd) => {
                                     const value = get(cd, dt.keyName, '')
 
-                                    if (formatarString(value) === formatarString(dt.value)) {
-                                        filteredData.push(cd)
+                                    if (dt.useList) {
+                                        if (formatarString(value) === formatarString(dt.value.id)) {
+                                            filteredData.push(cd)
+                                        }
+                                    } else {
+                                        if (formatarString(value) === formatarString(dt.value)) {
+                                            filteredData.push(cd)
+                                        }
                                     }
                                 })
                                 break
@@ -1573,6 +1579,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                             />
                         )
                     case 'contem':
+                    case 'igual':
                         return (
                             <Box width='100%'>
                                 <Autocomplete

@@ -450,6 +450,10 @@ export default function Teste() {
                         const new_value = value.split(' | ').map((x) => x.split(' - ')[0])
                         return new_value
                     },
+                    conseg: (value) => {
+                        console.log(value)
+                        return value
+                    },
                 }}
                 filters={[
                     // {
@@ -526,6 +530,180 @@ export default function Teste() {
                         keyName: 'DS_DESCRICAO',
                         operator: 'contem',
                         operators: ['igual', 'contem'],
+                        type: 'string',
+                        value: '',
+                    },
+                    {
+                        label: 'Conseg',
+                        keyName: 'DS_CONSEG',
+                        operator: 'igual',
+                        operators: ['igual', 'tem um dos'],
+                        useList: [
+                            {
+                                id: '3',
+                                label: 'CONSEG BRASÍLIA',
+                            },
+                            {
+                                id: '4',
+                                label: 'CONSEG BRASÍLIA CENTRO E SIA',
+                            },
+                            {
+                                id: '5',
+                                label: 'CONSEG NOROESTE',
+                            },
+                            {
+                                id: '6',
+                                label: 'CONSEG GAMA',
+                            },
+                            {
+                                id: '7',
+                                label: 'CONSEG GAMA RURAL',
+                            },
+                            {
+                                id: '8',
+                                label: 'CONSEG TAGUATINGA',
+                            },
+                            {
+                                id: '9',
+                                label: 'CONSEG BRAZLÂNIDA',
+                            },
+                            {
+                                id: '10',
+                                label: 'CONSEG BRAZLÂNDIA RURAL',
+                            },
+                            {
+                                id: '11',
+                                label: 'CONSEG SOBRADINHO',
+                            },
+                            {
+                                id: '12',
+                                label: 'CONSEG PLANALTINA',
+                            },
+                            {
+                                id: '13',
+                                label: 'CONSEG PLANALTINA RURAL',
+                            },
+                            {
+                                id: '14',
+                                label: 'CONSEG PARANOÁ',
+                            },
+                            {
+                                id: '15',
+                                label: 'CONSEG PARANOÁ RURAL',
+                            },
+                            {
+                                id: '16',
+                                label: 'CONSEG NÚCLEO BANDEIRANTE',
+                            },
+                            {
+                                id: '17',
+                                label: 'CONSEG CEILÂNDIA',
+                            },
+                            {
+                                id: '18',
+                                label: 'CONSEG GUARÁ',
+                            },
+                            {
+                                id: '19',
+                                label: 'CONSEG CRUZEIRO',
+                            },
+                            {
+                                id: '20',
+                                label: 'CONSEG SAMAMBAIA',
+                            },
+                            {
+                                id: '21',
+                                label: 'CONSEG SANTA MARIA',
+                            },
+                            {
+                                id: '22',
+                                label: 'CONSEG SÃO SEBASTIÃO',
+                            },
+                            {
+                                id: '23',
+                                label: 'CONSEG RECANTO DAS EMAS',
+                            },
+                            {
+                                id: '24',
+                                label: 'CONSEG LAGO SUL',
+                            },
+                            {
+                                id: '25',
+                                label: 'CONSEG RIACHO FUNDO',
+                            },
+                            {
+                                id: '26',
+                                label: 'CONSEG LAGO NORTE',
+                            },
+                            {
+                                id: '27',
+                                label: 'CONSEG CANDANGOLÂNDIA',
+                            },
+                            {
+                                id: '28',
+                                label: 'CONSEG ÁGUAS CLARAS',
+                            },
+                            {
+                                id: '29',
+                                label: 'CONSEG RIACHO FUNDO II',
+                            },
+                            {
+                                id: '30',
+                                label: 'CONSEG SUDOESTE/OCTOGONAL',
+                            },
+                            {
+                                id: '31',
+                                label: 'CONSEG VARJÃO',
+                            },
+                            {
+                                id: '32',
+                                label: 'CONSEG PARK WAY',
+                            },
+                            {
+                                id: '33',
+                                label: 'CONSEG SCIA/ESTRUTURAL',
+                            },
+                            {
+                                id: '34',
+                                label: 'CONSEG SOBRADINHO II',
+                            },
+                            {
+                                id: '35',
+                                label: 'CONSEG JARDIM BOTÂNICO',
+                            },
+                            {
+                                id: '36',
+                                label: 'CONSEG TORORÓ',
+                            },
+                            {
+                                id: '37',
+                                label: 'CONSEG ITAPOÃ',
+                            },
+                            {
+                                id: '38',
+                                label: 'CONSEG SIA',
+                            },
+                            {
+                                id: '39',
+                                label: 'CONSEG VICENTE PIRES',
+                            },
+                            {
+                                id: '40',
+                                label: 'CONSEG FERCAL',
+                            },
+                            {
+                                id: '41',
+                                label: 'CONSEG SOL NASCENTE/PÔR DO SOL',
+                            },
+                            {
+                                id: '42',
+                                label: 'CONSEG ARNIQUEIRA',
+                            },
+                            {
+                                id: '44',
+                                label: 'CONSEG ÁGUA QUENTE',
+                            },
+                        ].map((x) => ({ id: x.label, label: x.label })),
                         type: 'string',
                         value: '',
                     },
