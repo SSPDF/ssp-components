@@ -46,6 +46,13 @@ function removePunctuationAndAccents(text: string) {
     return cleanedText
 }
 
+function formatarString(str: string) {
+    return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+}
+
 interface ColumnData {
     title: string
     keyName: string
@@ -698,7 +705,7 @@ export function Table({
                                 currentData.forEach((cd) => {
                                     const value = get(cd, dt.keyName, '')
 
-                                    if (value === dt.value) {
+                                    if (formatarString(value) === formatarString(dt.value)) {
                                         filteredData.push(cd)
                                     }
                                 })
@@ -710,11 +717,11 @@ export function Table({
                                     if (!value) return
 
                                     if (dt.useList) {
-                                        if (value.includes(dt.value.id)) {
+                                        if (formatarString(value).includes(formatarString(dt.value.id))) {
                                             filteredData.push(cd)
                                         }
                                     } else {
-                                        if (value.includes(dt.value as string)) {
+                                        if (formatarString(value).includes(formatarString(dt.value as string))) {
                                             filteredData.push(cd)
                                         }
                                     }
@@ -726,7 +733,7 @@ export function Table({
 
                                     if (!value) return
 
-                                    if ((dt.value as { id: any; label: string }[]).map((x) => x.id).includes(value)) {
+                                    if ((dt.value as { id: any; label: string }[]).map((x) => formatarString(x.id)).includes(formatarString(value))) {
                                         filteredData.push(cd)
                                     }
                                 })

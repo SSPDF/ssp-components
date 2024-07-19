@@ -465,7 +465,7 @@ export default function Teste() {
                         keyName: 'dsEnderecoLocal',
                         operator: 'contem',
                         operators: ['igual', 'contem'],
-                        type: 'number',
+                        type: 'string',
                         value: '',
                     },
                     {
