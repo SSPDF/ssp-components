@@ -30,14 +30,11 @@ export default function TimePicker({
 
     const handleChange = (newValue: Dayjs | null) => {
         setValue(newValue)
-        context?.formSetValue(name!, newValue?.format('HH:mm'))
     }
 
     useEffect(() => {
-        if (!value) return
-
-        context.formSetValue(name, value.format('HH:mm'))
-    }, [])
+        context.formSetValue(name, value ? value.format('HH:mm') : value)
+    }, [value])
 
     useEffect(() => {
         return () => {
