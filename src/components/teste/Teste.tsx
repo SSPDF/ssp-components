@@ -208,11 +208,6 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <DatePicker name='pessoaEnvolvida.dtNascimento' title='Data de nascimento' md={4} defaultValue={'11/12/2024'} />
-            <TimePicker name='dd' title='Teste' defaultValue='10:32' />
-            <Button type='submit' sx={{ marginTop: 3 }} variant='contained'>
-                Enviar
-            </Button>
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <FetchAutoComplete name='coRA' title='RA:' customLoadingText='Carregando RA' url={`http://localhost:7171/autocomplete`} watchValue={valor} md={6} required />
@@ -392,7 +387,7 @@ export default function Teste() {
                 Mudar
             </Button> */}
 
-            {/* <Table
+            <Table
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
@@ -563,7 +558,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            /> */}
+            />
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}

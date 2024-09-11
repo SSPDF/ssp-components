@@ -1,4 +1,4 @@
-import { ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, Refresh } from '@mui/icons-material'
+import { ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, PendingRounded, Refresh, ReportProblemRounded } from '@mui/icons-material'
 import Clear from '@mui/icons-material/Clear'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
@@ -7,8 +7,8 @@ import {
     Alert,
     Autocomplete,
     Box,
+    BoxProps,
     Button,
-    CircularProgress,
     Collapse,
     FormControl,
     IconButton,
@@ -18,6 +18,7 @@ import {
     PaginationItem,
     Paper,
     Select,
+    Skeleton,
     Stack,
     useMediaQuery,
     useTheme,
@@ -31,11 +32,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import JSZip from 'jszip'
 import get from 'lodash.get'
-import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils//CustomMenu'
-import { toast } from 'react-toastify'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -118,6 +118,8 @@ export function Table({
     filtersFunc,
     filters = [],
     orderBy = [],
+    customErrorMsg = undefined,
+    customTableStyle = {},
     id,
 }: {
     id: string
@@ -132,7 +134,9 @@ export function Table({
     customMarginMobile?: number
     normalize?: boolean
     csvUpper?: boolean
+    customTableStyle?: BoxProps
     multipleDataPath?: string
+    customErrorMsg?: string | ReactNode
     removeQuotes?: boolean
     columns: ColumnData[]
     tableName: string
@@ -900,12 +904,24 @@ export function Table({
 
     if (error)
         return (
-            <Box bgcolor='#E2E8F0' padding={2} marginX={2}>
+            <Box bgcolor='#fff2c8' color='#3e3129' padding={2} marginX={2} borderRadius={4}>
                 <Typography fontSize={24} textAlign='center' fontFamily='Inter'>
                     {error.status === 403 && 'Acesso negado'}
                     {error.status === 500 && (
                         <Box fontWeight={500} textAlign='center'>
-                            Lamentavelmente, ocorreu um imprevisto em nosso servidor. Pedimos a sua compreensão e solicitamos que aguarde por um momento enquanto verificamos a situação.
+                            <ReportProblemRounded sx={{ transform: 'scale(2)', paddingX: 4, marginY: 1, fill: '#3e3129' }} />
+                            <Box>
+                                {customErrorMsg ? (
+                                    customErrorMsg
+                                ) : (
+                                    <>
+                                        Não foi possível se conectar ao servidor no momento. Por favor, aguarde alguns instantes e tente de novo.
+                                        <br />
+                                        <br />
+                                        Caso precise de ajuda, entre em contato pelo email: <strong>cdes@ssp.df.gov.br</strong>
+                                    </>
+                                )}
+                            </Box>
                         </Box>
                     )}
                 </Typography>
@@ -914,10 +930,41 @@ export function Table({
     if (isLoading)
         return (
             <Stack sx={{ height: '100%', width: '100%' }} justifyContent='center' alignItems='center'>
-                <Typography fontWeight={600} fontSize={20} paddingBottom={2} marginTop={14}>
-                    Carregando {tableName}
-                </Typography>
-                <CircularProgress />
+                <Box width='100%'>
+                    <Stack direction='row' justifyContent='center' alignItems='center' justifyItems='center' spacing={2} marginY={4}>
+                        <PendingRounded sx={{ fill: '#5e5e5e' }} />
+                        <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color='#5e5e5e'>
+                            Carregando {tableName}
+                        </Typography>
+                    </Stack>
+                    <LinearProgress color='inherit' />
+                    {Array(10)
+                        .fill('')
+                        .map((x) => (
+                            <Stack
+                                direction={{
+                                    xs: 'column',
+                                    md: 'row',
+                                }}
+                                spacing={{
+                                    xs: 3,
+                                    md: 1,
+                                }}
+                                justifyContent='space-between'
+                                paddingY={8}
+                                borderBottom='1px solid #cacaca'
+                            >
+                                {Array(7)
+                                    .fill(0)
+                                    .map((y) => (
+                                        <Box>
+                                            <Skeleton width={60} />
+                                            <Skeleton width={120} />
+                                        </Box>
+                                    ))}
+                            </Stack>
+                        ))}
+                </Box>
             </Stack>
         )
 
@@ -925,7 +972,7 @@ export function Table({
 
     return (
         <>
-            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6}>
+            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6} {...customTableStyle}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
                     <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} height={{ md: '40px', xs: 'inherit' }} width='100%'>
                         <TextField
