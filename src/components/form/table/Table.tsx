@@ -47,8 +47,10 @@ function removePunctuationAndAccents(text: string) {
     return cleanedText
 }
 
-function formatarString(str: string) {
-    return str
+function formatarString(str: string | number) {
+    const value: string = typeof str !== 'string' ? str.toString() : str
+
+    return value
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
@@ -909,7 +911,7 @@ export function Table({
                     {error.status === 403 && 'Acesso negado'}
                     {error.status === 500 && (
                         <Box fontWeight={500} textAlign='center'>
-                            <ReportProblemRounded sx={{ transform: 'scale(2)', paddingX: 4, marginY: 1, fill: '#3e3129' }} />
+                            <ReportProblemRounded sx={{ transform: 'scale(2)', marginY: 1, fill: '#3e3129' }} />
                             <Box>
                                 {customErrorMsg ? (
                                     customErrorMsg
@@ -1393,7 +1395,7 @@ interface FilterValue {
     operators: FilterOperators[]
     value: string | any
     value2?: string | any
-    useList?: { id: string; label: string }[]
+    useList?: { id: string | number; label: string }[]
     customFunc?: string
 }
 

@@ -188,7 +188,7 @@ function a11yProps(index: number) {
 const okok = document.getElementById('ronaldo')
 
 export default function Teste() {
-    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table'))
+    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table2'))
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState('')
@@ -391,145 +391,153 @@ export default function Teste() {
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
-                dataPath='body.data'
+                // dataPath='body.data'
                 tableName='Teste'
                 columns={[
                     {
-                        keyName: 'coSeqEventoExterno',
+                        keyName: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                         title: 'Protocolo',
+                        size: 0.7,
                     },
                     {
-                        keyName: 'dsEnderecoLocal',
-                        title: 'Local',
-                    },
-                    {
-                        keyName: 'dtCadastro',
-                        title: 'Data de Solicitação',
-                    },
-
-                    {
-                        keyName: 'noEvento',
-                        title: 'Nome do Evento',
-                    },
-                    {
-                        keyName: 'noTableRa',
-                        title: 'RA',
-                    },
-                    {
-                        keyName: 'nuPublicoMaximo',
-                        title: 'Público Máximo',
-                    },
-                    {
-                        keyName: 'dtTableDates',
-                        title: 'Datas',
+                        keyName: 'DS_DESCRICAO',
+                        title: 'Descrição',
                         size: 2,
-                        // customComponent: (txt) => getDates(txt),
                     },
                     {
-                        keyName: 'nuProcessoFormatadoSei',
-                        title: 'Processo SEI',
+                        keyName: 'NO_RISP',
+                        title: 'RISP',
                     },
                     {
-                        keyName: 'stEventoExterno',
-                        title: 'Status do Evento',
-                        customComponent: (txt) => getStatus(txt),
+                        keyName: 'CO_EIXO_SEGURANCA_INTEGRAL',
+                        title: 'Eixo Segurança Integral',
                     },
                 ]}
                 filters={[
                     {
-                        label: 'Protocolo',
-                        keyName: 'coSeqEventoExterno',
+                        label: 'Eixo',
+                        keyName: 'CO_EIXO_SEGURANCA_INTEGRAL',
                         operator: 'igual',
-                        operators: ['igual', 'maior que', 'menor que'],
-                        type: 'number',
-                        value: '',
-                    },
-                    {
-                        label: 'Local',
-                        keyName: 'dsEnderecoLocal',
-                        operator: 'contem',
-                        operators: ['igual', 'contem'],
-                        type: 'string',
-                        value: '',
-                    },
-                    {
-                        label: 'Data da Solicitação',
-                        keyName: 'dtCadastro',
-                        operator: 'data exata',
-                        operators: ['data exata', 'entre'],
-                        type: 'date',
-                        value: '',
-                    },
-                    {
-                        label: 'Nome do Evento',
-                        keyName: 'noEvento',
-                        operator: 'contem',
-                        operators: ['igual', 'contem'],
-                        type: 'string',
-                        value: '',
-                    },
-                    {
-                        label: 'Público Máximo',
-                        keyName: 'nuPublicoMaximo',
-                        operator: 'igual',
-                        operators: ['igual', 'maior que', 'menor que'],
-                        type: 'number',
-                        value: '',
-                    },
-                    {
-                        label: 'Processo SEI',
-                        keyName: 'nuProcessoFormatadoSei',
-                        operator: 'igual',
-                        operators: ['igual', 'contem'],
-                        type: 'string',
-                        value: '',
-                    },
-                    {
-                        label: 'Natureza',
-                        keyName: 'dsTableNaturezas',
-                        operator: 'contem',
-                        operators: ['contem', 'tem um dos'],
-                        type: 'string',
+                        operators: ['igual', 'tem um dos'],
                         useList: [
-                            { id: 'feirasExposicoes', label: 'Feiras e Exposições' },
-                            { id: 'carnavalesco', label: 'Carnavalesco' },
-                            { id: 'shows', label: 'Shows' },
-                            { id: 'religioso', label: 'Religioso' },
-                            { id: 'atoPublico', label: 'Ato Público' },
-                            { id: 'cultural', label: 'Cultural' },
-                            { id: 'social', label: 'Social' },
-                            { id: 'corporativo', label: 'Corporativo' },
-                            { id: 'promocional', label: 'Promocional' },
-                            { id: 'festaJunina', label: 'Festa Junina' },
-                            { id: 'semFinsLucrativos', label: 'Sem Fins Lucrativos' },
-                        ],
-                        value: '',
-                    },
-                    {
-                        label: 'Status do Evento',
-                        keyName: 'stEventoExterno',
-                        operator: 'contem',
-                        operators: ['contem', 'tem um dos'],
+                            {
+                                id: 1,
+                                label: 'Cidade Mais Segura',
+                            },
+                            {
+                                id: 2,
+                                label: 'Escola Mais Segura',
+                            },
+                            {
+                                id: 3,
+                                label: 'Cidadão Mais Seguro',
+                            },
+                            {
+                                id: 4,
+                                label: 'Mulher Mais Segura',
+                            },
+                            {
+                                id: 5,
+                                label: 'Servidor Mais Seguro',
+                            },
+                        ] as any,
                         type: 'string',
-                        useList: [
-                            { id: 'P', label: 'Em Análise' },
-                            { id: 'A', label: 'Cadastrado' },
-                            { id: 'C', label: 'Cancelado' },
-                            { id: 'R', label: 'Com Pendência' },
-                            { id: 'FP', label: 'Fora do Prazo' },
-                            { id: 'E', label: 'Alteração Pendente' },
-                        ],
                         value: '',
                     },
-                    {
-                        label: 'Datas',
-                        keyName: 'dtTableDates',
-                        operator: 'tem a data',
-                        operators: ['tem a data', 'data inicio', 'data fim', 'entre'],
-                        type: 'dates',
-                        customFunc: 'datas',
-                        value: '',
-                    },
+                    // {
+                    //     label: 'Protocolo',
+                    //     keyName: 'coSeqEventoExterno',
+                    //     operator: 'igual',
+                    //     operators: ['igual', 'maior que', 'menor que'],
+                    //     type: 'number',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Local',
+                    //     keyName: 'dsEnderecoLocal',
+                    //     operator: 'contem',
+                    //     operators: ['igual', 'contem'],
+                    //     type: 'string',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Data da Solicitação',
+                    //     keyName: 'dtCadastro',
+                    //     operator: 'data exata',
+                    //     operators: ['data exata', 'entre'],
+                    //     type: 'date',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Nome do Evento',
+                    //     keyName: 'noEvento',
+                    //     operator: 'contem',
+                    //     operators: ['igual', 'contem'],
+                    //     type: 'string',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Público Máximo',
+                    //     keyName: 'nuPublicoMaximo',
+                    //     operator: 'igual',
+                    //     operators: ['igual', 'maior que', 'menor que'],
+                    //     type: 'number',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Processo SEI',
+                    //     keyName: 'nuProcessoFormatadoSei',
+                    //     operator: 'igual',
+                    //     operators: ['igual', 'contem'],
+                    //     type: 'string',
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Natureza',
+                    //     keyName: 'dsTableNaturezas',
+                    //     operator: 'contem',
+                    //     operators: ['contem', 'tem um dos'],
+                    //     type: 'string',
+                    //     useList: [
+                    //         { id: 'feirasExposicoes', label: 'Feiras e Exposições' },
+                    //         { id: 'carnavalesco', label: 'Carnavalesco' },
+                    //         { id: 'shows', label: 'Shows' },
+                    //         { id: 'religioso', label: 'Religioso' },
+                    //         { id: 'atoPublico', label: 'Ato Público' },
+                    //         { id: 'cultural', label: 'Cultural' },
+                    //         { id: 'social', label: 'Social' },
+                    //         { id: 'corporativo', label: 'Corporativo' },
+                    //         { id: 'promocional', label: 'Promocional' },
+                    //         { id: 'festaJunina', label: 'Festa Junina' },
+                    //         { id: 'semFinsLucrativos', label: 'Sem Fins Lucrativos' },
+                    //     ],
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Status do Evento',
+                    //     keyName: 'stEventoExterno',
+                    //     operator: 'contem',
+                    //     operators: ['contem', 'tem um dos'],
+                    //     type: 'string',
+                    //     useList: [
+                    //         { id: 'P', label: 'Em Análise' },
+                    //         { id: 'A', label: 'Cadastrado' },
+                    //         { id: 'C', label: 'Cancelado' },
+                    //         { id: 'R', label: 'Com Pendência' },
+                    //         { id: 'FP', label: 'Fora do Prazo' },
+                    //         { id: 'E', label: 'Alteração Pendente' },
+                    //     ],
+                    //     value: '',
+                    // },
+                    // {
+                    //     label: 'Datas',
+                    //     keyName: 'dtTableDates',
+                    //     operator: 'tem a data',
+                    //     operators: ['tem a data', 'data inicio', 'data fim', 'entre'],
+                    //     type: 'dates',
+                    //     customFunc: 'datas',
+                    //     value: '',
+                    // },
                 ]}
                 action={() => (
                     <>

@@ -1390,7 +1390,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 119,
             "NO_RISP": "RISP SUL",
-            "IOA_LIST": "PMDF | PCDF",
+            "IOA_LIST": "PCDF",
             "NU_PROTOCOLO": "20240416-4034",
             "NO_TITULO": "PMDF ",
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -1425,7 +1425,7 @@
                     "NU_CPF_USER_CADASTRO": "90865553149"
                 }
             ],
-            "SEI_LIST": "00050-00033330/5555-55 | 00050-00003080/2024-54",
+            "SEI_LIST": "00050-00003080/2024-54",
             "DT_CADASTRO_FILTRO": "16/04/2024",
             "STATUS_FILTRO": "Finalizado"
         },
@@ -1474,7 +1474,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 129,
             "NO_RISP": "RISP OESTE",
-            "IOA_LIST": "CBMDF | PCDF | PCDF | CBMDF | CBMDF | PMDF | PMDF | PMDF | CBMDF | CBMDF | PMDF | PCDF | PCDF",
+            "IOA_LIST": "PCDF",
             "NU_PROTOCOLO": "20240416-4485",
             "NO_TITULO": "PMDF",
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -1509,7 +1509,7 @@
                     "NU_CPF_USER_CADASTRO": "90865553149"
                 }
             ],
-            "SEI_LIST": "00050-00008547/2024-52 | 00050-00008547/2024-52 | 00050-00008547/2024-52 | 00050-00008547/2024-52 | 00050-00008547/2024-52 | 77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77",
+            "SEI_LIST": "77777-77777777/7777-77",
             "DT_CADASTRO_FILTRO": "16/04/2024",
             "STATUS_FILTRO": "Iniciado"
         },
@@ -2524,7 +2524,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 253,
             "NO_RISP": "RISP SUL",
-            "IOA_LIST": "1º BPM/PMDF | SSPDF | SSPDF",
+            "IOA_LIST": "SSPDF",
             "NU_PROTOCOLO": "20240621-4908",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -2559,8 +2559,50 @@
                     "NU_CPF_USER_CADASTRO": "99562740110"
                 }
             ],
-            "SEI_LIST": "77777-77777777/7777-77 | 77777-77777777/7777-77 | 77777-77777777/7777-77",
+            "SEI_LIST": "77777-77777777/7777-77",
             "DT_CADASTRO_FILTRO": "21/06/2024",
+            "STATUS_FILTRO": "Iniciado"
+        },
+        {
+            "CO_SEQ_DEVOLUTIVA_CADASTRO": 254,
+            "NO_RISP": "RISP SUL",
+            "IOA_LIST": "",
+            "NU_PROTOCOLO": "20240802-8361",
+            "NO_TITULO": null,
+            "CO_EIXO_SEGURANCA_INTEGRAL": 2,
+            "CO_CONSEG": 16,
+            "DS_CONSEG": "CONSEG NÚCLEO BANDEIRANTE",
+            "NO_RESPONSAVEL": "LUCAS A PEREIRA",
+            "NU_CPF_RESPONSAVEL": "695.054.891-53",
+            "NU_TELEFONE": null,
+            "NU_CELULAR": "(88) 8888-8888",
+            "CO_RISP": 1,
+            "DT_DEMANDA": "02/08/2024",
+            "DS_EMAIL": "lucas.araujo.pereira@gmail.com",
+            "DS_ENDERECO": "eee",
+            "DS_DESCRICAO": "eeeeee",
+            "DS_LATITUDE": "-15",
+            "DS_LONGITUDE": "-47.87834738630484",
+            "DT_CADASTRO": "2024-08-02T11:51:08.000Z",
+            "CO_SUB_USER_CADASTRO": "5507ff64-6236-42b6-a0d9-ab223b93eae3",
+            "NO_USER_CADASTRO": "Lucas",
+            "NU_CPF_USER_CADASTRO": "92861563168",
+            "DT_EXCLUSAO_LOGICA": null,
+            "CO_SEQ_DEVOLUTIVA": 1,
+            "NO_TIPO_DEVOLUTIVA": "POLUIÇÃO SONORA",
+            "TB_HISTORICO_ESTADO": [
+                {
+                    "CO_DEVOLUTIVA_CADASTRO": 254,
+                    "CO_DEVOLUTIVA_ACOMPANHAMENTO": "null",
+                    "DS_ESTADO": "Iniciado",
+                    "DT_CADASTRO": "2024-08-02T11:51:08",
+                    "CO_SUB_USER_CADASTRO": "5507ff64-6236-42b6-a0d9-ab223b93eae3",
+                    "NO_USER_CADASTRO": "Lucas",
+                    "NU_CPF_USER_CADASTRO": "92861563168"
+                }
+            ],
+            "SEI_LIST": "",
+            "DT_CADASTRO_FILTRO": "02/08/2024",
             "STATUS_FILTRO": "Iniciado"
         },
         {
@@ -2818,7 +2860,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 249,
             "NO_RISP": "RISP METROPOLITANA",
-            "IOA_LIST": "PCDF | PCDF | CBMDF",
+            "IOA_LIST": "PCDF | CBMDF",
             "NU_PROTOCOLO": "20240618-5116",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 2,
@@ -2853,7 +2895,7 @@
                     "NU_CPF_USER_CADASTRO": "05519429162"
                 }
             ],
-            "SEI_LIST": "32132-13213123/2131-23 | 22222-22222222/2222-22 | 55555-55555555/5555-55",
+            "SEI_LIST": "22222-22222222/2222-22 | 55555-55555555/5555-55",
             "DT_CADASTRO_FILTRO": "18/06/2024",
             "STATUS_FILTRO": "Iniciado"
         },
@@ -2944,7 +2986,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 200,
             "NO_RISP": "RISP SUL",
-            "IOA_LIST": "PMDF | SSPDF | PCDF | CBMDF | CBMDF | PCDF | PCDF",
+            "IOA_LIST": "SSPDF | CBMDF | CBMDF | PCDF | PCDF",
             "NU_PROTOCOLO": "20240429-1523",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -2979,7 +3021,7 @@
                     "NU_CPF_USER_CADASTRO": "86017594168"
                 }
             ],
-            "SEI_LIST": "22222-22222222/2222-22 | 12312-31231231/2312-32 | 23132-13213213/1231-23 | 33333-33333333/3333-33 | 12312-31231231/2312-32 | 00067-ABCABCABC/2024 | 00067-ABCABCABC/2024",
+            "SEI_LIST": "12312-31231231/2312-32 | 33333-33333333/3333-33 | 12312-31231231/2312-32 | 00067-ABCABCABC/2024 | 00067-ABCABCABC/2024",
             "DT_CADASTRO_FILTRO": "29/04/2024",
             "STATUS_FILTRO": "Iniciado"
         },
@@ -3658,7 +3700,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 250,
             "NO_RISP": "RISP METROPOLITANA",
-            "IOA_LIST": "PMDF | CBMDF",
+            "IOA_LIST": "PMDF",
             "NU_PROTOCOLO": "20240619-9540",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -3693,14 +3735,14 @@
                     "NU_CPF_USER_CADASTRO": "06308519138"
                 }
             ],
-            "SEI_LIST": "45106-51651056/2105-61 | 45106-51651056/2105-61",
+            "SEI_LIST": "45106-51651056/2105-61",
             "DT_CADASTRO_FILTRO": "19/06/2024",
             "STATUS_FILTRO": "Iniciado"
         },
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 111,
             "NO_RISP": "RISP SUL",
-            "IOA_LIST": "PCDF | PCDF | PMDF | DETRAN-DF | DPF | DPF | PCDF | CBMDF | CBMDF | SSPDF",
+            "IOA_LIST": "SSPDF",
             "NU_PROTOCOLO": "20240411-1734",
             "NO_TITULO": "Testando demanda",
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -3735,14 +3777,14 @@
                     "NU_CPF_USER_CADASTRO": "06308519138"
                 }
             ],
-            "SEI_LIST": "23123-21312312/3123-12 | 32131-23213123/1231-23 | 23132-13123123/2132-13 | 12312-32132131/2312-33 | 12312-31231231/2312-31 | 12312-32131231/2312-32 | 12312-31232131/2321-31 | 12312-32132131/2312-33 | 21312-31231231/2312-31 | 00050-00001992/2024-91",
+            "SEI_LIST": "00050-00001992/2024-91",
             "DT_CADASTRO_FILTRO": "11/04/2024",
             "STATUS_FILTRO": "Pendente"
         },
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 251,
             "NO_RISP": "RISP SUL",
-            "IOA_LIST": "PMDF | PMDF | PMDF",
+            "IOA_LIST": "PMDF",
             "NU_PROTOCOLO": "20240619-2674",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -3777,7 +3819,7 @@
                     "NU_CPF_USER_CADASTRO": "00166445142"
                 }
             ],
-            "SEI_LIST": "00050-00004847/2024-62 | 00050-00004847/2024-62 | 00050-00004847/2024-62",
+            "SEI_LIST": "00050-00004847/2024-62",
             "DT_CADASTRO_FILTRO": "19/06/2024",
             "STATUS_FILTRO": "Iniciado"
         },
@@ -4582,7 +4624,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 239,
             "NO_RISP": "RISP METROPOLITANA",
-            "IOA_LIST": "SLU | NOVACAP | CBMDF | PCDF",
+            "IOA_LIST": "NOVACAP | CBMDF | PCDF",
             "NU_PROTOCOLO": "20240607-8256",
             "NO_TITULO": "Academia pública da quadra 309 do Cruzeiro novo todo destruido",
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -4617,7 +4659,7 @@
                     "NU_CPF_USER_CADASTRO": "86017594168"
                 }
             ],
-            "SEI_LIST": "789879798-798789789 | PF-0454-78584/2022-45 | 0006763-jkhdshjk/3232 | 00067-xxxxxxx/2024",
+            "SEI_LIST": "PF-0454-78584/2022-45 | 0006763-jkhdshjk/3232 | 00067-xxxxxxx/2024",
             "DT_CADASTRO_FILTRO": "07/06/2024",
             "STATUS_FILTRO": "Iniciado"
         },
@@ -6514,7 +6556,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 252,
             "NO_RISP": "RISP METROPOLITANA",
-            "IOA_LIST": "PMDF",
+            "IOA_LIST": "",
             "NU_PROTOCOLO": "20240619-5327",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -6549,7 +6591,7 @@
                     "NU_CPF_USER_CADASTRO": "92861563168"
                 }
             ],
-            "SEI_LIST": "00050-00011760/2024-41",
+            "SEI_LIST": "",
             "DT_CADASTRO_FILTRO": "19/06/2024",
             "STATUS_FILTRO": "Iniciado"
         },
@@ -6640,7 +6682,7 @@
         {
             "CO_SEQ_DEVOLUTIVA_CADASTRO": 238,
             "NO_RISP": "RISP METROPOLITANA",
-            "IOA_LIST": "CBMDF | DETRAN-DF",
+            "IOA_LIST": "DETRAN-DF",
             "NU_PROTOCOLO": "20240502-2120",
             "NO_TITULO": null,
             "CO_EIXO_SEGURANCA_INTEGRAL": 1,
@@ -6675,7 +6717,7 @@
                     "NU_CPF_USER_CADASTRO": "05519429162"
                 }
             ],
-            "SEI_LIST": "00050-00003657/2024-28 | 21313-21312312/3213-32",
+            "SEI_LIST": "21313-21312312/3213-32",
             "DT_CADASTRO_FILTRO": "02/05/2024",
             "STATUS_FILTRO": "Pendente"
         },
@@ -6815,7 +6857,7 @@
             "CO_CONSEG": 32,
             "DS_CONSEG": "CONSEG PARK WAY",
             "NO_RESPONSAVEL": "Walter Alkimim",
-            "NU_CPF_RESPONSAVEL": null,
+            "NU_CPF_RESPONSAVEL": "063.085.191-38",
             "NU_TELEFONE": null,
             "NU_CELULAR": "(61) 99872-6419",
             "CO_RISP": 1,
