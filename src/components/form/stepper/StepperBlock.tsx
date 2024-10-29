@@ -42,7 +42,17 @@ function childrenTree(component: ReactElement, prefix: number, idx: number): Rea
     return newComponent
 }
 
-export function StepperBlock({ optional = false, title, prefix = 0, ...props }: { title: string; prefix?: number; children: JSX.Element | JSX.Element[]; optional?: boolean }) {
+interface StepperBlockProps {
+    title: string
+    prefix?: number
+    children: JSX.Element | JSX.Element[]
+    optional?: boolean
+    optionalMessage?: string | JSX.Element
+    overrideSwitchNo?: string
+    overrideSwitchYes?: string
+}
+
+export function StepperBlock({ optional = false, title, prefix = 0, optionalMessage, ...props }: StepperBlockProps) {
     const context = useContext(FormContext)!
     const switchName = `switch-${prefix}`
 
@@ -75,7 +85,7 @@ export function StepperBlock({ optional = false, title, prefix = 0, ...props }: 
                         </Typography>
                     </Stack>
                     <Box hidden={!optional}>
-                        <Switch name={switchName} defaultChecked={optional ? false : true} />
+                        <Switch name={switchName} defaultChecked={optional ? false : true} overrideNo={props.overrideSwitchNo} overrideYes={props.overrideSwitchYes} />
                     </Box>
                 </Stack>
             </Grid>
@@ -87,8 +97,14 @@ export function StepperBlock({ optional = false, title, prefix = 0, ...props }: 
                 ) : !context.formWatch(switchName) ? (
                     <Stack justifyContent='center' alignItems='center'>
                         <Typography fontFamily='Inter' fontSize={22} paddingY={8} textAlign='center'>
-                            <b>{title}</b> é opcional. <br />
-                            Marque a opção acima caso haja necessidade.
+                            {optionalMessage ? (
+                                optionalMessage
+                            ) : (
+                                <>
+                                    <b>{title}</b> é opcional. <br />
+                                    Marque a opção acima caso haja necessidade.
+                                </>
+                            )}
                         </Typography>
                     </Stack>
                 ) : (
