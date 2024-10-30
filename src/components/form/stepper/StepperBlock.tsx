@@ -50,9 +50,10 @@ interface StepperBlockProps {
     optionalMessage?: string | JSX.Element
     overrideSwitchNo?: string
     overrideSwitchYes?: string
+    defaultChecked?: boolean
 }
 
-export function StepperBlock({ optional = false, title, prefix = 0, optionalMessage, ...props }: StepperBlockProps) {
+export function StepperBlock({ optional = false, title, prefix = 0, optionalMessage, defaultChecked, ...props }: StepperBlockProps) {
     const context = useContext(FormContext)!
     const switchName = `switch-${prefix}`
 
@@ -85,7 +86,7 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
                         </Typography>
                     </Stack>
                     <Box hidden={!optional}>
-                        <Switch name={switchName} defaultChecked={optional ? false : true} overrideNo={props.overrideSwitchNo} overrideYes={props.overrideSwitchYes} />
+                        <Switch name={switchName} defaultChecked={defaultChecked} overrideNo={props.overrideSwitchNo} overrideYes={props.overrideSwitchYes} />
                     </Box>
                 </Stack>
             </Grid>
