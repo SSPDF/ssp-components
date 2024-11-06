@@ -208,6 +208,7 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
+            <FetchAutoComplete name='coRA' title='RA:' customLoadingText='Carregando RA' url={`http://localhost:7171/autocomplete`} watchValue={valor} md={6} required />
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <FetchAutoComplete name='coRA' title='RA:' customLoadingText='Carregando RA' url={`http://localhost:7171/autocomplete`} watchValue={valor} md={6} required />

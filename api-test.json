@@ -13,7 +13,8 @@
         },
         {
             "id": 14,
-            "label": "CONSEG PARANOÁ"
+            "label": "CONSEG PARANOÁ",
+            "disabled": true
         },
         {
             "id": 15,

@@ -144,6 +144,7 @@ export default function FetchAutoComplete({
                 loadingText={loadingText}
                 options={list}
                 defaultValue={dValue}
+                getOptionDisabled={(option) => option?.disabled ?? false}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => handleAutoCompleteChange(v)}
                 renderInput={(params) => (
