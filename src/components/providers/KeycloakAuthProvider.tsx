@@ -60,7 +60,7 @@ export function KeycloakAuthProvider({
                         const userData: User = {
                             ...tokenParsed,
                             token: keycloak.token,
-                            roles: ((tokenParsed?.resource_access ?? {})[resource_name] ?? []).roles,
+                            roles: (((tokenParsed?.resource_access ?? {})[resource_name] ?? []) as any).roles,
                         }
 
                         setUser(userData)

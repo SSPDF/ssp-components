@@ -5,7 +5,9 @@
         "outDir": "dist",
         "strict": false,
         "checkJs": true,
-        "declaration": true
+        "declaration": true,
+        "moduleResolution":"Bundler",
+        "module":"ES2020"
     },
     "include": ["src/*", "package.json"],
 }
