@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.251",
+    "version": "0.0.252",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -17,7 +17,7 @@
         "lodash.hasin": "^4.5.2",
         "react-google-recaptcha": "^2.1.0",
         "jszip": "^3.10.1",
-        "keycloak-js": "^26.0.5",
+        "keycloak-js": "^25.0.1",
         "react-toastify": "^10.0.4",
         "axios": "^1.6.7",
         "react-dropzone": "^14.2.3"

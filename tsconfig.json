@@ -5,9 +5,7 @@
         "outDir": "dist",
         "strict": false,
         "checkJs": true,
-        "declaration": true,
-        "moduleResolution": "Bundler",
-        "module": "ES2015"
+        "declaration": true
     },
     "include": ["src/*", "package.json"],
 }
