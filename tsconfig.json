@@ -6,8 +6,8 @@
         "strict": false,
         "checkJs": true,
         "declaration": true,
-        "moduleResolution":"Bundler",
-        "module":"ESNext"
+        "moduleResolution": "Bundler",
+        "module": "ES2015"
     },
     "include": ["src/*", "package.json"],
 }
