@@ -1,10 +1,8 @@
-import { deleteCookie, getCookie, setCookie } from 'cookies-next'
-import jwt_decode from 'jwt-decode'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 
-import Keycloak, { KeycloakTokenParsed } from 'keycloak-js'
+import Keycloak from 'keycloak-js'
 import { User } from '../../types/auth'
 
 export const cookieName = 'nextauth.token'

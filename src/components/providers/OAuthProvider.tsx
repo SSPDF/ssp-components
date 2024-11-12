@@ -36,7 +36,7 @@ export function OAuthProvider({
 }) {
     const govBrURL = oidcConfig.authority + '/authorize?response_type=code&client_id=' + oidcConfig.client_id + '&scope=' + oidcConfig.scope + '&redirect_uri=' + oidcConfig.redirect_uri
 
-    const [user, setUser] = useState<User | null>()
+    const [user, setUser] = useState<any | null>()
     const [userLoaded, setUserLoaded] = useState(false)
 
     const router = useRouter()
