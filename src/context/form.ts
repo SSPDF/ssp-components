@@ -1,6 +1,5 @@
 import { createContext, Dispatch, SetStateAction } from 'react'
-import { FieldErrors, FieldValues, UseFormRegister, UseFormReset, UseFormSetValue, UseFormTrigger, UseFormWatch } from 'react-hook-form'
-import { Control, UseFormGetValues, UseFormHandleSubmit, UseFormUnregister } from 'react-hook-form/dist/types'
+import { Control, FieldErrors, FieldValues, UseFormGetValues, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue, UseFormTrigger, UseFormUnregister, UseFormWatch } from 'react-hook-form'
 
 export const FormContext = createContext<{
     formRegister: UseFormRegister<FieldValues>

@@ -57,6 +57,8 @@ export function KeycloakAuthProvider({
                     } else {
                         const tokenParsed = keycloak.tokenParsed
 
+                        console.log('TOKEN-> ', tokenParsed)
+
                         const userData: User = {
                             ...tokenParsed,
                             token: keycloak.token,
