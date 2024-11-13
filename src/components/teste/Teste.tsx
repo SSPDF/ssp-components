@@ -208,7 +208,19 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <FetchAutoComplete name='coRA' title='RA:' customLoadingText='Carregando RA' url={`http://localhost:7171/autocomplete`} watchValue={valor} md={6} required />
+            <Stepper>
+                <StepperBlock title='Teste 1'>
+                    <Input name='nome1' type='input' title='Nome 1' required />
+                </StepperBlock>
+
+                <StepperBlock title='Teste 2' optional>
+                    <Input name='nome2' type='input' title='Nome 2' required />
+                </StepperBlock>
+
+                <StepperBlock title='Teste 3'>
+                    <Input name='nome3' type='input' title='Nome 3' required />
+                </StepperBlock>
+            </Stepper>
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <FetchAutoComplete name='coRA' title='RA:' customLoadingText='Carregando RA' url={`http://localhost:7171/autocomplete`} watchValue={valor} md={6} required />
@@ -388,7 +400,7 @@ export default function Teste() {
                 Mudar
             </Button> */}
 
-            <Table
+            {/* <Table
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
@@ -567,7 +579,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            />
+            /> */}
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}

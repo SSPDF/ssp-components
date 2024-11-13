@@ -86,7 +86,7 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
                         </Typography>
                     </Stack>
                     <Box hidden={!optional}>
-                        <Switch name={switchName} defaultChecked={defaultChecked} overrideNo={props.overrideSwitchNo} overrideYes={props.overrideSwitchYes} />
+                        <Switch name={switchName} defaultChecked={optional ? defaultChecked : true} overrideNo={props.overrideSwitchNo} overrideYes={props.overrideSwitchYes} />
                     </Box>
                 </Stack>
             </Grid>
