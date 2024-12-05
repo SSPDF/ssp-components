@@ -77,6 +77,7 @@ export function KeycloakAuthProvider({
                     console.error('Authenticated Failed')
                 }
             )
+            .catch((err) => console.log(err))
 
         const s = router.query['status']
         if (!s) return
