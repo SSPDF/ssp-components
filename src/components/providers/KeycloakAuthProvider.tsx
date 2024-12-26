@@ -15,6 +15,7 @@ export function KeycloakAuthProvider({
     children,
     type = 'ad',
     resource_name = 'eventos-front',
+    redirectUri = '',
 }: {
     url: string
     realm: string
@@ -22,13 +23,12 @@ export function KeycloakAuthProvider({
     children: JSX.Element | JSX.Element[]
     type?: 'govbr' | 'ad'
     resource_name?: string
+    redirectUri?: string
 }) {
     const [user, setUser] = useState<User | null | undefined>()
     const [userLoaded, setUserLoaded] = useState(false)
 
     const [kc, setKc] = useState<Keycloak | null>(null)
-
-    const [token, setToken] = useState<string | undefined>(undefined)
 
     const router = useRouter()
     const isAuth = !!user
@@ -95,7 +95,7 @@ export function KeycloakAuthProvider({
             client_id: kc?.clientId,
         })
 
-        kc?.login()
+        kc?.login({ redirectUri })
     }
 
     function logout() {
