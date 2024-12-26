@@ -1,6 +1,6 @@
 import { Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import MaskInput from './MaskInput'
 import { FormContext } from '../../../context/form'
 
@@ -14,6 +14,7 @@ export function Input({
     defaultValue = '',
     md,
     watchValue = '',
+    disabled = false,
     ...props
 }: {
     type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
@@ -29,6 +30,7 @@ export function Input({
     xs?: number
     sm?: number
     md?: number
+    disabled?: boolean
 }) {
     const context = useContext(FormContext)!
 
@@ -100,9 +102,9 @@ export function Input({
         switch (type) {
             case 'input':
             case 'email':
-                return <TextField {...formConfig} defaultValue={defaultValue} />
+                return <TextField {...formConfig} defaultValue={defaultValue} disabled={disabled} />
             case 'password':
-                return <TextField {...formConfig} type='password' />
+                return <TextField {...formConfig} type='password' disabled={disabled} />
             case 'number':
                 return (
                     <MaskInput
@@ -112,6 +114,7 @@ export function Input({
                             mask: numberMask,
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'cep':
@@ -123,6 +126,7 @@ export function Input({
                             mask: '00000-000',
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'phone':
@@ -137,6 +141,7 @@ export function Input({
                             },
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'sei':
@@ -148,6 +153,7 @@ export function Input({
                             mask: '00000-00000000/0000-00',
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'cpf_cnpj':
@@ -163,6 +169,7 @@ export function Input({
                             else setMask('000.000.000-00[0]')
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'cpf':
@@ -174,6 +181,7 @@ export function Input({
                             mask: '000.000.000-00',
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'cnpj':
@@ -185,6 +193,7 @@ export function Input({
                             mask: '00.000.000/0000-00',
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
             case 'rg':
@@ -196,6 +205,7 @@ export function Input({
                             mask: '00000[000000]',
                         }}
                         watchValue={watchValue}
+                        disabled={disabled}
                     />
                 )
         }

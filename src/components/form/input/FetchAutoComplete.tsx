@@ -20,6 +20,7 @@ export default function FetchAutoComplete({
     sm,
     watchValue,
     md,
+    disabled = false,
 }: {
     name: string
     url: string
@@ -34,6 +35,7 @@ export default function FetchAutoComplete({
     xs?: number
     sm?: number
     md?: number
+    disabled?: boolean
 }) {
     const context = useContext(FormContext)!
 
@@ -163,6 +165,7 @@ export default function FetchAutoComplete({
                 }}
                 size='small'
                 fullWidth
+                disabled={disabled}
             />
         </Grid>
     )
