@@ -18,6 +18,7 @@ export default function DatePicker({
     md,
     minDt,
     defaultValue,
+    persistValue,
     maxDt,
     ...props
 }: {
@@ -27,6 +28,7 @@ export default function DatePicker({
     title?: string
     required?: boolean
     defaultValue?: string
+    persistValue?: boolean
     xs?: number
     sm?: number
     md?: number
@@ -45,6 +47,8 @@ export default function DatePicker({
     }, [value])
 
     useEffect(() => {
+        // Vamos executar o unregister em casos em que não queremos persistir o valor
+        if (persistValue) return
         return () => {
             context.formUnregister(name)
         }
