@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.258",
+    "version": "0.0.259",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",

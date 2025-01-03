@@ -35,7 +35,7 @@ export function Input({
     const context = useContext(FormContext)!
 
     useEffect(() => {
-        if (!watchValue === undefined) context.formSetValue(props.name, watchValue)
+        if (watchValue !== undefined) context.formSetValue(props.name, watchValue)
     }, [watchValue])
 
     const chooseInput = () => {

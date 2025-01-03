@@ -17,7 +17,7 @@ export default function DatePicker({
     sm,
     md,
     minDt,
-    defaultValue = '',
+    defaultValue,
     maxDt,
     ...props
 }: {
@@ -33,13 +33,14 @@ export default function DatePicker({
 }) {
     const context = useContext(FormContext)!
 
-    const [value, setValue] = useState<Dayjs | null>(defaultValue ? dayjs(defaultValue, 'DD/MM/YYYY') : null)
+    const [value, setValue] = useState<Dayjs | undefined>(defaultValue !== undefined ? dayjs(defaultValue, 'DD/MM/YYYY') : undefined)
 
     const handleChange = (newValue: Dayjs | null) => {
         setValue(newValue)
     }
 
     useEffect(() => {
+        if (value === undefined) return
         context.formSetValue(name, value ? value.format('DD/MM/YYYY') : value)
     }, [value])
 
