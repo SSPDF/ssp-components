@@ -13,8 +13,8 @@ export function Input({
     inputMaxLength = 255,
     defaultValue = '',
     md,
-    watchValue = '',
     disabled = false,
+    watchValue,
     ...props
 }: {
     type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
@@ -35,7 +35,7 @@ export function Input({
     const context = useContext(FormContext)!
 
     useEffect(() => {
-        context.formSetValue(props.name, watchValue)
+        if (!watchValue === undefined) context.formSetValue(props.name, watchValue)
     }, [watchValue])
 
     const chooseInput = () => {
