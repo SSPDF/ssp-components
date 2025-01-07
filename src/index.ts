@@ -49,6 +49,8 @@ import { SspComponentsProvider } from './components/providers/SspComponentsProvi
 import Button from './components/utils/Bt'
 import Menu from './components/utils/CustomMenu'
 
+import GenericInput from './components/form/input/GenericInput'
+
 export {
     CheckBox,
     CheckBoxWarning,
@@ -59,6 +61,7 @@ export {
     AutoComplete,
     FetchAutoComplete,
     Input,
+    GenericInput,
     MaskInput,
     MultInput,
     OtherCheckBox,
@@ -90,5 +93,5 @@ export {
     SspComponentsProvider,
     TabNavBar,
     Button,
-    Menu
+    Menu,
 }
