@@ -2,6 +2,7 @@ import CheckBox from './components/form/checkbox/CheckBox'
 import CheckBoxWarning from './components/form/checkbox/CheckBoxWarning'
 
 import DatePicker from './components/form/date/DatePicker'
+import GenericDatePicker from './components/form/date/GenericDatePicker'
 import TimePicker from './components/form/date/TimePicker'
 
 import FileUpload from './components/form/file/FileUpload'
@@ -9,9 +10,14 @@ import ActiveInput from './components/form/input/ActiveInput'
 
 import AutoComplete from './components/form/input/AutoComplete'
 import FetchAutoComplete from './components/form/input/FetchAutoComplete'
+import GenericFetchAutoComplete from './components/form/input/GenericFetchAutoComplete'
 import Input from './components/form/input/Input'
 import MaskInput from './components/form/input/MaskInput'
+import GenericMaskInput from './components/form/input/GenericMaskInput'
+
 import MultInput from './components/form/input/MultInput'
+import GenericMultInput from './components/form/input/GenericMultInput'
+
 import OtherCheckBox from './components/form/input/OtherCheckBox'
 
 import Stepper from './components/form/stepper/Stepper'
@@ -55,15 +61,17 @@ export {
     CheckBox,
     CheckBoxWarning,
     DatePicker,
+    GenericDatePicker,
     TimePicker,
     FileUpload,
     ActiveInput,
     AutoComplete,
     FetchAutoComplete,
+    GenericFetchAutoComplete,
     Input,
     GenericInput,
     MaskInput,
-    MultInput,
+    GenericMaskInput,
     OtherCheckBox,
     Stepper,
     StepperBlock,
