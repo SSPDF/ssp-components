@@ -71,6 +71,8 @@ export {
     Input,
     GenericInput,
     MaskInput,
+    MultInput,
+    GenericMultInput,
     GenericMaskInput,
     OtherCheckBox,
     Stepper,
