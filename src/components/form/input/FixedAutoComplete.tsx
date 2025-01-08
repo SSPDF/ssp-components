@@ -16,6 +16,7 @@ export function FixedAutoComplete({
     xs = 12,
     sm,
     watchValue,
+    forceUpdate = false,
     md,
 }: {
     name: string
@@ -27,6 +28,7 @@ export function FixedAutoComplete({
     required?: boolean
     onChange?: (id: number | undefined) => void
     shouldRefetch?: boolean
+    forceUpdate?: boolean
     xs?: number
     sm?: number
     md?: number
@@ -39,7 +41,7 @@ export function FixedAutoComplete({
     }, [])
 
     useEffect(() => {
-        if (watchValue && useDefault) {
+        if (watchValue && (useDefault || forceUpdate)) {
             setValue(watchValue)
             context.formSetValue(name, watchValue.id)
             onChange(watchValue.id as any)
