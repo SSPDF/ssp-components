@@ -45,6 +45,10 @@ export function FixedAutoComplete({
             setValue(watchValue)
             context.formSetValue(name, watchValue.id)
             onChange(watchValue.id as any)
+        } else if (watchValue === undefined && (useDefault || forceUpdate)) {
+            setValue(null)
+            context.formSetValue(name, undefined)
+            onChange(undefined)
         }
     }, [watchValue])
 
@@ -59,7 +63,7 @@ export function FixedAutoComplete({
         }
 
         setValue(null)
-        context.formSetValue(name, '')
+        context.formSetValue(name, undefined)
         onChange(undefined)
     }
 

@@ -193,14 +193,15 @@ export default function Teste() {
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState('')
-    const [value, setValue] = React.useState(0)
+    const l = [{ id: 'ata', label: 'ata' }]
+    const [value, setValue] = useState<any>(l[0])
     const ref = useRef<DocumentFragment | null>(null)
 
     const [show, setShow] = useState(false)
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue)
-    }
+    // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    //     setValue(newValue)
+    // }
 
     const valor = {
         id: 14,
@@ -209,17 +210,10 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <FixedAutoComplete
-                name='quartel2'
-                title='Quartel'
-                customLoadingText='Carregando quarteis'
-                list={[
-                    { id: 25, label: 'ddsa' },
-                    { id: 26, label: 'aAAAA' },
-                ]}
-                watchValue={{ id: 26, label: 'aAAAA' }}
-                required
-            />
+            <FixedAutoComplete name='quartel2' title='Quartel' customLoadingText='Carregando quarteis' list={l} watchValue={value} required />
+            <Button variant='contained' onClick={(e) => setValue(undefined)}>
+                Teste
+            </Button>
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <Input name='nome1' type='input' title='Nome 1' required />
