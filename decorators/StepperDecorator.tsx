@@ -6,28 +6,30 @@ import { SspComponentsProvider } from '../src/components/providers/SspComponents
 
 import '../src/css/ReactToastify.css'
 import { FieldValues } from 'react-hook-form'
-import GenericFormProvider from '../src/components/providers/GenericFormProvider'
+import { Stepper } from '../src/components/form/stepper/Stepper'
 
 const client = new QueryClient()
 
-export default function GenericFormBaseDecorator(Story: any, el: any) {
+export default function StepperDecorator(Story: any, el: any) {
     const [formData, setFormData] = useState<FieldValues>()
     return (
         <SspComponentsProvider>
-            <GenericFormProvider
-                onSubmit={(d) => {
-                    console.log(d)
+            <FormProvider
+                onSubmit={(d, files) => {
+                    console.log(d, files)
                     setFormData(d)
                 }}
             >
                 <QueryClientProvider client={client}>
                     <Stack spacing={2}>
+                        {/* <Stepper> */}
                         <Story />
                         <Button type='submit'>Enviar</Button>
                         {!!formData && <Typography>{JSON.stringify(formData)}</Typography>}
+                        {/* </Stepper> */}
                     </Stack>
                 </QueryClientProvider>
-            </GenericFormProvider>
+            </FormProvider>
         </SspComponentsProvider>
     )
 }

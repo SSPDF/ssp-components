@@ -1,18 +1,15 @@
 import { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { CheckBox, CheckBoxWarning, DatePicker, FetchAutoComplete, FileUpload, MultInput, RequiredCheckBoxGroup, Switch, SwitchWatch, TimePicker, ToggleVisibility } from '..'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
-import { Input } from '../components/form/input/Input'
-import Stepper, { Teste } from '../components/form/stepper/Stepper'
-import { StepperBlock } from '../components/form/stepper/StepperBlock'
 import { Box, Button, Stack, Typography } from '@mui/material'
-import CheckBoxAdditional from '../components/form/checkbox/CheckBoxAdditional'
+import Stepper from '../components/form/stepper/Stepper'
+import StepperDecorator from '../../decorators/StepperDecorator'
+import StepperBlock from '../components/form/stepper/StepperBlock'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',
     component: Stepper,
     tags: ['autodocs'],
-    decorators: [FormBaseDecorator],
+    decorators: [StepperDecorator],
 }
 
 export default meta
@@ -22,9 +19,18 @@ export const Base: Story = {
     args: {
         debugLog: true,
     },
-    // render: (args) => (
-    //     <Box>
-    //         <Teste />
-    //     </Box>
-    // ),
+    render: (args) => (
+        <Stepper {...args}>
+            <StepperBlock title='Step 1'>
+                <Stack spacing={2} alignItems={'center'} width={'100%'} py={8}>
+                    <Typography variant='body1'>This is content for Step 1</Typography>
+                </Stack>
+            </StepperBlock>
+            <StepperBlock title='Step 2'>
+                <Stack spacing={2} alignItems={'center'} width={'100%'} py={8}>
+                    <Typography variant='body1'>This is content for Step 2</Typography>
+                </Stack>
+            </StepperBlock>
+        </Stepper>
+    ),
 }
