@@ -19,12 +19,13 @@ export interface MapProps {
     pulseMarkerList?: LatLngExpression[]
     popupContent?: ReactElement
     style?: BoxProps
+    mapStyle?: React.CSSProperties
 }
 
 export function Map(props: MapProps) {
     return (
         <Box borderRadius={2} border='2px solid #c7c7c7' overflow='hidden' {...props.style}>
-            <MapContainer center={props.firstCoords} zoom={19} scrollWheelZoom style={{ height: '75vh', width: '100%' }}>
+            <MapContainer center={props.firstCoords} zoom={19} scrollWheelZoom style={props.mapStyle}>
                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
                 {props.pulseMarkerList && props.pulseMarkerList.map((coord, idx) => <AnimatedMarker key={JSON.stringify(coord) + idx} coords={coord} />)}
                 <DraggableMarker startCoord={props.firstCoords} onChange={props.onCoordsChange} showPopup={typeof props.popupContent !== 'undefined'}>
