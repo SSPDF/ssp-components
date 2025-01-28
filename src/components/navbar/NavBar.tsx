@@ -31,7 +31,7 @@ export default function NavBar({
     next?: boolean
     el?: JSX.Element
     logoutMsg?: string
-    logoutFunc?: () => void
+    logoutFunc?: () => Promise<void>
     pos?: 'fixed' | 'inherit'
 }) {
     let router: NextRouter | undefined | null = undefined
@@ -180,10 +180,12 @@ export default function NavBar({
                                                 {menuItems}
 
                                                 <MenuItem
-                                                    onClick={(e) => {
+                                                    onClick={async (e) => {
                                                         setAvatarAnchor(null)
-                                                        if (!!logoutFunc) logoutFunc()
-                                                        logout()
+                                                        if (!!logoutFunc)
+                                                            logoutFunc()
+                                                                .catch((error) => console.error(error))
+                                                                .finally(() => logout())
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
@@ -195,7 +197,7 @@ export default function NavBar({
                                         </Box>
                                         <Stack direction='row' spacing={0.4} alignItems='center' onClick={(e) => setAvatarAnchor(e.currentTarget as any)} sx={{ userSelect: 'none' }}>
                                             <Typography>Olá,</Typography>
-                                            <Typography fontWeight={600}>{user.given_name}</Typography>
+                                            <Typography fontWeight={600}>{(user as any)?.given_name}</Typography>
                                             <KeyboardArrowDownIcon />
                                         </Stack>
                                     </Stack>
