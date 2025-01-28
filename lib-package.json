@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.267",
+    "version": "0.0.268",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -20,7 +20,10 @@
         "keycloak-js": "^25.0.1",
         "react-toastify": "^10.0.4",
         "axios": "^1.6.7",
-        "react-dropzone": "^14.2.3"
+        "react-dropzone": "^14.2.3",
+        "leaflet": "^1.9.4",
+        "leaflet-defaulticon-compatibility": "^0.1.2",
+        "react-leaflet": "^4.2.1"
     },
     "devDependencies": {
         "@types/lodash.get": "^4.4.7",

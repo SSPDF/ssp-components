@@ -12,6 +12,7 @@ import MultInput from '../form/input/MultInput'
 import Stepper from '../form/stepper/Stepper'
 import StepperBlock from '../form/stepper/StepperBlock'
 import Table from '../form/table/Table'
+import { Map } from '../map'
 
 import { FormContext } from '../../context/form'
 import '../../css/globals.css'
@@ -210,6 +211,14 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
+            <Map
+                firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
+                onCoordsChange={(c) => {
+                    console.log(c)
+                }}
+                pulseMarkerList={[]}
+            />
+
             <FixedAutoComplete name='quartel2' title='Quartel' customLoadingText='Carregando quarteis' list={l} watchValue={value} required />
             <Button variant='contained' onClick={(e) => setValue(undefined)}>
                 Teste

@@ -57,6 +57,8 @@ import Menu from './components/utils/CustomMenu'
 
 import GenericInput from './components/form/input/GenericInput'
 
+import { Map } from './components/map'
+
 export {
     CheckBox,
     CheckBoxWarning,
@@ -104,4 +106,7 @@ export {
     TabNavBar,
     Button,
     Menu,
+
+    // map
+    Map
 }
