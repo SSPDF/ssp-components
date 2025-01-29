@@ -182,10 +182,14 @@ export default function NavBar({
                                                 <MenuItem
                                                     onClick={async (e) => {
                                                         setAvatarAnchor(null)
-                                                        if (!!logoutFunc)
-                                                            logoutFunc()
-                                                                .catch((error) => console.error(error))
-                                                                .finally(() => logout())
+                                                        if (!!logoutFunc) {
+                                                            try {
+                                                                await logoutFunc()
+                                                            } catch (error) {
+                                                                console.error(error)
+                                                            }
+                                                        }
+                                                        logout()
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>

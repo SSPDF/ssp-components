@@ -41,7 +41,7 @@ export default function TabNavBar({
     next?: boolean
     el?: JSX.Element
     logoutMsg?: string
-    logoutFunc?: () => void
+    logoutFunc?: () => Promise<void>
     pos?: 'fixed' | 'inherit'
 }) {
     let router: NextRouter | undefined | null = undefined
@@ -191,9 +191,15 @@ export default function TabNavBar({
                                                 {menuItems}
 
                                                 <MenuItem
-                                                    onClick={(e) => {
+                                                    onClick={async (e) => {
                                                         setAvatarAnchor(null)
-                                                        if (!!logoutFunc) logoutFunc()
+                                                        if (!!logoutFunc) {
+                                                            try {
+                                                                await logoutFunc()
+                                                            } catch (error) {
+                                                                console.error(error)
+                                                            }
+                                                        }
                                                         logout()
                                                     }}
                                                 >
