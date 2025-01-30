@@ -35,7 +35,8 @@ import get from 'lodash.get'
 import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
-import CustomMenu from '../../utils//CustomMenu'
+import CustomMenu from '../../utils/CustomMenu'
+import { FilterOperators, FilterValue, GenericTableProps, OrderBy } from './types'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -57,19 +58,6 @@ function formatarString(str: string | number) {
         .trim()
 }
 
-interface ColumnData {
-    title: string
-    keyName: string
-    customComponent?: (content: string, obj: any) => JSX.Element
-    size?: number
-}
-
-interface OrderBy {
-    label: string
-    key: string
-    type: 'string' | 'number'
-}
-
 let startData: any[] = []
 let isExpandAll: boolean = false
 let localTableName = ''
@@ -78,219 +66,11 @@ let filtersFuncData: { [key: string]: (value: string) => any } = {}
 let localTableNameCache = ''
 
 /**
- * Interface para as propriedades do componente Table.
+ * Tabela cujo dados devem ser passados via props
  */
-export interface TableProps {
-    /**
-     * Identificador único da tabela.
-     */
-    id: string
-
-    /**
-     * Configuração de largura para exibição em telas grandes.
-     */
-    mediaQueryLG?: {
-        all: number
-        action: number
-    }
-
-    /**
-     * Funções de filtragem aplicáveis à tabela.
-     */
-    filtersFunc?: { [key: string]: (value: string) => any }
-
-    /**
-     * Lista de filtros disponíveis.
-     */
-    filters?: FilterValue[]
-
-    /**
-     * Configuração da ordenação das colunas.
-     */
-    orderBy?: OrderBy[]
-
-    /**
-     * Margem personalizada para o componente.
-     */
-    customMargin?: number
-
-    /**
-     * Margem personalizada para visualização em dispositivos móveis.
-     */
-    customMarginMobile?: number
-
-    /**
-     * Define se os valores CSV devem ser normalizados (removendo acentos, por exemplo).
-     */
-    normalize?: boolean
-
-    /**
-     * Define se os valores CSV devem ser convertidos para maiúsculas.
-     */
-    csvUpper?: boolean
-
-    /**
-     * Estilo personalizado para a tabela.
-     */
-    customTableStyle?: BoxProps
-
-    /**
-     * Caminho múltiplo para os dados dentro do JSON retornado pela API.
-     */
-    multipleDataPath?: string
-
-    /**
-     * Mensagem de erro personalizada para exibição na tabela.
-     */
-    customErrorMsg?: string | ReactNode
-
-    /**
-     * Remove aspas dos valores no CSV.
-     */
-    removeQuotes?: boolean
-
-    /**
-     * Lista de colunas a serem exibidas na tabela.
-     */
-    columns: ColumnData[]
-
-    /**
-     * Nome da tabela para exibição.
-     */
-    tableName: string
-
-    /**
-     * Exibe botão para exportar todos os dados para CSV.
-     */
-    csvShowAllButton?: boolean
-
-    /**
-     * Lista de chaves que devem ser excluídas da exportação para CSV.
-     */
-    csvExcludeUpper?: string[]
-
-    /**
-     * Define se o CSV será exportado sem compactação.
-     */
-    csvWithoutZip?: boolean
-
-    /**
-     * Define o tamanho colapsado das células expansíveis.
-     */
-    collapsedSize?: number
-
-    /**
-     * Título do botão para exportação de todos os dados em CSV.
-     */
-    csvAllButtonTitle?: string
-
-    /**
-     * Título do botão para exportação em CSV.
-     */
-    csvButtonTitle?: string
-
-    /**
-     * Título do botão para exportação sem compactação.
-     */
-    csvNoZipText?: string
-
-    /**
-     * Chave usada para nomeação de arquivos CSV compactados.
-     */
-    csvZipFileNamesKey?: string
-
-    /**
-     * Define se será gerado um ZIP contendo os arquivos CSV.
-     */
-    generateCsvZip?: boolean
-
-    /**
-     * Função de validação para exclusão de chaves ao exportar CSV.
-     */
-    csvExcludeValidate?: (key: string, value: string | number) => boolean
-
-    /**
-     * Mapeamento de nomes personalizados para colunas do CSV.
-     */
-    csvCustomKeyNames?: { [key: string]: string }
-
-    /**
-     * Define o tamanho máximo do texto antes de ser colapsado.
-     */
-    expandTextMaxLength?: number
-
-    /**
-     * Lista de chaves a serem excluídas da exportação para CSV.
-     */
-    csvExcludeKeysCSV?: string[]
-
-    /**
-     * Lista de chaves a serem excluídas da exportação geral para CSV.
-     */
-    csvExcludeKeys?: string[]
-
-    /**
-     * Define se o título deve ser ocultado na exportação CSV.
-     */
-    hideTitleCSV?: boolean
-
-    /**
-     * Lista de chaves a serem excluídas na exportação de todos os dados.
-     */
-    csvExcludeKeysAll?: string[]
-
-    /**
-     * Nome da chave do status para identificação de status da linha.
-     */
-    statusKeyName?: string
-
-    /**
-     * Quantidade de itens por página.
-     */
-    itemCount?: number
-
-    /**
-     * Componente para exibir ações específicas para cada linha.
-     */
-    action: (prop: any) => JSX.Element
-
-    /**
-     * Configuração para exportação de arquivos CSV.
-     */
-    csv?: {
-        fileName: string
-    }
-
-    /**
-     * Define o número de colunas exibidas na tabela.
-     */
-    columnSize: number
-
-    /**
-     * Função para buscar os dados a serem exibidos na tabela.
-     */
-    fetchFunc: () => Promise<Response>
-
-    /**
-     * Mensagens exibidas quando não há dados na tabela.
-     */
-    emptyMsg?: { user: string; public: string }
-
-    /**
-     * Caminho dentro do JSON de resposta onde os dados estão armazenados.
-     */
-    dataPath?: string
-
-    /**
-     * Define se a autenticação via Keycloak será utilizada.
-     */
-    useKC?: boolean
-}
-
-export function Table({
+export function GenericTable<T>({
     mediaQueryLG,
     columns,
-    fetchFunc,
     emptyMsg = {
         user: 'Nenhum dado encontrado',
         public: 'Nenhum dado encontrado',
@@ -318,8 +98,6 @@ export function Table({
     csvUpper = false,
     csvZipFileNamesKey = '',
     generateCsvZip = false,
-    // filters = {},
-    // filterSeparator = '|',
     hideTitleCSV = false,
     csvExcludeUpper = [],
     multipleDataPath = '',
@@ -333,10 +111,11 @@ export function Table({
     customErrorMsg = undefined,
     customTableStyle = {},
     id,
-}: TableProps) {
-    const [isLoading, setIsLoading] = useState(true)
+    initialData = null,
+    isLoading,
+}: GenericTableProps<T>) {
     const [error, setError] = useState<null | { status: number }>(null)
-    const [data, setData] = useState<any>(null)
+    const [data, setData] = useState<any>(initialData)
 
     const { user, userLoaded } = useContext(AuthContext)
     const [list, setList] = useState<any[]>([])
@@ -368,53 +147,6 @@ export function Table({
         localStorage.removeItem(localTableName)
     }
 
-    useEffect(() => {
-        setError(null)
-
-        if (userLoaded || !useKC) {
-            setIsLoading(true)
-
-            fetchFunc()
-                .then((res) => {
-                    if (!res.ok) {
-                        setError({
-                            status: 500,
-                        })
-                        setIsLoading(false)
-                        return
-                    }
-
-                    return res.json().then((j) => {
-                        if (j.statusCode === 204) {
-                            setData({ body: { data: [] } })
-                            startData = []
-                        } else if (j.statusCode === 403)
-                            setError({
-                                status: j.statusCode,
-                            })
-                        else {
-                            let value = dataPath ? get(j, dataPath) : j
-
-                            if (!value || !Array.isArray(value)) {
-                                setData({ body: { data: [] } })
-                                startData = []
-                            } else {
-                                setData(value)
-                                startData = JSON.parse(JSON.stringify(value))
-                            }
-                        }
-
-                        setIsLoading(false)
-                    })
-                })
-                .catch((err) => {
-                    setError({
-                        status: 500,
-                    })
-                })
-        }
-    }, [userLoaded, fetchFunc])
-
     const getCount = useCallback(
         (countData: any[]) => {
             if (countData.length <= 0) return 1
@@ -433,7 +165,7 @@ export function Table({
     }, [])
 
     useEffect(() => {
-        if (isLoading || error || !getData(data)) return
+        if (error || !getData(data)) return
 
         const value = getData(data)
 
@@ -444,7 +176,7 @@ export function Table({
         if (localStorage.getItem(localTableName)) {
             filtrar(JSON.parse(localStorage.getItem(localTableName) as string) as FilterValue[])
         }
-    }, [itemsCount, isLoading, data, getCount, error])
+    }, [itemsCount, data, getCount, error])
 
     useEffect(() => {
         setCurrentPage(listPage - 1)
@@ -726,7 +458,7 @@ export function Table({
     )
 
     function transformArrayObjectInString(o: Object): String {
-        let arrString = []
+        let arrString: string[] = []
 
         if (typeof o === 'object' && !Array.isArray(o) && o !== null) {
             for (let [key, value] of Object.entries(o)) {
@@ -1043,7 +775,7 @@ export function Table({
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
-                obj[index] = obj[index] === true ? true : (get(x, c.keyName, '') ?? 'Não Informado').toString().length >= expandTextMaxLength
+                obj[index] = obj[index] === true ? true : (get(x, c?.keyName as any, '') ?? 'Não Informado').toString().length >= expandTextMaxLength
             })
         })
 
@@ -1146,32 +878,34 @@ export function Table({
                             placeholder={`Pesquisar ${tableName}`}
                         />
 
-                        <Button
-                            startIcon={<FilterAlt />}
-                            variant='contained'
-                            onClick={(e) =>
-                                MODAL.open(
-                                    <CriarFiltro
-                                        key={filterKey}
-                                        reset={reset}
-                                        filtrar={filtrar}
-                                        baseFilters={[...filters]}
-                                        filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
-                                    />
-                                )
-                            }
-                            sx={{
-                                borderRadius: 3,
-                                paddingX: '24px',
-                                paddingY: '8px',
-                                backgroundColor: '#208FE8',
-                                textTransform: 'capitalize',
-                            }}
-                        >
-                            <Stack direction='row' borderRadius={5} padding={0}>
-                                <span>Filtrar</span>
-                            </Stack>
-                        </Button>
+                        {filters.length > 0 && (
+                            <Button
+                                startIcon={<FilterAlt />}
+                                variant='contained'
+                                onClick={(e) =>
+                                    MODAL.open(
+                                        <CriarFiltro
+                                            key={filterKey}
+                                            reset={reset}
+                                            filtrar={filtrar}
+                                            baseFilters={[...filters]}
+                                            filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
+                                        />
+                                    )
+                                }
+                                sx={{
+                                    borderRadius: 3,
+                                    paddingX: '24px',
+                                    paddingY: '8px',
+                                    backgroundColor: '#208FE8',
+                                    textTransform: 'capitalize',
+                                }}
+                            >
+                                <Stack direction='row' borderRadius={5} padding={0}>
+                                    <span>Filtrar</span>
+                                </Stack>
+                            </Button>
+                        )}
 
                         <Stack direction='row' spacing={1}>
                             <CustomMenu
@@ -1290,7 +1024,7 @@ export function Table({
                                 <Grid container spacing={isSmall ? 2 : 0} paddingX={2} rowSpacing={2}>
                                     {columns.map((c) => (
                                         <Grid
-                                            key={c.keyName + index}
+                                            key={String(c?.keyName) + index}
                                             item
                                             xs={12}
                                             md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
@@ -1315,24 +1049,24 @@ export function Table({
                                                     >
                                                         <Box>
                                                             {c.customComponent ? (
-                                                                c.customComponent(get(x, c.keyName), x)
+                                                                c.customComponent(get(x, c.keyName as any), x)
                                                             ) : (
                                                                 <Box color='transparent' sx={{ pointerEvents: 'none', userSelect: 'none' }}>
-                                                                    {get(x, c.keyName, '')}
+                                                                    {get(x, c.keyName as any, '')}
                                                                 </Box>
                                                             )}
                                                         </Box>
                                                         <Box position='absolute' top={0}>
                                                             {c.customComponent ? (
-                                                                c.customComponent(get(x, c.keyName), x)
+                                                                c.customComponent(get(x, c.keyName as any), x)
                                                             ) : (
                                                                 <>
                                                                     {showExpandObjOnExited[index] ? (
-                                                                        get(x, c.keyName, '')
-                                                                    ) : (get(x, c.keyName, '') ?? '').toString().length >= expandTextMaxLength ? (
-                                                                        <>{(get(x, c.keyName, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
+                                                                        get(x, c?.keyName as any, '')
+                                                                    ) : (get(x, c?.keyName as any, '') ?? '').toString().length >= expandTextMaxLength ? (
+                                                                        <>{(get(x, c?.keyName as any, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
                                                                     ) : (
-                                                                        get(x, c.keyName, '')
+                                                                        get(x, c?.keyName as any, '')
                                                                     )}
                                                                 </>
                                                             )}
@@ -1514,39 +1248,6 @@ export function Table({
             </Stack>
         </>
     )
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                   FILTRO                                   */
-/* -------------------------------------------------------------------------- */
-
-type FilterType = 'string' | 'number' | 'date' | 'dates'
-type FilterOperators =
-    | 'igual'
-    | 'contem'
-    | 'maior que'
-    | 'menor que'
-    | 'data exata'
-    | 'após'
-    | 'antes de'
-    | 'entre'
-    | 'tem um dos'
-    | 'depois de'
-    | 'antes de'
-    | 'data inicio'
-    | 'data fim'
-    | 'tem a data'
-
-interface FilterValue {
-    label: string
-    keyName: string
-    type: FilterType
-    operator: FilterOperators
-    operators: FilterOperators[]
-    value: string | any
-    value2?: string | any
-    useList?: { id: string | number; label: string }[]
-    customFunc?: string
 }
 
 function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
@@ -1923,4 +1624,4 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
     return <></>
 }
 
-export default React.memo(Table)
+export default React.memo(GenericTable)

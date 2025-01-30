@@ -27,6 +27,7 @@ import Switch from './components/form/switch/Switch'
 import { SwitchWatch, ToggleVisibility } from './components/form/switch/ToggleVisibility'
 
 import Table from './components/form/table/Table'
+import GenericTable from './components/form/table/GenericTable'
 
 import NavBar from './components/navbar/NavBar'
 import TabNavBar from './components/navbar/TabNavBar'
@@ -82,6 +83,7 @@ export {
     Switch,
     SwitchWatch,
     ToggleVisibility,
+    GenericTable,
     Table,
     NavBar,
     FormProvider,
@@ -108,5 +110,5 @@ export {
     Menu,
 
     // map
-    Map
+    Map,
 }
