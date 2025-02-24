@@ -7,6 +7,7 @@ import React from 'react'
 
 interface DraggableMarkerProps {
     startCoord: LatLngExpression
+    draggable?: boolean
     // eslint-disable-next-line no-unused-vars
     onChange?: (coord: LatLngExpression) => void
     children?: ReactElement
@@ -49,7 +50,7 @@ export default function DraggableMarker({ ...props }: DraggableMarkerProps) {
     }, [position, props.onChange])
 
     return (
-        <Marker icon={redIcon} draggable eventHandlers={eventHandlers} position={position} ref={markerRef}>
+        <Marker icon={redIcon} draggable={props.draggable} eventHandlers={eventHandlers} position={position} ref={markerRef}>
             <Popup className='custom-popup'>{props.children}</Popup>
         </Marker>
     )
