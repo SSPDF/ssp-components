@@ -36,7 +36,7 @@ import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useR
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils/CustomMenu'
-import { FilterOperators, FilterValue, GenericTableProps, OrderBy } from './types'
+import { FilterOperators, FilterValue, OrderBy, TableProps } from './types'
 
 function removePunctuationAndAccents(text: string) {
     // Remove accents and diacritics
@@ -113,7 +113,7 @@ export function GenericTable<T>({
     id,
     initialData = null,
     isLoading,
-}: GenericTableProps<T>) {
+}: TableProps) {
     const [error, setError] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(initialData)
 

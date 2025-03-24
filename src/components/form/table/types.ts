@@ -1,9 +1,9 @@
 import { BoxProps } from '@mui/material'
 import { ReactNode } from 'react'
 
-export interface ColumnData<T> {
+export interface ColumnData {
     title: string
-    keyName: Partial<T>
+    keyName: string
     customComponent?: (content: string, obj: any) => JSX.Element
     size?: number
 }
@@ -13,10 +13,6 @@ export interface OrderBy {
     key: string
     type: 'string' | 'number'
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                   FILTRO                                   */
-/* -------------------------------------------------------------------------- */
 
 export type FilterType = 'string' | 'number' | 'date' | 'dates'
 export type FilterOperators =
@@ -50,214 +46,135 @@ export interface FilterValue {
 /**
  * Interface para as propriedades do componente Table.
  */
-export interface GenericTableProps<T> {
-    /**
-     * Identificador único da tabela.
-     */
+export interface TableProps {
+    /** ID único da tabela */
     id: string
 
-    /**
-     * Configuração de largura para exibição em telas grandes.
-     */
+    /** Configurações de largura para telas grandes */
     mediaQueryLG?: {
         all: number
         action: number
     }
 
-    /**
-     * Funções de filtragem aplicáveis à tabela.
-     */
+    /** Funções de transformação para filtros */
     filtersFunc?: { [key: string]: (value: string) => any }
 
-    /**
-     * Lista de filtros disponíveis.
-     */
+    /** Filtros disponíveis */
     filters?: FilterValue[]
 
-    /**
-     * Configuração da ordenação das colunas.
-     */
+    /** Ordenação por colunas */
     orderBy?: OrderBy[]
 
-    /**
-     * Margem personalizada para o componente.
-     */
+    /** Margem personalizada (desktop) */
     customMargin?: number
 
-    /**
-     * Margem personalizada para visualização em dispositivos móveis.
-     */
+    /** Margem personalizada (mobile) */
     customMarginMobile?: number
 
-    /**
-     * Define se os valores CSV devem ser normalizados (removendo acentos, por exemplo).
-     */
+    /** Normaliza textos (remove acentos) */
     normalize?: boolean
 
-    /**
-     * Define se os valores CSV devem ser convertidos para maiúsculas.
-     */
+    /** Converte textos para maiúsculas */
     csvUpper?: boolean
 
-    /**
-     * Estilo personalizado para a tabela.
-     */
+    /** Estilo customizado da tabela */
     customTableStyle?: BoxProps
 
-    /**
-     * Caminho múltiplo para os dados dentro do JSON retornado pela API.
-     */
+    /** Caminho múltiplo dentro dos dados */
     multipleDataPath?: string
 
-    /**
-     * Mensagem de erro personalizada para exibição na tabela.
-     */
+    /** Mensagem de erro personalizada */
     customErrorMsg?: string | ReactNode
 
-    /**
-     * Remove aspas dos valores no CSV.
-     */
+    /** Remove aspas dos valores no CSV */
     removeQuotes?: boolean
 
-    /**
-     * Lista de colunas a serem exibidas na tabela.
-     */
-    columns: ColumnData<T>[]
+    /** Colunas da tabela */
+    columns: any[]
 
-    /**
-     * Nome da tabela para exibição.
-     */
+    /** Nome da tabela */
     tableName: string
 
-    /**
-     * Exibe botão para exportar todos os dados para CSV.
-     */
+    /** Exibe botão para exportar todos os dados */
     csvShowAllButton?: boolean
 
-    /**
-     * Lista de chaves que devem ser excluídas da exportação para CSV.
-     */
+    /** Chaves excluídas da exportação (upper) */
     csvExcludeUpper?: string[]
 
-    /**
-     * Define se o CSV será exportado sem compactação.
-     */
+    /** Exporta CSV sem compactação */
     csvWithoutZip?: boolean
 
-    /**
-     * Define o tamanho colapsado das células expansíveis.
-     */
+    /** Altura da célula colapsada */
     collapsedSize?: number
 
-    /**
-     * Título do botão para exportação de todos os dados em CSV.
-     */
+    /** Texto do botão "Exportar todos em CSV" */
     csvAllButtonTitle?: string
 
-    /**
-     * Título do botão para exportação em CSV.
-     */
+    /** Texto do botão "Exportar CSV" */
     csvButtonTitle?: string
 
-    /**
-     * Título do botão para exportação sem compactação.
-     */
+    /** Texto do botão "Exportar sem ZIP" */
     csvNoZipText?: string
 
-    /**
-     * Chave usada para nomeação de arquivos CSV compactados.
-     */
+    /** Chave para nomear arquivos ZIP */
     csvZipFileNamesKey?: string
 
-    /**
-     * Define se será gerado um ZIP contendo os arquivos CSV.
-     */
+    /** Gera arquivo ZIP ao exportar */
     generateCsvZip?: boolean
 
-    /**
-     * Função de validação para exclusão de chaves ao exportar CSV.
-     */
+    /** Validação para exclusão de chaves no CSV */
     csvExcludeValidate?: (key: string, value: string | number) => boolean
 
-    /**
-     * Mapeamento de nomes personalizados para colunas do CSV.
-     */
+    /** Mapeia nomes customizados de colunas no CSV */
     csvCustomKeyNames?: { [key: string]: string }
 
-    /**
-     * Define o tamanho máximo do texto antes de ser colapsado.
-     */
+    /** Tamanho máximo do texto antes de colapsar */
     expandTextMaxLength?: number
 
-    /**
-     * Lista de chaves a serem excluídas da exportação para CSV.
-     */
+    /** Chaves excluídas da exportação CSV simples */
     csvExcludeKeysCSV?: string[]
 
-    /**
-     * Lista de chaves a serem excluídas da exportação geral para CSV.
-     */
+    /** Chaves excluídas da exportação geral */
     csvExcludeKeys?: string[]
 
-    /**
-     * Define se o título deve ser ocultado na exportação CSV.
-     */
+    /** Oculta o título na exportação CSV */
     hideTitleCSV?: boolean
 
-    /**
-     * Lista de chaves a serem excluídas na exportação de todos os dados.
-     */
+    /** Chaves excluídas no CSV com todos os dados */
     csvExcludeKeysAll?: string[]
 
-    /**
-     * Nome da chave do status para identificação de status da linha.
-     */
+    /** Nome da chave para status da linha */
     statusKeyName?: string
 
-    /**
-     * Quantidade de itens por página.
-     */
+    /** Quantidade de itens por página */
     itemCount?: number
 
-    /**
-     * Componente para exibir ações específicas para cada linha.
-     */
+    /** Ações por linha */
     action: (prop: any) => JSX.Element
 
-    /**
-     * Configuração para exportação de arquivos CSV.
-     */
+    /** Configuração para exportação CSV */
     csv?: {
         fileName: string
     }
 
-    /**
-     * Define o número de colunas exibidas na tabela.
-     */
+    /** Número de colunas da tabela */
     columnSize: number
 
-    /**
-     * Mensagens exibidas quando não há dados na tabela.
-     */
+    /** Função para buscar dados */
+    fetchFunc?: () => Promise<Response>
+
+    /** Mensagens para quando não há dados */
     emptyMsg?: { user: string; public: string }
 
-    /**
-     * Caminho dentro do JSON de resposta onde os dados estão armazenados.
-     */
+    /** Caminho dos dados no JSON da resposta */
     dataPath?: string
 
-    /**
-     * Define se a autenticação via Keycloak será utilizada.
-     */
+    /** Usa autenticação via Keycloak */
     useKC?: boolean
 
-    /**
-     * Dados da tabela
-     */
-    initialData: Array<Partial<T>> | null
+    /** Dados iniciais da tabela */
+    initialData: Array<{ [key: string]: any }> | null
 
-    /**
-     *  Variável para renderizar componente de carregamento
-     */
+    /** Flag de carregamento dos dados da tabela */
     isLoading?: boolean
 }
