@@ -60,7 +60,7 @@ export const Base: Story = {
             {
                 keyName: 'date',
                 title: 'Datas',
-                size: 2,
+                // size: 2,
             },
             {
                 keyName: 'status',

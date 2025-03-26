@@ -69,6 +69,7 @@ export function Table({
     customTableStyle = {},
     id,
     initialData = null,
+    isExpandable = true,
 }: TableProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<null | { status: number }>(null)
@@ -439,25 +440,27 @@ export function Table({
                                 Ordenar
                             </CustomMenu>
 
-                            <Button
-                                variant='contained'
-                                fullWidth
-                                startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                                sx={{
-                                    backgroundColor: '#637082',
-                                    ':hover': {
-                                        backgroundColor: '#3c4757',
-                                    },
-                                    textTransform: 'capitalize',
-                                    borderRadius: 3,
-                                    padding: {
-                                        md: '0px 8px',
-                                    },
-                                }}
-                                onClick={expandAll}
-                            >
-                                {isExpandAll ? 'Recolher' : 'Expandir'}
-                            </Button>
+                            {isExpandable && (
+                                <Button
+                                    variant='contained'
+                                    fullWidth
+                                    startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                                    sx={{
+                                        backgroundColor: '#637082',
+                                        ':hover': {
+                                            backgroundColor: '#3c4757',
+                                        },
+                                        textTransform: 'capitalize',
+                                        borderRadius: 3,
+                                        padding: {
+                                            md: '0px 8px',
+                                        },
+                                    }}
+                                    onClick={expandAll}
+                                >
+                                    {isExpandAll ? 'Recolher' : 'Expandir'}
+                                </Button>
+                            )}
                         </Stack>
                     </Stack>
 

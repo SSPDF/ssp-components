@@ -177,4 +177,7 @@ export interface TableProps {
 
     /** Flag de carregamento dos dados da tabela */
     isLoading?: boolean
+
+    /** Flag para mostrar ou não o botão de expandir a Linha */
+    isExpandable?: boolean
 }
