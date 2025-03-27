@@ -211,18 +211,20 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <Map
+            {/* <Map
                 firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
                 onCoordsChange={(c) => {
                     console.log(c)
                 }}
                 pulseMarkerList={[]}
-            />
+            /> */}
 
-            <FixedAutoComplete name='quartel2' title='Quartel' customLoadingText='Carregando quarteis' list={l} watchValue={value} required />
+            <DropFileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' />
+
+            {/* <FixedAutoComplete name='quartel2' title='Quartel' customLoadingText='Carregando quarteis' list={l} watchValue={value} required />
             <Button variant='contained' onClick={(e) => setValue(undefined)}>
                 Teste
-            </Button>
+            </Button> */}
             {/* <Stepper>
                 <StepperBlock title='Teste 1'>
                     <Input name='nome1' type='input' title='Nome 1' required />

@@ -10,7 +10,7 @@ import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { useDropzone } from 'react-dropzone'
+import { DropzoneOptions, useDropzone } from 'react-dropzone'
 import axios, { AxiosProgressEvent, AxiosResponse } from 'axios'
 
 import { PDFIcon, TrashIcon } from '../../icons/icons'
@@ -68,6 +68,7 @@ export default function DropFileUpload({
     md,
     route = '',
     tstToken = '',
+    dropZoneOptions,
 }: {
     name: string
     tipoArquivo: string
@@ -78,12 +79,14 @@ export default function DropFileUpload({
     required?: boolean
     multiple?: boolean
     sizeLimit?: number
+    dropZoneOptions?: DropzoneOptions
     xs?: number
     sm?: number
     md?: number
 }) {
     const { getRootProps, getInputProps } = useDropzone({
         multiple,
+        useFsAccessApi: true,
         onDrop: (dropFiles) => {
             const fileList: FileState[] = []
             setProgress(-1)
@@ -153,6 +156,7 @@ export default function DropFileUpload({
                         })
                 })
         },
+        ...(dropZoneOptions || {}),
     })
     const context = useContext(FormContext)!
     const { user } = useContext(AuthContext)

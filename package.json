@@ -34,7 +34,7 @@
         "lodash.hasin": "^4.5.2",
         "next": "^13.3.0",
         "react": "^18.2.0",
-        "react-dropzone": "^14.2.3",
+        "react-dropzone": "^14.3.8",
         "react-google-recaptcha": "^2.1.0",
         "react-hook-form": "^7.43.9",
         "react-imask": "^6.6.0",
