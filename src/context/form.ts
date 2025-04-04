@@ -1,5 +1,18 @@
 import { createContext, Dispatch, SetStateAction } from 'react'
-import { Control, FieldErrors, FieldValues, UseFormGetValues, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue, UseFormTrigger, UseFormUnregister, UseFormWatch } from 'react-hook-form'
+import {
+    Control,
+    FieldErrors,
+    FieldValues,
+    UseFormGetValues,
+    UseFormHandleSubmit,
+    UseFormRegister,
+    UseFormReset,
+    UseFormSetValue,
+    UseFormStateReturn,
+    UseFormTrigger,
+    UseFormUnregister,
+    UseFormWatch,
+} from 'react-hook-form'
 
 export const FormContext = createContext<{
     formRegister: UseFormRegister<FieldValues>
@@ -19,6 +32,7 @@ export const FormContext = createContext<{
             }[]
         >
     >
+    formState: UseFormStateReturn<FieldValues>
     errors: FieldErrors<FieldValues>
     submiting: boolean
 } | null>(null)

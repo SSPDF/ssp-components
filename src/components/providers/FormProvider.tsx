@@ -12,18 +12,7 @@ interface FormProviderProps<T extends FieldValues> {
 }
 
 export default function FormProvider<T extends FieldValues>({ children, onSubmit, formMethod = 'GET', submiting = false }: FormProviderProps<T>) {
-    const {
-        register,
-        handleSubmit,
-        control,
-        formState: { errors },
-        reset,
-        watch,
-        trigger,
-        setValue,
-        unregister,
-        getValues,
-    } = useForm<T>()
+    const { register, handleSubmit, control, formState, reset, watch, trigger, setValue, unregister, getValues } = useForm<T>()
 
     const [filesUid, setFilesUid] = useState<FilesID>([])
 
@@ -40,7 +29,8 @@ export default function FormProvider<T extends FieldValues>({ children, onSubmit
                 formGetValues: getValues as UseFormReturn<FieldValues>['getValues'], // Cast `getValues` to a compatible type
                 formHandleSubmit: handleSubmit as UseFormReturn<FieldValues>['handleSubmit'], // Cast `handleSubmit` to a compatible type
                 setFilesUid: setFilesUid,
-                errors: errors,
+                formState: formState as UseFormReturn<FieldValues>['formState'],
+                errors: formState?.errors,
                 submiting: submiting,
             }}
         >
