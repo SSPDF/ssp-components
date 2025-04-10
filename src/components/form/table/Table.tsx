@@ -90,7 +90,7 @@ export function Table({
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
     const startData = useRef<any[]>(data)
-    const orderAsc = useRef(false)
+    const orderAsc = useRef((localStorage.getItem(`order-${id}`) === 'true') || false)
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
     localTableName = `tableFilter_${id}`
@@ -135,8 +135,33 @@ export function Table({
                                 setData({ body: { data: [] } })
                                 startData.current = []
                             } else {
-                                setData(value)
-                                startData.current = JSON.parse(JSON.stringify(value))
+                                let newValue: any[] = value
+ 
+                                // começando a ordenação padrão
+                                if (localStorage.getItem(`order-data-${id}`)) {
+                                    try {
+                                        const orderData: OrderBy = JSON.parse(localStorage.getItem(`order-data-${id}`))
+
+                                        newValue = ordenarDados({
+                                            order: orderData,
+                                            list: value,
+                                            orderAsc: orderAsc.current,
+                                        })
+                                    } catch(err){
+                                        console.log(err)
+                                    }
+                                }
+                                else if (orderBy.length > 0) {
+                                    // se não tiver salvo uma ordenação, ordena pelo primeiro da lista
+                                    newValue = ordenarDados({
+                                        order: orderBy[0],
+                                        list: value,
+                                        orderAsc: orderAsc.current,
+                                    })
+                                }
+
+                                setData(newValue)
+                                startData.current = JSON.parse(JSON.stringify(newValue))
                             }
                         }
 
@@ -160,7 +185,7 @@ export function Table({
     useEffect(() => {
         if (isLoading || error || !getData(data)) return
 
-        const value = getData(data)
+        let value = getData(data)
 
         setList(value)
         setListClone(value)
@@ -361,13 +386,18 @@ export function Table({
     }
 
     const handleOrdenarDados = (x: OrderBy) => {
+        /** Inverter a ordem de ordenação no segundo clique */
+        orderAsc.current = !orderAsc.current
+
         const dadosOrdenados = ordenarDados({
             order: x,
             list,
             orderAsc: orderAsc.current,
         })
-        /** Inverter a ordem de ordenação no segundo clique */
-        orderAsc.current = !orderAsc.current
+
+        localStorage.setItem(`order-${id}`, orderAsc.current.toString())
+        localStorage.setItem(`order-data-${id}`, JSON.stringify(x))
+
         setList(dadosOrdenados)
     }
 
@@ -427,7 +457,7 @@ export function Table({
                         </Button>
 
                         <Stack direction='row' spacing={1}>
-                            <CustomMenu
+                            {orderBy.length > 0 && <CustomMenu
                                 data={orderBy.map((x) => ({
                                     name: x.label,
                                     onClick: () => handleOrdenarDados(x),
@@ -438,7 +468,7 @@ export function Table({
                                 }}
                             >
                                 Ordenar
-                            </CustomMenu>
+                            </CustomMenu>}
 
                             {isExpandable && (
                                 <Button

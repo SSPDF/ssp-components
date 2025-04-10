@@ -219,7 +219,7 @@ export default function Teste() {
                 pulseMarkerList={[]}
             /> */}
 
-            <DropFileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' />
+            {/* <DropFileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' /> */}
 
             {/* <FixedAutoComplete name='quartel2' title='Quartel' customLoadingText='Carregando quarteis' list={l} watchValue={value} required />
             <Button variant='contained' onClick={(e) => setValue(undefined)}>
@@ -417,7 +417,7 @@ export default function Teste() {
                 Mudar
             </Button> */}
 
-            {/* <Table
+            <Table
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
@@ -577,7 +577,7 @@ export default function Teste() {
                 orderBy={[
                     {
                         label: 'Protocolo',
-                        key: 'coSeqEventoExterno',
+                        key: 'CO_SEQ_DEVOLUTIVA_CADASTRO',
                         type: 'number',
                     },
                 ]}
@@ -596,7 +596,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            /> */}
+            />
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}

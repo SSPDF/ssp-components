@@ -173,7 +173,7 @@ export interface TableProps {
     useKC?: boolean
 
     /** Dados iniciais da tabela */
-    initialData: Array<{ [key: string]: any }> | null
+    initialData?: Array<{ [key: string]: any }> | null
 
     /** Flag de carregamento dos dados da tabela */
     isLoading?: boolean
