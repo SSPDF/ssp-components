@@ -37,1016 +37,430 @@
         "body": {
             "data": [
                 {
-                    "dtTableDates": "26/06/2024 - 04:00 às 04:00 | 27/06/2024 - 04:00 às 04:00 | 28/06/2024 - 04:00 às 04:00 | 29/06/2024 - 04:00 às 04:00 | 30/06/2024 - 04:00 às 04:00 | 01/07/2024 - 04:00 às 04:00 | 02/07/2024 - 04:00 às 04:00 | 03/07/2024 - 04:00 às 04:00 | 04/07/2024 - 04:20 às 04:00",
+                    "coSeqEventoExterno": 8157,
+                    "dtTableDates": "07/05/2025 - 10:00 às 11:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "26/06/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "27/06/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "28/06/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "29/06/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "30/06/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "01/07/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "02/07/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "03/07/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        },
-                        {
-                            "dtInicio": "04/07/2024",
-                            "hrInicio": "04:20",
-                            "hrTermino": "04:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3372 - Sem processo",
-                    "noEvento": "dsadsa",
-                    "noTableRa": "ARAPOANGA",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "26/06/2024",
-                    "hrTableInicio": "04:00",
-                    "hrTableTermino": "04:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "25/06/2024",
-                    "stEventoExterno": "R",
-                    "coSeqEventoExterno": 3372,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "27/06/2024 - 04:00 às 04:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "27/06/2024",
-                            "hrInicio": "04:00",
-                            "hrTermino": "04:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3371 - Sem processo",
-                    "noEvento": "Teste",
-                    "noTableRa": "ARAPOANGA",
-                    "dsEnderecoLocal": "Local Teste 0000000",
-                    "dtTableInicio": "27/06/2024",
-                    "hrTableInicio": "04:00",
-                    "hrTableTermino": "04:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "feirasExposicoes",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "24/06/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3371,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "22/07/2024 - 10:00 às 12:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "22/07/2024",
-                            "hrInicio": "10:00",
-                            "hrTermino": "12:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3370 - Sem processo",
-                    "noEvento": "Teste de alteração antes do cadastro",
-                    "noTableRa": "BRAZLÂNDIA",
-                    "dsEnderecoLocal": "Ceilandia ",
-                    "dtTableInicio": "22/07/2024",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "12:00",
-                    "nuPublicoMaximo": 100,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "shows",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "21/06/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3370,
-                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
-                },
-                {
-                    "dtTableDates": "17/07/2024 - 10:00 às 15:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "17/07/2024",
-                            "hrInicio": "10:00",
-                            "hrTermino": "15:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3369 - Sem processo",
-                    "noEvento": "Teste edição",
-                    "noTableRa": "ARNIQUEIRA",
-                    "dsEnderecoLocal": "Ceilandia ",
-                    "dtTableInicio": "17/07/2024",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "15:00",
-                    "nuPublicoMaximo": 100,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "shows",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "17/06/2024",
-                    "stEventoExterno": "E",
-                    "coSeqEventoExterno": 3369,
-                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
-                },
-                {
-                    "dtTableDates": "29/05/2024 - 02:00 às 02:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "29/05/2024",
-                            "hrInicio": "02:00",
-                            "hrTermino": "02:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3368 - 00050-00006072/2024-60",
-                    "noEvento": "Evento para teste de solicitação",
-                    "noTableRa": "ARNIQUEIRA",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "29/05/2024",
-                    "hrTableInicio": "02:00",
-                    "hrTableTermino": "02:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "",
-                    "dsTableNaturezas": "social",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "00050-00006072/2024-60",
-                    "dtCadastro": "28/05/2024",
-                    "stEventoExterno": "E",
-                    "coSeqEventoExterno": 3368,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "20/06/2024 - 07:10 às 03:10",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "20/06/2024",
-                            "hrInicio": "07:10",
-                            "hrTermino": "03:10"
-                        }
-                    ],
-                    "protocoloProcessosei": "3367 - Sem processo",
-                    "noEvento": "LUCAS A PEREIRA",
-                    "noTableRa": "LAGO NORTE",
-                    "dsEnderecoLocal": "QNA 21 CASA 17",
-                    "dtTableInicio": "20/06/2024",
-                    "hrTableInicio": "07:10",
-                    "hrTableTermino": "03:10",
-                    "nuPublicoMaximo": 123,
-                    "stAcaoTransito": "",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "29/04/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3367,
-                    "noResponsavelRealizacaoEvento": "Meu Nome",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61996536694"
-                },
-                {
-                    "dtTableDates": "19/04/2024 - 00:40 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "19/04/2024",
-                            "hrInicio": "00:40",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3366 - Sem processo",
-                    "noEvento": "teste",
-                    "noTableRa": "ÁGUAS CLARAS",
-                    "dsEnderecoLocal": "teste",
-                    "dtTableInicio": "19/04/2024",
-                    "hrTableInicio": "00:40",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 5,
-                    "stAcaoTransito": "",
-                    "dsTableNaturezas": "shows",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "15/04/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3366,
-                    "noResponsavelRealizacaoEvento": "Herbert Valadares",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61992547666"
-                },
-                {
-                    "dtTableDates": "31/05/2024 - 18:00 às 20:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "31/05/2024",
-                            "hrInicio": "18:00",
-                            "hrTermino": "20:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3365 - Sem processo",
-                    "noEvento": "Festa Junina SSP 31",
-                    "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "Asa Norte",
-                    "dtTableInicio": "31/05/2024",
-                    "hrTableInicio": "18:00",
-                    "hrTableTermino": "20:00",
-                    "nuPublicoMaximo": 100,
-                    "stAcaoTransito": "",
-                    "dsTableNaturezas": "festaJunina",
-                    "stTableStatus": "APROVADO",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "12/04/2024",
-                    "stEventoExterno": "A",
-                    "coSeqEventoExterno": 3365,
-                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
-                },
-                {
-                    "dtTableDates": "23/05/2024 - 10:00 às 12:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "23/05/2024",
-                            "hrInicio": "10:00",
-                            "hrTermino": "12:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3364 - 00050-00000603/2024-19",
-                    "noEvento": "teste carro de som 3",
-                    "noTableRa": "CRUZEIRO",
-                    "dsEnderecoLocal": "Asa Norte - ",
-                    "dtTableInicio": "23/05/2024",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "12:00",
-                    "nuPublicoMaximo": 100,
-                    "stAcaoTransito": "PMDFdf",
-                    "dsTableNaturezas": "feirasExposicoes",
-                    "stTableStatus": "APROVADO",
-                    "nuProcessoFormatadoSei": "00050-00000603/2024-19",
-                    "dtCadastro": "10/04/2024",
-                    "stEventoExterno": "A",
-                    "coSeqEventoExterno": 3364,
-                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
-                },
-                {
-                    "dtTableDates": "18/04/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "18/04/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3363 - 00050-00000605/2024-08",
-                    "noEvento": "EVENTO ATO PUBLICO SEI",
-                    "noTableRa": "ÁGUA QUENTE",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "18/04/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "PMDFdf",
-                    "dsTableNaturezas": "atoPublico",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "00050-00000605/2024-08",
-                    "dtCadastro": "04/04/2024",
-                    "stEventoExterno": "FP",
-                    "coSeqEventoExterno": 3363,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "15/05/2024 - 10:00 às 11:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "15/05/2024",
+                            "dtInicio": "07/05/2025",
                             "hrInicio": "10:00",
                             "hrTermino": "11:00"
                         }
                     ],
-                    "protocoloProcessosei": "3362 - 00050-00000604/2024-55",
-                    "noEvento": "teste carro de som 2",
-                    "noTableRa": "GAMA",
-                    "dsEnderecoLocal": "Ceilandia ",
-                    "dtTableInicio": "15/05/2024",
+                    "noEvento": "Evento Teste pendencia",
+                    "noTableRa": "BRAZLÂNDIA",
+                    "dsEnderecoLocal": "Centro de Convenções Ulysses Guimarães – Auditório Master – SDC – Brasília – DF - Cep: 70.070-350",
+                    "dtTableInicio": "07/05/2025",
                     "hrTableInicio": "10:00",
                     "hrTableTermino": "11:00",
-                    "nuPublicoMaximo": 10,
-                    "stAcaoTransito": "PMDFdf | DETRAN-DF-df",
-                    "dsTableNaturezas": "feirasExposicoes",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "00050-00000604/2024-55",
-                    "dtCadastro": "03/04/2024",
-                    "stEventoExterno": "FP",
-                    "coSeqEventoExterno": 3362,
-                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
+                    "nuPublicoMaximo": 1000,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "Sem processo"
                 },
                 {
-                    "dtTableDates": "16/05/2024 - 03:00 às 04:00",
+                    "coSeqEventoExterno": 8153,
+                    "dtTableDates": "13/03/2025 - 03:00 às 05:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "16/05/2024",
+                            "dtInicio": "13/03/2025",
                             "hrInicio": "03:00",
+                            "hrTermino": "05:00"
+                        }
+                    ],
+                    "noEvento": "Teste T",
+                    "noTableRa": "GUARÁ",
+                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
+                    "dtTableInicio": "13/03/2025",
+                    "hrTableInicio": "03:00",
+                    "hrTableTermino": "05:00",
+                    "nuPublicoMaximo": 321,
+                    "stAcaoTransito": "Sem ação",
+                    "stEventoExterno": "L",
+                    "nuProcessoFormatadoSei": "Sem processo"
+                },
+                {
+                    "coSeqEventoExterno": 8143,
+                    "dtTableDates": "26/01/2025 - 15:00 às 21:00 | 25/01/2025 - 15:00 às 21:00 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "26/01/2025",
+                            "hrInicio": "15:00",
+                            "hrTermino": "21:00"
+                        },
+                        {
+                            "dtInicio": "25/01/2025",
+                            "hrInicio": "15:00",
+                            "hrTermino": "21:00"
+                        }
+                    ],
+                    "noEvento": "4ª Feira Cultural da Diversidade LGBT+ de Brasília",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "SCTS Estacionamento  \"P\" da Biblioteca Nacional de Brasília / Setor Cultural da República, Área Cívica, Lote s/n Edifício da Biblioteca Nacional, SCTS - Brasília DF.",
+                    "dtTableInicio": "26/01/2025",
+                    "hrTableInicio": "15:00",
+                    "hrTableTermino": "21:00",
+                    "nuPublicoMaximo": 200,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024660/2024-85"
+                },
+                {
+                    "coSeqEventoExterno": 8142,
+                    "dtTableDates": "12/01/2025 - 15:00 às 22:00",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "12/01/2025",
+                            "hrInicio": "15:00",
+                            "hrTermino": "22:00"
+                        }
+                    ],
+                    "noEvento": "Amigos da  Elite  ",
+                    "noTableRa": "SAMAMBAIA",
+                    "dsEnderecoLocal": "ESTACIONAMENTO DO COMPLEXO  CULTURAL  QR  301 SAMAMBAIA SUL ",
+                    "dtTableInicio": "12/01/2025",
+                    "hrTableInicio": "15:00",
+                    "hrTableTermino": "22:00",
+                    "nuPublicoMaximo": 1000,
+                    "stAcaoTransito": "Sem ação",
+                    "stEventoExterno": "L",
+                    "nuProcessoFormatadoSei": "00050-00024647/2024-26"
+                },
+                {
+                    "coSeqEventoExterno": 8141,
+                    "dtTableDates": "16/03/2025 - 06:15 às 11:15",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "16/03/2025",
+                            "hrInicio": "06:15",
+                            "hrTermino": "11:15"
+                        }
+                    ],
+                    "noEvento": "18ª Copa Brasilia de Triathlon - etapa 1",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Área de Lazer da Ponte JK",
+                    "dtTableInicio": "16/03/2025",
+                    "hrTableInicio": "06:15",
+                    "hrTableTermino": "11:15",
+                    "nuPublicoMaximo": 200,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024646/2024-81"
+                },
+                {
+                    "coSeqEventoExterno": 8139,
+                    "dtTableDates": "15/02/2025 - 10:00 às 14:00",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "15/02/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "14:00"
+                        }
+                    ],
+                    "noEvento": "SAMBA DA TORRE DE TV 2024 - CAFÉ COM SAMBA",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Feira de Artesanato da Torre de TV SDC - Eixo Monumental, Brasília/DF",
+                    "dtTableInicio": "15/02/2025",
+                    "hrTableInicio": "10:00",
+                    "hrTableTermino": "14:00",
+                    "nuPublicoMaximo": 190,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "Sem processo"
+                },
+                {
+                    "coSeqEventoExterno": 8137,
+                    "dtTableDates": "08/03/2025 - 17:00 às 23:00 | 12/02/2025 - 17:00 às 23:00 | 01/02/2025 - 17:00 às 23:00 | 29/01/2025 - 17:00 às 23:00 | 18/01/2025 - 17:00 às 23:00",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "08/03/2025",
+                            "hrInicio": "17:00",
+                            "hrTermino": "23:00"
+                        },
+                        {
+                            "dtInicio": "12/02/2025",
+                            "hrInicio": "17:00",
+                            "hrTermino": "23:00"
+                        },
+                        {
+                            "dtInicio": "01/02/2025",
+                            "hrInicio": "17:00",
+                            "hrTermino": "23:00"
+                        },
+                        {
+                            "dtInicio": "29/01/2025",
+                            "hrInicio": "17:00",
+                            "hrTermino": "23:00"
+                        },
+                        {
+                            "dtInicio": "18/01/2025",
+                            "hrInicio": "17:00",
+                            "hrTermino": "23:00"
+                        }
+                    ],
+                    "noEvento": "CAMPEONATO PROFISSIONAL DA PRIMEIRA DIVISÃO 2025 -    JOGOS COM MANDO DA S.E. DO GAMA  ",
+                    "noTableRa": "GAMA",
+                    "dsEnderecoLocal": "Estádio Bezerrão (Gama)",
+                    "dtTableInicio": "08/03/2025",
+                    "hrTableInicio": "17:00",
+                    "hrTableTermino": "23:00",
+                    "nuPublicoMaximo": 8000,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024643/2024-48"
+                },
+                {
+                    "coSeqEventoExterno": 8135,
+                    "dtTableDates": "16/02/2025 - 10:00 às 17:00 | 09/02/2025 - 10:00 às 17:00 | 02/02/2025 - 10:00 às 17:00 | 26/01/2025 - 10:00 às 17:00 | 19/01/2025 - 10:00 às 17:00 | 12/01/2025 - 10:00 às 17:00 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "16/02/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "17:00"
+                        },
+                        {
+                            "dtInicio": "09/02/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "17:00"
+                        },
+                        {
+                            "dtInicio": "02/02/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "17:00"
+                        },
+                        {
+                            "dtInicio": "26/01/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "17:00"
+                        },
+                        {
+                            "dtInicio": "19/01/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "17:00"
+                        },
+                        {
+                            "dtInicio": "12/01/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "17:00"
+                        }
+                    ],
+                    "noEvento": "ROCK NO EIXÃO",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Eixão do Lazer altura da 204 norte",
+                    "dtTableInicio": "16/02/2025",
+                    "hrTableInicio": "10:00",
+                    "hrTableTermino": "17:00",
+                    "nuPublicoMaximo": 199,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024610/2024-06"
+                },
+                {
+                    "coSeqEventoExterno": 8133,
+                    "dtTableDates": "16/02/2025 - 14:30 às 19:00 | 13/02/2025 - 14:30 às 19:00 | 02/02/2025 - 14:30 às 19:00 | 26/01/2025 - 14:30 às 19:00 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "16/02/2025",
+                            "hrInicio": "14:30",
+                            "hrTermino": "19:00"
+                        },
+                        {
+                            "dtInicio": "13/02/2025",
+                            "hrInicio": "14:30",
+                            "hrTermino": "19:00"
+                        },
+                        {
+                            "dtInicio": "02/02/2025",
+                            "hrInicio": "14:30",
+                            "hrTermino": "19:00"
+                        },
+                        {
+                            "dtInicio": "26/01/2025",
+                            "hrInicio": "14:30",
+                            "hrTermino": "19:00"
+                        }
+                    ],
+                    "noEvento": "Campeonato Candango Série A - Legião mandante",
+                    "noTableRa": "GAMA",
+                    "dsEnderecoLocal": "Estádio Bezerrão - Setor Central do Gama - Gama/DF.",
+                    "dtTableInicio": "16/02/2025",
+                    "hrTableInicio": "14:30",
+                    "hrTableTermino": "19:00",
+                    "nuPublicoMaximo": 300,
+                    "stAcaoTransito": "PMDFdf | DETRAN-DF-df",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024603/2024-04"
+                },
+                {
+                    "coSeqEventoExterno": 8131,
+                    "dtTableDates": "16/02/2025 - 10:00 às 22:00 | 15/02/2025 - 10:00 às 22:00 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "16/02/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "22:00"
+                        },
+                        {
+                            "dtInicio": "15/02/2025",
+                            "hrInicio": "10:00",
+                            "hrTermino": "22:00"
+                        }
+                    ],
+                    "noEvento": "FESTIVAL DE COMIDA DE RUA",
+                    "noTableRa": "SOBRADINHO",
+                    "dsEnderecoLocal": "ESTACIONAMENTO DO ESTÁDIO AGOSTINHO LIMA",
+                    "dtTableInicio": "16/02/2025",
+                    "hrTableInicio": "10:00",
+                    "hrTableTermino": "22:00",
+                    "nuPublicoMaximo": 500,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024587/2024-41"
+                },
+                {
+                    "coSeqEventoExterno": 8130,
+                    "dtTableDates": "18/01/2025 - 20:00 às 04:00",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "18/01/2025",
+                            "hrInicio": "20:00",
                             "hrTermino": "04:00"
                         }
                     ],
-                    "protocoloProcessosei": "3361 - 00050-00000555/2024-51",
-                    "noEvento": "qualquer",
-                    "noTableRa": "CANDANGOLÂNDIA",
-                    "dsEnderecoLocal": "Asa Norte",
-                    "dtTableInicio": "16/05/2024",
-                    "hrTableInicio": "03:00",
+                    "noEvento": "Sertanejao sem fronteiras",
+                    "noTableRa": "PLANALTINA",
+                    "dsEnderecoLocal": "Estacionamento do Funções Múltiplas - Planaltina-DF",
+                    "dtTableInicio": "18/01/2025",
+                    "hrTableInicio": "20:00",
                     "hrTableTermino": "04:00",
-                    "nuPublicoMaximo": 100,
-                    "stAcaoTransito": "",
-                    "dsTableNaturezas": "social",
-                    "stTableStatus": "APROVADO",
-                    "nuProcessoFormatadoSei": "00050-00000555/2024-51",
-                    "dtCadastro": "03/04/2024",
-                    "stEventoExterno": "A",
-                    "coSeqEventoExterno": 3361,
-                    "noResponsavelRealizacaoEvento": "CADUSUARIO",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61995412332"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3360 - 00050-00000554/2024-14",
-                    "noEvento": "TESTE DE ESTRESSE 4",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
+                    "nuPublicoMaximo": 400,
                     "stAcaoTransito": "PMDFdf",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "00050-00000554/2024-14",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "E",
-                    "coSeqEventoExterno": 3360,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024585/2024-52"
                 },
                 {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
+                    "coSeqEventoExterno": 8129,
+                    "dtTableDates": "25/01/2025 - 14:00 às 22:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
+                            "dtInicio": "25/01/2025",
+                            "hrInicio": "14:00",
+                            "hrTermino": "22:00"
                         }
                     ],
-                    "protocoloProcessosei": "3359 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE 4",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "C",
-                    "coSeqEventoExterno": 3359,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
+                    "noEvento": "52ª Corrida de Reis - Edição 2025",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Estacionamento do Ginásio Nilson Nelson  - Brasília- DF",
+                    "dtTableInicio": "25/01/2025",
+                    "hrTableInicio": "14:00",
+                    "hrTableTermino": "22:00",
+                    "nuPublicoMaximo": 12000,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024583/2024-63"
                 },
                 {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
+                    "coSeqEventoExterno": 8127,
+                    "dtTableDates": "18/01/2025 - 06:00 às 12:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
+                            "dtInicio": "18/01/2025",
+                            "hrInicio": "06:00",
+                            "hrTermino": "12:00"
                         }
                     ],
-                    "protocoloProcessosei": "3358 - ",
-                    "noEvento": "TESTE DE ESTRESSE 2",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "REPROVADO",
-                    "nuProcessoFormatadoSei": "",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "E",
-                    "coSeqEventoExterno": 3358,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
+                    "noEvento": "Corrida de Reis Mirim 2025",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Estacionamento 12 - Parque da Cidade Sara Kubitschek - Brasília- DF ",
+                    "dtTableInicio": "18/01/2025",
+                    "hrTableInicio": "06:00",
+                    "hrTableTermino": "12:00",
+                    "nuPublicoMaximo": 3000,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024582/2024-19"
                 },
                 {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
+                    "coSeqEventoExterno": 8125,
+                    "dtTableDates": "02/02/2025 - 09:00 às 00:00 | 01/02/2025 - 09:00 às 00:00 | 31/01/2025 - 09:00 às 00:00 | 30/01/2025 - 09:00 às 00:00 | 29/01/2025 - 09:00 às 00:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
+                            "dtInicio": "02/02/2025",
+                            "hrInicio": "09:00",
+                            "hrTermino": "00:00"
+                        },
+                        {
+                            "dtInicio": "01/02/2025",
+                            "hrInicio": "09:00",
+                            "hrTermino": "00:00"
+                        },
+                        {
+                            "dtInicio": "31/01/2025",
+                            "hrInicio": "09:00",
+                            "hrTermino": "00:00"
+                        },
+                        {
+                            "dtInicio": "30/01/2025",
+                            "hrInicio": "09:00",
+                            "hrTermino": "00:00"
+                        },
+                        {
+                            "dtInicio": "29/01/2025",
+                            "hrInicio": "09:00",
+                            "hrTermino": "00:00"
                         }
                     ],
-                    "protocoloProcessosei": "3357 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3357,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
+                    "noEvento": "VERÃO CULTURAL",
+                    "noTableRa": "TAGUATINGA",
+                    "dsEnderecoLocal": "Taguaparque, ao lado do Centro Cultural Taguaparque – (Colônia Agrícola Samambaia - Taguatinga, Brasília - DF, 72010-110)",
+                    "dtTableInicio": "02/02/2025",
+                    "hrTableInicio": "09:00",
+                    "hrTableTermino": "00:00",
+                    "nuPublicoMaximo": 200,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024562/2024-48"
                 },
                 {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
+                    "coSeqEventoExterno": 8121,
+                    "dtTableDates": "18/01/2025 - 11:00 às 22:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
+                            "dtInicio": "18/01/2025",
+                            "hrInicio": "11:00",
+                            "hrTermino": "22:00"
                         }
                     ],
-                    "protocoloProcessosei": "3356 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3356,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
+                    "noEvento": "Hamburgada de FÉRIAS",
+                    "noTableRa": "SÃO SEBASTIÃO",
+                    "dsEnderecoLocal": "Av. São Sebastião, nº 211, loja 1 - Milky Moo São Sebastião",
+                    "dtTableInicio": "18/01/2025",
+                    "hrTableInicio": "11:00",
+                    "hrTableTermino": "22:00",
+                    "nuPublicoMaximo": 300,
+                    "stAcaoTransito": "PMDFdf",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024526/2024-84"
                 },
                 {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
+                    "coSeqEventoExterno": 8117,
+                    "dtTableDates": "08/02/2025 - 21:00 às 04:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
+                            "dtInicio": "08/02/2025",
+                            "hrInicio": "21:00",
+                            "hrTermino": "04:00"
                         }
                     ],
-                    "protocoloProcessosei": "3355 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3355,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3354 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3354,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3353 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3353,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3352 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3352,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3351 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3351,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3350 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3350,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3349 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3349,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3348 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3348,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3347 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3347,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3346 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3346,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3345 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3345,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3344 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3344,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3343 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3343,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3342 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3342,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3341 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3341,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3340 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3340,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3339 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3339,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3338 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3338,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
-                },
-                {
-                    "dtTableDates": "28/03/2024 - 03:00 às 03:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "28/03/2024",
-                            "hrInicio": "03:00",
-                            "hrTermino": "03:00"
-                        }
-                    ],
-                    "protocoloProcessosei": "3337 - Sem processo",
-                    "noEvento": "TESTE DE ESTRESSE",
-                    "noTableRa": "FERCAL",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "28/03/2024",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "03:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "dsTableNaturezas": "carnavalesco",
-                    "stTableStatus": "EM ANÁLISE",
-                    "nuProcessoFormatadoSei": "Sem processo",
-                    "dtCadastro": "27/03/2024",
-                    "stEventoExterno": "P",
-                    "coSeqEventoExterno": 3337,
-                    "noResponsavelRealizacaoEvento": "Pedin",
-                    "nuTelefoneResponsavelRealizacaoEvento": "61993058423"
+                    "noEvento": "ARROCHA",
+                    "noTableRa": "TAGUATINGA",
+                    "dsEnderecoLocal": "ESTACIONAMENTO DO ESTÁDIO SEREJÃO - TAGUATINGA",
+                    "dtTableInicio": "08/02/2025",
+                    "hrTableInicio": "21:00",
+                    "hrTableTermino": "04:00",
+                    "nuPublicoMaximo": 2000,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "stEventoExterno": "A",
+                    "nuProcessoFormatadoSei": "00050-00024515/2024-02"
                 }
             ]
         }

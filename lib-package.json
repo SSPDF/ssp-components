@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.280",
+    "version": "0.0.281",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -24,7 +24,8 @@
         "react-dropzone": "^14.3.8",
         "leaflet": "^1.9.4",
         "leaflet-defaulticon-compatibility": "^0.1.2",
-        "react-leaflet": "^4.2.1"
+        "react-leaflet": "^4.2.1",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "@types/lodash.clonedeep": "^4.5.9",

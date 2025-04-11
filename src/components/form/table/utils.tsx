@@ -1,13 +1,10 @@
 import get from 'lodash.get'
-import { FilterValue, OrderBy } from './types'
+import { CsvConfigProp, CsvMapProps, FilterValue, OrderBy } from './types'
 import dayjs from 'dayjs'
 import JSZip from 'jszip'
 import cloneDeep from 'lodash.clonedeep'
+import * as XLSX from 'xlsx'
 
-interface DefineCSVCellsProps {
-    csvUpper: boolean
-    csvExcludeUpper?: string[]
-}
 
 export const getCount = (countData: any[], itemsCount: number) => {
     if (countData.length <= 0) return 1
@@ -304,124 +301,34 @@ export function ordenarDados({ order, list, orderAsc = false }: OrdenarDadosProp
     return sortedList
 }
 
-export interface CsvExportOptions {
-    list: any[]
-    csvUpper?: boolean
-    csvExcludeUpper?: string[]
-    csvExcludeKeys?: string[]
-    csvExcludeKeysCSV?: string[]
-    csvExcludeKeysAll?: string[]
-    csvCustomKeyNames?: { [key: string]: string }
-    csvExcludeValidate?: (key: string, value: any) => boolean
-    csv?: { fileName: string }
-    multipleDataPath?: string
-    normalize?: boolean
-    removeQuotes?: boolean
-    hideTitleCSV?: boolean
-    generateCsvZip?: boolean
-    csvZipFileNamesKey?: string
-}
 
-export async function downloadCSVFile(e: React.MouseEvent, zip = false, options: CsvExportOptions) {
-    e.preventDefault()
-    const {
-        list,
-        csvUpper = false,
-        csvExcludeUpper = [],
-        csvExcludeKeys = [],
-        csvExcludeKeysCSV = [],
-        csvCustomKeyNames = {},
-        csvExcludeValidate = () => false,
-        csv,
-        multipleDataPath = '',
-        normalize = false,
-        removeQuotes = false,
-        hideTitleCSV = false,
-        generateCsvZip = false,
-        csvZipFileNamesKey = '',
-    } = options
-
+export async function downloadCSVFile(list: any[], config: CsvConfigProp, filters: FilterValue[]) {
     if (list.length <= 0) return
-    const originalKeys = Object.keys(list[0])
 
-    if (generateCsvZip && zip) {
-        const keys = originalKeys.filter((k) => !csvExcludeKeys.includes(k))
-        const header = keys.map((k) => csvCustomKeyNames[k] || k).join(',') + '\n'
-        const zip = new JSZip()
-        const obj: Record<string, any[]> = {}
+    // definindo os campos especificados do csv
+    const newData: any[] = list.map(x => {
+        const obj = {}
 
-        list.forEach((item) => {
-            const key = item[csvZipFileNamesKey]
-            if (!obj[key]) obj[key] = []
-            obj[key].push(item)
+        config.map.forEach(m => {
+
+            if (m.useFilterValue) {
+                const filterValue = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator)).reduce(r => r.value).value || undefined
+
+                obj[m.name] = filterValue || get(x, m.key)
+                return
+            }
+
+            obj[m.name] = get(x, m.key)
         })
+        
+        return obj
+    })
 
-        for (const [fileName, items] of Object.entries(obj)) {
-            const values: string[] = []
-            for (const x of items) {
-                if (originalKeys.some((k) => csvExcludeValidate(k, x[k]))) continue
+    const worksheet = XLSX.utils.json_to_sheet(newData)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Teste')
 
-                const value = keys.map((k) => formatCell(x[k], k)).join(',')
-                values.push(value)
-            }
-            const csvData = hideTitleCSV ? values.join('\n') : '\uFEFF' + header + values.join('\n')
-            if (values.length > 0) {
-                zip.file(`${normalizeString(fileName)}.csv`, csvData)
-            }
-        }
-
-        const link = document.createElement('a')
-        const base = await zip.generateAsync({ type: 'base64' })
-        link.href = 'data:application/zip;base64,' + base
-        link.download = `${csv?.fileName}.zip`
-        link.click()
-    } else {
-        let keys = originalKeys.filter((k) => !csvExcludeKeysCSV.includes(k))
-        if (multipleDataPath) keys = ['dtInicio', 'hrInicio', ...keys.map((k) => (k === multipleDataPath ? 'hrTermino' : k))]
-        const header = keys.map((k) => csvCustomKeyNames[k] || k).join(',') + '\n'
-        const values: string[] = []
-
-        for (const x of list) {
-            if (originalKeys.some((k) => csvExcludeValidate(k, x[k]))) continue
-            const value = keys.map((k) => formatCell(x[k], k)).join(',')
-
-            if (multipleDataPath && x[multipleDataPath]) {
-                for (const d of x[multipleDataPath]) {
-                    values.push(value.replace('{dtInicio}', d.dtInicio).replace('{hrInicio}', d.hrInicio).replace('{hrTermino}', d.hrTermino))
-                }
-            } else {
-                values.push(value)
-            }
-        }
-
-        const csvData = header + values.join('\n')
-        const link = document.createElement('a')
-        link.href = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData)
-        link.download = `${csv?.fileName}.csv`
-        link.click()
-    }
-
-    function formatCell(cell: any, key: string): string {
-        let item = typeof cell === 'object' && cell !== null && !Array.isArray(cell) ? transformArrayObjectInString(cell).slice(1, -1) : cell
-
-        if (csvUpper && typeof item === 'string' && !csvExcludeUpper.includes(key)) {
-            item = item.toUpperCase()
-        }
-
-        if (normalize && typeof item === 'string') {
-            item = normalizeString(item)
-        }
-
-        if (typeof item === 'string') {
-            return removeQuotes ? `${item}` : `"${item}"`
-        }
-
-        return item
-    }
-
-    function normalizeString(str: string) {
-        return str.normalize('NFD').replace(/[̀-ͯ]/g, '')
-    }
+    XLSX.writeFile(workbook, `${config.fileName}.xlsx`)
 }
 
 export function downloadCSVAll(e: React.MouseEvent, list: any[], keys: string[], fileName: string) {

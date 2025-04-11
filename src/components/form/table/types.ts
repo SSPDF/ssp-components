@@ -43,6 +43,20 @@ export interface FilterValue {
     customFunc?: string
 }
 
+export interface CsvMapProps {
+    name: string,
+    key: string,
+    useFilterValue?: {
+        label: string,
+        operators: FilterOperators[]
+    }
+}
+
+export interface CsvConfigProp {
+    fileName: string
+    map: CsvMapProps[]
+}
+
 /**
  * Interface para as propriedades do componente Table.
  */
@@ -71,23 +85,11 @@ export interface TableProps {
     /** Margem personalizada (mobile) */
     customMarginMobile?: number
 
-    /** Normaliza textos (remove acentos) */
-    normalize?: boolean
-
-    /** Converte textos para maiúsculas */
-    csvUpper?: boolean
-
     /** Estilo customizado da tabela */
     customTableStyle?: BoxProps
 
-    /** Caminho múltiplo dentro dos dados */
-    multipleDataPath?: string
-
     /** Mensagem de erro personalizada */
     customErrorMsg?: string | ReactNode
-
-    /** Remove aspas dos valores no CSV */
-    removeQuotes?: boolean
 
     /** Colunas da tabela */
     columns: any[]
@@ -95,59 +97,16 @@ export interface TableProps {
     /** Nome da tabela */
     tableName: string
 
-    /** Exibe botão para exportar todos os dados */
-    csvShowAllButton?: boolean
-
-    /** Chaves excluídas da exportação (upper) */
-    csvExcludeUpper?: string[]
-
-    /** Exporta CSV sem compactação */
-    csvWithoutZip?: boolean
+    csvConfig?: CsvConfigProp
 
     /** Altura da célula colapsada */
     collapsedSize?: number
 
-    /** Texto do botão "Exportar todos em CSV" */
-    csvAllButtonTitle?: string
-
-    /** Texto do botão "Exportar CSV" */
-    csvButtonTitle?: string
-
-    /** Texto do botão "Exportar sem ZIP" */
-    csvNoZipText?: string
-
-    /** Chave para nomear arquivos ZIP */
-    csvZipFileNamesKey?: string
-
-    /** Gera arquivo ZIP ao exportar */
-    generateCsvZip?: boolean
-
     /** Validação para exclusão de chaves no CSV */
     csvExcludeValidate?: (key: string, value: string | number) => boolean
 
-    /** Mapeia nomes customizados de colunas no CSV */
-    csvCustomKeyNames?: { [key: string]: string }
-
     /** Tamanho máximo do texto antes de colapsar */
     expandTextMaxLength?: number
-
-    /** Chaves excluídas da exportação CSV simples */
-    csvExcludeKeysCSV?: string[]
-
-    /** Chaves excluídas da exportação geral */
-    csvExcludeKeys?: string[]
-
-    /** Oculta o título na exportação CSV */
-    hideTitleCSV?: boolean
-
-    /** Chaves excluídas no CSV com todos os dados */
-    csvExcludeKeysAll?: string[]
-
-    /** Nome da chave para status da linha */
-    statusKeyName?: string
-
-    /** Quantidade de itens por página */
-    itemCount?: number
 
     /** Ações por linha */
     action: (prop: any) => JSX.Element
@@ -156,6 +115,9 @@ export interface TableProps {
     csv?: {
         fileName: string
     }
+
+    /** Quantidade de itens por página */
+    itemCount?: number
 
     /** Número de colunas da tabela */
     columnSize: number

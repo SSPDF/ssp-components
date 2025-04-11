@@ -211,6 +211,222 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
+            <Table
+                id='admin'
+                useKC={false}
+                columnSize={11}
+                tableName='Evento'
+                action={(prop) => (
+                    <>
+                        
+                    </>
+                )}
+                collapsedSize={59}
+                dataPath='body.data'
+                csvConfig={{
+                    fileName: 'Eventos',
+                    map: [
+                        {
+                            name: 'Data',
+                            key: 'dtTableDates',
+                            useFilterValue: {
+                                label: 'Datas',
+                                operators: ['tem a data', 'data inicio', 'data fim']
+                            }
+                        },
+                        {
+                            name: 'Protocolo',
+                            key: 'coSeqEventoExterno'
+                        },
+                        {
+                            name: 'Evento',
+                            key: 'noEvento'
+                        },
+                        {
+                            name: 'RA',
+                            key: 'noTableRa'
+                        },
+                        {
+                            name: 'Local',
+                            key: 'dsEnderecoLocal'
+                        },
+                        {
+                            name: 'Hora Início',
+                            key: 'dtTableInicio'
+                        },
+                        {
+                            name: 'Hora Término',
+                            key: 'hrTableTermino'
+                        },
+                        {
+                            name: 'Público',
+                            key: ''
+                        },
+                        {
+                            name: 'Trânsito',
+                            key: 'stAcaoTransito'
+                        },
+                    ]
+                }}
+                csv={{ fileName: 'Eventos' }}
+                columns={[
+                    {
+                        keyName: 'coSeqEventoExterno',
+                        title: 'Protocolo',
+                    },
+                    {
+                        keyName: 'dsEnderecoLocal',
+                        title: 'Local',
+                    },
+                    {
+                        keyName: 'dtCadastro',
+                        title: 'Data de Solicitação',
+                    },
+
+                    {
+                        keyName: 'noEvento',
+                        title: 'Nome do Evento',
+                    },
+                    {
+                        keyName: 'noTableRa',
+                        title: 'RA',
+                    },
+                    {
+                        keyName: 'nuPublicoMaximo',
+                        title: 'Público Máximo',
+                    },
+                    {
+                        keyName: 'dtTableDates',
+                        title: 'Datas',
+                        size: 2,
+                    },
+                    {
+                        keyName: 'nuProcessoFormatadoSei',
+                        title: 'Processo SEI',
+                    },
+                    {
+                        keyName: 'stEventoExterno',
+                        title: 'Status do Evento',
+                    },
+                ]}
+                fetchFunc={() => fetch('http://localhost:7171/table')}
+                mediaQueryLG={{
+                    all: 3.5,
+                    action: 1,
+                }}
+                // filtros
+                filtersFunc={{
+                    datas: (value) => {
+                        const new_value = value.split(' | ').map((x) => x.split(' - ')[0])
+                        return new_value
+                    },
+                }}
+                filters={[
+                    {
+                        label: 'Protocolo',
+                        keyName: 'coSeqEventoExterno',
+                        operator: 'igual',
+                        operators: ['igual', 'maior que', 'menor que'],
+                        type: 'number',
+                        value: '',
+                    },
+                    {
+                        label: 'Local',
+                        keyName: 'dsEnderecoLocal',
+                        operator: 'contem',
+                        operators: ['igual', 'contem'],
+                        type: 'string',
+                        value: '',
+                    },
+                    {
+                        label: 'Data da Solicitação',
+                        keyName: 'dtCadastro',
+                        operator: 'data exata',
+                        operators: ['data exata', 'entre'],
+                        type: 'date',
+                        value: '',
+                    },
+                    {
+                        label: 'Nome do Evento',
+                        keyName: 'noEvento',
+                        operator: 'contem',
+                        operators: ['igual', 'contem'],
+                        type: 'string',
+                        value: '',
+                    },
+                    {
+                        label: 'Público Máximo',
+                        keyName: 'nuPublicoMaximo',
+                        operator: 'igual',
+                        operators: ['igual', 'maior que', 'menor que'],
+                        type: 'number',
+                        value: '',
+                    },
+                    {
+                        label: 'Processo SEI',
+                        keyName: 'nuProcessoFormatadoSei',
+                        operator: 'igual',
+                        operators: ['igual', 'contem'],
+                        type: 'string',
+                        value: '',
+                    },
+                    {
+                        label: 'Natureza',
+                        keyName: 'dsTableNaturezas',
+                        operator: 'contem',
+                        operators: ['contem', 'tem um dos'],
+                        type: 'string',
+                        useList: [
+                            { id: 'feirasExposicoes', label: 'Feiras e Exposições' },
+                            { id: 'carnavalesco', label: 'Carnavalesco' },
+                            { id: 'shows', label: 'Shows' },
+                            { id: 'religioso', label: 'Religioso' },
+                            { id: 'atoPublico', label: 'Ato Público' },
+                            { id: 'cultural', label: 'Cultural' },
+                            { id: 'social', label: 'Social' },
+                            { id: 'corporativo', label: 'Corporativo' },
+                            { id: 'promocional', label: 'Promocional' },
+                            { id: 'festaJunina', label: 'Festa Junina' },
+                            { id: 'semFinsLucrativos', label: 'Sem Fins Lucrativos' },
+                            { id: 'esportivo', label: 'Esportivo' },
+                        ],
+                        value: '',
+                    },
+                    {
+                        label: 'Status do Evento',
+                        keyName: 'stEventoExterno',
+                        operator: 'igual',
+                        operators: ['igual', 'tem um dos'],
+                        type: 'string',
+                        useList: [
+                            { id: 'P', label: 'Em Análise' },
+                            { id: 'A', label: 'Cadastrado' },
+                            { id: 'C', label: 'Cancelado' },
+                            { id: 'R', label: 'Com Pendência' },
+                            { id: 'FP', label: 'Fora do Prazo' },
+                            { id: 'E', label: 'Alteração Solicitada' },
+                            { id: 'NR', label: 'Não Cadastrado' },
+                        ],
+                        value: '',
+                    },
+                    {
+                        label: 'Datas',
+                        keyName: 'dtTableDates',
+                        operator: 'tem a data',
+                        operators: ['tem a data', 'data inicio', 'data fim', 'entre'],
+                        type: 'dates',
+                        customFunc: 'datas',
+                        value: '',
+                    },
+                ]}
+                orderBy={[
+                    {
+                        label: 'Protocolo',
+                        key: 'coSeqEventoExterno',
+                        type: 'number',
+                    },
+                ]}
+            />
             {/* <Map
                 firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
                 onCoordsChange={(c) => {
@@ -417,7 +633,7 @@ export default function Teste() {
                 Mudar
             </Button> */}
 
-            <Table
+            {/* <Table
                 id='teste'
                 fetchFunc={() => testFunc}
                 useKC={false}
@@ -596,7 +812,7 @@ export default function Teste() {
                     all: 3,
                     action: 9,
                 }}
-            />
+            /> */}
             {/* <Table
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
                 useKC={false}

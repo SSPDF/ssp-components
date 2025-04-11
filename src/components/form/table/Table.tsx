@@ -34,30 +34,15 @@ export function Table({
     },
     dataPath = '',
     tableName = 'Dado',
+    csvConfig = {
+        fileName: tableName,
+        map: []
+    },
     csv,
     columnSize,
     action,
     useKC = true,
-    statusKeyName = '',
-    csvExcludeKeys = [],
-    csvExcludeKeysCSV = [],
-    csvExcludeKeysAll = [],
-    csvCustomKeyNames = {},
-    csvExcludeValidate = (key, value) => false,
-    csvButtonTitle = 'Salvar .CSV',
-    csvNoZipText = 'Salvar .CSV',
-    csvAllButtonTitle = 'Salvar todos em CSV',
-    removeQuotes = false,
-    normalize = false,
-    csvShowAllButton = false,
-    csvWithoutZip = false,
     itemCount = 10,
-    csvUpper = false,
-    csvZipFileNamesKey = '',
-    generateCsvZip = false,
-    hideTitleCSV = false,
-    csvExcludeUpper = [],
-    multipleDataPath = '',
     expandTextMaxLength = 50,
     collapsedSize = 53,
     customMargin = 4,
@@ -346,28 +331,8 @@ export function Table({
         setFilterKey(new Date().getTime().toString())
     }
 
-    const handleCSVDownload = (e: React.MouseEvent, zip = false) => {
-        downloadCSVFile(e, zip, {
-            list,
-            csvUpper,
-            csvExcludeUpper,
-            csvExcludeKeys,
-            csvExcludeKeysCSV,
-            csvCustomKeyNames,
-            csvExcludeValidate,
-            csv,
-            multipleDataPath,
-            normalize,
-            removeQuotes,
-            hideTitleCSV,
-            generateCsvZip,
-            csvZipFileNamesKey,
-        })
-    }
-
-    const handleDownloadAll = (e: React.MouseEvent) => {
-        const keys = Object.keys(list[0]).filter((k) => !csvExcludeKeysAll.includes(k))
-        downloadCSVAll(e, list, keys, csv?.fileName || 'dados')
+    const handleCSVDownload = (list: any[]) => {
+        downloadCSVFile(list, csvConfig, (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]) || [])
     }
 
     const handleFiltrarDados = (dt: FilterValue[]) => {
@@ -678,36 +643,28 @@ export function Table({
                                 justifyContent='flex-end'
                                 spacing={1}
                             >
-                                {csvWithoutZip && (
+                                {
+                                    (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
+                                    .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length > 0 &&
+
                                     <Button
                                         startIcon={<FileDownloadIcon />}
                                         variant='contained'
                                         size='small'
-                                        onClick={handleCSVDownload}
-                                        sx={{ backgroundColor: '#5a88b0', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
+                                        onClick={(e) => handleCSVDownload(list)}
+                                        sx={{ backgroundColor: '#a5a5a5', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
                                     >
-                                        {csvNoZipText}
+                                        Baixar Filtrados
                                     </Button>
-                                )}
-                                {csvShowAllButton && (
-                                    <Button
-                                        startIcon={<FileDownloadIcon />}
-                                        variant='contained'
-                                        size='small'
-                                        onClick={handleDownloadAll}
-                                        sx={{ backgroundColor: '#64748B', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
-                                    >
-                                        {csvAllButtonTitle}
-                                    </Button>
-                                )}
+                                }
                                 <Button
                                     startIcon={<FileDownloadIcon />}
                                     variant='contained'
                                     size='small'
-                                    onClick={(e) => handleCSVDownload(e, true)}
+                                    onClick={(e) => handleCSVDownload(startData.current)}
                                     sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
                                 >
-                                    {csvButtonTitle}
+                                    Baixar Tabela
                                 </Button>
                             </Stack>
                         )}
