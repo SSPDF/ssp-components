@@ -38,7 +38,6 @@ export function Table({
         fileName: tableName,
         map: []
     },
-    csv,
     columnSize,
     action,
     useKC = true,
@@ -634,7 +633,7 @@ export function Table({
                         justifyContent='space-between'
                         alignItems='center'
                     >
-                        {csv && (
+                        {csvConfig.map.length > 0 && (
                             <Stack
                                 direction={{
                                     xs: 'column',

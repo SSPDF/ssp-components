@@ -111,11 +111,6 @@ export interface TableProps {
     /** Ações por linha */
     action: (prop: any) => JSX.Element
 
-    /** Configuração para exportação CSV */
-    csv?: {
-        fileName: string
-    }
-
     /** Quantidade de itens por página */
     itemCount?: number
 

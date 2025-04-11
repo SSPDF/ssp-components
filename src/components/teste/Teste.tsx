@@ -268,7 +268,6 @@ export default function Teste() {
                         },
                     ]
                 }}
-                csv={{ fileName: 'Eventos' }}
                 columns={[
                     {
                         keyName: 'coSeqEventoExterno',
