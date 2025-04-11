@@ -54,6 +54,7 @@ export interface CsvMapProps {
 
 export interface CsvConfigProp {
     fileName: string
+    downloadAll?: boolean
     map: CsvMapProps[]
 }
 

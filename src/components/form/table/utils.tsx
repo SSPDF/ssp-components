@@ -310,9 +310,8 @@ export async function downloadCSVFile(list: any[], config: CsvConfigProp, filter
         const obj = {}
 
         config.map.forEach(m => {
-
             // opção de usar o valor do filtro no próprio campo
-            if (m.useFilterValue) {
+            if (m.useFilterValue && !config.downloadAll) {
                 const filterValueList = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator))  
                 const filterValue = filterValueList.length > 0 ? (filterValueList.reduce(r => r.value).value || undefined) : undefined
 

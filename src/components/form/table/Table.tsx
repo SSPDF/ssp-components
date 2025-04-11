@@ -330,8 +330,8 @@ export function Table({
         setFilterKey(new Date().getTime().toString())
     }
 
-    const handleCSVDownload = (list: any[]) => {
-        downloadCSVFile(list, csvConfig, (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]) || [])
+    const handleCSVDownload = (list: any[], all: boolean = false) => {
+        downloadCSVFile(list, {...csvConfig, ...(all ? {downloadAll: true} : {})}, (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]) || [])
     }
 
     const handleFiltrarDados = (dt: FilterValue[]) => {
@@ -660,7 +660,7 @@ export function Table({
                                     startIcon={<FileDownloadIcon />}
                                     variant='contained'
                                     size='small'
-                                    onClick={(e) => handleCSVDownload(startData.current)}
+                                    onClick={(e) => handleCSVDownload(startData.current, true)}
                                     sx={{ backgroundColor: '#22C55E', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
                                 >
                                     Baixar Tabela
