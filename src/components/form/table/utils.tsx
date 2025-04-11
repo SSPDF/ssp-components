@@ -311,8 +311,10 @@ export async function downloadCSVFile(list: any[], config: CsvConfigProp, filter
 
         config.map.forEach(m => {
 
+            // opção de usar o valor do filtro no próprio campo
             if (m.useFilterValue) {
-                const filterValue = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator)).reduce(r => r.value).value || undefined
+                const filterValueList = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator))  
+                const filterValue = filterValueList.length > 0 ? (filterValueList.reduce(r => r.value).value || undefined) : undefined
 
                 obj[m.name] = filterValue || get(x, m.key)
                 return
@@ -326,7 +328,7 @@ export async function downloadCSVFile(list: any[], config: CsvConfigProp, filter
 
     const worksheet = XLSX.utils.json_to_sheet(newData)
     const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Teste')
+    XLSX.utils.book_append_sheet(workbook, worksheet, config.fileName)
 
     XLSX.writeFile(workbook, `${config.fileName}.xlsx`)
 }
