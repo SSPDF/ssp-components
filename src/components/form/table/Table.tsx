@@ -27,6 +27,7 @@ let localTableNameCache = ''
 export function Table({
     mediaQueryLG,
     columns,
+    csvConfig,
     fetchFunc,
     emptyMsg = {
         user: 'Nenhum dado encontrado',
@@ -34,10 +35,6 @@ export function Table({
     },
     dataPath = '',
     tableName = 'Dado',
-    csvConfig = {
-        fileName: tableName,
-        map: []
-    },
     columnSize,
     action,
     useKC = true,
@@ -331,6 +328,8 @@ export function Table({
     }
 
     const handleCSVDownload = (list: any[], all: boolean = false) => {
+        if (!csvConfig) return
+        
         downloadCSVFile(list, {...csvConfig, ...(all ? {downloadAll: true} : {})}, (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]) || [])
     }
 
@@ -633,7 +632,7 @@ export function Table({
                         justifyContent='space-between'
                         alignItems='center'
                     >
-                        {csvConfig.map.length > 0 && (
+                        {csvConfig && (
                             <Stack
                                 direction={{
                                     xs: 'column',

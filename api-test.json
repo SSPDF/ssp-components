@@ -37,430 +37,213 @@
         "body": {
             "data": [
                 {
-                    "coSeqEventoExterno": 8157,
-                    "dtTableDates": "07/05/2025 - 10:00 às 11:00",
+                    "dtTableDates": "04/07/2024 - 10:00 às 12:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "07/05/2025",
+                            "dtInicio": "04/07/2024",
                             "hrInicio": "10:00",
-                            "hrTermino": "11:00"
-                        }
-                    ],
-                    "noEvento": "Evento Teste pendencia",
-                    "noTableRa": "BRAZLÂNDIA",
-                    "dsEnderecoLocal": "Centro de Convenções Ulysses Guimarães – Auditório Master – SDC – Brasília – DF - Cep: 70.070-350",
-                    "dtTableInicio": "07/05/2025",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "11:00",
-                    "nuPublicoMaximo": 1000,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "Sem processo"
-                },
-                {
-                    "coSeqEventoExterno": 8153,
-                    "dtTableDates": "13/03/2025 - 03:00 às 05:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "13/03/2025",
-                            "hrInicio": "03:00",
-                            "hrTermino": "05:00"
-                        }
-                    ],
-                    "noEvento": "Teste T",
-                    "noTableRa": "GUARÁ",
-                    "dsEnderecoLocal": "Arena BRB Mané Garrincha",
-                    "dtTableInicio": "13/03/2025",
-                    "hrTableInicio": "03:00",
-                    "hrTableTermino": "05:00",
-                    "nuPublicoMaximo": 321,
-                    "stAcaoTransito": "Sem ação",
-                    "stEventoExterno": "L",
-                    "nuProcessoFormatadoSei": "Sem processo"
-                },
-                {
-                    "coSeqEventoExterno": 8143,
-                    "dtTableDates": "26/01/2025 - 15:00 às 21:00 | 25/01/2025 - 15:00 às 21:00 | ",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "26/01/2025",
-                            "hrInicio": "15:00",
-                            "hrTermino": "21:00"
-                        },
-                        {
-                            "dtInicio": "25/01/2025",
-                            "hrInicio": "15:00",
-                            "hrTermino": "21:00"
-                        }
-                    ],
-                    "noEvento": "4ª Feira Cultural da Diversidade LGBT+ de Brasília",
-                    "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "SCTS Estacionamento  \"P\" da Biblioteca Nacional de Brasília / Setor Cultural da República, Área Cívica, Lote s/n Edifício da Biblioteca Nacional, SCTS - Brasília DF.",
-                    "dtTableInicio": "26/01/2025",
-                    "hrTableInicio": "15:00",
-                    "hrTableTermino": "21:00",
-                    "nuPublicoMaximo": 200,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024660/2024-85"
-                },
-                {
-                    "coSeqEventoExterno": 8142,
-                    "dtTableDates": "12/01/2025 - 15:00 às 22:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "12/01/2025",
-                            "hrInicio": "15:00",
-                            "hrTermino": "22:00"
-                        }
-                    ],
-                    "noEvento": "Amigos da  Elite  ",
-                    "noTableRa": "SAMAMBAIA",
-                    "dsEnderecoLocal": "ESTACIONAMENTO DO COMPLEXO  CULTURAL  QR  301 SAMAMBAIA SUL ",
-                    "dtTableInicio": "12/01/2025",
-                    "hrTableInicio": "15:00",
-                    "hrTableTermino": "22:00",
-                    "nuPublicoMaximo": 1000,
-                    "stAcaoTransito": "Sem ação",
-                    "stEventoExterno": "L",
-                    "nuProcessoFormatadoSei": "00050-00024647/2024-26"
-                },
-                {
-                    "coSeqEventoExterno": 8141,
-                    "dtTableDates": "16/03/2025 - 06:15 às 11:15",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "16/03/2025",
-                            "hrInicio": "06:15",
-                            "hrTermino": "11:15"
-                        }
-                    ],
-                    "noEvento": "18ª Copa Brasilia de Triathlon - etapa 1",
-                    "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "Área de Lazer da Ponte JK",
-                    "dtTableInicio": "16/03/2025",
-                    "hrTableInicio": "06:15",
-                    "hrTableTermino": "11:15",
-                    "nuPublicoMaximo": 200,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024646/2024-81"
-                },
-                {
-                    "coSeqEventoExterno": 8139,
-                    "dtTableDates": "15/02/2025 - 10:00 às 14:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "15/02/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "14:00"
-                        }
-                    ],
-                    "noEvento": "SAMBA DA TORRE DE TV 2024 - CAFÉ COM SAMBA",
-                    "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "Feira de Artesanato da Torre de TV SDC - Eixo Monumental, Brasília/DF",
-                    "dtTableInicio": "15/02/2025",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "14:00",
-                    "nuPublicoMaximo": 190,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "Sem processo"
-                },
-                {
-                    "coSeqEventoExterno": 8137,
-                    "dtTableDates": "08/03/2025 - 17:00 às 23:00 | 12/02/2025 - 17:00 às 23:00 | 01/02/2025 - 17:00 às 23:00 | 29/01/2025 - 17:00 às 23:00 | 18/01/2025 - 17:00 às 23:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "08/03/2025",
-                            "hrInicio": "17:00",
-                            "hrTermino": "23:00"
-                        },
-                        {
-                            "dtInicio": "12/02/2025",
-                            "hrInicio": "17:00",
-                            "hrTermino": "23:00"
-                        },
-                        {
-                            "dtInicio": "01/02/2025",
-                            "hrInicio": "17:00",
-                            "hrTermino": "23:00"
-                        },
-                        {
-                            "dtInicio": "29/01/2025",
-                            "hrInicio": "17:00",
-                            "hrTermino": "23:00"
-                        },
-                        {
-                            "dtInicio": "18/01/2025",
-                            "hrInicio": "17:00",
-                            "hrTermino": "23:00"
-                        }
-                    ],
-                    "noEvento": "CAMPEONATO PROFISSIONAL DA PRIMEIRA DIVISÃO 2025 -    JOGOS COM MANDO DA S.E. DO GAMA  ",
-                    "noTableRa": "GAMA",
-                    "dsEnderecoLocal": "Estádio Bezerrão (Gama)",
-                    "dtTableInicio": "08/03/2025",
-                    "hrTableInicio": "17:00",
-                    "hrTableTermino": "23:00",
-                    "nuPublicoMaximo": 8000,
-                    "stAcaoTransito": "DETRAN-DF-df",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024643/2024-48"
-                },
-                {
-                    "coSeqEventoExterno": 8135,
-                    "dtTableDates": "16/02/2025 - 10:00 às 17:00 | 09/02/2025 - 10:00 às 17:00 | 02/02/2025 - 10:00 às 17:00 | 26/01/2025 - 10:00 às 17:00 | 19/01/2025 - 10:00 às 17:00 | 12/01/2025 - 10:00 às 17:00 | ",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "16/02/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "17:00"
-                        },
-                        {
-                            "dtInicio": "09/02/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "17:00"
-                        },
-                        {
-                            "dtInicio": "02/02/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "17:00"
-                        },
-                        {
-                            "dtInicio": "26/01/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "17:00"
-                        },
-                        {
-                            "dtInicio": "19/01/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "17:00"
-                        },
-                        {
-                            "dtInicio": "12/01/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "17:00"
-                        }
-                    ],
-                    "noEvento": "ROCK NO EIXÃO",
-                    "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "Eixão do Lazer altura da 204 norte",
-                    "dtTableInicio": "16/02/2025",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "17:00",
-                    "nuPublicoMaximo": 199,
-                    "stAcaoTransito": "DETRAN-DF-df",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024610/2024-06"
-                },
-                {
-                    "coSeqEventoExterno": 8133,
-                    "dtTableDates": "16/02/2025 - 14:30 às 19:00 | 13/02/2025 - 14:30 às 19:00 | 02/02/2025 - 14:30 às 19:00 | 26/01/2025 - 14:30 às 19:00 | ",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "16/02/2025",
-                            "hrInicio": "14:30",
-                            "hrTermino": "19:00"
-                        },
-                        {
-                            "dtInicio": "13/02/2025",
-                            "hrInicio": "14:30",
-                            "hrTermino": "19:00"
-                        },
-                        {
-                            "dtInicio": "02/02/2025",
-                            "hrInicio": "14:30",
-                            "hrTermino": "19:00"
-                        },
-                        {
-                            "dtInicio": "26/01/2025",
-                            "hrInicio": "14:30",
-                            "hrTermino": "19:00"
-                        }
-                    ],
-                    "noEvento": "Campeonato Candango Série A - Legião mandante",
-                    "noTableRa": "GAMA",
-                    "dsEnderecoLocal": "Estádio Bezerrão - Setor Central do Gama - Gama/DF.",
-                    "dtTableInicio": "16/02/2025",
-                    "hrTableInicio": "14:30",
-                    "hrTableTermino": "19:00",
-                    "nuPublicoMaximo": 300,
-                    "stAcaoTransito": "PMDFdf | DETRAN-DF-df",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024603/2024-04"
-                },
-                {
-                    "coSeqEventoExterno": 8131,
-                    "dtTableDates": "16/02/2025 - 10:00 às 22:00 | 15/02/2025 - 10:00 às 22:00 | ",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "16/02/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "22:00"
-                        },
-                        {
-                            "dtInicio": "15/02/2025",
-                            "hrInicio": "10:00",
-                            "hrTermino": "22:00"
-                        }
-                    ],
-                    "noEvento": "FESTIVAL DE COMIDA DE RUA",
-                    "noTableRa": "SOBRADINHO",
-                    "dsEnderecoLocal": "ESTACIONAMENTO DO ESTÁDIO AGOSTINHO LIMA",
-                    "dtTableInicio": "16/02/2025",
-                    "hrTableInicio": "10:00",
-                    "hrTableTermino": "22:00",
-                    "nuPublicoMaximo": 500,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024587/2024-41"
-                },
-                {
-                    "coSeqEventoExterno": 8130,
-                    "dtTableDates": "18/01/2025 - 20:00 às 04:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "18/01/2025",
-                            "hrInicio": "20:00",
-                            "hrTermino": "04:00"
-                        }
-                    ],
-                    "noEvento": "Sertanejao sem fronteiras",
-                    "noTableRa": "PLANALTINA",
-                    "dsEnderecoLocal": "Estacionamento do Funções Múltiplas - Planaltina-DF",
-                    "dtTableInicio": "18/01/2025",
-                    "hrTableInicio": "20:00",
-                    "hrTableTermino": "04:00",
-                    "nuPublicoMaximo": 400,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024585/2024-52"
-                },
-                {
-                    "coSeqEventoExterno": 8129,
-                    "dtTableDates": "25/01/2025 - 14:00 às 22:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "25/01/2025",
-                            "hrInicio": "14:00",
-                            "hrTermino": "22:00"
-                        }
-                    ],
-                    "noEvento": "52ª Corrida de Reis - Edição 2025",
-                    "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "Estacionamento do Ginásio Nilson Nelson  - Brasília- DF",
-                    "dtTableInicio": "25/01/2025",
-                    "hrTableInicio": "14:00",
-                    "hrTableTermino": "22:00",
-                    "nuPublicoMaximo": 12000,
-                    "stAcaoTransito": "DETRAN-DF-df",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024583/2024-63"
-                },
-                {
-                    "coSeqEventoExterno": 8127,
-                    "dtTableDates": "18/01/2025 - 06:00 às 12:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "18/01/2025",
-                            "hrInicio": "06:00",
                             "hrTermino": "12:00"
                         }
                     ],
-                    "noEvento": "Corrida de Reis Mirim 2025",
+                    "protocoloProcessosei": "6156 - 00050-00013378/2024-72",
+                    "noEvento": "Ato da operação Valoriza Regulação",
                     "noTableRa": "PLANO PILOTO",
-                    "dsEnderecoLocal": "Estacionamento 12 - Parque da Cidade Sara Kubitschek - Brasília- DF ",
-                    "dtTableInicio": "18/01/2025",
-                    "hrTableInicio": "06:00",
+                    "dsEnderecoLocal": "Estacionamento do Anexo III da Câmara dos Deputados",
+                    "dtTableInicio": "04/07/2024",
+                    "hrTableInicio": "10:00",
                     "hrTableTermino": "12:00",
-                    "nuPublicoMaximo": 3000,
-                    "stAcaoTransito": "DETRAN-DF-df",
+                    "nuPublicoMaximo": 50,
+                    "stAcaoTransito": "PMDFdf",
+                    "dsTableNaturezas": "atoPublico",
+                    "stTableStatus": "APROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013378/2024-72",
+                    "dtCadastro": "02/07/2024",
                     "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024582/2024-19"
+                    "coSeqEventoExterno": 6156,
+                    "noResponsavelRealizacaoEvento": "Fabio Gonçalves Rosa",
+                    "nuTelefoneResponsavelRealizacaoEvento": ""
                 },
                 {
-                    "coSeqEventoExterno": 8125,
-                    "dtTableDates": "02/02/2025 - 09:00 às 00:00 | 01/02/2025 - 09:00 às 00:00 | 31/01/2025 - 09:00 às 00:00 | 30/01/2025 - 09:00 às 00:00 | 29/01/2025 - 09:00 às 00:00",
+                    "dtTableDates": "03/08/2024 - 18:00 às 23:30",
                     "dtTableArr": [
                         {
-                            "dtInicio": "02/02/2025",
+                            "dtInicio": "03/08/2024",
+                            "hrInicio": "18:00",
+                            "hrTermino": "23:30"
+                        }
+                    ],
+                    "protocoloProcessosei": "6155 - 00050-00013384/2024-20",
+                    "noEvento": "VOLTA DO MUNDO BAMBAS – VMB7",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "AABB BRASÍLIA – GINÁSIO 1 (COBERTO) - Setor de Clubes Esportivos Sul, Trecho 2, Conjunto 17 20",
+                    "dtTableInicio": "03/08/2024",
+                    "hrTableInicio": "18:00",
+                    "hrTableTermino": "23:30",
+                    "nuPublicoMaximo": 1000,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "dsTableNaturezas": "cultural - esportivo: []",
+                    "stTableStatus": "APROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013384/2024-20",
+                    "dtCadastro": "02/07/2024",
+                    "stEventoExterno": "A",
+                    "coSeqEventoExterno": 6155,
+                    "noResponsavelRealizacaoEvento": "ASSOCIAÇÃO CAPOEIRISTAS DO REI",
+                    "nuTelefoneResponsavelRealizacaoEvento": ""
+                },
+                {
+                    "dtTableDates": "02/08/2024 - 09:00 às 20:00 | 03/08/2024 - 09:00 às 20:00 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "02/08/2024",
                             "hrInicio": "09:00",
-                            "hrTermino": "00:00"
+                            "hrTermino": "20:00"
                         },
                         {
-                            "dtInicio": "01/02/2025",
+                            "dtInicio": "03/08/2024",
                             "hrInicio": "09:00",
-                            "hrTermino": "00:00"
+                            "hrTermino": "20:00"
+                        }
+                    ],
+                    "protocoloProcessosei": "6154 - 00050-00013381/2024-96",
+                    "noEvento": "FECOMÉRCIO MAIS PERTO DE TODOS GAMA",
+                    "noTableRa": "GAMA",
+                    "dsEnderecoLocal": "Região Administrativa do Gama na área pública denominada Praça 1, da Região Central do Gama, Brasília - DF, 72405-015",
+                    "dtTableInicio": "02/08/2024",
+                    "hrTableInicio": "09:00",
+                    "hrTableTermino": "20:00",
+                    "nuPublicoMaximo": 1000,
+                    "stAcaoTransito": "DETRAN-DF-df",
+                    "dsTableNaturezas": "cultural - social",
+                    "stTableStatus": "APROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013381/2024-96",
+                    "dtCadastro": "02/07/2024",
+                    "stEventoExterno": "A",
+                    "coSeqEventoExterno": 6154,
+                    "noResponsavelRealizacaoEvento": "PAULA FRANCINETE ALVES",
+                    "nuTelefoneResponsavelRealizacaoEvento": "61981818130"
+                },
+                {
+                    "dtTableDates": "20/07/2024 - 14:00 às 23:59 | 27/07/2024 - 14:00 às 23:59 | ",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "20/07/2024",
+                            "hrInicio": "14:00",
+                            "hrTermino": "23:59"
                         },
                         {
-                            "dtInicio": "31/01/2025",
-                            "hrInicio": "09:00",
-                            "hrTermino": "00:00"
-                        },
+                            "dtInicio": "27/07/2024",
+                            "hrInicio": "14:00",
+                            "hrTermino": "23:59"
+                        }
+                    ],
+                    "protocoloProcessosei": "6153 - 00050-00013380/2024-41",
+                    "noEvento": "Festa Julina",
+                    "noTableRa": "GUARÁ",
+                    "dsEnderecoLocal": "rua 15 lote 02 polo de modas guara II",
+                    "dtTableInicio": "20/07/2024",
+                    "hrTableInicio": "14:00",
+                    "hrTableTermino": "23:59",
+                    "nuPublicoMaximo": 100,
+                    "stAcaoTransito": "",
+                    "dsTableNaturezas": "cultural - festaJunina",
+                    "stTableStatus": "REPROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013380/2024-41",
+                    "dtCadastro": "02/07/2024",
+                    "stEventoExterno": "FP",
+                    "coSeqEventoExterno": 6153,
+                    "noResponsavelRealizacaoEvento": "ERALDO DE SOUSA TEIXEIRA",
+                    "nuTelefoneResponsavelRealizacaoEvento": "61998835599"
+                },
+                {
+                    "dtTableDates": "24/08/2024 - 17:00 às 00:00",
+                    "dtTableArr": [
                         {
-                            "dtInicio": "30/01/2025",
-                            "hrInicio": "09:00",
-                            "hrTermino": "00:00"
-                        },
-                        {
-                            "dtInicio": "29/01/2025",
-                            "hrInicio": "09:00",
+                            "dtInicio": "24/08/2024",
+                            "hrInicio": "17:00",
                             "hrTermino": "00:00"
                         }
                     ],
-                    "noEvento": "VERÃO CULTURAL",
-                    "noTableRa": "TAGUATINGA",
-                    "dsEnderecoLocal": "Taguaparque, ao lado do Centro Cultural Taguaparque – (Colônia Agrícola Samambaia - Taguatinga, Brasília - DF, 72010-110)",
-                    "dtTableInicio": "02/02/2025",
-                    "hrTableInicio": "09:00",
+                    "protocoloProcessosei": "6152 - 00050-00013379/2024-17",
+                    "noEvento": "Marilônio - a FESTA ",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "Praça do Cruzeiro - Eixo Monumental",
+                    "dtTableInicio": "24/08/2024",
+                    "hrTableInicio": "17:00",
                     "hrTableTermino": "00:00",
                     "nuPublicoMaximo": 200,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024562/2024-48"
+                    "stAcaoTransito": "Sem ação",
+                    "dsTableNaturezas": "cultural",
+                    "stTableStatus": "REPROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013379/2024-17",
+                    "dtCadastro": "02/07/2024",
+                    "stEventoExterno": "R",
+                    "coSeqEventoExterno": 6152,
+                    "noResponsavelRealizacaoEvento": "MARIANA SARMANHO DE ALBUQUERQUE",
+                    "nuTelefoneResponsavelRealizacaoEvento": "61992126625"
                 },
                 {
-                    "coSeqEventoExterno": 8121,
-                    "dtTableDates": "18/01/2025 - 11:00 às 22:00",
+                    "dtTableDates": "13/07/2024 - 13:00 às 19:00",
                     "dtTableArr": [
                         {
-                            "dtInicio": "18/01/2025",
-                            "hrInicio": "11:00",
-                            "hrTermino": "22:00"
+                            "dtInicio": "13/07/2024",
+                            "hrInicio": "13:00",
+                            "hrTermino": "19:00"
                         }
                     ],
-                    "noEvento": "Hamburgada de FÉRIAS",
-                    "noTableRa": "SÃO SEBASTIÃO",
-                    "dsEnderecoLocal": "Av. São Sebastião, nº 211, loja 1 - Milky Moo São Sebastião",
-                    "dtTableInicio": "18/01/2025",
-                    "hrTableInicio": "11:00",
-                    "hrTableTermino": "22:00",
-                    "nuPublicoMaximo": 300,
-                    "stAcaoTransito": "PMDFdf",
-                    "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024526/2024-84"
-                },
-                {
-                    "coSeqEventoExterno": 8117,
-                    "dtTableDates": "08/02/2025 - 21:00 às 04:00",
-                    "dtTableArr": [
-                        {
-                            "dtInicio": "08/02/2025",
-                            "hrInicio": "21:00",
-                            "hrTermino": "04:00"
-                        }
-                    ],
-                    "noEvento": "ARROCHA",
+                    "protocoloProcessosei": "6151 - 00050-00013372/2024-03",
+                    "noEvento": "BRASILIENSE X GAMA ",
                     "noTableRa": "TAGUATINGA",
-                    "dsEnderecoLocal": "ESTACIONAMENTO DO ESTÁDIO SEREJÃO - TAGUATINGA",
-                    "dtTableInicio": "08/02/2025",
-                    "hrTableInicio": "21:00",
-                    "hrTableTermino": "04:00",
-                    "nuPublicoMaximo": 2000,
-                    "stAcaoTransito": "DETRAN-DF-df",
+                    "dsEnderecoLocal": "ESTADIO ELMO SEREJO FARIAS ( SEREJÃO)",
+                    "dtTableInicio": "13/07/2024",
+                    "hrTableInicio": "13:00",
+                    "hrTableTermino": "19:00",
+                    "nuPublicoMaximo": 500,
+                    "stAcaoTransito": "PMDFdf",
+                    "dsTableNaturezas": "esportivo: [futebol]",
+                    "stTableStatus": "APROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013372/2024-03",
+                    "dtCadastro": "02/07/2024",
                     "stEventoExterno": "A",
-                    "nuProcessoFormatadoSei": "00050-00024515/2024-02"
+                    "coSeqEventoExterno": 6151,
+                    "noResponsavelRealizacaoEvento": "FEDERAÇÃO DE FUTEBOL DO DF",
+                    "nuTelefoneResponsavelRealizacaoEvento": ""
+                },
+                {
+                    "dtTableDates": "16/08/2024 - 18:00 às 00:00 | 17/08/2024 - 18:00 às 00:00 | 18/08/2024 - 18:00 às 00:00",
+                    "dtTableArr": [
+                        {
+                            "dtInicio": "16/08/2024",
+                            "hrInicio": "18:00",
+                            "hrTermino": "00:00"
+                        },
+                        {
+                            "dtInicio": "17/08/2024",
+                            "hrInicio": "18:00",
+                            "hrTermino": "00:00"
+                        },
+                        {
+                            "dtInicio": "18/08/2024",
+                            "hrInicio": "18:00",
+                            "hrTermino": "00:00"
+                        }
+                    ],
+                    "protocoloProcessosei": "6150 - 00050-00013370/2024-14",
+                    "noEvento": "FESTA AGOSTINA ",
+                    "noTableRa": "PLANO PILOTO",
+                    "dsEnderecoLocal": "SGAN 604 MODULO D, S/N - L2 NORTE",
+                    "dtTableInicio": "16/08/2024",
+                    "hrTableInicio": "18:00",
+                    "hrTableTermino": "00:00",
+                    "nuPublicoMaximo": 500,
+                    "stAcaoTransito": "",
+                    "dsTableNaturezas": "religioso - social",
+                    "stTableStatus": "APROVADO",
+                    "nuProcessoFormatadoSei": "00050-00013370/2024-14",
+                    "dtCadastro": "02/07/2024",
+                    "stEventoExterno": "A",
+                    "coSeqEventoExterno": 6150,
+                    "noResponsavelRealizacaoEvento": "Pe. Ricardo Ferreira de Carvalho",
+                    "nuTelefoneResponsavelRealizacaoEvento": "(61) 3327-1082"
                 }
             ]
         }

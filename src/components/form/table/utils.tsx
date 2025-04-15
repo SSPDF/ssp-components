@@ -201,7 +201,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                     switch (dt.operator) {
                         case 'data inicio':
                             currentData.forEach((cd) => {
-                                const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
 
                                 if (dates.length <= 0) return
 
@@ -215,9 +215,11 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                             break
                         case 'data fim':
                             currentData.forEach((cd) => {
-                                const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
 
                                 if (dates.length <= 0) return
+
+                                console.log(dates)
 
                                 var fimDate = dates[dates.length - 1]
                                 var fimValue = dayjs(fimDate, 'DD/MM/YYYY')
@@ -229,7 +231,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                             break
                         case 'tem a data':
                             currentData.forEach((cd) => {
-                                const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
 
                                 if (dates.includes(dt.value)) {
                                     filteredData.push(cd)
@@ -241,7 +243,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                             const dateB = dt.value2 ? dayjs(dt.value2 as string, 'DD/MM/YYYY') : dayjs('31/12/2030', 'DD/MM/YYYY')
 
                             currentData.forEach((cd) => {
-                                const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
 
                                 let isBetween = false
 
@@ -304,28 +306,36 @@ export function ordenarDados({ order, list, orderAsc = false }: OrdenarDadosProp
 
 export async function downloadCSVFile(list: any[], config: CsvConfigProp, filters: FilterValue[]) {
     if (list.length <= 0) return
+    
+    let data:any[] = []
 
-    // definindo os campos especificados do csv
-    const newData: any[] = list.map(x => {
-        const obj = {}
+    if (config.downloadAll && config.customAll) data = config.customAll(list, filters)
+    else if (!config.downloadAll && config.customFiltered) data = config.customFiltered(list, filters)
+    else {
+            // definindo os campos especificados do csv
+            list.forEach(x => {
+                const obj = {}
+            
+                config.map.forEach(m => {
+                    // opção de usar o valor do filtro no próprio campo
+                    if (m.useFilterValue && !config.downloadAll && !m.onlyAll) {
+                        const filterValueList = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator))  
+                        const filterValue = filterValueList.length > 0 ? (filterValueList.reduce(r => r.value).value || undefined) : undefined
+            
+                        obj[m.name] = filterValue || get(x, m.key)
+                        return
+                    }
+            
+                    if (m.onlyFilter) return
+            
+                    obj[m.name] = get(x, m.key)
+                })
+            
+                data.push(obj)
+            })
+    }
 
-        config.map.forEach(m => {
-            // opção de usar o valor do filtro no próprio campo
-            if (m.useFilterValue && !config.downloadAll) {
-                const filterValueList = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator))  
-                const filterValue = filterValueList.length > 0 ? (filterValueList.reduce(r => r.value).value || undefined) : undefined
-
-                obj[m.name] = filterValue || get(x, m.key)
-                return
-            }
-
-            obj[m.name] = get(x, m.key)
-        })
-        
-        return obj
-    })
-
-    const worksheet = XLSX.utils.json_to_sheet(newData)
+    const worksheet = XLSX.utils.json_to_sheet(data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, config.fileName)
 

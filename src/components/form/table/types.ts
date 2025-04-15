@@ -46,6 +46,8 @@ export interface FilterValue {
 export interface CsvMapProps {
     name: string,
     key: string,
+    onlyFilter?: boolean
+    onlyAll?: boolean
     useFilterValue?: {
         label: string,
         operators: FilterOperators[]
@@ -55,7 +57,9 @@ export interface CsvMapProps {
 export interface CsvConfigProp {
     fileName: string
     downloadAll?: boolean
-    map: CsvMapProps[]
+    customFiltered?: (list: any[], filters: FilterValue[]) => any[]
+    customAll?: (list: any[], filters: FilterValue[]) => any[]
+    map?: CsvMapProps[]
 }
 
 /**
