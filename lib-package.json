@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.285",
+    "version": "0.0.286",
     "description": "SSP React Components",
     "main": "index.js",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
@@ -37,13 +37,7 @@
         "type": "git",
         "url": "git+https://github.com/SSPDF/ssp-components.git"
     },
-    "keywords": [
-        "front",
-        "react",
-        "components",
-        "ssp",
-        "df"
-    ],
+    "keywords": ["front", "react", "components", "ssp", "df"],
     "bugs": {
         "url": "https://github.com/SSPDF/ssp-components/issues"
     },

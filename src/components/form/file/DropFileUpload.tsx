@@ -1,17 +1,11 @@
-import CameraAltIcon from '@mui/icons-material/CameraAlt'
-import ClearIcon from '@mui/icons-material/Clear'
-import Delete from '@mui/icons-material/Delete'
-import DoneIcon from '@mui/icons-material/Done'
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
-import PictureAsPdf from '@mui/icons-material/PictureAsPdf'
-import { Box, Button, CircularProgress, Grid, InputLabel, LinearProgress, LinearProgressProps, Paper, TableContainer, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Grid, InputLabel, LinearProgress, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
+import axios, { AxiosProgressEvent, AxiosResponse } from 'axios'
 import get from 'lodash.get'
-import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useState } from 'react'
+import { DropzoneOptions, useDropzone } from 'react-dropzone'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { DropzoneOptions, useDropzone } from 'react-dropzone'
-import axios, { AxiosProgressEvent, AxiosResponse } from 'axios'
 
 import { PDFIcon, TrashIcon } from '../../icons/icons'
 
@@ -40,19 +34,6 @@ function bytesToKBorMB(bytes: number): string {
         const MBValue = bytes / MB
         return `${MBValue.toFixed(1)}MB`
     }
-}
-
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
-    return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress variant='determinate' {...props} />
-            </Box>
-            <Box sx={{ minWidth: 3 }}>
-                <Typography variant='body2' color='text.secondary'>{`${Math.round(props.value)}%`}</Typography>
-            </Box>
-        </Box>
-    )
 }
 
 export default function DropFileUpload({
@@ -311,7 +292,7 @@ export default function DropFileUpload({
                     ))}
 
                     {progress > 0 && progress < 100 && (
-                        <LinearProgressWithLabel
+                        <LinearProgress
                             value={progress}
                             sx={{
                                 backgroundColor: '#103D6A',
