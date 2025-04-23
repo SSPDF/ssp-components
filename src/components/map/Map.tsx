@@ -20,6 +20,7 @@ export interface MapProps {
     popupContent?: ReactElement
     style?: BoxProps
     mapStyle?: React.CSSProperties
+    fixedPosition?: boolean
 }
 
 export function Map(props: MapProps) {
@@ -28,7 +29,7 @@ export function Map(props: MapProps) {
             <MapContainer center={props.firstCoords} zoom={19} scrollWheelZoom style={props.mapStyle}>
                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
                 {props.pulseMarkerList && props.pulseMarkerList.map((coord, idx) => <AnimatedMarker key={JSON.stringify(coord) + idx} coords={coord} />)}
-                <DraggableMarker startCoord={props.firstCoords} onChange={props.onCoordsChange} showPopup={typeof props.popupContent !== 'undefined'}>
+                <DraggableMarker startCoord={props.firstCoords} onChange={props.onCoordsChange} showPopup={typeof props.popupContent !== 'undefined'} fixedPosition={props.fixedPosition}>
                     {props.popupContent}
                 </DraggableMarker>
             </MapContainer>

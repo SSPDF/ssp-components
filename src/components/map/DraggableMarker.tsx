@@ -12,6 +12,7 @@ interface DraggableMarkerProps {
     onChange?: (coord: LatLngExpression) => void
     children?: ReactElement
     showPopup?: boolean
+    fixedPosition?: boolean
 }
 
 export default function DraggableMarker({ ...props }: DraggableMarkerProps) {
@@ -32,6 +33,8 @@ export default function DraggableMarker({ ...props }: DraggableMarkerProps) {
 
     useMapEvents({
         click(e) {
+            if (props.fixedPosition) return
+
             setPosition({ lat: e.latlng.lat, lng: e.latlng.lng })
         },
     })
