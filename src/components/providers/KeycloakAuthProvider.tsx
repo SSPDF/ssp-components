@@ -1,7 +1,8 @@
-import Keycloak, { KeycloakTokenParsed } from 'keycloak-js'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AuthContext } from '../../context/auth'
+
+import Keycloak from 'keycloak-js'
 import { User } from '../../types/auth'
 
 export const cookieName = 'nextauth.token'
@@ -26,37 +27,11 @@ export function KeycloakAuthProvider({
 }) {
     const [user, setUser] = useState<User | null | undefined>()
     const [userLoaded, setUserLoaded] = useState(false)
+
     const [kc, setKc] = useState<Keycloak | null>(null)
 
     const router = useRouter()
     const isAuth = !!user
-
-    const updateUserData = (token: string) => {
-        if (!kc) return
-        const tokenParsed = kc.tokenParsed as KeycloakTokenParsed
-        const roles = ((tokenParsed?.resource_access ?? {})[resource_name] as any)?.roles || []
-
-        setUser({
-            ...tokenParsed,
-            token,
-            roles,
-        })
-    }
-
-    const refreshTokens = async (): Promise<boolean> => {
-        if (!kc) return false
-        try {
-            const refreshed = await kc.updateToken(5)
-            if (refreshed) {
-                updateUserData(kc.token!)
-            }
-            return refreshed
-        } catch (err) {
-            console.error('Falha ao atualizar token:', err)
-            logout()
-            return false
-        }
-    }
 
     useEffect(() => {
         const keycloak = new Keycloak({
@@ -84,13 +59,17 @@ export function KeycloakAuthProvider({
 
                         console.log('TOKEN-> ', tokenParsed)
 
-                        updateUserData(keycloak.token!)
+                        const userData: User = {
+                            ...tokenParsed,
+                            token: keycloak.token,
+                            roles: (((tokenParsed?.resource_access ?? {})[resource_name] ?? []) as any).roles,
+                        }
 
+                        setUser(userData)
                         console.info('Authenticated!!!')
 
                         keycloak.onTokenExpired = () => {
                             console.log('token expired')
-                            refreshTokens()
                         }
                     }
                 },
@@ -128,5 +107,5 @@ export function KeycloakAuthProvider({
         localStorage.removeItem(userImgName)
     }
 
-    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData: () => {}, type, refreshTokens }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user, isAuth, userLoaded, login, logout, saveUserData: () => {}, type }}>{children}</AuthContext.Provider>
 }
