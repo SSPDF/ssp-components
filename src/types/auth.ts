@@ -4,7 +4,6 @@ export interface User extends KeycloakTokenParsed {
     token: string | undefined
     roles: any[]
     image?: string
-    refreshToken?: string
 }
 
 export interface AuthData {
