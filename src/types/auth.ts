@@ -72,5 +72,5 @@ export interface AuthReturnData {
     login: () => void
     saveUserData: (token: AuthReturn) => void
     logout: () => void
-    refreshTokens: () => Promise<boolean>
+    refreshTokens?: () => Promise<boolean>
 }
