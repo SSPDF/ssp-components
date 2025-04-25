@@ -61,6 +61,7 @@ export function KeycloakAuthProvider({
 
                         const userData: User = {
                             ...tokenParsed,
+                            refreshToken: keycloak.refreshToken,
                             token: keycloak.token,
                             roles: (((tokenParsed?.resource_access ?? {})[resource_name] ?? []) as any).roles,
                         }
