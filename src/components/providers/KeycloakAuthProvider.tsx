@@ -42,6 +42,22 @@ export function KeycloakAuthProvider({
 
         setKc(keycloak)
 
+        keycloak.onTokenExpired = async () => {
+            console.log('token expired')
+
+            try {
+                const refreshed = await keycloak.updateToken(5)
+
+                if (refreshed) {
+                    setUser((prevUser) => ({ ...prevUser, token: keycloak.token } as User))
+                }
+
+                console.log(refreshed ? 'Token was refreshed' : 'Token is still valid')
+            } catch (error) {
+                console.log('Failed to refresh token', error)
+            }
+        }
+
         keycloak
             .init({
                 onLoad: 'check-sso', // check-sso | login-required
@@ -67,10 +83,6 @@ export function KeycloakAuthProvider({
 
                         setUser(userData)
                         console.info('Authenticated!!!')
-
-                        keycloak.onTokenExpired = () => {
-                            console.log('token expired')
-                        }
                     }
                 },
                 () => {
