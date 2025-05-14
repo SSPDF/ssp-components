@@ -63,7 +63,7 @@ export function FixedAutoComplete({
         }
 
         setValue(null)
-        context.formSetValue(name, undefined)
+        context.formSetValue(name, '')
         onChange(undefined)
     }
 
@@ -74,6 +74,7 @@ export function FixedAutoComplete({
                 type='text'
                 {...context?.formRegister(name!, {
                     validate: (v, f) => {
+                        if (!v) return 'Este campo é obrigatório'
                         if (v?.length <= 0 && required) return 'Este campo é obrigatório'
                     },
                 })}
