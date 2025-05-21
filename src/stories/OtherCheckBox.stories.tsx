@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import OtherCheckBox from '../components/form/input/OtherCheckBox'
+import FormBaseDecorator from '../decorators/FormBaseDecorator'
 
 const meta: Meta<typeof OtherCheckBox> = {
     title: 'Input/OtherCheckBox',

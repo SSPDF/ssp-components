@@ -44,12 +44,12 @@ export interface FilterValue {
 }
 
 export interface CsvMapProps {
-    name: string,
-    key: string,
+    name: string
+    key: string
     onlyFilter?: boolean
     onlyAll?: boolean
     useFilterValue?: {
-        label: string,
+        label: string
         operators: FilterOperators[]
     }
 }

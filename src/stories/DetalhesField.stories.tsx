@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
+import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import { Field } from '../components/detalhes/Field'
 
 const meta: Meta<typeof Field> = {

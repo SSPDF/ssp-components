@@ -1,21 +1,20 @@
 import { Button, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { FormProvider } from '../src'
-import { SspComponentsProvider } from '../src/components/providers/SspComponentsProvider'
-
-import '../src/css/ReactToastify.css'
+import { useState } from 'react'
 import { FieldValues } from 'react-hook-form'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import GenericFormProvider from '../components/providers/GenericFormProvider'
+import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
+import '../src/css/ReactToastify.css'
 
 const client = new QueryClient()
 
-export default function FormBaseDecorator(Story: any, el: any) {
+export default function GenericFormBaseDecorator(Story: any, el: any) {
     const [formData, setFormData] = useState<FieldValues>()
     return (
         <SspComponentsProvider>
-            <FormProvider
-                onSubmit={(d, files) => {
-                    console.log(d, files)
+            <GenericFormProvider
+                onSubmit={(d) => {
+                    console.log(d)
                     setFormData(d)
                 }}
             >
@@ -26,7 +25,7 @@ export default function FormBaseDecorator(Story: any, el: any) {
                         {!!formData && <Typography>{JSON.stringify(formData)}</Typography>}
                     </Stack>
                 </QueryClientProvider>
-            </FormProvider>
+            </GenericFormProvider>
         </SspComponentsProvider>
     )
 }

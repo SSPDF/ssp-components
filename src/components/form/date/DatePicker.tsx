@@ -1,12 +1,11 @@
 import { Grid, InputLabel, TextField, Typography } from '@mui/material'
-import { LocalizationProvider, ptBR } from '@mui/x-date-pickers'
+import { LocalizationProvider, DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
 
 export default function DatePicker({

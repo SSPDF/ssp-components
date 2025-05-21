@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import StepperBlock from '../components/form/stepper/StepperBlock'
+import FormBaseDecorator from '../decorators/FormBaseDecorator'
 
 const meta: Meta<typeof StepperBlock> = {
     title: 'Stepper/StepperBlock',
