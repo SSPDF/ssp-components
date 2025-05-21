@@ -74,13 +74,14 @@
         "@types/tinycolor2": "^1.4.6",
         "@types/keycloak-js": "^3.4.1",
         "@types/node": "^20.0.0",
+        "microbundle": "^0.15.0",
         "next": "^14.2.29",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "typescript": "^5.8.3"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "microbundle --format cjs,esm",
         "dev": "tsc --watch",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
