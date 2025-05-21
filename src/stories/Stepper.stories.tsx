@@ -1,8 +1,9 @@
-import { Stack, Typography } from '@mui/material'
 import { Meta, StoryObj } from '@storybook/react'
+import React from 'react'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import Stepper from '../components/form/stepper/Stepper'
+import StepperDecorator from '../../decorators/StepperDecorator'
 import StepperBlock from '../components/form/stepper/StepperBlock'
-import StepperDecorator from '../decorators/StepperDecorator'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',

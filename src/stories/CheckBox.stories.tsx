@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import CheckBox from '../components/form/checkbox/CheckBox'
 
 const meta: Meta<typeof CheckBox> = {

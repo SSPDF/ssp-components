@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import FetchAutoComplete from '../components/form/input/FetchAutoComplete'
 
 const meta: Meta<typeof FetchAutoComplete> = {

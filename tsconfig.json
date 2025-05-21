@@ -1,21 +1,11 @@
 {
+    "extends": "@tsconfig/recommended/tsconfig.json",
     "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "target": "ESNext",
-        "jsx": "react-jsx",
-        "strict": false,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "declaration": true,
+        "jsx": "react",
         "outDir": "dist",
-        "rootDir": "src",
-        "sourceMap": true,
-        "lib": ["DOM", "ESNext"],
-        "allowImportingTsExtensions": true,
-        "noEmit": true
+        "strict": false,
+        "checkJs": true,
+        "declaration": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist", "scripts"]
+    "include": ["src/*", "package.json"],
 }

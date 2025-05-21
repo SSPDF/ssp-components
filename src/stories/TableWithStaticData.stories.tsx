@@ -1,8 +1,9 @@
-import { Button, Paper, Stack } from '@mui/material'
 import { Meta, StoryObj } from '@storybook/react'
-import Link from 'next/link'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import Table from '../components/form/table/Table'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import React from 'react'
+import { Button, Paper, Stack } from '@mui/material'
+import Link from 'next/link'
 
 interface FakeDataProps {
     id: string
@@ -104,5 +105,5 @@ export const Base: Story = {
         generateCsvZip: true,
         csvZipFileNamesKey: 'status',
         filters: [{ label: 'Nome', keyName: 'name', type: 'string', operator: 'contem', operators: ['contem', 'igual'], value: '' }],
-    } as unknown,
+    },
 }

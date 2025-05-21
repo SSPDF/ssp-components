@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import TimePicker from '../components/form/date/TimePicker'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
 
 const meta: Meta<typeof TimePicker> = {
     title: 'Date/TimePicker',

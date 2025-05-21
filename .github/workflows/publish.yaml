@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Buildando typescript
-        run: npm run build
+        run: npx tsc
       
       - name: Criando package json
         run: cp lib-package.json dist/package.json

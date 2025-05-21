@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 import Input from '../components/form/input/Input'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 
 const meta: Meta<typeof Input> = {
     title: 'Input/Input',

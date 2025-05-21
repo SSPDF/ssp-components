@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import NavBar from '../components/navbar/NavBar'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import React from 'react'
+import { LinearProgress } from '@mui/material'
 
 const meta: Meta<typeof NavBar> = {
     title: 'NavBar/NavBar',

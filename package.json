@@ -2,28 +2,16 @@
     "name": "@ssplib/react-components",
     "version": "0.0.13",
     "description": "SSP React Components",
+    "private": true,
+    "main": "dist/index.js",
+    "files": [
+        "src/**/*"
+    ],
+    "directories": {
+        "src": "src"
+    },
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
-    "private": false,
-    "type": "module",
-    "main": "dist/index.cjs.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.esm.js",
-            "require": "./dist/index.cjs.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "files": [
-        "dist/**/*"
-    ],
-    "peerDependencies": {
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0",
-        "next": "^14.0.0"
-    },
     "dependencies": {
         "@emotion/react": "^11.10.6",
         "@emotion/styled": "^11.10.6",
@@ -31,9 +19,11 @@
         "@mui/lab": "^5.0.0-alpha.127",
         "@mui/material": "^5.12.1",
         "@mui/x-date-pickers": "^6.2.0",
+        "@types/keycloak-js": "^3.4.1",
         "axios": "^1.6.7",
         "cookies-next": "^2.1.1",
         "dayjs": "^1.11.11",
+        "json-server": "^0.17.3",
         "jszip": "^3.10.1",
         "jwt-decode": "^3.1.2",
         "keycloak-js": "^25.0.1",
@@ -42,6 +32,8 @@
         "lodash.clonedeep": "^4.5.0",
         "lodash.get": "^4.4.2",
         "lodash.hasin": "^4.5.2",
+        "next": "^13.3.0",
+        "react": "^18.2.0",
         "react-dropzone": "^14.3.8",
         "react-google-recaptcha": "^2.1.0",
         "react-hook-form": "^7.43.9",
@@ -50,6 +42,7 @@
         "react-query": "^3.39.3",
         "react-toastify": "^10.0.4",
         "tinycolor2": "^1.6.0",
+        "typescript": "^5.0.4",
         "xlsx": "^0.18.5"
     },
     "devDependencies": {
@@ -72,20 +65,14 @@
         "@types/react-dom": "^18.3.0",
         "@types/react-google-recaptcha": "^2.1.5",
         "@types/tinycolor2": "^1.4.6",
-        "@types/keycloak-js": "^3.4.1",
-        "@types/node": "^20.0.0",
-        "microbundle": "^0.15.0",
-        "next": "^14.2.29",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "typescript": "^5.8.3"
+        "prop-types": "15.8.1",
+        "react-dom": "18.2.0",
+        "storybook": "7.0.5"
     },
     "scripts": {
-        "build": "microbundle --format cjs,esm",
-        "dev": "tsc --watch",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
-        "api": "json-server --watch api-test.json --port 7171",
-        "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link"
+        "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",
+        "api": "json-server --watch api-test.json --port 7171"
     }
 }

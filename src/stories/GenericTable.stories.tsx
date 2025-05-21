@@ -1,8 +1,9 @@
-import { Button, Paper, Stack } from '@mui/material'
 import { Meta, StoryObj } from '@storybook/react'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
+import React from 'react'
+import { Button, Paper, Stack } from '@mui/material'
 import Link from 'next/link'
 import { GenericTable } from '../components/form/table/GenericTable'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
 
 interface FakeDataProps {
     id: string

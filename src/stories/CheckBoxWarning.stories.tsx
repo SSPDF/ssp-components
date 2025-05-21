@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import CheckboxWarning from '../components/form/checkbox/CheckBoxWarning'
 import React from 'react'
 import { Typography } from '@mui/material'
