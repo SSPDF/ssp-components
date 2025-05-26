@@ -81,7 +81,7 @@
         "typescript": "^5.8.3"
     },
     "scripts": {
-        "build": "microbundle --format cjs,esm",
+        "build": "microbundle --tsconfig tsconfig.microbundle.json --format 'cjs,es'",
         "dev": "tsc --watch",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
