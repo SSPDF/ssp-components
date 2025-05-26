@@ -70,6 +70,8 @@
         "storybook": "7.0.5"
     },
     "scripts": {
+        "build": "microbundle --tsconfig tsconfig.microbundle.json --format 'cjs,es'",
+        "dev": "tsc --watch",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",

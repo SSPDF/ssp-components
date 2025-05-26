@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "jsxFactory": null,
+        "jsxFragmentFactory": null,
+        "allowImportingTsExtensions": null
+    }
+}
