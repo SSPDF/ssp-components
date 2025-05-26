@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.300",
+    "version": "0.0.301",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -12,6 +12,9 @@
             "import": "./index.esm.js",
             "require": "./index.cjs.js",
             "types": "./index.d.ts"
+        },
+        "./types/auth": {
+            "types": "./types/auth.d.ts"
         }
     },
     "dependencies": {
