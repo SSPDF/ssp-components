@@ -1,15 +1,13 @@
+import { Button, Grid } from '@mui/material'
 import { Source } from '@storybook/blocks'
 import { Meta, StoryObj } from '@storybook/react'
-
-import { Button, Grid } from '@mui/material'
-import React, { useContext, useState } from 'react'
-import Input from '../components/form/input/Input'
-import FormProvider from '../components/providers/FormProvider'
-
+import { useContext, useState } from 'react'
 import 'react-toastify/ReactToastify.min.css'
+import Input from '../components/form/input/Input'
+import MultInput from '../components/form/input/MultInput'
+import FormProvider from '../components/providers/FormProvider'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
 import { FormContext } from '../context/form'
-import MultInput from '../components/form/input/MultInput'
 
 const meta: Meta<typeof Teste> = {
     title: 'Exemplo/Input -> Input',

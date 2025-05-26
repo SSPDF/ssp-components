@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import Switch from '../components/form/switch/Switch'
+import FormBaseDecorator from '../decorators/FormBaseDecorator'
 
 const meta: Meta<typeof Switch> = {
     title: 'Switch/Switch',

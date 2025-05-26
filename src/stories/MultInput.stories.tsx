@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import MultInput from '../components/form/input/MultInput'
+import FormBaseDecorator from '../decorators/FormBaseDecorator'
 
 const meta: Meta<typeof MultInput> = {
     title: 'Input/MultInput',

@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
+import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import DatePicker from '../components/form/date/DatePicker'
 
 const meta: Meta<typeof DatePicker> = {

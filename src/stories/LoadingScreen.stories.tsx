@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from '@storybook/react'
-import FormBaseDecorator from '../../decorators/FormBaseDecorator'
 import { LoadingScreen } from '../components/loading/LoadingScreen'
 
 const meta: Meta<typeof LoadingScreen> = {
