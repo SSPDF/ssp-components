@@ -1,5 +1,4 @@
 import { Box, Grid, Stack, Typography } from '@mui/material'
-import React from 'react'
 
 export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; name: string; tag?: string; xs?: number; md?: number; lg?: number }) {
     let color =
@@ -18,7 +17,7 @@ export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; na
             : '#BBF7D0'
 
     return (
-        <Grid paddingBottom={3} item {...{ xs, md, lg }} paddingRight={2}>
+        <Grid item paddingBottom={3} {...{ xs, md, lg }} paddingRight={2}>
             <Stack spacing={1}>
                 <Stack spacing={1} direction={'row'}>
                     <Typography

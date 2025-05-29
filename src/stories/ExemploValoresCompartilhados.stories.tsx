@@ -2,7 +2,7 @@ import { Button, Grid } from '@mui/material'
 import { Source } from '@storybook/blocks'
 import { Meta, StoryObj } from '@storybook/react'
 import { useContext, useState } from 'react'
-import 'react-toastify/ReactToastify.min.css'
+import { ToastContainer } from 'react-toastify'
 import Input from '../components/form/input/Input'
 import FormProvider from '../components/providers/FormProvider'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
@@ -37,44 +37,47 @@ function Teste() {
     }
 
     return (
-        <SspComponentsProvider>
-            <FormProvider onSubmit={submit}>
-                {/* Esse grid é opcional para dar espaçamento */}
-                <Grid container>
-                    <Input name='nome' type='input' title='Nome' required />
-                    <Grid item xs={12}>
-                        <Source
-                            code={`
-<Input name='nome' type='input' title='Nome' required />
+        <>
+            <ToastContainer />
+            <SspComponentsProvider>
+                <FormProvider onSubmit={submit}>
+                    {/* Esse grid é opcional para dar espaçamento */}
+                    <Grid container>
+                        <Input name='nome' type='input' title='Nome' required />
+                        <Grid item xs={12}>
+                            <Source
+                                code={`
+                                <Input name='nome' type='input' title='Nome' required />
+                                
+                                <NomeComponent />
+                                
+                                
+                                // criando um component apenas para acessar o context
+                                // lembre-se que só dá para acessar o context de dentro da árvore (filho do FormProvider)
+                                function NomeComponent() {
+                                    const context = useContext(FormContext)!
+                                    
+                                    // Usando formWatch para assistir um valor do form (FUNCIONA APENAS PARA MOSTRAR)
+                                    return (
+                                        <Grid item xs={12}>
+                                        <h3>Nome: {context.formWatch('nome')}</h3>
+                                        </Grid>
+                                        )
+                                        }
+                                        `}
+                            />
+                        </Grid>
 
-<NomeComponent />
+                        <NomeComponent />
 
-
-// criando um component apenas para acessar o context
-// lembre-se que só dá para acessar o context de dentro da árvore (filho do FormProvider)
-function NomeComponent() {
-    const context = useContext(FormContext)!
-
-    // Usando formWatch para assistir um valor do form (FUNCIONA APENAS PARA MOSTRAR)
-    return (
-        <Grid item xs={12}>
-            <h3>Nome: {context.formWatch('nome')}</h3>
-        </Grid>
-    )
-}
-`}
-                        />
+                        {/* Botão de enviar sempre do tipo submit */}
+                        <Button type='submit' variant='contained'>
+                            Enviar
+                        </Button>
                     </Grid>
-
-                    <NomeComponent />
-
-                    {/* Botão de enviar sempre do tipo submit */}
-                    <Button type='submit' variant='contained'>
-                        Enviar
-                    </Button>
-                </Grid>
-            </FormProvider>
-        </SspComponentsProvider>
+                </FormProvider>
+            </SspComponentsProvider>
+        </>
     )
 }
 

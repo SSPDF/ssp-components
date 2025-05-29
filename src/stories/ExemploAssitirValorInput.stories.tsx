@@ -2,7 +2,7 @@ import { Button, Grid } from '@mui/material'
 import { Source } from '@storybook/blocks'
 import { Meta, StoryObj } from '@storybook/react'
 import { useContext, useState } from 'react'
-import 'react-toastify/ReactToastify.min.css'
+import { ToastContainer } from 'react-toastify'
 import Input from '../components/form/input/Input'
 import MultInput from '../components/form/input/MultInput'
 import FormProvider from '../components/providers/FormProvider'
@@ -38,15 +38,17 @@ function Teste() {
     }
 
     return (
-        <SspComponentsProvider>
-            <FormProvider onSubmit={submit}>
-                {/* Esse grid é opcional para dar espaçamento */}
-                <Grid container>
-                    <Input name='nome' type='input' title='Nome' required />
-                    <MensagemInput />
-                    <Grid item xs={12}>
-                        <Source
-                            code={`
+        <>
+            <ToastContainer />
+            <SspComponentsProvider>
+                <FormProvider onSubmit={submit}>
+                    {/* Esse grid é opcional para dar espaçamento */}
+                    <Grid container>
+                        <Input name='nome' type='input' title='Nome' required />
+                        <MensagemInput />
+                        <Grid item xs={12}>
+                            <Source
+                                code={`
 <Input name='nome' type='input' title='Nome' required />
 
 <NomeComponent />
@@ -60,16 +62,17 @@ function MensagemInput() {
     return <MultInput name='mensagem' title='Mensagem' watchValue={\`Olá, \${context.formWatch('nome')}\`} />
 }
 `}
-                        />
-                    </Grid>
+                            />
+                        </Grid>
 
-                    {/* Botão de enviar sempre do tipo submit */}
-                    <Button type='submit' variant='contained'>
-                        Enviar
-                    </Button>
-                </Grid>
-            </FormProvider>
-        </SspComponentsProvider>
+                        {/* Botão de enviar sempre do tipo submit */}
+                        <Button type='submit' variant='contained'>
+                            Enviar
+                        </Button>
+                    </Grid>
+                </FormProvider>
+            </SspComponentsProvider>
+        </>
     )
 }
 

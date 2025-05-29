@@ -2,7 +2,7 @@ import { Button, Grid } from '@mui/material'
 import { Source } from '@storybook/blocks'
 import { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import 'react-toastify/ReactToastify.min.css'
+import { ToastContainer } from 'react-toastify'
 import Input from '../components/form/input/Input'
 import FormProvider from '../components/providers/FormProvider'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
@@ -36,60 +36,63 @@ function Teste() {
     }
 
     return (
-        <SspComponentsProvider>
-            <FormProvider onSubmit={submit}>
-                {/* Esse grid é opcional para dar espaçamento */}
-                <Grid container>
-                    <Input name='nome' type='input' title='Nome' required />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='nome' type='input' title='Nome' required />`} />
-                    </Grid>
-                    <Input name='celular' type='phone' title='Celular' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='celular' type='phone' title='Celular' />`} />
-                    </Grid>
+        <>
+            <ToastContainer />
+            <SspComponentsProvider>
+                <FormProvider onSubmit={submit}>
+                    {/* Esse grid é opcional para dar espaçamento */}
+                    <Grid container>
+                        <Input name='nome' type='input' title='Nome' required />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='nome' type='input' title='Nome' required />`} />
+                        </Grid>
+                        <Input name='celular' type='phone' title='Celular' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='celular' type='phone' title='Celular' />`} />
+                        </Grid>
 
-                    <Input name='cpf' type='cpf' title='CPF' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='cpf' type='cpf' title='CPF' />`} />
-                    </Grid>
+                        <Input name='cpf' type='cpf' title='CPF' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='cpf' type='cpf' title='CPF' />`} />
+                        </Grid>
 
-                    <Input name='cep' type='cep' title='CEP' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='cep' type='cep' title='CEP' />`} />
-                    </Grid>
+                        <Input name='cep' type='cep' title='CEP' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='cep' type='cep' title='CEP' />`} />
+                        </Grid>
 
-                    <Input name='cnpj' type='cnpj' title='CNPJ' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='cnpj' type='cnpj' title='CNPJ' />`} />
-                    </Grid>
+                        <Input name='cnpj' type='cnpj' title='CNPJ' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='cnpj' type='cnpj' title='CNPJ' />`} />
+                        </Grid>
 
-                    <Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />`} />
-                    </Grid>
+                        <Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />`} />
+                        </Grid>
 
-                    <Input name='email' type='email' title='Email' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='email' type='email' title='Email' />`} />
-                    </Grid>
+                        <Input name='email' type='email' title='Email' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='email' type='email' title='Email' />`} />
+                        </Grid>
 
-                    <Input name='password' type='password' title='Password' />
-                    <Grid item xs={12}>
-                        <Source code={`<Input name='password' type='password' title='Password' />`} />
-                    </Grid>
+                        <Input name='password' type='password' title='Password' />
+                        <Grid item xs={12}>
+                            <Source code={`<Input name='password' type='password' title='Password' />`} />
+                        </Grid>
 
-                    {/* Botão de enviar sempre do tipo submit */}
-                    <Button type='submit' variant='contained'>
-                        Enviar
-                    </Button>
+                        {/* Botão de enviar sempre do tipo submit */}
+                        <Button type='submit' variant='contained'>
+                            Enviar
+                        </Button>
 
-                    <Grid item xs={12}>
-                        <h2>Dados:</h2>
-                        {JSON.stringify(dados, null, 4)}
+                        <Grid item xs={12}>
+                            <h2>Dados:</h2>
+                            {JSON.stringify(dados, null, 4)}
+                        </Grid>
                     </Grid>
-                </Grid>
-            </FormProvider>
-        </SspComponentsProvider>
+                </FormProvider>
+            </SspComponentsProvider>
+        </>
     )
 }

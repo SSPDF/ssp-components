@@ -10,5 +10,20 @@ const config: StorybookConfig = {
     docs: {
         autodocs: 'tag',
     },
+    webpackFinal: async (storybookConfig) => {
+        storybookConfig.resolve = storybookConfig.resolve || {}
+        const alias = storybookConfig.resolve.alias || {}
+
+        storybookConfig.resolve.alias = alias
+
+        storybookConfig.resolve.fallback = {
+            ...(storybookConfig.resolve.fallback || {}),
+            fs: false,
+            zlib: false,
+            stream: false,
+        }
+
+        return storybookConfig
+    },
 }
 export default config

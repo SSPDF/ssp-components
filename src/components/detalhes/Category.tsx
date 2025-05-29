@@ -1,5 +1,4 @@
-import { Grid, Typography, Box } from '@mui/material'
-import React from 'react'
+import { Box, Grid, Typography } from '@mui/material'
 
 export function Category({ title }: { title: string }) {
     return (
