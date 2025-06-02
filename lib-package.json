@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.302",
+    "version": "0.0.303",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -17,6 +17,12 @@
             "types": "./types/auth.d.ts"
         },
         "./types/form": {
+            "types": "./types/form.d.ts"
+        },
+        "./context/auth": {
+            "types": "./types/auth.d.ts"
+        },
+        "./context/form": {
             "types": "./types/form.d.ts"
         }
     },
