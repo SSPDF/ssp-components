@@ -64,7 +64,7 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
 
     return (
         <Box>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Stack direction='row' justifyContent='space-between'>
                     <Stack direction='row' spacing={2}>
                         <Box sx={{ marginTop: 0.6 }}>
@@ -115,7 +115,7 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
                 )}
             </Stack>
         </Box>
-    )
+    );
 }
 
 export default React.memo(StepperBlock)

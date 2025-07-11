@@ -68,7 +68,12 @@ export function FixedAutoComplete({
     }
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid
+            size={{
+                xs: xs,
+                sm: sm,
+                md: md
+            }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
             <input
                 type='text'
@@ -97,5 +102,5 @@ export function FixedAutoComplete({
                 fullWidth
             />
         </Grid>
-    )
+    );
 }

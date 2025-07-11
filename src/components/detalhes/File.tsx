@@ -7,7 +7,12 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
     const { user } = useContext(AuthContext)
 
     return (
-        <Grid paddingBottom={3} paddingRight={3} {...{ md }}>
+        <Grid
+            paddingBottom={3}
+            paddingRight={3}
+            size={{
+                md: md
+            }}>
             <Stack
                 spacing={1}
                 sx={{
@@ -55,5 +60,5 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
                 </Stack>
             </Stack>
         </Grid>
-    )
+    );
 }

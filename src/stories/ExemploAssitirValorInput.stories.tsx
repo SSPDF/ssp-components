@@ -44,7 +44,7 @@ function Teste() {
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
                     <MensagemInput />
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Source
                             code={`
 <Input name='nome' type='input' title='Nome' required />
@@ -70,7 +70,7 @@ function MensagemInput() {
                 </Grid>
             </FormProvider>
         </SspComponentsProvider>
-    )
+    );
 }
 
 function MensagemInput() {

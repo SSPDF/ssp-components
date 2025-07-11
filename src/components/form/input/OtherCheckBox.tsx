@@ -15,7 +15,12 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
     }, [context])
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid
+            size={{
+                xs: xs,
+                sm: sm,
+                md: md
+            }}>
             <Stack direction='row'>
                 <Box>
                     <Checkbox size='small' {...context.formRegister(checkName)} sx={{ paddingLeft: 0, margin: 0 }} />
@@ -41,5 +46,5 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                 )}
             </Stack>
         </Grid>
-    )
+    );
 }

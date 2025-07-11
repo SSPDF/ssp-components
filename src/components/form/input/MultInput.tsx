@@ -37,7 +37,12 @@ export default function MultInput({
     }, [watchValue])
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid
+            size={{
+                xs: xs,
+                sm: sm,
+                md: md
+            }}>
             {title && (
                 <InputLabel required={required} sx={{ textTransform: 'capitalize' }}>
                     {title}
@@ -64,5 +69,5 @@ export default function MultInput({
                 placeholder={customPlaceholder ? customPlaceholder : title}
             />
         </Grid>
-    )
+    );
 }

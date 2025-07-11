@@ -56,9 +56,9 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                 hidden
             />
             {props.children}
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Typography sx={{ color: '#a51c30', fontSize: 16, paddingLeft: 1 }}>{get(context.errors, props.name)?.message as string}</Typography>
             </Grid>
         </Grid>
-    )
+    );
 }

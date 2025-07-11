@@ -189,7 +189,13 @@ export default function FileUpload({
     }, [])
 
     return (
-        <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
+        <Grid
+            sx={{ width: '100%' }}
+            size={{
+                xs: xs,
+                sm: sm,
+                md: md
+            }}>
             <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                 {title}
             </InputLabel>
@@ -312,5 +318,5 @@ export default function FileUpload({
                 )}
             </Box>
         </Grid>
-    )
+    );
 }

@@ -23,7 +23,12 @@ export default function CheckBoxWarning({
     const context = useContext(FormContext)!
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid
+            size={{
+                xs: xs,
+                sm: sm,
+                md: md
+            }}>
             <FormControlLabel control={<Checkbox size='small' {...context.formRegister(name!)} defaultChecked={defaultValue} />} label={title} />
             {context.formWatch(name!) && (
                 <Card sx={{ bgcolor: '#FFFBF5', color: '#F59E0B', padding: 1, paddingLeft: 2 }}>
@@ -37,5 +42,5 @@ export default function CheckBoxWarning({
                 </Card>
             )}
         </Grid>
-    )
+    );
 }
