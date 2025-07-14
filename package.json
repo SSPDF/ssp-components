@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.306",
+    "version": "0.0.308",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -98,21 +98,6 @@
         "api": "json-server --watch api-test.json --port 7171",
         "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/SSPDF/ssp-components.git"
-    },
-    "keywords": [
-        "front",
-        "react",
-        "components",
-        "ssp",
-        "df"
-    ],
-    "bugs": {
-        "url": "https://github.com/SSPDF/ssp-components/issues"
-    },
-    "homepage": "https://github.com/SSPDF/ssp-components#readme",
     "overrides": {
         "react-is": "^18.2.0"
     }

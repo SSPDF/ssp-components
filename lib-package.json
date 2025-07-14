@@ -1,40 +1,35 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.307",
+    "version": "0.0.308",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
-    "private": false,
-    "type": "module",
-    "main": "dist/index.cjs.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
+    "main": "index.cjs.js",
+    "module": "index.esm.js",
+    "types": "index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/index.esm.js",
-            "require": "./dist/index.cjs.js",
-            "types": "./dist/index.d.ts"
+            "import": "./index.esm.js",
+            "require": "./index.cjs.js",
+            "types": "./index.d.ts"
         },
         "./types/auth": {
-            "types": "./dist/types/auth.d.ts"
+            "types": "./types/auth.d.ts"
         },
         "./types/form": {
-            "types": "./dist/types/form.d.ts"
+            "types": "./types/form.d.ts"
         }
     },
-    "files": ["dist/**/*"],
     "peerDependencies": {
         "next": "^14.0.0",
         "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "react-dom": "^18.0.0",
+        "@mui/icons-material": "^7.0.0",
+        "@mui/lab": "^7.0.0",
+        "@mui/material": "^7.0.0",
+        "@mui/x-date-pickers": "^8.0.0"
     },
     "dependencies": {
-        "@emotion/react": "^11.14.0",
-        "@emotion/styled": "^11.14.1",
-        "@mui/icons-material": "^7.2.0",
-        "@mui/lab": "^7.0.0-beta.14",
-        "@mui/material": "^7.2.0",
-        "@mui/x-date-pickers": "^8.8.0",
         "axios": "^1.6.7",
         "cookies-next": "^2.1.1",
         "dayjs": "^1.11.13",
@@ -59,14 +54,5 @@
     },
     "overrides": {
         "react-is": "^18.2.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/SSPDF/ssp-components.git"
-    },
-    "keywords": ["front", "react", "components", "ssp", "df"],
-    "bugs": {
-        "url": "https://github.com/SSPDF/ssp-components/issues"
-    },
-    "homepage": "https://github.com/SSPDF/ssp-components#readme"
+    }
 }
