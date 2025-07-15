@@ -1,20 +1,21 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.314",
+    "version": "0.0.315",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
     "private": false,
     "type": "module",
     "source": "src/index.ts",
-    "main": "./dist/index.cjs.js",
-    "module": "./dist/index.esm.js",
-    "types": "./dist/index.d.ts",
-    "files": ["**/*"],
+    "main": "./index.cjs.js",
+    "module": "./index.esm.js",
+    "types": "./index.d.ts",
     "exports": {
-        "types": "./dist/index.d.ts",
-        "require": "./dist/index.cjs.js",
-        "default": "./dist/index.esm.js"
+        ".": {
+            "require": "./index.cjs.js",
+            "import": "./index.esm.js",
+            "types": "./index.d.ts"
+        }
     },
     "peerDependencies": {
         "next": "^14.2.29",
