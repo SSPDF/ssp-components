@@ -14,7 +14,7 @@
     "exports": {
         "types": "./dist/index.d.ts",
         "require": "./dist/index.cjs.js",
-        "default": "./dist/index.mjs"
+        "default": "./dist/index.esm.js"
     },
     "peerDependencies": {
         "next": "^14.2.29",
