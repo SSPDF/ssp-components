@@ -16,7 +16,7 @@
     "exports": {
         "types": "./dist/index.d.ts",
         "require": "./dist/index.cjs.js",
-        "default": "./dist/index.mjs"
+        "default": "./dist/index.esm.js"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",
