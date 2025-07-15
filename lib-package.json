@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.313",
+    "version": "0.0.314",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -10,7 +10,7 @@
     "main": "./dist/index.cjs.js",
     "module": "./dist/index.esm.js",
     "types": "./dist/index.d.ts",
-    "files": ["dist/**/*"],
+    "files": ["**/*"],
     "exports": {
         "types": "./dist/index.d.ts",
         "require": "./dist/index.cjs.js",
