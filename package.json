@@ -1,34 +1,22 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.308",
+    "version": "0.0.309",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
     "private": false,
     "type": "module",
-    "main": "dist/index.cjs.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.esm.js",
-            "require": "./dist/index.cjs.js",
-            "types": "./dist/index.d.ts"
-        },
-        "./types/auth": {
-            "types": "./dist/types/auth.d.ts"
-        },
-        "./types/form": {
-            "types": "./dist/types/form.d.ts"
-        }
-    },
+    "source": "src/index.ts",
+    "main": "./dist/index.cjs.js",
+    "module": "./dist/index.esm.js",
+    "types": "./dist/index.d.ts",
     "files": [
         "dist/**/*"
     ],
-    "peerDependencies": {
-        "next": "^14.0.0",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "require": "./dist/index.cjs.js",
+        "default": "./dist/index.mjs"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",
@@ -80,7 +68,7 @@
         "@types/tinycolor2": "^1.4.6",
         "browserify-zlib": "^0.2.0",
         "buffer": "^6.0.3",
-        "microbundle": "^0.15.0",
+        "microbundle": "^0.15.1",
         "next": "^14.2.29",
         "process": "^0.11.10",
         "react": "^18.2.0",
@@ -92,7 +80,7 @@
     },
     "scripts": {
         "build": "microbundle --tsconfig tsconfig.microbundle.json --format \"cjs,es\"",
-        "dev": "tsc --watch",
+        "dev": "microbundle watch",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "api": "json-server --watch api-test.json --port 7171",
