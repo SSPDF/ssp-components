@@ -26,10 +26,8 @@ jobs:
       # Copia arquivos necessários para a pasta dist
       - name: Preparar dist
         run: |
-          mkdir -p dist
           cp lib-package.json dist/package.json
           cp README.md dist/README.md
-          cp -r dist/* . # ou ajuste se seus bundles saírem em outro lugar
 
       - name: Verificar dist
         run: ls -la dist
