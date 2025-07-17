@@ -4,7 +4,7 @@ import { FieldValues } from 'react-hook-form'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { FormProvider } from '../'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
-import '../src/css/ReactToastify.css'
+import '../css/ReactToastify.css'
 
 const client = new QueryClient()
 

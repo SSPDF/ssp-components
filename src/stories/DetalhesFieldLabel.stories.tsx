@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/nextjs'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import { FieldLabel } from '../components/detalhes/FieldLabel'
 

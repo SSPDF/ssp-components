@@ -1,5 +1,5 @@
 import { Button, Paper, Stack } from '@mui/material'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/nextjs'
 import Link from 'next/link'
 import { GenericTable } from '../components/form/table/GenericTable'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'

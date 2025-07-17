@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/nextjs'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import FetchAutoComplete from '../components/form/input/FetchAutoComplete'
 

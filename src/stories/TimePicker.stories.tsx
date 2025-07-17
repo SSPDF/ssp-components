@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/nextjs'
 import TimePicker from '../components/form/date/TimePicker'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 

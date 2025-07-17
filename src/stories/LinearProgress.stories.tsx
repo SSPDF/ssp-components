@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/nextjs'
 import { LinearProgress } from '../components/loading/LinearProgress'
 
 const meta: Meta<typeof LinearProgress> = {
