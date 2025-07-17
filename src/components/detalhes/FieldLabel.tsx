@@ -5,14 +5,7 @@ export function FieldLabel({ title, xs = 12, tag, md, lg, paddingBottom = 3 }: {
     let color = tag && tag === 'Não' ? '#FECACA' : tag === 'Sim' ? '#BBF7D0' : '#E2E8F0'
 
     return (
-        <Grid
-            paddingBottom={paddingBottom}
-            paddingRight={2}
-            size={{
-                xs: xs,
-                md: md,
-                lg: lg
-            }}>
+        <Grid paddingBottom={paddingBottom} item {...{ xs, md, lg }} paddingRight={2}>
             <Stack spacing={1} direction='row'>
                 <Typography
                     sx={{
@@ -43,5 +36,5 @@ export function FieldLabel({ title, xs = 12, tag, md, lg, paddingBottom = 3 }: {
                 )}
             </Stack>
         </Grid>
-    );
+    )
 }

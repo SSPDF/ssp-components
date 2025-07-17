@@ -1,55 +1,60 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.315",
+    "version": "0.0.316",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
-    "private": false,
-    "type": "module",
-    "source": "src/index.ts",
-    "main": "./index.cjs.js",
-    "module": "./index.esm.js",
-    "types": "./index.d.ts",
+    "main": "index.cjs.js",
+    "module": "index.esm.js",
+    "types": "index.d.ts",
     "exports": {
         ".": {
-            "require": "./index.cjs.js",
             "import": "./index.esm.js",
+            "require": "./index.cjs.js",
             "types": "./index.d.ts"
+        },
+        "./types/auth": {
+            "types": "./types/auth.d.ts"
+        },
+        "./types/form": {
+            "types": "./types/form.d.ts"
         }
     },
-    "peerDependencies": {
-        "next": "^14.2.29",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "@mui/icons-material": "^7.2.0",
-        "@mui/lab": "^7.0.0-beta.14",
-        "@mui/material": "^7.2.0",
-        "@mui/x-date-pickers": "^8.8.0"
-    },
     "dependencies": {
-        "axios": "^1.6.7",
         "cookies-next": "^2.1.1",
-        "dayjs": "^1.11.13",
-        "jszip": "^3.10.1",
-        "jwt-decode": "^3.1.2",
-        "keycloak-js": "^25.0.1",
-        "leaflet": "^1.9.4",
-        "leaflet-defaulticon-compatibility": "^0.1.2",
-        "lodash.clonedeep": "^4.5.0",
+        "tinycolor2": "^1.6.0",
         "lodash.get": "^4.4.2",
-        "lodash.hasin": "^4.5.2",
-        "react-dropzone": "^14.3.8",
-        "react-google-recaptcha": "^2.1.0",
+        "jwt-decode": "^3.1.2",
         "react-hook-form": "^7.43.9",
         "react-imask": "^6.6.0",
-        "react-is": "^18.2.0",
-        "react-leaflet": "^4.2.1",
         "react-query": "^3.39.3",
+        "dayjs": "^1.11.7",
+        "lodash.clonedeep": "^4.5.0",
+        "lodash.hasin": "^4.5.2",
+        "react-google-recaptcha": "^2.1.0",
+        "jszip": "^3.10.1",
+        "keycloak-js": "^25.0.1",
         "react-toastify": "^10.0.4",
-        "tinycolor2": "^1.6.0",
+        "axios": "^1.6.7",
+        "react-dropzone": "^14.3.8",
+        "leaflet": "^1.9.4",
+        "leaflet-defaulticon-compatibility": "^0.1.2",
+        "react-leaflet": "^4.2.1",
         "xlsx": "^0.18.5"
     },
-    "overrides": {
-        "react-is": "^18.2.0"
-    }
+    "devDependencies": {
+        "@types/lodash.clonedeep": "^4.5.9",
+        "@types/lodash.get": "^4.4.7",
+        "@types/lodash.hasin": "^4.5.7",
+        "prop-types": "15.8.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SSPDF/ssp-components.git"
+    },
+    "keywords": ["front", "react", "components", "ssp", "df"],
+    "bugs": {
+        "url": "https://github.com/SSPDF/ssp-components/issues"
+    },
+    "homepage": "https://github.com/SSPDF/ssp-components#readme"
 }

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import Input from '../components/form/input/Input'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 

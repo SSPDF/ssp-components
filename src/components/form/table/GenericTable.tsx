@@ -1025,12 +1025,11 @@ export function GenericTable<T>({
                                     {columns.map((c) => (
                                         <Grid
                                             key={String(c?.keyName) + index}
+                                            item
+                                            xs={12}
+                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
                                             sx={{
                                                 overflow: 'hidden',
-                                            }}
-                                            size={{
-                                                xs: 12,
-                                                md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1),
                                             }}
                                         >
                                             <Box sx={{ width: 'max-content', paddingX: 1 }}>
@@ -1077,12 +1076,7 @@ export function GenericTable<T>({
                                             </Box>
                                         </Grid>
                                     ))}
-                                    <Grid
-                                        size={{
-                                            xs: 12,
-                                            md: lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize,
-                                        }}
-                                    >
+                                    <Grid item xs={12} md={lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize}>
                                         <Stack direction='row' alignItems='center' justifyContent={isSmall ? 'start' : 'flex-end'} sx={{ height: '100%', paddingBottom: isSmall ? 2 : 0 }}>
                                             {action(x)}
                                         </Stack>
@@ -1170,6 +1164,7 @@ export function GenericTable<T>({
                     </Stack>
                 )}
             </Box>
+
             <Stack direction='row' justifyContent='center' paddingY={1} paddingTop={2}>
                 <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
                     <Button
@@ -1577,7 +1572,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={((params: any) => <TextField {...params} size='small' fullWidth />) as any}
+                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )
@@ -1600,7 +1595,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={((params: any) => <TextField {...params} size='small' fullWidth />) as any}
+                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                             <DatePicker
                                 format='DD/MM/YYYY'
@@ -1618,7 +1613,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={((params: any) => <TextField {...params} size='small' fullWidth />) as any}
+                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )

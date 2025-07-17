@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import GenericFetchAutoComplete from '../components/form/input/GenericFetchAutoComplete'
 import GenericFormBaseDecorator from '../decorators/GenericFormBaseDecorator'
 

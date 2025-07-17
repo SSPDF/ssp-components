@@ -143,7 +143,7 @@ export function Input({
                         watchValue={watchValue}
                         disabled={disabled}
                     />
-                );
+                )
             case 'sei':
                 return (
                     <MaskInput
@@ -212,12 +212,7 @@ export function Input({
     }
 
     return (
-        <Grid
-            size={{
-                xs: xs,
-                sm: sm,
-                md: md
-            }}>
+        <Grid item {...{ xs, sm, md }}>
             {props.title && (
                 <InputLabel htmlFor='campo' required={props.required}>
                     {props.title}
@@ -225,7 +220,7 @@ export function Input({
             )}
             {chooseInput()}
         </Grid>
-    );
+    )
 }
 
 export default React.memo(Input)

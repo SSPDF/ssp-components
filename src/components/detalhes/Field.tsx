@@ -18,14 +18,7 @@ export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; na
             : '#BBF7D0'
 
     return (
-        <Grid
-            paddingBottom={3}
-            paddingRight={2}
-            size={{
-                xs: xs,
-                md: md,
-                lg: lg
-            }}>
+        <Grid paddingBottom={3} item {...{ xs, md, lg }} paddingRight={2}>
             <Stack spacing={1}>
                 <Stack spacing={1} direction={'row'}>
                     <Typography
@@ -59,5 +52,5 @@ export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; na
                 {name && <Box>{String(name) === 'false' ? 'Não' : String(name) === 'true' ? 'Sim' : String(name) === '' ? '' : !name ? 'Não informado' : String(name)}</Box>}
             </Stack>
         </Grid>
-    );
+    )
 }

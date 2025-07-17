@@ -56,13 +56,7 @@ export default function GenericDatePicker({
 
     return (
         <>
-            <Grid
-                size={{
-                    xs: xs,
-                    sm: sm,
-                    md: md,
-                }}
-            >
+            <Grid item {...{ xs, sm, md }}>
                 {title && <InputLabel required={required}>{title}</InputLabel>}
                 <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
@@ -83,34 +77,32 @@ export default function GenericDatePicker({
                                 },
                             },
                         }}
-                        inputRef={(params: any) =>
-                            (
-                                <TextField
-                                    size='small'
-                                    {...params}
-                                    {...context?.register(name!, {
-                                        validate: (v, f) => {
-                                            if (!hasIn(f, name)) {
-                                                return true
-                                            }
+                        inputRef={(params: any) => (
+                            <TextField
+                                size='small'
+                                {...params}
+                                {...context?.register(name!, {
+                                    validate: (v, f) => {
+                                        if (!hasIn(f, name)) {
+                                            return true
+                                        }
 
-                                            if (!v) v = ''
+                                        if (!v) v = ''
 
-                                            if (v.length <= 0 && required) return 'Este campo é obrigatório'
-                                            if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
+                                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                                        if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
-                                            if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
-                                                return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
+                                        if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
+                                            return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
 
-                                            if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
-                                                return 'A data escolhida não é válida'
-                                        },
-                                        shouldUnregister: true,
-                                    })}
-                                    fullWidth
-                                />
-                            ) as any
-                        }
+                                        if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
+                                            return 'A data escolhida não é válida'
+                                    },
+                                    shouldUnregister: true,
+                                })}
+                                fullWidth
+                            />
+                        )}
                     />
                     <Typography sx={{ color: '#a51c30', fontSize: 14, paddingLeft: 1 }}>{get(context.formState.errors, name!)?.message as string}</Typography>
                 </LocalizationProvider>

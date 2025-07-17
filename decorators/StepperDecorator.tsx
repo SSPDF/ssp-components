@@ -1,10 +1,12 @@
 import { Button, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
-import { FieldValues } from 'react-hook-form'
+import React, { useState } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { FormProvider } from '../'
-import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
+import { FormProvider } from '../src'
+import { SspComponentsProvider } from '../src/components/providers/SspComponentsProvider'
+
 import '../src/css/ReactToastify.css'
+import { FieldValues } from 'react-hook-form'
+import { Stepper } from '../src/components/form/stepper/Stepper'
 
 const client = new QueryClient()
 

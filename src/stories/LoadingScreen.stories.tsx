@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import { LoadingScreen } from '../components/loading/LoadingScreen'
 
 const meta: Meta<typeof LoadingScreen> = {

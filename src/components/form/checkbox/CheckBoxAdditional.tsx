@@ -79,9 +79,9 @@ export default function RequiredCheckBoxAdditional({
                 hidden
             />
             {children}
-            <Grid size={12}>
+            <Grid item xs={12}>
                 {firstTime && showAfterFirst && props.content}
             </Grid>
         </Grid>
-    );
+    )
 }

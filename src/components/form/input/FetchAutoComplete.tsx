@@ -123,23 +123,13 @@ export default function FetchAutoComplete({
 
     if (defaultValue && list.length <= 0 && !dValue)
         return (
-            <Grid
-                size={{
-                    xs: xs,
-                    sm: sm,
-                    md: md
-                }}>
+            <Grid item {...{ xs, sm, md }}>
                 <TextField size='small' fullWidth placeholder={loadingText} disabled />
             </Grid>
-        );
+        )
 
     return (
-        <Grid
-            size={{
-                xs: xs,
-                sm: sm,
-                md: md
-            }}>
+        <Grid item {...{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
             <input
                 type='text'
@@ -179,5 +169,5 @@ export default function FetchAutoComplete({
                 disabled={disabled}
             />
         </Grid>
-    );
+    )
 }

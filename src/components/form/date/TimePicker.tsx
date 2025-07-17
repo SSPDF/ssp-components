@@ -43,13 +43,7 @@ export default function TimePicker({
     }, [])
 
     return (
-        <Grid
-            size={{
-                xs: xs,
-                sm: sm,
-                md: md,
-            }}
-        >
+        <Grid item {...{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
             <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                 <MUITimePicker
@@ -67,27 +61,25 @@ export default function TimePicker({
                             },
                         },
                     }}
-                    inputRef={(params: any) =>
-                        (
-                            <TextField
-                                size='small'
-                                {...params}
-                                {...context?.formRegister(name!, {
-                                    validate: (v, f) => {
-                                        if (!hasIn(f, name)) {
-                                            return true
-                                        }
-                                        if (!v) v = ''
+                    inputRef={(params: any) => (
+                        <TextField
+                            size='small'
+                            {...params}
+                            {...context?.formRegister(name!, {
+                                validate: (v, f) => {
+                                    if (!hasIn(f, name)) {
+                                        return true
+                                    }
+                                    if (!v) v = ''
 
-                                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
-                                        if (v.length < 5 && required) return 'A hora precisa seguir o padrão HH:MM'
-                                    },
-                                    shouldUnregister: true,
-                                })}
-                                fullWidth
-                            />
-                        ) as any
-                    }
+                                    if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                                    if (v.length < 5 && required) return 'A hora precisa seguir o padrão HH:MM'
+                                },
+                                shouldUnregister: true,
+                            })}
+                            fullWidth
+                        />
+                    )}
                 />
                 <Typography sx={{ color: '#a51c30', fontSize: 15, paddingLeft: 1 }}>{get(context.errors, name!)?.message as string}</Typography>
             </LocalizationProvider>

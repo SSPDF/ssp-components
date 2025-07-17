@@ -66,7 +66,7 @@ export function formatarString(str: string | number) {
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
-        .trim();
+        .trim()
 }
 
 interface FiltrarProps {

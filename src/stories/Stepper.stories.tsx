@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material'
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import Stepper from '../components/form/stepper/Stepper'
 import StepperBlock from '../components/form/stepper/StepperBlock'
 import StepperDecorator from '../decorators/StepperDecorator'

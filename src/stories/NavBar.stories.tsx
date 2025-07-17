@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import NavBar from '../components/navbar/NavBar'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 

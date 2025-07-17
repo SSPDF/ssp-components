@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import { Map } from '../components/map/Map'
 import { LatLng } from 'leaflet'
 

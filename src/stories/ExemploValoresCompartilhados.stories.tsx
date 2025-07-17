@@ -1,6 +1,6 @@
 import { Button, Grid } from '@mui/material'
-import { Source } from '@storybook/addon-docs/blocks'
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Source } from '@storybook/blocks'
+import { Meta, StoryObj } from '@storybook/react'
 import { useContext, useState } from 'react'
 import 'react-toastify/ReactToastify.min.css'
 import Input from '../components/form/input/Input'
@@ -42,7 +42,7 @@ function Teste() {
                 {/* Esse grid é opcional para dar espaçamento */}
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
-                    <Grid size={12}>
+                    <Grid item xs={12}>
                         <Source
                             code={`
 <Input name='nome' type='input' title='Nome' required />
@@ -75,15 +75,15 @@ function NomeComponent() {
                 </Grid>
             </FormProvider>
         </SspComponentsProvider>
-    );
+    )
 }
 
 function NomeComponent() {
     const context = useContext(FormContext)!
 
     return (
-        <Grid size={12}>
+        <Grid item xs={12}>
             <h3>Nome: {context.formWatch('nome')}</h3>
         </Grid>
-    );
+    )
 }

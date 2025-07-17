@@ -59,12 +59,7 @@ export default function AutoComplete({
     )
 
     return (
-        <Grid
-            size={{
-                xs: xs,
-                sm: sm,
-                md: md
-            }}>
+        <Grid item {...{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
             <input
                 type='text'
@@ -90,5 +85,5 @@ export default function AutoComplete({
                 )}
             />
         </Grid>
-    );
+    )
 }

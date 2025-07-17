@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5'
+import { Meta, StoryObj } from '@storybook/react'
 import { LinearProgress } from '../components/loading/LinearProgress'
 
 const meta: Meta<typeof LinearProgress> = {

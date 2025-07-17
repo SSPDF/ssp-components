@@ -203,13 +203,7 @@ export default function DropFileUpload({
     }, [])
 
     return (
-        <Grid
-            sx={{ width: '100%' }}
-            size={{
-                xs: xs,
-                sm: sm,
-                md: md
-            }}>
+        <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
             <Box bgcolor='white' p={2} borderRadius='8px' color='#1E293B'>
                 <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                     {title}
@@ -326,5 +320,5 @@ export default function DropFileUpload({
                 )}
             </Box>
         </Grid>
-    );
+    )
 }

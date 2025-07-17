@@ -8,29 +8,26 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout código
+      - name: Copiando projeto
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Settando node
         uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org
       
-      - name: Instalando dependencias
+      - name: Instalando modulos
         run: npm install
 
-      - name: Build
+      - name: Buildando typescript
         run: npm run build
       
-      # Copia arquivos necessários para a pasta dist
-      - name: Preparar dist
-        run: |
-          cp lib-package.json dist/package.json
-          cp README.md dist/README.md
-
-      - name: Verificar dist
-        run: ls -la dist
+      - name: Criando package json
+        run: cp lib-package.json dist/package.json
+      
+      - name: Criando readme
+        run: cp README.md dist/README.md
 
       - name: Publicando
         run: npm publish --access public

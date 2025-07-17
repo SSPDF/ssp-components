@@ -35,13 +35,8 @@ export default function CheckBox({
     )
 
     return (
-        <Grid
-            size={{
-                xs: xs,
-                sm: sm,
-                md: md
-            }}>
+        <Grid item {...{ xs, sm, md }}>
             <FormControlLabel control={<Checkbox size='small' defaultChecked={defaultValue} />} label={title} {...context?.formRegister(name!)} onChange={onChange} onClick={onClick} />
         </Grid>
-    );
+    )
 }
