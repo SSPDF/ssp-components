@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from '@mui/material'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import React, { useContext, useRef, useState } from 'react'
 import { FormContext } from '../../context/form'
 import '../../css/globals.css'
@@ -15,6 +15,7 @@ import Input from '../form/input/Input'
 import MultInput from '../form/input/MultInput'
 import Stepper from '../form/stepper/Stepper'
 import StepperBlock from '../form/stepper/StepperBlock'
+import { Table } from '../form/table/Table'
 
 const token = `eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdWI2dTBpX2JmQjd3OVdnX1VBQkxrMDA2ajRSa2FhamU0SFU4NHNFdEtBIn0.eyJleHAiOjE3MDkzMDY1NzksImlhdCI6MTcwOTMwMzU4MSwiYXV0aF90aW1lIjoxNzA5MzAzNTc5LCJqdGkiOiJmYmU5NjllZC0zNmZlLTRjZGItYjc5ZC1hZTA1YTc4YjViMTkiLCJpc3MiOiJodHRwczovL2htZ3Npc3RlbWFzZXh0ZXJub3Muc3NwLmRmLmdvdi5ici9rZXljbG9hay9yZWFsbXMvZXZlbnRvcyIsImF1ZCI6WyJldmVudG8tZnJvbnQtZGV2IiwiZXZlbnRvcy1iYWNrZW5kLWRldiIsImV2ZW50b3MtYmFja2VuZCJdLCJzdWIiOiJjZTE0YTE3Yi1jZWI3LTRlYjUtOTk2Yy1iMGMyNTVmM2QyNmMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJldmVudG9zLWZyb250Iiwibm9uY2UiOiI2N2U3ZjM1Yy04ODVlLTQ4ZmUtODM1OS03ZDA4MzJhZGFmMzgiLCJzZXNzaW9uX3N0YXRlIjoiY2JmZmMxN2MtOWZiNC00ODA3LTk3MDItNjYwZDM5MzFlMTQyIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovL2htZ2V2ZW50b3NleHRlcm5vLnNzcC5kZi5nb3YuYnIiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInZpZXdlciIsImNhZGFzdHJvLWFjYW8tZXZlbnRvcyIsImFkbWluIiwidXNlciIsImV2ZW50b3NfaW9hLXBtZGYiXX0sInJlc291cmNlX2FjY2VzcyI6eyJldmVudG8tZnJvbnQtZGV2Ijp7InJvbGVzIjpbImNhZGFzdHJvLWFjYW8tZXZlbnRvcyIsImV2ZW50b3MtdXNlciIsImV2ZW50b3Mtdmlld2VyIiwiZXZlbnRvcy1hZG1pbiJdfSwiZXZlbnRvcy1mcm9udCI6eyJyb2xlcyI6WyJjYWRhc3Ryby1hY2FvLWV2ZW50b3MiLCJldmVudG9zLXVzZXIiLCJldmVudG9zLXZpZXdlciIsImV2ZW50b3MtYWRtaW4iXX0sImV2ZW50b3MtYmFja2VuZC1kZXYiOnsicm9sZXMiOlsiY2FkYXN0cm8tYWNhby1ldmVudG9zIiwiZXZlbnRvcy11c2VyIiwiZXZlbnRvcy12aWV3ZXIiLCJldmVudG9zLWFkbWluIl19LCJldmVudG9zLWJhY2tlbmQiOnsicm9sZXMiOlsiY2FkYXN0cm8tYWNhby1ldmVudG9zIiwiZXZlbnRvcy11c2VyIiwiZXZlbnRvcy12aWV3ZXIiLCJldmVudG9zLWFkbWluIl19fSwic2NvcGUiOiJvcGVuaWQgcGhvbmUgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImNiZmZjMTdjLTlmYjQtNDgwNy05NzAyLTY2MGQzOTMxZTE0MiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IlBlZGluIDA1NTE5NDI5MTYyIiwicGhvbmVfbnVtYmVyIjoiNjE5OTMwNTg0MjMiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIwNTUxOTQyOTE2MiIsImdpdmVuX25hbWUiOiJQZWRpbiIsImZhbWlseV9uYW1lIjoiMDU1MTk0MjkxNjIiLCJlbWFpbCI6ImdhaXRhY2hpMEBnbWFpbC5jb20ifQ.BLoJWIWUM-ihxIA6g-Z9aJ90MsBv2tGCtLzEnonbvGWBfqGomuhsMFECq3MvlhGpvJvEkg0NbrOzzZmiuEAnO1VwkqPITvQUgfsat0ckrs_C6pFM8nezCkc3Ee5ffBbfNAnYUtKZ7S0u5gmhMncql-z-LxwYE7_RbGu5vCEoN41ZLkmawwfYJnNN_NDv1b4g5Dx6QLkz9V4QgIMRq76WwTzJ7DgniD8hY4VDmyOO3Xk6LFS-6xPR274c30bDIw21O52ImM6t0sswaWGeb3zU3kN3N5oA6G4A1uLdNDd9kwlWlOAUWwCL8wXlRYPnWjYBU_dwuk5u4nMVHl6dcd8rEQ`
 
@@ -208,7 +209,18 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <FixedAutoComplete
+            <Input
+                type='input'
+                name='test'
+                title='Teste'
+                customValidate={(v, f) => {
+                    // check if v is this regex [\d\.]+\/\d{4}-\d\s?\(\d+[ªº]\s?[A-Z]{2}\)
+                    const regex = /^[\d\.]+\/\d{4}-\d\s?\(\d+[ªº]\s?[A-Z]{2}\)$/
+                    return regex.test(v) ? undefined : 'O número da ocorrência não é válido. Exemplo: 123.456/2025-0 (12º DP)'
+                }}
+                required
+            />
+            {/* <FixedAutoComplete
                 name='motivoDesliga'
                 title='Motivo para não registrar ocorrência'
                 list={[
@@ -222,9 +234,9 @@ export default function Teste() {
                     },
                 ]}
                 required={true}
-            />
+            /> */}
             {/* <Input type='input' name='test' title='Teste' required /> */}
-            {/* <Table
+            <Table
                 id='admin'
                 useKC={false}
                 columnSize={11}
@@ -232,6 +244,7 @@ export default function Teste() {
                 action={(prop) => <></>}
                 collapsedSize={59}
                 dataPath='body.data'
+                alwaysExpanded
                 csvConfig={{
                     fileName: 'Eventos',
                 }}
@@ -239,6 +252,14 @@ export default function Teste() {
                     {
                         keyName: 'coSeqEventoExterno',
                         title: 'Protocolo',
+                        customComponent: (e, l) => (
+                            <Stack direction='row' alignItems='center' justifyContent='center'>
+                                <img
+                                    src='https://images.unsplash.com/photo-1757664171295-4fd313cd6bd1?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                                    height='200px'
+                                />
+                            </Stack>
+                        ),
                     },
                     {
                         keyName: 'dsEnderecoLocal',
@@ -392,7 +413,7 @@ export default function Teste() {
                         type: 'number',
                     },
                 ]}
-            /> */}
+            />
             {/* <Map
                 firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
                 mapStyle={{ height: '400px', width: '500px' }}

@@ -3,9 +3,11 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { IMaskInput, useIMask } from 'react-imask'
 import { FormContext } from '../../../context/form'
 
+export type IMaskConfig = Partial<React.ComponentProps<typeof IMaskInput>>
+
 const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(props: any, ref: any) {
-    const { onChange, maskProps, onMask, maskValue, setMaskValue, watchValue, ...prop } = props
-    const [mask, setMask] = useState(maskProps.mask)
+    const { onChange, onMask, maskValue, setMaskValue, watchValue, imaskConfig, ...prop } = props
+    const [mask, setMask] = useState(imaskConfig.mask)
 
     delete prop.value
 
@@ -28,7 +30,6 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
     return (
         <IMaskInput
             {...prop}
-            {...maskProps}
             mask={mask}
             value={myValue}
             ref={myRef}
@@ -42,6 +43,7 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
 
                 onMask(value, setMask)
             }}
+            {...imaskConfig}
         />
     )
 })
@@ -49,10 +51,10 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
 export default function MaskInput(props: {
     formConfig: object
     defaultValue?: string
-    maskProps: { mask: string | RegExp; definitions?: { [key: string]: string | RegExp } }
     disabled?: boolean
     watchValue?: string
     onMask?: (value: string, setMask: React.Dispatch<React.SetStateAction<string>>) => void
+    imaskConfig?: IMaskConfig
 }) {
     const context = useContext(FormContext)!
     const [maskValue, setMaskValue] = useState('')
@@ -69,7 +71,7 @@ export default function MaskInput(props: {
                 }}
                 InputProps={{
                     inputComponent: TextMaskCustom as any,
-                    inputProps: { maskProps: props.maskProps, onMask: props.onMask, maskValue, setMaskValue, watchValue: props.watchValue },
+                    inputProps: { onMask: props.onMask, maskValue, setMaskValue, watchValue: props.watchValue, imaskConfig: props.imaskConfig },
                 }}
                 disabled={props.disabled}
                 fullWidth

@@ -113,6 +113,7 @@ export function GenericTable<T>({
     id,
     initialData = null,
     isLoading,
+    alwaysExpanded = false,
 }: TableProps2) {
     const [error, setError] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(initialData)
@@ -1016,6 +1017,7 @@ export function GenericTable<T>({
                                     padding: 0.5,
                                     backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
                                     paddingTop: 2,
+                                    paddingBottom: alwaysExpanded ? 2 : 0.5,
                                     borderTop: 'solid 1.5px #E2E8F0',
                                     position: 'relative',
                                 }}
@@ -1038,7 +1040,11 @@ export function GenericTable<T>({
                                                 </Typography>
                                             </Box>
                                             <Box paddingLeft={1} position='relative'>
-                                                <Collapse in={expandObj[index] === true} collapsedSize={collapsedSize} onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}>
+                                                <Collapse
+                                                    in={alwaysExpanded || expandObj[index] === true}
+                                                    collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
+                                                    onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}
+                                                >
                                                     <Box
                                                         sx={{
                                                             wordWrap: 'break-word',
@@ -1047,30 +1053,24 @@ export function GenericTable<T>({
                                                         }}
                                                         fontFamily='Inter'
                                                     >
-                                                        <Box>
-                                                            {c.customComponent ? (
-                                                                c.customComponent(get(x, c.keyName as any), x)
-                                                            ) : (
+                                                        {c.customComponent ? (
+                                                            c.customComponent(get(x, c.keyName as any), x)
+                                                        ) : (
+                                                            <>
                                                                 <Box color='transparent' sx={{ pointerEvents: 'none', userSelect: 'none' }}>
                                                                     {get(x, c.keyName as any, '')}
                                                                 </Box>
-                                                            )}
-                                                        </Box>
-                                                        <Box position='absolute' top={0}>
-                                                            {c.customComponent ? (
-                                                                c.customComponent(get(x, c.keyName as any), x)
-                                                            ) : (
-                                                                <>
-                                                                    {showExpandObjOnExited[index] ? (
+                                                                <Box position='absolute' top={0}>
+                                                                    {alwaysExpanded || showExpandObjOnExited[index] ? (
                                                                         get(x, c?.keyName as any, '')
                                                                     ) : (get(x, c?.keyName as any, '') ?? '').toString().length >= expandTextMaxLength ? (
                                                                         <>{(get(x, c?.keyName as any, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
                                                                     ) : (
                                                                         get(x, c?.keyName as any, '')
                                                                     )}
-                                                                </>
-                                                            )}
-                                                        </Box>
+                                                                </Box>
+                                                            </>
+                                                        )}
                                                     </Box>
                                                 </Collapse>
                                             </Box>
@@ -1081,7 +1081,7 @@ export function GenericTable<T>({
                                             {action(x)}
                                         </Stack>
                                     </Grid>
-                                    {showExpandObj[index] && (
+                                    {showExpandObj[index] && !alwaysExpanded && (
                                         <Stack direction='row' justifyContent='flex-end' bottom={0} width='100%'>
                                             <Button
                                                 onClick={(e) => {

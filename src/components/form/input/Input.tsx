@@ -1,7 +1,7 @@
 import { Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
-import MaskInput from './MaskInput'
+import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 
 export function Input({
@@ -31,6 +31,8 @@ export function Input({
     sm?: number
     md?: number
     disabled?: boolean
+    imaskConfig?: IMaskConfig
+    customValidate?: (value: string, form: any) => string | undefined
 }) {
     const context = useContext(FormContext)!
 
@@ -56,6 +58,11 @@ export function Input({
                     const value = v ?? ''
 
                     if (value.length <= 0 && props.required) return 'Este campo é obrigatório'
+
+                    if (props.customValidate) {
+                        const errorMessage = props.customValidate(value, f)
+                        if (errorMessage) return errorMessage
+                    }
 
                     if (type === 'cnpj') {
                         if (value.length < 18 && props.required) return 'O CNPJ precisa ter no mínimo 14 dígitos'
@@ -110,7 +117,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: numberMask,
                         }}
                         watchValue={watchValue}
@@ -122,7 +129,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: '00000-000',
                         }}
                         watchValue={watchValue}
@@ -134,11 +141,8 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
-                            mask: '(00) [#]0000-0000',
-                            definitions: {
-                                '#': /^9$/,
-                            },
+                        imaskConfig={{
+                            mask: '(00) [9]0000-0000',
                         }}
                         watchValue={watchValue}
                         disabled={disabled}
@@ -149,7 +153,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: '00000-00000000/0000-00',
                         }}
                         watchValue={watchValue}
@@ -161,7 +165,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: '000.000.000-00[0]',
                         }}
                         onMask={(value, setMask) => {
@@ -177,7 +181,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: '000.000.000-00',
                         }}
                         watchValue={watchValue}
@@ -189,7 +193,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: '00.000.000/0000-00',
                         }}
                         watchValue={watchValue}
@@ -201,7 +205,7 @@ export function Input({
                     <MaskInput
                         formConfig={formConfig}
                         defaultValue={defaultValue}
-                        maskProps={{
+                        imaskConfig={{
                             mask: '00000[000000]',
                         }}
                         watchValue={watchValue}

@@ -97,7 +97,7 @@ export interface TableProps {
     customErrorMsg?: string | ReactNode
 
     /** Colunas da tabela */
-    columns: any[]
+    columns: { keyName: string; title: string; customComponent?: (content: string, obj: any) => ReactNode; size?: number }[]
 
     /** Nome da tabela */
     tableName: string
@@ -142,6 +142,9 @@ export interface TableProps {
 
     /** Flag para mostrar ou não o botão de expandir a Linha */
     isExpandable?: boolean
+
+    /** Flag para sempre manter as linhas expandidas */
+    alwaysExpanded?: boolean
 }
 
 export interface TableProps2 {
@@ -278,4 +281,7 @@ export interface TableProps2 {
 
     /** Flag para mostrar ou não o botão de expandir a Linha */
     isExpandable?: boolean
+
+    /** Flag para sempre manter as linhas expandidas */
+    alwaysExpanded?: boolean
 }

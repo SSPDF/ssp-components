@@ -51,6 +51,7 @@ export function Table({
     id,
     initialData = null,
     isExpandable = true,
+    alwaysExpanded = false,
 }: TableProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<null | { status: number }>(null)
@@ -71,7 +72,7 @@ export function Table({
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
     const startData = useRef<any[]>(data)
-    const orderAsc = useRef((localStorage.getItem(`order-${id}`) === 'true') || false)
+    const orderAsc = useRef(localStorage.getItem(`order-${id}`) === 'true' || false)
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
     localTableName = `tableFilter_${id}`
@@ -117,7 +118,7 @@ export function Table({
                                 startData.current = []
                             } else {
                                 let newValue: any[] = value
- 
+
                                 // começando a ordenação padrão
                                 if (localStorage.getItem(`order-data-${id}`)) {
                                     try {
@@ -128,11 +129,10 @@ export function Table({
                                             list: value,
                                             orderAsc: orderAsc.current,
                                         })
-                                    } catch(err){
+                                    } catch (err) {
                                         console.log(err)
                                     }
-                                }
-                                else if (orderBy.length > 0) {
+                                } else if (orderBy.length > 0) {
                                     // se não tiver salvo uma ordenação, ordena pelo primeiro da lista
                                     newValue = ordenarDados({
                                         order: orderBy[0],
@@ -329,8 +329,8 @@ export function Table({
 
     const handleCSVDownload = (list: any[], all: boolean = false) => {
         if (!csvConfig) return
-        
-        downloadCSVFile(list, {...csvConfig, ...(all ? {downloadAll: true} : {})}, (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]) || [])
+
+        downloadCSVFile(list, { ...csvConfig, ...(all ? { downloadAll: true } : {}) }, (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]) || [])
     }
 
     const handleFiltrarDados = (dt: FilterValue[]) => {
@@ -420,20 +420,22 @@ export function Table({
                         </Button>
 
                         <Stack direction='row' spacing={1}>
-                            {orderBy.length > 0 && <CustomMenu
-                                data={orderBy.map((x) => ({
-                                    name: x.label,
-                                    onClick: () => handleOrdenarDados(x),
-                                }))}
-                                btProps={{
-                                    startIcon: <KeyboardArrowDown />,
-                                    fullWidth: true,
-                                }}
-                            >
-                                Ordenar
-                            </CustomMenu>}
+                            {orderBy.length > 0 && (
+                                <CustomMenu
+                                    data={orderBy.map((x) => ({
+                                        name: x.label,
+                                        onClick: () => handleOrdenarDados(x),
+                                    }))}
+                                    btProps={{
+                                        startIcon: <KeyboardArrowDown />,
+                                        fullWidth: true,
+                                    }}
+                                >
+                                    Ordenar
+                                </CustomMenu>
+                            )}
 
-                            {isExpandable && (
+                            {isExpandable && !alwaysExpanded && (
                                 <Button
                                     variant='contained'
                                     fullWidth
@@ -529,6 +531,7 @@ export function Table({
                                     padding: 0.5,
                                     backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
                                     paddingTop: 2,
+                                    paddingBottom: alwaysExpanded ? 2 : 0.5,
                                     borderTop: 'solid 1.5px #E2E8F0',
                                     position: 'relative',
                                 }}
@@ -551,7 +554,11 @@ export function Table({
                                                 </Typography>
                                             </Box>
                                             <Box paddingLeft={1} position='relative'>
-                                                <Collapse in={expandObj[index] === true} collapsedSize={collapsedSize} onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}>
+                                                <Collapse
+                                                    in={alwaysExpanded || expandObj[index] === true}
+                                                    collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
+                                                    onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}
+                                                >
                                                     <Box
                                                         sx={{
                                                             wordWrap: 'break-word',
@@ -560,30 +567,24 @@ export function Table({
                                                         }}
                                                         fontFamily='Inter'
                                                     >
-                                                        <Box>
-                                                            {c.customComponent ? (
-                                                                c.customComponent(get(x, c.keyName), x)
-                                                            ) : (
+                                                        {c.customComponent ? (
+                                                            c.customComponent(get(x, c.keyName), x)
+                                                        ) : (
+                                                            <>
                                                                 <Box color='transparent' sx={{ pointerEvents: 'none', userSelect: 'none' }}>
                                                                     {get(x, c.keyName, '')}
                                                                 </Box>
-                                                            )}
-                                                        </Box>
-                                                        <Box position='absolute' top={0}>
-                                                            {c.customComponent ? (
-                                                                c.customComponent(get(x, c.keyName), x)
-                                                            ) : (
-                                                                <>
-                                                                    {showExpandObjOnExited[index] ? (
+                                                                <Box position='absolute' top={0}>
+                                                                    {alwaysExpanded || showExpandObjOnExited[index] ? (
                                                                         get(x, c.keyName, '')
                                                                     ) : (get(x, c.keyName, '') ?? '').toString().length >= expandTextMaxLength ? (
                                                                         <>{(get(x, c.keyName, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
                                                                     ) : (
                                                                         get(x, c.keyName, '')
                                                                     )}
-                                                                </>
-                                                            )}
-                                                        </Box>
+                                                                </Box>
+                                                            </>
+                                                        )}
                                                     </Box>
                                                 </Collapse>
                                             </Box>
@@ -594,7 +595,7 @@ export function Table({
                                             {action(x)}
                                         </Stack>
                                     </Grid>
-                                    {showExpandObj[index] && (
+                                    {showExpandObj[index] && !alwaysExpanded && (
                                         <Stack direction='row' justifyContent='flex-end' bottom={0} width='100%'>
                                             <Button
                                                 onClick={(e) => {
@@ -641,10 +642,7 @@ export function Table({
                                 justifyContent='flex-end'
                                 spacing={1}
                             >
-                                {
-                                    (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
-                                    .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length > 0 &&
-
+                                {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]).filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length > 0 && (
                                     <Button
                                         startIcon={<FileDownloadIcon />}
                                         variant='contained'
@@ -654,7 +652,7 @@ export function Table({
                                     >
                                         Baixar Filtrados
                                     </Button>
-                                }
+                                )}
                                 <Button
                                     startIcon={<FileDownloadIcon />}
                                     variant='contained'
