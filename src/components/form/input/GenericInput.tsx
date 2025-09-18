@@ -1,7 +1,7 @@
 import { Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useEffect } from 'react'
-import MaskInput from './MaskInput'
+import MaskInput from './GenericMaskInput'
 import { useFormContext } from 'react-hook-form'
 
 export function Input({
