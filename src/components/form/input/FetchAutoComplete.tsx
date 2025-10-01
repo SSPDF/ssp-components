@@ -44,33 +44,66 @@ export default function FetchAutoComplete({
     const [loadingText, setLoadingText] = useState('Carregando...')
     const [dValue, setDValue] = useState<any | null>(null)
     const [value, setValue] = useState<{ id: any; label: string } | null>(null)
+    const [error, setError] = useState<string | null>(null)
     const { user } = useContext(AuthContext)
 
-    useEffect(() => {
-        if (defaultValue) {
-            fetch(url, {
+    // helper function to handle api requests with error handling
+    const fetchData = async (_url: string, _route: string, _isDefaultValue = false) => {
+        try {
+            setError(null)
+            const response = await fetch(_url, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${user?.token}`,
                 },
-            }).then((res) => {
-                if (res.ok) {
-                    console.log('llll')
-                    res.json().then((j) => {
-                        let value = get(j, route, j).filter((x: any) => x.id === defaultValue)
-                        if (value.length > 0) {
-                            setList(get(j, route, j))
-                            setLoading(false)
-                            context.formSetValue(name, defaultValue)
-                            setDValue(value[0])
-                        } else {
-                            setLoadingText('Erro ao carregar dados. Valor inválido')
-                        }
-                    })
-                } else {
-                    setLoadingText('Erro ao carregar dados')
-                }
             })
+
+            if (!response.ok) {
+                const errorMessage =
+                    response.status === 401
+                        ? 'Sessão expirada. Faça login novamente.'
+                        : response.status === 403
+                        ? 'Acesso negado. Verifique suas permissões.'
+                        : response.status >= 500
+                        ? 'Erro interno do servidor. Tente novamente mais tarde.'
+                        : 'Erro ao carregar dados'
+
+                setError(errorMessage)
+                setLoadingText(errorMessage)
+                setLoading(false)
+                return
+            }
+
+            const data = await response.json()
+            const items = get(data, _route, data)
+
+            if (_isDefaultValue) {
+                const filteredValue = items.filter((x: any) => x.id === defaultValue)
+                if (filteredValue.length > 0) {
+                    setList(items)
+                    setLoading(false)
+                    context.formSetValue(name, defaultValue)
+                    setDValue(filteredValue[0])
+                } else {
+                    setError('Valor padrão inválido')
+                    setLoadingText('Erro ao carregar dados. Valor inválido')
+                    setLoading(false)
+                }
+            } else {
+                setList(items)
+                setLoading(false)
+            }
+        } catch (err) {
+            console.error('Network error:', err)
+            setError('Erro de conexão. Verifique sua internet e tente novamente.')
+            setLoadingText('Erro de conexão. Verifique sua internet e tente novamente.')
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (defaultValue) {
+            fetchData(url, route, true)
         }
     }, [])
 
@@ -89,21 +122,7 @@ export default function FetchAutoComplete({
         setList([])
         customLoadingText && setLoadingText(customLoadingText)
 
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${user?.token}`,
-            },
-        }).then((res) => {
-            if (res.ok) {
-                res.json().then((j) => {
-                    setList(get(j, route, j))
-                    setLoading(false)
-                })
-            } else {
-                setLoadingText('Erro ao carregar dados')
-            }
-        })
+        fetchData(url, route, false)
     }
 
     function handleAutoCompleteChange(value: any) {
@@ -157,8 +176,8 @@ export default function FetchAutoComplete({
                         fullWidth
                         placeholder={title}
                         onFocus={onFocus}
-                        error={get(context?.errors, name!) ? true : false}
-                        helperText={get(context?.errors, name!)?.message as string}
+                        error={get(context?.errors, name!) ? true : false || !!error}
+                        helperText={(get(context?.errors, name!)?.message as string) || error}
                     />
                 )}
                 sx={{
