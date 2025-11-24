@@ -243,7 +243,7 @@ export default function Teste() {
                 tableName='Evento'
                 action={(prop) => <></>}
                 collapsedSize={59}
-                dataPath='body.data'
+                // dataPath='body.data'
                 alwaysExpanded
                 csvConfig={{
                     fileName: 'Eventos',
@@ -271,7 +271,7 @@ export default function Teste() {
                     },
 
                     {
-                        keyName: 'noEvento',
+                        keyName: 'NO_TITULO',
                         title: 'Nome do Evento',
                     },
                     {
@@ -296,7 +296,7 @@ export default function Teste() {
                         title: 'Status do Evento',
                     },
                 ]}
-                fetchFunc={() => fetch('http://localhost:7171/table')}
+                fetchFunc={() => fetch('http://localhost:7171/table2')}
                 mediaQueryLG={{
                     all: 3.5,
                     action: 1,

@@ -205,11 +205,9 @@ export function Table({
             return
         }
 
-        const listData: object[] = getData(list)
-
         const newList: any = []
 
-        listData.forEach((x: any) => {
+        listClone.forEach((x: any) => {
             const dataStr: string[] = []
 
             Object.keys(x).map((key: string) => {
