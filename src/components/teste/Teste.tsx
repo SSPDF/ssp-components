@@ -209,7 +209,7 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-            <Input
+            {/* <Input
                 type='input'
                 name='test'
                 title='Teste'
@@ -219,7 +219,8 @@ export default function Teste() {
                     return regex.test(v) ? undefined : 'O número da ocorrência não é válido. Exemplo: 123.456/2025-0 (12º DP)'
                 }}
                 required
-            />
+            /> */}
+            <Input type='cpf_cnpj' name='test' title='Teste' required />
             {/* <FixedAutoComplete
                 name='motivoDesliga'
                 title='Motivo para não registrar ocorrência'
@@ -236,7 +237,7 @@ export default function Teste() {
                 required={true}
             /> */}
             {/* <Input type='input' name='test' title='Teste' required /> */}
-            <Table
+            {/* <Table
                 id='admin'
                 useKC={false}
                 columnSize={11}
@@ -413,7 +414,7 @@ export default function Teste() {
                         type: 'number',
                     },
                 ]}
-            />
+            /> */}
             {/* <Map
                 firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
                 mapStyle={{ height: '400px', width: '500px' }}

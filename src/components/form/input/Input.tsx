@@ -166,11 +166,15 @@ export function Input({
                         formConfig={formConfig}
                         defaultValue={defaultValue}
                         imaskConfig={{
-                            mask: '000.000.000-00[0]',
-                        }}
-                        onMask={(value, setMask) => {
-                            if (value.length > 14) setMask('00.000.000/0000-00')
-                            else setMask('000.000.000-00[0]')
+                            mask: [{ mask: '000.000.000-00' }, { mask: '00.000.000/0000-00' }],
+                            dispatch: (appended: any, dynamicMasked: any) => {
+                                const number = (dynamicMasked.value + appended).replace(/\D/g, '')
+
+                                if (number.length > 11) {
+                                    return dynamicMasked.compiledMasks[1]
+                                }
+                                return dynamicMasked.compiledMasks[0]
+                            },
                         }}
                         watchValue={watchValue}
                         disabled={disabled}
