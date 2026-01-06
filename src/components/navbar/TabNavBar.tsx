@@ -2,13 +2,15 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/Menu'
 import PersonIcon from '@mui/icons-material/Person'
-import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material'
+import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import LinearProgress from '@mui/material/LinearProgress'
 import Image from 'next/image'
 import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
+
+
 
 function verificarRota(route: string, path: string) {
     if (path === '/') return route === path
@@ -28,6 +30,7 @@ export default function TabNavBar({
     route = '/teste/89',
     paddingBottom = 0,
     logoutMsg = 'Sair',
+    customBgColor = '#FFFFFF',
     logoutFunc,
     ...props
 }: {
@@ -42,8 +45,11 @@ export default function TabNavBar({
     el?: JSX.Element
     logoutMsg?: string
     logoutFunc?: () => Promise<void>
-    pos?: 'fixed' | 'inherit'
+    pos?: 'fixed' | 'inherit',
+    customBgColor?: string
 }) {
+    const theme = useTheme()
+    const breakpoint = links.length <= 3 ? 'md' : 'lg'
     let router: NextRouter | undefined | null = undefined
     if (next) router = useRouter()
 
@@ -99,9 +105,9 @@ export default function TabNavBar({
     return (
         <>
             <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
-                <AppBar position='relative' elevation={0} sx={{ backgroundColor: 'white', color: 'black', paddingX: { xs: 1, md: 4 } }}>
-                    <Stack direction='row' justifyContent='space-between'>
-                        <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', md: 'flex' }, width: '100%' }}>
+                <AppBar position='relative' elevation={0} sx={{ color: theme.palette.getContrastText(customBgColor), paddingX: { xs: 1, [breakpoint]: 4 }, bgcolor: customBgColor }}>
+                    <Stack direction='row' justifyContent='space-between' bgcolor={customBgColor}>
+                        <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', [breakpoint]: 'flex' }, width: '100%' }}>
                             <Link href='/'>{next ? <Image src={img} alt={title} width={40} height={40} /> : <img src={img} height={35} />}</Link>
                             <Box>
                                 <Typography variant='subtitle1' fontWeight={600}>
@@ -109,37 +115,45 @@ export default function TabNavBar({
                                 </Typography>
                             </Box>
                         </Stack>
-                        <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            {links.map((x, index) => (
-                                <Box
-                                    borderBottom={next ? (verificarRota(router?.pathname ?? '', x.path) ? `solid 4px ${color}` : '') : verificarRota(route, x.path) ? `solid 4px ${color}` : ''}
-                                    height='100%'
-                                    paddingX={2}
-                                    key={JSON.stringify({ x, index })}
-                                    sx={{
-                                        ':hover': {
-                                            backgroundColor: '#fcfcfc',
-                                            cursor: 'pointer',
-                                            userSelect: 'none',
-                                        },
-                                    }}
-                                    onClick={(e) => {
-                                        next && console.log('pathname:', router?.pathname, ':=', x.path)
-                                        changeRoute(e, x.path)
-                                    }}
-                                >
-                                    <Stack height='100%' justifyContent='center'>
-                                        {x.name}
-                                    </Stack>
-                                </Box>
-                            ))}
+                        <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2} sx={{ display: { xs: 'none', [breakpoint]: 'flex' } }}>
+                            {links.map((x, index) => {
+                                const isActive = next ? verificarRota(router?.pathname ?? '', x.path) : verificarRota(route, x.path)
+
+                                return (
+                                    <Box
+                                        key={JSON.stringify({ x, index })}
+                                        paddingX={3}
+                                        paddingY={0.8}
+                                        borderRadius={50}
+                                        bgcolor={isActive ? color : 'transparent'}
+                                        color={isActive ? '#fff' : 'inherit'}
+                                        sx={{
+                                            transition: 'all 0.2s ease-in-out',
+                                            ':hover': {
+                                                backgroundColor: isActive ? color : 'rgba(0,0,0,0.05)',
+                                                cursor: 'pointer',
+                                                userSelect: 'none',
+                                                filter: isActive ? 'brightness(1.1)' : 'none'
+                                            },
+                                        }}
+                                        onClick={(e) => {
+                                            next && console.log('pathname:', router?.pathname, ':=', x.path)
+                                            changeRoute(e, x.path)
+                                        }}
+                                    >
+                                        <Stack justifyContent='center'>
+                                            <Typography fontWeight={isActive ? 600 : 500} whiteSpace='nowrap'>{x.name}</Typography>
+                                        </Stack>
+                                    </Box>
+                                )
+                            })}
                         </Stack>
                         {/* mobile */}
                         <Box
                             sx={{
                                 display: {
                                     xs: 'flex',
-                                    md: 'none',
+                                    [breakpoint]: 'none',
                                 },
                             }}
                         >
@@ -160,7 +174,7 @@ export default function TabNavBar({
                         </Box>
 
                         {/* Desktop */}
-                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { md: '100%' } }} paddingY={1}>
+                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { [breakpoint]: '100%' } }} paddingY={1}>
                             <Stack direction='row' spacing={2}>
                                 <Box>{el}</Box>
 
@@ -246,7 +260,7 @@ export default function TabNavBar({
                     </Stack>
                 </AppBar>
                 {loading && <LinearProgress />}
-            </Box>
+            </Box >
             <Box paddingBottom={paddingBottom} />
         </>
     )
