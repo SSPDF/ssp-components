@@ -13,12 +13,13 @@ import FetchAutoComplete from '../form/input/FetchAutoComplete'
 import { FixedAutoComplete } from '../form/input/FixedAutoComplete'
 import Input from '../form/input/Input'
 import MultInput from '../form/input/MultInput'
+import Radio from '../form/radio/Radio'
 import Stepper from '../form/stepper/Stepper'
 import StepperBlock from '../form/stepper/StepperBlock'
 import { Table } from '../form/table/Table'
 import TabNavBar from '../navbar/TabNavBar'
 
-const token = `eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdWI2dTBpX2JmQjd3OVdnX1VBQkxrMDA2ajRSa2FhamU0SFU4NHNFdEtBIn0.eyJleHAiOjE3MDkzMDY1NzksImlhdCI6MTcwOTMwMzU4MSwiYXV0aF90aW1lIjoxNzA5MzAzNTc5LCJqdGkiOiJmYmU5NjllZC0zNmZlLTRjZGItYjc5ZC1hZTA1YTc4YjViMTkiLCJpc3MiOiJodHRwczovL2htZ3Npc3RlbWFzZXh0ZXJub3Muc3NwLmRmLmdvdi5ici9rZXljbG9hay9yZWFsbXMvZXZlbnRvcyIsImF1ZCI6WyJldmVudG8tZnJvbnQtZGV2IiwiZXZlbnRvcy1iYWNrZW5kLWRldiIsImV2ZW50b3MtYmFja2VuZCJdLCJzdWIiOiJjZTE0YTE3Yi1jZWI3LTRlYjUtOTk2Yy1iMGMyNTVmM2QyNmMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJldmVudG9zLWZyb250Iiwibm9uY2UiOiI2N2U3ZjM1Yy04ODVlLTQ4ZmUtODM1OS03ZDA4MzJhZGFmMzgiLCJzZXNzaW9uX3N0YXRlIjoiY2JmZmMxN2MtOWZiNC00ODA3LTk3MDItNjYwZDM5MzFlMTQyIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovL2htZ2V2ZW50b3NleHRlcm5vLnNzcC5kZi5nb3YuYnIiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInZpZXdlciIsImNhZGFzdHJvLWFjYW8tZXZlbnRvcyIsImFkbWluIiwidXNlciIsImV2ZW50b3NfaW9hLXBtZGYiXX0sInJlc291cmNlX2FjY2VzcyI6eyJldmVudG8tZnJvbnQtZGV2Ijp7InJvbGVzIjpbImNhZGFzdHJvLWFjYW8tZXZlbnRvcyIsImV2ZW50b3MtdXNlciIsImV2ZW50b3Mtdmlld2VyIiwiZXZlbnRvcy1hZG1pbiJdfSwiZXZlbnRvcy1mcm9udCI6eyJyb2xlcyI6WyJjYWRhc3Ryby1hY2FvLWV2ZW50b3MiLCJldmVudG9zLXVzZXIiLCJldmVudG9zLXZpZXdlciIsImV2ZW50b3MtYWRtaW4iXX0sImV2ZW50b3MtYmFja2VuZC1kZXYiOnsicm9sZXMiOlsiY2FkYXN0cm8tYWNhby1ldmVudG9zIiwiZXZlbnRvcy11c2VyIiwiZXZlbnRvcy12aWV3ZXIiLCJldmVudG9zLWFkbWluIl19LCJldmVudG9zLWJhY2tlbmQiOnsicm9sZXMiOlsiY2FkYXN0cm8tYWNhby1ldmVudG9zIiwiZXZlbnRvcy11c2VyIiwiZXZlbnRvcy12aWV3ZXIiLCJldmVudG9zLWFkbWluIl19fSwic2NvcGUiOiJvcGVuaWQgcGhvbmUgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImNiZmZjMTdjLTlmYjQtNDgwNy05NzAyLTY2MGQzOTMxZTE0MiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IlBlZGluIDA1NTE5NDI5MTYyIiwicGhvbmVfbnVtYmVyIjoiNjE5OTMwNTg0MjMiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIwNTUxOTQyOTE2MiIsImdpdmVuX25hbWUiOiJQZWRpbiIsImZhbWlseV9uYW1lIjoiMDU1MTk0MjkxNjIiLCJlbWFpbCI6ImdhaXRhY2hpMEBnbWFpbC5jb20ifQ.BLoJWIWUM-ihxIA6g-Z9aJ90MsBv2tGCtLzEnonbvGWBfqGomuhsMFECq3MvlhGpvJvEkg0NbrOzzZmiuEAnO1VwkqPITvQUgfsat0ckrs_C6pFM8nezCkc3Ee5ffBbfNAnYUtKZ7S0u5gmhMncql-z-LxwYE7_RbGu5vCEoN41ZLkmawwfYJnNN_NDv1b4g5Dx6QLkz9V4QgIMRq76WwTzJ7DgniD8hY4VDmyOO3Xk6LFS-6xPR274c30bDIw21O52ImM6t0sswaWGeb3zU3kN3N5oA6G4A1uLdNDd9kwlWlOAUWwCL8wXlRYPnWjYBU_dwuk5u4nMVHl6dcd8rEQ`
+const token = ``
 
 export function Exemplo() {
     return (
@@ -221,7 +222,16 @@ export default function Teste() {
                 }}
                 required
             /> */}
-            {/* <Input type='cpf_cnpj' name='test' title='Teste' required /> */}
+            <Input type='cpf_cnpj' name='test' title='Testex' required />
+            <Radio
+                name='radio_test'
+                title='Exemplo Radio'
+                options={[
+                    { label: 'Opção 1', value: '1' },
+                    { label: 'Opção 2', value: '2' },
+                ]}
+            />
+            {/* crie aqui */}
             {/* <FixedAutoComplete
                 name='motivoDesliga'
                 title='Motivo para não registrar ocorrência'
@@ -518,7 +528,7 @@ export default function Teste() {
             <Button type='submit' variant='contained'>
                 Enviar
             </Button> */}
-            <TabNavBar
+            {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'
                 links={[
@@ -545,7 +555,7 @@ export default function Teste() {
                 logoutMsg='Sair'
                 paddingBottom={3}
                 next={false}
-            />
+            /> */}
             {/* <FormProvider
                 onSubmit={(dt, files) => {
                     console.log(dt)

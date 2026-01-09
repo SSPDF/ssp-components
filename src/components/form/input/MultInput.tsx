@@ -39,7 +39,18 @@ export default function MultInput({
     return (
         <Grid item {...{ xs, sm, md }}>
             {title && (
-                <InputLabel required={required} sx={{ textTransform: 'capitalize' }}>
+                <InputLabel
+                    required={required}
+                    sx={{
+                        textTransform: 'capitalize',
+                        mb: 1,
+                        fontWeight: 500,
+                        fontSize: '0.875rem',
+                        color: 'text.primary',
+                        transform: 'none',
+                        position: 'static',
+                    }}
+                >
                     {title}
                 </InputLabel>
             )}
@@ -60,6 +71,19 @@ export default function MultInput({
                 helperText={get(context.errors, name!)?.message as string}
                 sx={{
                     bgcolor: 'white',
+                    '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                        '& fieldset': {
+                            borderColor: '#E0E0E0',
+                        },
+                        '&:hover fieldset': {
+                            borderColor: '#BDBDBD',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: 'primary.main',
+                            borderWidth: '1px',
+                        },
+                    },
                 }}
                 placeholder={customPlaceholder ? customPlaceholder : title}
             />

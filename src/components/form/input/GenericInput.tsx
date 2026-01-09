@@ -96,6 +96,20 @@ export function Input({
             ...inputConfig,
             sx: {
                 backgroundColor: 'white',
+                '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    transition: 'all 0.2s',
+                    '& fieldset': {
+                        borderColor: '#E0E0E0',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: '#BDBDBD',
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: 'primary.main',
+                        borderWidth: '1px',
+                    },
+                },
             },
         }
 
@@ -214,7 +228,18 @@ export function Input({
     return (
         <Grid item {...{ xs, sm, md }}>
             {props.title && (
-                <InputLabel htmlFor='campo' required={props.required}>
+                <InputLabel
+                    htmlFor='campo'
+                    required={props.required}
+                    sx={{
+                        mb: 1,
+                        fontWeight: 500,
+                        fontSize: '0.875rem',
+                        color: 'text.primary',
+                        transform: 'none',
+                        position: 'static',
+                    }}
+                >
                     {props.title}
                 </InputLabel>
             )}

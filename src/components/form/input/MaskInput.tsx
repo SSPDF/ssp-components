@@ -34,7 +34,7 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
             value={myValue}
             ref={myRef}
             inputRef={ref}
-            onChange={(e) => {}}
+            onChange={(e) => { }}
             onAccept={(value, mask) => {
                 setMyValue(value)
                 mask.updateValue()

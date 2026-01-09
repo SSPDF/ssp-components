@@ -43,9 +43,38 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         error={!!get(context.errors, name!)}
                         helperText={get(context.errors, name!)?.message as string}
                         placeholder={title}
+                        sx={{
+                            bgcolor: 'white',
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                                '& fieldset': {
+                                    borderColor: '#E0E0E0',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#BDBDBD',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'primary.main',
+                                    borderWidth: '1px',
+                                },
+                            },
+                        }}
                     />
                 ) : (
-                    <TextField size='small' disabled placeholder={title} />
+                    <TextField
+                        size='small'
+                        disabled
+                        placeholder={title}
+                        sx={{
+                            bgcolor: 'white',
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                                '& fieldset': {
+                                    borderColor: '#E0E0E0',
+                                },
+                            },
+                        }}
+                    />
                 )}
             </Stack>
         </Grid>
