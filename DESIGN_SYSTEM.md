@@ -39,6 +39,6 @@
     - Transition: All 0.2s ease.
 - **States**:
     - **Hover**: Border color slightly darker (`grey[400]`).
-    - **Focus**: Border color Primary, Box Shadow subtle (optional).
-    - **Error**: Border color Error, Text color Error.
+    - **Focus**: Border width 2px, Border color Primary.
+    - **Error**: Border width 2px, Border color Error, Background Error (Light), Text with Icon, Border Radius 8px.
     - **Disabled**: Background `grey[100]`, Opacity 0.6.

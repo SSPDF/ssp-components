@@ -22,44 +22,76 @@ import TabNavBar from '../navbar/TabNavBar'
 const token = ``
 
 export function Exemplo() {
+    const context = useContext(FormContext)!
+
+    const [test, setTest] = useState<{ id: number | string; label: string } | undefined>(undefined)
+
     return (
         <Stepper debugLog>
             <StepperBlock title='Testando'>
                 <Input name='teste' type='input' title='Input' required />
-                <Input name='teste' type='cep' title='Input' required />
-                <Input name='teste' type='cnpj' title='Input' required />
-                <Input name='teste' type='cpf' title='Input' required />
-                <Input name='teste' type='cpf_cnpj' title='Input' required />
-                <Input name='teste' type='email' title='Input' required />
-                <Input name='teste' type='input' title='Input' required />
-                <Input name='teste' type='number' title='Input' required />
-                <Input name='teste' type='password' title='Input' required />
-                <Input name='teste' type='phone' title='Input' required />
-                <Input name='teste' type='rg' title='Input' required />
+                <Input name='teste_cep' type='cep' title='Input' required />
+                <Input name='teste_cnpj' type='cnpj' title='Input' required />
+                <Input name='teste_cpf' type='cpf' title='Input' required />
+                <Input name='teste_cpf_cnpj' type='cpf_cnpj' title='Input' required />
+                <Input name='teste_email' type='email' title='Input' required />
+                <Input name='teste_input_2' type='input' title='Input' required />
+                <Input name='teste_number' type='number' title='Input' required />
+                <Input name='teste_password' type='password' title='Input' required />
+                <Input name='teste_phone' type='phone' title='Input' required />
+                <Input name='teste_rg' type='rg' title='Input' required />
 
-                <MultInput name='teste' title='Input' required />
+                <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' watchValue={test} required />
 
-                <CheckBox name='teste' title='Input' />
+                <MultInput name='teste_multi' title='Input' required />
+
+                <CheckBox name='teste_checkbox' title='Input' />
 
                 <RequiredCheckBoxGroup name='x'>
-                    <CheckBox name='teste' title='Input' />
-                    <CheckBox name='teste' title='Input' />
+                    <CheckBox name='teste_check_1' title='Input' />
+                    <CheckBox name='teste_check_2' title='Input' />
                 </RequiredCheckBoxGroup>
 
-                <CheckBoxWarning name='teste' title='Input' customWarning={<>Apensa um teste</>} />
+                <CheckBoxWarning name='teste_warning' title='Input' customWarning={<>Apensa um teste</>} />
 
-                <DatePicker name='teste' title='Input' />
-                <TimePicker name='teste' title='Input' />
+                <DatePicker name='teste_date' title='Input' required />
+                <TimePicker name='teste_time' title='Input' required />
 
-                <FileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' />
-                <DropFileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' />
+                <FileUpload apiURL='#' name='teste_file' title='Input' tipoArquivo='0' required />
+                <DropFileUpload apiURL='#' name='teste_drop' title='Input' tipoArquivo='0' required />
+
+                <FixedAutoComplete
+                    name='motivoDesliga'
+                    title='Motivo para não registrar ocorrência'
+                    list={[
+                        {
+                            id: 1,
+                            label: 'Agradecimento',
+                        },
+                        {
+                            id: 2,
+                            label: 'Engano',
+                        },
+                    ]}
+                    required={true}
+                />
+
+                <Radio
+                    name='radio_test'
+                    title='Exemplo Radio'
+                    options={[
+                        { label: 'Opção 1', value: '1' },
+                        { label: 'Opção 2', value: '2' },
+                    ]}
+                    required
+                />
+
 
                 {/* <FileUpload name='raj' title='Tst' apiURL='https:hmgapieventosexterno.ssp.df.gov.br/files' tipoArquivo='22' required /> */}
                 {/* <DropFileUpload name='file' apiURL='https:hmgapieventosexterno.ssp.df.gov.br/files' title='Teste Arquivo' tipoArquivo='22' tstToken={token} multiple={true} required /> */}
 
-                {/* <FixedAutoComplete name='haha' title='Testing' list={list} required />
 
-                         <MultInput name='haha' /> */}
+                {/* <MultInput name='haha' /> */}
             </StepperBlock>
             <StepperBlock title='Segundo'>
                 <Input name='teste2' type='input' />
@@ -190,7 +222,7 @@ function a11yProps(index: number) {
 const okok = document.getElementById('ronaldo')
 
 export default function Teste() {
-    const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table2'))
+    // const [testFunc, setTestFunc] = useState(fetch('http://localhost:7171/table2'))
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState('')
@@ -209,8 +241,11 @@ export default function Teste() {
         label: 'CONSEG PARANOÁ',
     }
 
+    return <Exemplo />
+
     return (
         <Box bgcolor='#F9F9F9'>
+
             {/* <Input
                 type='input'
                 name='test'
@@ -222,7 +257,7 @@ export default function Teste() {
                 }}
                 required
             /> */}
-            <Input type='cpf_cnpj' name='test' title='Testex' required />
+            {/* <Input type='cpf_cnpj' name='test' title='Testex' required />
             <Radio
                 name='radio_test'
                 title='Exemplo Radio'
@@ -230,7 +265,7 @@ export default function Teste() {
                     { label: 'Opção 1', value: '1' },
                     { label: 'Opção 2', value: '2' },
                 ]}
-            />
+            /> */}
             {/* crie aqui */}
             {/* <FixedAutoComplete
                 name='motivoDesliga'

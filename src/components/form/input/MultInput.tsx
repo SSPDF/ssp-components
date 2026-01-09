@@ -1,8 +1,9 @@
-import { Grid, TextField } from '@mui/material'
+import { Grid, TextField, Box } from '@mui/material'
 import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
+import { ErrorOutline } from '@mui/icons-material'
 
 export default function MultInput({
     name,
@@ -36,6 +37,19 @@ export default function MultInput({
         context.formSetValue(name, watchValue)
     }, [watchValue])
 
+    const errorData = get(context.errors, name!)
+    let helperText: React.ReactNode = errorData?.message as string
+    const error = errorData ? true : false
+
+    if (error) {
+        helperText = (
+            <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <ErrorOutline fontSize='small' />
+                {helperText}
+            </Box>
+        )
+    }
+
     return (
         <Grid item {...{ xs, sm, md }}>
             {title && (
@@ -67,8 +81,22 @@ export default function MultInput({
                         if (v.length < inputMinLength && required) return `Limite mínimo de ${inputMinLength} caracteres`
                     },
                 })}
-                error={get(context.errors, name!) ? true : false}
-                helperText={get(context.errors, name!)?.message as string}
+
+                error={error}
+                helperText={helperText}
+                FormHelperTextProps={{
+                    sx: {
+                        backgroundColor: error ? '#FFEBEE' : 'transparent',
+                        borderRadius: '8px',
+                        padding: error ? '8px 12px' : 0,
+                        marginBottom: error ? '4px' : 0,
+                        marginTop: error ? '8px' : 0,
+                        border: error ? '1px solid #FFCDD2' : 'none',
+                        color: 'error.main',
+                        marginLeft: 0,
+                        marginRight: 0,
+                    },
+                }}
                 sx={{
                     bgcolor: 'white',
                     '& .MuiOutlinedInput-root': {
@@ -81,7 +109,10 @@ export default function MultInput({
                         },
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',
-                            borderWidth: '1px',
+                            borderWidth: '2px',
+                        },
+                        '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                            borderWidth: '2px',
                         },
                     },
                 }}

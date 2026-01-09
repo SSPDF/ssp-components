@@ -1,8 +1,9 @@
-import { Grid, InputLabel, TextField } from '@mui/material'
+import { Grid, InputLabel, TextField, Box } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
+import { ErrorOutline } from '@mui/icons-material'
 
 export function Input({
     type = 'input',
@@ -49,8 +50,17 @@ export function Input({
 
         const name = props.name!
         const errorData = get(context?.errors, props.name!)
-        const helperText: string = errorData?.message as string
+        let helperText: React.ReactNode = errorData?.message as string
         const error = errorData ? true : false
+
+        if (error) {
+            helperText = (
+                <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <ErrorOutline fontSize='small' />
+                    {helperText}
+                </Box>
+            )
+        }
 
         const formConfig = {
             ...context?.formRegister(name, {
@@ -101,6 +111,19 @@ export function Input({
             error,
             helperText,
             ...inputConfig,
+            FormHelperTextProps: {
+                sx: {
+                    backgroundColor: error ? '#FFEBEE' : 'transparent',
+                    borderRadius: '8px',
+                    padding: error ? '8px 12px' : 0,
+                    marginBottom: error ? '4px' : 0,
+                    marginTop: error ? '8px' : 0,
+                    border: error ? '1px solid #FFCDD2' : 'none',
+                    color: 'error.main',
+                    marginLeft: 0,
+                    marginRight: 0,
+                },
+            },
             sx: {
                 backgroundColor: 'white',
                 '& .MuiOutlinedInput-root': {
@@ -114,7 +137,10 @@ export function Input({
                     },
                     '&.Mui-focused fieldset': {
                         borderColor: 'primary.main',
-                        borderWidth: '1px',
+                        borderWidth: '2px',
+                    },
+                    '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                        borderWidth: '2px',
                     },
                 },
             },

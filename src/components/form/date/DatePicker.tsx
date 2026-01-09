@@ -1,4 +1,5 @@
-import { Grid, InputLabel, TextField, Typography } from '@mui/material'
+import { Grid, InputLabel, TextField, Typography, Box } from '@mui/material'
+import { ErrorOutline } from '@mui/icons-material'
 import { LocalizationProvider, DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { Dayjs } from 'dayjs'
@@ -66,9 +67,27 @@ export default function DatePicker({
                         onChange={handleChange}
                         disableHighlightToday
                         sx={{
-                            outline: get(context.errors, name!) ? '1px solid #a51c30' : '',
+                            outline: get(context.errors, name!) ? '1px solid transparent' : '',
                             backgroundColor: 'white',
                             width: '100%',
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                                transition: 'all 0.2s',
+                                '& fieldset': {
+                                    borderColor: '#E0E0E0',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#BDBDBD',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'primary.main',
+                                    borderWidth: '2px',
+                                },
+                                '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'error.main',
+                                    borderWidth: '2px',
+                                },
+                            },
                             div: {
                                 input: {
                                     paddingX: 2,
@@ -103,7 +122,26 @@ export default function DatePicker({
                             />
                         )}
                     />
-                    <Typography sx={{ color: '#a51c30', fontSize: 14, paddingLeft: 1 }}>{get(context.errors, name!)?.message as string}</Typography>
+                    {get(context.errors, name!) && (
+                        <Box
+                            sx={{
+                                backgroundColor: '#FFEBEE',
+                                borderRadius: '8px',
+                                padding: '8px 12px',
+                                marginTop: '8px',
+                                border: '1px solid #FFCDD2',
+                                color: 'error.main',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1,
+                            }}
+                        >
+                            <ErrorOutline fontSize='small' />
+                            <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                                {get(context.errors, name!)?.message as string}
+                            </Typography>
+                        </Box>
+                    )}
                 </LocalizationProvider>
             </Grid>
         </>

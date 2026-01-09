@@ -1,4 +1,5 @@
-import { Autocomplete, Grid, InputLabel, TextField } from '@mui/material'
+import { Autocomplete, Grid, InputLabel, TextField, Box } from '@mui/material'
+import { ErrorOutline } from '@mui/icons-material'
 import get from 'lodash.get'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
@@ -12,7 +13,7 @@ export function FixedAutoComplete({
     required = false,
     list,
     defaultValue,
-    onChange = () => {},
+    onChange = () => { },
     xs = 12,
     sm,
     watchValue,
@@ -87,12 +88,64 @@ export function FixedAutoComplete({
                 getOptionLabel={(option: any) => (option.label ? option.label.toString() : 'Não Encontrado')}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => handleAutoCompleteChange(v)}
-                renderInput={(params) => (
-                    <TextField {...params} size='small' fullWidth placeholder={title} error={get(context?.errors, name!) ? true : false} helperText={get(context?.errors, name!)?.message as string} />
-                )}
+                renderInput={(params) => {
+                    const formError = get(context?.errors, name!)
+                    const hasError = !!formError
+                    let errorMessage: React.ReactNode = (formError?.message as string)
+
+                    if (hasError) {
+                        errorMessage = (
+                            <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <ErrorOutline fontSize='small' />
+                                {errorMessage}
+                            </Box>
+                        )
+                    }
+
+                    return (
+                        <TextField
+                            {...params}
+                            size='small'
+                            fullWidth
+                            placeholder={title}
+                            error={hasError}
+                            helperText={errorMessage}
+                            FormHelperTextProps={{
+                                sx: {
+                                    backgroundColor: hasError ? '#FFEBEE' : 'transparent',
+                                    borderRadius: '8px',
+                                    padding: hasError ? '8px 12px' : 0,
+                                    marginBottom: hasError ? '4px' : 0,
+                                    marginTop: hasError ? '8px' : 0,
+                                    border: hasError ? '1px solid #FFCDD2' : 'none',
+                                    color: 'error.main',
+                                    marginLeft: 0,
+                                    marginRight: 0,
+                                },
+                            }}
+                        />
+                    )
+                }}
                 size='small'
                 sx={{
                     bgcolor: 'white',
+                    '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                        transition: 'all 0.2s',
+                        '& fieldset': {
+                            borderColor: '#E0E0E0',
+                        },
+                        '&:hover fieldset': {
+                            borderColor: '#BDBDBD',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: 'primary.main',
+                            borderWidth: '2px',
+                        },
+                        '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                            borderWidth: '2px',
+                        },
+                    },
                 }}
                 fullWidth
             />

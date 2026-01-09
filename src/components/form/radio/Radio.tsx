@@ -2,6 +2,7 @@ import { Box, FormControl, FormHelperText, FormLabel, Grid, Typography, useTheme
 import React, { useContext, useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { FormContext } from '../../../context/form'
+import { ErrorOutline } from '@mui/icons-material'
 
 export function Radio({
     name,
@@ -118,7 +119,26 @@ export function Radio({
                                 )
                             })}
                         </Box>
-                        {error && <FormHelperText>{error.message}</FormHelperText>}
+                        {error && (
+                            <FormHelperText
+                                sx={{
+                                    backgroundColor: '#FFEBEE',
+                                    borderRadius: '8px',
+                                    padding: '8px 12px',
+                                    marginTop: '8px',
+                                    border: '1px solid #FFCDD2',
+                                    color: 'error.main',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    marginLeft: 0,
+                                    marginRight: 0,
+                                }}
+                            >
+                                <ErrorOutline fontSize='small' />
+                                {error.message}
+                            </FormHelperText>
+                        )}
                     </FormControl>
                 )}
             />

@@ -1,8 +1,9 @@
-import { Autocomplete, Grid, InputLabel, TextField } from '@mui/material'
+import { Autocomplete, Grid, InputLabel, TextField, Box } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
+import { ErrorOutline } from '@mui/icons-material'
 
 let useDefault = true
 
@@ -15,7 +16,7 @@ export default function FetchAutoComplete({
     required = false,
     defaultValue,
     route = '',
-    onChange = () => {},
+    onChange = () => { },
     xs = 12,
     sm,
     watchValue,
@@ -63,10 +64,10 @@ export default function FetchAutoComplete({
                     response.status === 401
                         ? 'Sessão expirada. Faça login novamente.'
                         : response.status === 403
-                        ? 'Acesso negado. Verifique suas permissões.'
-                        : response.status >= 500
-                        ? 'Erro interno do servidor. Tente novamente mais tarde.'
-                        : 'Erro ao carregar dados'
+                            ? 'Acesso negado. Verifique suas permissões.'
+                            : response.status >= 500
+                                ? 'Erro interno do servidor. Tente novamente mais tarde.'
+                                : 'Erro ao carregar dados'
 
                 setError(errorMessage)
                 setLoadingText(errorMessage)
@@ -169,19 +170,64 @@ export default function FetchAutoComplete({
                 getOptionDisabled={(option) => option?.disabled ?? false}
                 isOptionEqualToValue={(op: any, value: any) => op.id === value.id}
                 onChange={(e, v) => handleAutoCompleteChange(v)}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        size='small'
-                        fullWidth
-                        placeholder={title}
-                        onFocus={onFocus}
-                        error={get(context?.errors, name!) ? true : false || !!error}
-                        helperText={(get(context?.errors, name!)?.message as string) || error}
-                    />
-                )}
+                renderInput={(params) => {
+                    const formError = get(context?.errors, name!)
+                    const hasError = !!formError || !!error
+                    let errorMessage: React.ReactNode = (formError?.message as string) || error
+
+                    if (hasError) {
+                        errorMessage = (
+                            <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <ErrorOutline fontSize='small' />
+                                {errorMessage}
+                            </Box>
+                        )
+                    }
+
+                    return (
+                        <TextField
+                            {...params}
+                            size='small'
+                            fullWidth
+                            placeholder={title}
+                            onFocus={onFocus}
+                            error={hasError}
+                            helperText={errorMessage}
+                            FormHelperTextProps={{
+                                sx: {
+                                    backgroundColor: hasError ? '#FFEBEE' : 'transparent',
+                                    borderRadius: '8px',
+                                    padding: hasError ? '8px 12px' : 0,
+                                    marginBottom: hasError ? '4px' : 0,
+                                    marginTop: hasError ? '8px' : 0,
+                                    border: hasError ? '1px solid #FFCDD2' : 'none',
+                                    color: 'error.main',
+                                    marginLeft: 0,
+                                    marginRight: 0,
+                                },
+                            }}
+                        />
+                    )
+                }}
                 sx={{
                     bgcolor: 'white',
+                    '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                        transition: 'all 0.2s',
+                        '& fieldset': {
+                            borderColor: '#E0E0E0',
+                        },
+                        '&:hover fieldset': {
+                            borderColor: '#BDBDBD',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: 'primary.main',
+                            borderWidth: '2px',
+                        },
+                        '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                            borderWidth: '2px',
+                        },
+                    },
                 }}
                 size='small'
                 fullWidth

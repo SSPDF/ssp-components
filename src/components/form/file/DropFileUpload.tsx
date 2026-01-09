@@ -8,6 +8,7 @@ import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 
 import { PDFIcon, TrashIcon } from '../../icons/icons'
+import { ErrorOutline } from '@mui/icons-material'
 
 interface FileState {
     id: number
@@ -305,18 +306,45 @@ export default function DropFileUpload({
                 </Stack>
 
                 {errorMsg && (
-                    <>
-                        <Typography variant='caption' color='#e53935' fontWeight={600} fontSize={14} paddingTop={2}>
+                    <Box
+                        sx={{
+                            backgroundColor: '#FFEBEE',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            marginTop: '16px',
+                            border: '1px solid #FFCDD2',
+                            color: 'error.main',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                        }}
+                    >
+                        <ErrorOutline fontSize='small' />
+                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
                             {errorMsg}
                         </Typography>
-                        <br />
-                    </>
+                    </Box>
                 )}
 
                 {get(context?.errors, name!) && (
-                    <Typography variant='caption' color='#e53935' fontWeight={600} fontSize={14}>
-                        * O campo de arquivo é obrigatório
-                    </Typography>
+                    <Box
+                        sx={{
+                            backgroundColor: '#FFEBEE',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            marginTop: '8px',
+                            border: '1px solid #FFCDD2',
+                            color: 'error.main',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                        }}
+                    >
+                        <ErrorOutline fontSize='small' />
+                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                            O campo de arquivo é obrigatório
+                        </Typography>
+                    </Box>
                 )}
             </Box>
         </Grid>
