@@ -53,6 +53,7 @@ export default function CheckBox({
                     alignItems: 'center',
                     position: 'relative',
                     opacity: disabled ? 0.6 : 1,
+                    mb: 0.5,
                     '&:hover': {
                         borderColor: !disabled && !isSelected ? theme.palette.grey[400] : undefined,
                         backgroundColor: !disabled && !isSelected ? theme.palette.grey[50] : undefined,

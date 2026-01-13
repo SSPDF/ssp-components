@@ -18,6 +18,7 @@ import Stepper from '../form/stepper/Stepper'
 import StepperBlock from '../form/stepper/StepperBlock'
 import { Table } from '../form/table/Table'
 import TabNavBar from '../navbar/TabNavBar'
+import OtherCheckBox from '../form/input/OtherCheckBox'
 
 const token = ``
 
@@ -46,6 +47,8 @@ export function Exemplo() {
                 <MultInput name='teste_multi' title='Input' required />
 
                 <CheckBox name='teste_checkbox' title='Input' />
+
+                <OtherCheckBox name='conhecimento_outro' md={12} />
 
                 <RequiredCheckBoxGroup name='x'>
                     <CheckBox name='teste_check_1' title='Input' />

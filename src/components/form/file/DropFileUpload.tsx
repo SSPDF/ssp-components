@@ -51,6 +51,7 @@ export default function DropFileUpload({
     route = '',
     tstToken = '',
     dropZoneOptions,
+    disabled = false,
 }: {
     name: string
     tipoArquivo: string
@@ -65,8 +66,10 @@ export default function DropFileUpload({
     xs?: number
     sm?: number
     md?: number
+    disabled?: boolean
 }) {
     const { getRootProps, getInputProps } = useDropzone({
+        disabled,
         multiple,
         useFsAccessApi: true,
         onDrop: (dropFiles) => {
@@ -204,7 +207,7 @@ export default function DropFileUpload({
     }, [])
 
     return (
-        <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
+        <Grid item {...{ xs, sm, md }} sx={{ width: '100%', opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
             <Box bgcolor='white' p={2} borderRadius='8px' color='#1E293B'>
                 <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                     {title}
@@ -246,6 +249,7 @@ export default function DropFileUpload({
                                 borderRadius: '8px',
                                 width: 'fit-content',
                             }}
+                            disabled={disabled}
                         >
                             Selecionar
                         </Button>
@@ -286,6 +290,7 @@ export default function DropFileUpload({
                                     backgroundColor: '#DE3F50',
                                     borderRadius: '8px',
                                 }}
+                                disabled={disabled}
                             >
                                 Remover
                             </Button>

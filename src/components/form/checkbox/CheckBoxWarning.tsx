@@ -46,7 +46,7 @@ export default function CheckBoxWarning({
                     display: 'flex',
                     alignItems: 'center',
                     position: 'relative',
-                    marginBottom: isSelected ? 1 : 0,
+                    marginBottom: 0.5,
                     '&:hover': {
                         borderColor: !isSelected ? theme.palette.grey[400] : undefined,
                         backgroundColor: !isSelected ? theme.palette.grey[50] : undefined,
