@@ -10,6 +10,8 @@ import { FormContext } from '../../../context/form'
 import { PDFIcon, TrashIcon } from '../../icons/icons'
 import { ErrorOutline } from '@mui/icons-material'
 
+
+
 interface FileState {
     id: number
     name: string
@@ -38,7 +40,7 @@ function bytesToKBorMB(bytes: number): string {
 }
 
 export default function DropFileUpload({
-    name,
+    name = 'filesUid',
     tipoArquivo,
     title,
     required = false,
@@ -53,7 +55,7 @@ export default function DropFileUpload({
     dropZoneOptions,
     disabled = false,
 }: {
-    name: string
+    name?: string
     tipoArquivo: string
     title: string
     apiURL: string
@@ -191,14 +193,23 @@ export default function DropFileUpload({
     }
 
     useEffect(() => {
-        const dt = new DataTransfer()
+        if (apiURL) {
+            const uploadedFiles = files
+                .filter(f => fileIds[f.id] !== undefined)
+                .map(f => ({
+                    CO_SEQ_ARQUIVO: fileIds[f.id],
+                    CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
+                }))
 
-        files.forEach((x) => {
-            dt.items.add(x.file)
-        })
-
-        context?.formSetValue(name!, dt.files)
-    }, [files, context, name])
+            context?.formSetValue(name!, uploadedFiles)
+        } else {
+            const dt = new DataTransfer()
+            files.forEach((x) => {
+                dt.items.add(x.file)
+            })
+            context?.formSetValue(name!, dt.files)
+        }
+    }, [files, context, name, fileIds, apiURL, tipoArquivo])
 
     useEffect(() => {
         return () => {
@@ -230,7 +241,9 @@ export default function DropFileUpload({
                         {...getInputProps()}
                         {...context.formRegister(name, {
                             validate: (v, f) => {
-                                if ((v.length && filesLoaded.length) <= 0 && required) return 'O campo de arquivo é obrigatório'
+                                if (required && (v === null || v === undefined || (Array.isArray(v) && v.length === 0))) {
+                                    return 'O campo de arquivo é obrigatório'
+                                }
                             },
                         })}
                     />
