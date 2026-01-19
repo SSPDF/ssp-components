@@ -15,6 +15,7 @@ const TOKEN_REFRESH_INTERVAL = 60 * 1000
 /** Tempo mínimo de validade do token antes de renovar (em segundos) */
 const MIN_TOKEN_VALIDITY = 30
 
+
 interface KeycloakAuthProviderProps {
     /** URL do servidor Keycloak */
     url: string
@@ -28,6 +29,8 @@ interface KeycloakAuthProviderProps {
     type?: 'govbr' | 'ad'
     /** Nome do recurso para extrair roles */
     resource_name?: string
+    /** Base path da aplicação (ex: '/revidf'). Deixe vazio ou '/' para raiz */
+    basePath?: string
     /** URL de redirecionamento após login */
     redirectUri?: string
     /** Callback executado quando autenticação é bem-sucedida */
@@ -56,6 +59,7 @@ export function KeycloakAuthProvider({
     children,
     type = 'ad',
     resource_name = 'eventos-front',
+    basePath = '',
     redirectUri = '',
     onAuthSuccess,
     onAuthError,
@@ -219,20 +223,26 @@ export function KeycloakAuthProvider({
                 onLoad: 'check-sso',
                 pkceMethod: 'S256',
                 silentCheckSsoRedirectUri:
-                    typeof window !== 'undefined' ? `${window.location.origin}/silent-check-sso.html` : undefined,
+                    typeof window !== 'undefined' ? `${window.location.origin}${basePath}/silent-check-sso.html` : undefined,
                 checkLoginIframe: true,
                 checkLoginIframeInterval: 30,
             })
             .then((authenticated) => {
                 // Verifica se há um logout pendente (usuário voltou após logout com IdP externo)
-                const logoutPending = sessionStorage.getItem(LOGOUT_PENDING_KEY)
+                // Usa localStorage pois sessionStorage pode ser limpo durante redirects entre domínios (GovBR)
+                const logoutPending = localStorage.getItem(LOGOUT_PENDING_KEY)
                 if (logoutPending) {
-                    sessionStorage.removeItem(LOGOUT_PENDING_KEY)
+                    localStorage.removeItem(LOGOUT_PENDING_KEY)
                     localStorage.removeItem(userImgName)
                     log('Logout pendente detectado, limpando estado e chamando onLogoutSuccess...')
                     setUser(null)
                     setUserLoaded(true)
                     clearTokenRefresh()
+
+                    // Se ainda estiver autenticado após logout, força logout local
+                    if (authenticated && keycloak) {
+                        keycloak.clearToken()
+                    }
 
                     // Chama o callback de logout success do provider
                     onLogoutSuccess?.()
@@ -370,20 +380,47 @@ export function KeycloakAuthProvider({
                 }
             }
 
-            // Marca o logout como pendente no sessionStorage
+            // Marca o logout como pendente no localStorage
             // Isso é necessário porque o keycloak.logout() redireciona o navegador
             // e quando o usuário volta, precisamos saber que ele acabou de fazer logout
-            sessionStorage.setItem(LOGOUT_PENDING_KEY, 'true')
+            // Usa localStorage pois sessionStorage pode ser limpo durante redirects entre domínios (GovBR)
+            localStorage.setItem(LOGOUT_PENDING_KEY, 'true')
 
             // Limpa o refresh token interval antes do redirect
             clearTokenRefresh()
 
-            // Define a URL de redirecionamento após logout
-            const logoutRedirectUri = options?.redirectUri || window.location.origin
+            // Define a URL de redirecionamento após logout (inclui basePath)
+            const logoutRedirectUri = options?.redirectUri || `${window.location.origin}${basePath}`
 
-            log('Redirecionando para logout...', { redirectUri: logoutRedirectUri })
+            log('Redirecionando para logout...', { redirectUri: logoutRedirectUri, type })
 
-            // Executa o logout no Keycloak
+            // Para GovBR, precisamos forçar o logout no IdP também
+            // O Keycloak precisa do parâmetro 'initiating_idp' para propagar o logout
+            if (type === 'govbr' && keycloak.token) {
+                try {
+                    // Constrói a URL de logout manualmente para incluir initiating_idp
+                    const logoutUrl = new URL(
+                        `${keycloak.authServerUrl}/realms/${keycloak.realm}/protocol/openid-connect/logout`
+                    )
+
+                    // Adiciona parâmetros necessários para logout federado
+                    logoutUrl.searchParams.set('client_id', keycloak.clientId || clientId)
+                    logoutUrl.searchParams.set('post_logout_redirect_uri', logoutRedirectUri)
+                    logoutUrl.searchParams.set('id_token_hint', keycloak.idToken || '')
+                    // Este parâmetro força o Keycloak a fazer logout no IdP (GovBR)
+                    logoutUrl.searchParams.set('initiating_idp', 'oidc')
+
+                    log('Logout GovBR federado - redirecionando para:', logoutUrl.toString())
+
+                    // Redireciona manualmente para a URL de logout
+                    window.location.href = logoutUrl.toString()
+                    return
+                } catch (error) {
+                    logError('Erro ao construir URL de logout federado, usando fallback', error)
+                }
+            }
+
+            // Executa o logout padrão no Keycloak (para AD ou fallback)
             // NOTA: Esta função redireciona o navegador, então o código abaixo NÃO será executado
             try {
                 await keycloak.logout({
@@ -396,11 +433,11 @@ export function KeycloakAuthProvider({
                 // (isso é tratado na inicialização detectando o logout pendente)
             } catch (error) {
                 // Em caso de erro, remove o flag de logout pendente
-                sessionStorage.removeItem(LOGOUT_PENDING_KEY)
+                localStorage.removeItem(LOGOUT_PENDING_KEY)
                 logError('Erro no logout', error)
             }
         },
-        [log, logError, clearTokenRefresh]
+        [log, logError, clearTokenRefresh, type, clientId]
     )
 
     /**
