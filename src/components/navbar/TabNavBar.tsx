@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
+import { LoginOptions, LogoutOptions } from '../../types/auth'
 
 
 function verificarRota(route: string, path: string) {
@@ -31,6 +32,8 @@ export default function TabNavBar({
     logoutMsg = 'Sair',
     customBgColor = '#FFFFFF',
     logoutFunc,
+    loginOptions,
+    logoutOptions,
     ...props
 }: {
     links: { name: string; path: string }[]
@@ -43,9 +46,14 @@ export default function TabNavBar({
     next?: boolean
     el?: JSX.Element
     logoutMsg?: string
+    /** @deprecated Use logoutOptions.onBeforeLogout instead */
     logoutFunc?: () => Promise<void>
-    pos?: 'fixed' | 'inherit',
+    pos?: 'fixed' | 'inherit'
     customBgColor?: string
+    /** Opções para configurar o comportamento do login (redirectUri, callbacks, etc) */
+    loginOptions?: LoginOptions
+    /** Opções para configurar o comportamento do logout (redirectUri, callbacks, etc) */
+    logoutOptions?: LogoutOptions
 }) {
     const theme = useTheme()
     const breakpoint = links.length <= 3 ? 'md' : 'lg'
@@ -206,14 +214,23 @@ export default function TabNavBar({
                                                 <MenuItem
                                                     onClick={async (e) => {
                                                         setAvatarAnchor(null)
-                                                        if (!!logoutFunc) {
-                                                            try {
-                                                                await logoutFunc()
-                                                            } catch (error) {
-                                                                console.error(error)
-                                                            }
+                                                        // Suporte ao logoutFunc legado via onBeforeLogout
+                                                        const mergedOptions: LogoutOptions = {
+                                                            ...logoutOptions,
+                                                            onBeforeLogout: async () => {
+                                                                // Executa logoutFunc legado se existir
+                                                                if (logoutFunc) {
+                                                                    try {
+                                                                        await logoutFunc()
+                                                                    } catch (error) {
+                                                                        console.error(error)
+                                                                    }
+                                                                }
+                                                                // Executa onBeforeLogout do logoutOptions se existir
+                                                                await logoutOptions?.onBeforeLogout?.()
+                                                            },
                                                         }
-                                                        logout()
+                                                        logout(mergedOptions)
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
@@ -234,7 +251,7 @@ export default function TabNavBar({
                                         variant='contained'
                                         size='small'
                                         startIcon={<PersonIcon />}
-                                        onClick={e => login()}
+                                        onClick={() => login(loginOptions)}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
                                         <Typography fontWeight={600} fontSize={15} padding={0.4}>
@@ -246,7 +263,7 @@ export default function TabNavBar({
                                         variant='contained'
                                         size='small'
                                         startIcon={<PersonIcon />}
-                                        onClick={e => login()}
+                                        onClick={() => login(loginOptions)}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
                                         <Typography fontWeight={600} fontSize={15} padding={0.4}>

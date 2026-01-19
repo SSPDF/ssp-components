@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
+import { LoginOptions, LogoutOptions } from '../../types/auth'
 
 export default function NavBar({
     links,
@@ -21,6 +22,8 @@ export default function NavBar({
     paddingBottom = 0,
     logoutMsg = 'Sair',
     logoutFunc,
+    loginOptions,
+    logoutOptions,
     ...props
 }: {
     links: { name: string; path: string }[]
@@ -31,8 +34,13 @@ export default function NavBar({
     next?: boolean
     el?: JSX.Element
     logoutMsg?: string
+    /** @deprecated Use logoutOptions.onBeforeLogout instead */
     logoutFunc?: () => Promise<void>
     pos?: 'fixed' | 'inherit'
+    /** Opções para configurar o comportamento do login (redirectUri, callbacks, etc) */
+    loginOptions?: LoginOptions
+    /** Opções para configurar o comportamento do logout (redirectUri, callbacks, etc) */
+    logoutOptions?: LogoutOptions
 }) {
     let router: NextRouter | undefined | null = undefined
     if (next) router = useRouter()
@@ -182,14 +190,23 @@ export default function NavBar({
                                                 <MenuItem
                                                     onClick={async (e) => {
                                                         setAvatarAnchor(null)
-                                                        if (!!logoutFunc) {
-                                                            try {
-                                                                await logoutFunc()
-                                                            } catch (error) {
-                                                                console.error(error)
-                                                            }
+                                                        // Suporte ao logoutFunc legado via onBeforeLogout
+                                                        const mergedOptions: LogoutOptions = {
+                                                            ...logoutOptions,
+                                                            onBeforeLogout: async () => {
+                                                                // Executa logoutFunc legado se existir
+                                                                if (logoutFunc) {
+                                                                    try {
+                                                                        await logoutFunc()
+                                                                    } catch (error) {
+                                                                        console.error(error)
+                                                                    }
+                                                                }
+                                                                // Executa onBeforeLogout do logoutOptions se existir
+                                                                await logoutOptions?.onBeforeLogout?.()
+                                                            },
                                                         }
-                                                        logout()
+                                                        logout(mergedOptions)
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
@@ -210,7 +227,7 @@ export default function NavBar({
                                         variant='contained'
                                         size='small'
                                         startIcon={<PersonIcon />}
-                                        onClick={() => login()}
+                                        onClick={() => login(loginOptions)}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
                                         <Typography fontWeight={600} fontSize={15} padding={0.4}>
@@ -222,7 +239,7 @@ export default function NavBar({
                                         variant='contained'
                                         size='small'
                                         startIcon={<PersonIcon />}
-                                        onClick={() => login()}
+                                        onClick={() => login(loginOptions)}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
                                         <Typography fontWeight={600} fontSize={15} padding={0.4}>
