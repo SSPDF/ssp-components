@@ -43,6 +43,22 @@ import { AuthContext } from './context/auth'
 import { FormContext } from './context/form'
 import Radio from './components/form/radio/Radio'
 
+// Types
+export type {
+    User,
+    LoginOptions,
+    LogoutOptions,
+    AuthData,
+    AuthClaims,
+    AuthReturn,
+    AuthSspToken,
+    AuthReturnData,
+    // Re-exports do Keycloak
+    KeycloakLoginOptions,
+    KeycloakLogoutOptions,
+    KeycloakTokenParsed,
+} from './types/auth'
+
 export {
     ActiveInput,
     AUTH_COOKIE_NAME,
