@@ -7,6 +7,7 @@ import { AuthReturn, LoginOptions, LogoutOptions, User } from '../../types/auth'
 
 export const cookieName = 'nextauth.token'
 const userImgName = 'user-data.img'
+const LOGOUT_PENDING_KEY = 'keycloak-logout-pending'
 
 /** Intervalo para verificar e renovar token (em ms) - 1 minuto */
 const TOKEN_REFRESH_INTERVAL = 60 * 1000
@@ -33,6 +34,8 @@ interface KeycloakAuthProviderProps {
     onAuthSuccess?: (user: User) => void
     /** Callback executado quando autenticação falha */
     onAuthError?: (error: Error) => void
+    /** Callback executado quando logout é concluído com sucesso (após o redirect de volta) */
+    onLogoutSuccess?: () => void
     /** Habilita logs de debug (apenas em desenvolvimento) */
     enableDebugLogs?: boolean
 }
@@ -56,6 +59,7 @@ export function KeycloakAuthProvider({
     redirectUri = '',
     onAuthSuccess,
     onAuthError,
+    onLogoutSuccess,
     enableDebugLogs = process.env.NODE_ENV === 'development',
 }: KeycloakAuthProviderProps) {
     const [user, setUser] = useState<User | null>(null)
@@ -220,6 +224,21 @@ export function KeycloakAuthProvider({
                 checkLoginIframeInterval: 30,
             })
             .then((authenticated) => {
+                // Verifica se há um logout pendente (usuário voltou após logout com IdP externo)
+                const logoutPending = sessionStorage.getItem(LOGOUT_PENDING_KEY)
+                if (logoutPending) {
+                    sessionStorage.removeItem(LOGOUT_PENDING_KEY)
+                    localStorage.removeItem(userImgName)
+                    log('Logout pendente detectado, limpando estado e chamando onLogoutSuccess...')
+                    setUser(null)
+                    setUserLoaded(true)
+                    clearTokenRefresh()
+
+                    // Chama o callback de logout success do provider
+                    onLogoutSuccess?.()
+                    return
+                }
+
                 setUserLoaded(true)
 
                 if (!authenticated) {
@@ -271,6 +290,7 @@ export function KeycloakAuthProvider({
         logError,
         onAuthSuccess,
         onAuthError,
+        onLogoutSuccess,
     ])
 
     /**
@@ -321,6 +341,13 @@ export function KeycloakAuthProvider({
 
     /**
      * Inicia o fluxo de logout
+     * 
+     * IMPORTANTE: Com IdP externos (como Gov.BR), o logout é um processo multi-hop:
+     * App → Keycloak → IdP → Keycloak → App
+     * 
+     * O `keycloak.logout()` redireciona o navegador, então o código após ele
+     * NÃO é executado. Por isso marcamos o logout como pendente e limpamos
+     * o estado quando o usuário volta à aplicação.
      */
     const logout = useCallback(
         async (options?: LogoutOptions) => {
@@ -334,6 +361,7 @@ export function KeycloakAuthProvider({
             log('Iniciando fluxo de logout...')
 
             // Executa callback antes do logout (pode ser async)
+            // Isso é executado ANTES do redirect para o Keycloak
             if (options?.onBeforeLogout) {
                 try {
                     await options.onBeforeLogout()
@@ -342,21 +370,33 @@ export function KeycloakAuthProvider({
                 }
             }
 
-            // Limpa os dados locais antes do redirect
-            setUserLoaded(false)
-            setUser(null)
-            clearTokenRefresh()
-            localStorage.removeItem(userImgName)
+            // Marca o logout como pendente no sessionStorage
+            // Isso é necessário porque o keycloak.logout() redireciona o navegador
+            // e quando o usuário volta, precisamos saber que ele acabou de fazer logout
+            sessionStorage.setItem(LOGOUT_PENDING_KEY, 'true')
 
-            // Executa o logout no Keycloak com opções nativas
+            // Limpa o refresh token interval antes do redirect
+            clearTokenRefresh()
+
+            // Define a URL de redirecionamento após logout
+            const logoutRedirectUri = options?.redirectUri || window.location.origin
+
+            log('Redirecionando para logout...', { redirectUri: logoutRedirectUri })
+
+            // Executa o logout no Keycloak
+            // NOTA: Esta função redireciona o navegador, então o código abaixo NÃO será executado
             try {
                 await keycloak.logout({
-                    redirectUri: options?.redirectUri || window.location.origin,
+                    redirectUri: logoutRedirectUri,
                     logoutMethod: options?.logoutMethod,
                 })
 
-                options?.onSuccess?.()
+                // Este código NÃO é executado porque o navegador é redirecionado
+                // O callback onSuccess deve ser chamado quando o usuário volta à aplicação
+                // (isso é tratado na inicialização detectando o logout pendente)
             } catch (error) {
+                // Em caso de erro, remove o flag de logout pendente
+                sessionStorage.removeItem(LOGOUT_PENDING_KEY)
                 logError('Erro no logout', error)
             }
         },
