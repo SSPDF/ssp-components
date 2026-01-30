@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.317",
+    "version": "0.0.333",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -80,6 +80,8 @@
         "typescript": "^5.8.3"
     },
     "scripts": {
+        "sync-version": "node sync-version.cjs",
+        "prebuild": "npm run sync-version",
         "build": "microbundle --tsconfig tsconfig.microbundle.json --format \"cjs,es\"",
         "dev": "tsc --watch",
         "storybook": "storybook dev -p 6006",

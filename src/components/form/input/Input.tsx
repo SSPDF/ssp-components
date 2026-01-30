@@ -1,6 +1,6 @@
 import { Grid, InputLabel, TextField, Box } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutline } from '@mui/icons-material'
@@ -36,10 +36,6 @@ export function Input({
     customValidate?: (value: string, form: any) => string | undefined
 }) {
     const context = useContext(FormContext)!
-
-    useEffect(() => {
-        if (watchValue !== undefined) context.formSetValue(props.name, watchValue)
-    }, [watchValue])
 
     const chooseInput = () => {
         const inputConfig: object = {
