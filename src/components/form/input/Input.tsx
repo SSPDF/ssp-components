@@ -1,28 +1,59 @@
-import { Grid, InputLabel, TextField, Box, SxProps, Theme } from '@mui/material'
+import { Grid, GridProps, InputLabel, InputLabelProps, TextField, TextFieldProps, Box, SxProps, Theme } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useMemo } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutline } from '@mui/icons-material'
 
-type InputType = 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
+// Tipos nativos do HTML input
+type HTMLInputType = React.InputHTMLAttributes<HTMLInputElement>['type']
 
-interface InputProps {
+// Tipos customizados com máscara
+export type MaskedInputType = 'cnpj' | 'cpf' | 'cpf_cnpj' | 'phone' | 'number' | 'rg' | 'cep' | 'sei'
+
+// Tipos suportados: customizados + nativos do HTML
+export type InputType = MaskedInputType | HTMLInputType
+
+// Props que controlamos internamente e não devem ser sobrescritas
+type OmittedTextFieldProps = 'name' | 'type' | 'value' | 'onChange' | 'error' | 'helperText' | 'fullWidth' | 'size' | 'placeholder'
+
+// Props específicas do nosso Input
+interface InputOwnProps {
+    /** Tipo do campo - define máscara e validação */
     type?: InputType
+    /** Nome do campo no formulário (obrigatório) */
     name: string
+    /** Label exibido acima do campo */
     title?: string
+    /** Campo obrigatório */
     required?: boolean
+    /** Máscara customizada para type="number" */
     numberMask?: string
+    /** Placeholder customizado (sobrescreve title) */
     customPlaceholder?: string
+    /** Valor inicial do campo */
     defaultValue?: string
+    /** Tamanho mínimo para validação (type="input") */
     inputMinLength?: number
+    /** Tamanho máximo para validação (type="input") */
     inputMaxLength?: number
-    xs?: number
-    sm?: number
-    md?: number
-    disabled?: boolean
+    /** Validação customizada */
     customValidate?: (value: string, form: Record<string, any>) => string | undefined
+    /** Props do Grid container */
+    gridProps?: Omit<GridProps, 'item' | 'xs' | 'sm' | 'md'>
+    /** Props do InputLabel */
+    labelProps?: Omit<InputLabelProps, 'required'>
 }
+
+// Props de layout do Grid
+interface GridLayoutProps {
+    xs?: GridProps['xs']
+    sm?: GridProps['sm']
+    md?: GridProps['md']
+}
+
+// Props completas: nossas props + TextField props (exceto as controladas) + Grid layout
+export type InputProps = InputOwnProps & GridLayoutProps & Omit<TextFieldProps, OmittedTextFieldProps | keyof InputOwnProps>
 
 // Configurações de máscara por tipo
 const MASK_CONFIGS: Record<string, IMaskConfig> = {
@@ -50,8 +81,8 @@ const VALIDATIONS: Record<string, { length: number; message: string }> = {
     phone: { length: 14, message: 'O número precisa ter pelo menos 10 dígitos' },
 }
 
-// Estilos do campo
-const textFieldSx: SxProps<Theme> = {
+// Estilos base do campo
+const baseTextFieldSx: SxProps<Theme> = {
     backgroundColor: 'white',
     '& .MuiOutlinedInput-root': {
         borderRadius: '8px',
@@ -63,7 +94,7 @@ const textFieldSx: SxProps<Theme> = {
     },
 }
 
-const getHelperTextProps = (hasError: boolean): { sx: SxProps<Theme> } => ({
+const getHelperTextProps = (hasError: boolean): TextFieldProps['FormHelperTextProps'] => ({
     sx: {
         backgroundColor: hasError ? '#FFEBEE' : 'transparent',
         borderRadius: '8px',
@@ -77,21 +108,39 @@ const getHelperTextProps = (hasError: boolean): { sx: SxProps<Theme> } => ({
     },
 })
 
+const baseLabelSx: SxProps<Theme> = {
+    mb: 1,
+    fontWeight: 500,
+    fontSize: '0.875rem',
+    color: 'text.primary',
+    transform: 'none',
+    position: 'static',
+}
+
 export function Input({
+    // Props específicas
     type = 'input',
-    numberMask = '000000000000000',
-    xs = 12,
-    sm,
-    md,
-    inputMinLength = 1,
-    inputMaxLength = 255,
-    defaultValue = '',
-    disabled = false,
     name,
     title,
     required,
+    numberMask = '000000000000000',
     customPlaceholder,
+    defaultValue = '',
+    inputMinLength = 1,
+    inputMaxLength = 255,
     customValidate,
+    // Props de layout
+    xs = 12,
+    sm,
+    md,
+    gridProps,
+    labelProps,
+    // Props do TextField repassadas
+    disabled = false,
+    sx,
+    InputProps: inputPropsFromUser,
+    InputLabelProps: inputLabelPropsFromUser,
+    ...textFieldProps
 }: InputProps) {
     const context = useContext(FormContext)!
 
@@ -107,23 +156,26 @@ export function Input({
             if (customError) return customError
         }
 
-        // Validação por tipo com máscara
-        const validation = VALIDATIONS[type]
+        // Validação para tipos com máscara
+        const validation = VALIDATIONS[type as string]
         if (validation && val.length < validation.length && required) {
             return validation.message
         }
 
-        // Validações específicas para tipos sem máscara
-        if (type === 'input' || type === 'password' || type === 'number') {
+        // Validação de tamanho para tipos de texto
+        const textTypes = ['input', 'text', 'password', 'search', 'tel', 'url']
+        if (textTypes.includes(type as string) || type === 'number') {
             if (val.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
             if (val.length < inputMinLength && required) return `Limite mínimo de ${inputMinLength} caracteres`
         }
 
+        // Validação de email
         if (type === 'email') {
             if (val.length > 50) return 'Limite máximo de 50 caracteres'
             if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(val) && required) return 'O e-mail inserido não é válido'
         }
 
+        // Validação de CPF/CNPJ dinâmico
         if (type === 'cpf_cnpj') {
             const isInvalidLength = val.length < 14 || (val.length > 14 && val.length < 18)
             if (isInvalidLength && required) return 'O CPF/CNPJ precisa ter no mínimo 11/14 dígitos'
@@ -132,61 +184,63 @@ export function Input({
 
     const errorData = get(context.errors, name)
     const hasError = Boolean(errorData)
+    const formValue = context.formWatch(name)
 
     const helperText = hasError ? (
-        <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ErrorOutline fontSize="small" />
+        <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ErrorOutline fontSize='small' />
             {errorData?.message as string}
         </Box>
     ) : undefined
 
-    const formConfig = useMemo(() => ({
-        ...context.formRegister(name, { validate }),
-        error: hasError,
-        helperText,
-        fullWidth: true,
-        size: 'small' as const,
-        placeholder: customPlaceholder ?? title,
-        FormHelperTextProps: getHelperTextProps(hasError),
-        sx: textFieldSx,
-    }), [name, hasError, helperText, customPlaceholder, title])
+    // Merge de estilos: base + usuário
+    const mergedSx = useMemo(() => (sx ? [baseTextFieldSx, sx].flat() : baseTextFieldSx), [sx])
+
+    const formConfig = useMemo(
+        () => ({
+            ...context.formRegister(name, { validate }),
+            error: hasError,
+            helperText,
+            fullWidth: true,
+            size: 'small' as const,
+            variant: 'outlined' as const,
+            placeholder: customPlaceholder ?? title,
+            FormHelperTextProps: getHelperTextProps(hasError),
+            sx: mergedSx,
+            InputProps: inputPropsFromUser,
+            InputLabelProps: inputLabelPropsFromUser,
+            ...textFieldProps,
+        }),
+        [name, hasError, helperText, customPlaceholder, title, mergedSx, inputPropsFromUser, inputLabelPropsFromUser, textFieldProps],
+    )
 
     const renderInput = () => {
-        // Tipos sem máscara
-        if (type === 'input' || type === 'email') {
-            return <TextField {...formConfig} defaultValue={defaultValue} disabled={disabled} />
-        }
-
-        if (type === 'password') {
-            return <TextField {...formConfig} type="password" disabled={disabled} />
-        }
-
-        // Tipos com máscara
-        const maskConfig = type === 'number'
-            ? { mask: numberMask }
-            : MASK_CONFIGS[type]
+        // Tipos com máscara customizada
+        const maskConfig = type === 'number' ? { mask: numberMask } : MASK_CONFIGS[type as string]
 
         if (maskConfig) {
             return <MaskInput formConfig={formConfig} imaskConfig={maskConfig} disabled={disabled} />
         }
 
-        return null
+        // Tipos nativos do HTML (text, email, password, tel, url, search, etc.)
+        // 'input' é tratado como 'text' para compatibilidade
+        const htmlType = type === 'input' ? 'text' : type
+
+        return (
+            <TextField
+                {...formConfig}
+                type={htmlType}
+                value={formValue ?? defaultValue}
+                onChange={(e) => context.formSetValue(name, e.target.value)}
+                disabled={disabled}
+            />
+        )
     }
 
     return (
-        <Grid item xs={xs} sm={sm} md={md}>
+        <Grid item xs={xs} sm={sm} md={md} {...gridProps}>
             {title && (
-                <InputLabel
-                    required={required}
-                    sx={{
-                        mb: 1,
-                        fontWeight: 500,
-                        fontSize: '0.875rem',
-                        color: 'text.primary',
-                        transform: 'none',
-                        position: 'static',
-                    }}
-                >
+                <InputLabel required={required} sx={labelProps?.sx ? [baseLabelSx, labelProps.sx].flat() : baseLabelSx} {...labelProps}>
                     {title}
                 </InputLabel>
             )}

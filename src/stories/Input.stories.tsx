@@ -32,7 +32,7 @@ export const Base: Story = {
 
 export const EdicaoComRequisicao: Story = {
     render: () => {
-        const [dadosDaAPI, setDadosDaAPI] = useState<{ cep: string; cpf: string } | null>(null)
+        const [dadosDaAPI, setDadosDaAPI] = useState<{ cep: string; cpf: string; nome: string } | null>(null)
         const [loading, setLoading] = useState(true)
         const context = useContext(FormContext)
 
@@ -42,6 +42,7 @@ export const EdicaoComRequisicao: Story = {
                 setDadosDaAPI({
                     cep: '71090395',
                     cpf: '12345678901',
+                    nome: 'João da Silva',
                 })
                 // Usa reset do React Hook Form para preencher todos os campos de uma vez
                 setLoading(false)
@@ -67,6 +68,7 @@ export const EdicaoComRequisicao: Story = {
 
         return (
             <Box display='flex' flexDirection='column' gap={2}>
+                <Input type='input' name='nome' title='Nome' required />
                 <Input type='cep' name='cep' title='CEP' required />
                 <Input type='cpf' name='cpf' title='CPF' required />
             </Box>
