@@ -1,81 +1,84 @@
-import { Button, TextField } from '@mui/material'
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { IMaskInput, useIMask } from 'react-imask'
+import { TextField } from '@mui/material'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { IMaskInput } from 'react-imask'
 import { FormContext } from '../../../context/form'
 
 export type IMaskConfig = Partial<React.ComponentProps<typeof IMaskInput>>
 
-const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(props: any, ref: any) {
-    const { onChange, onMask, maskValue, setMaskValue, watchValue, imaskConfig, ...prop } = props
-    const [mask, setMask] = useState(imaskConfig.mask)
+interface TextMaskCustomProps {
+    name: string
+    imaskConfig: IMaskConfig
+    onMaskChange?: (value: string, setMask: React.Dispatch<React.SetStateAction<IMaskConfig['mask']>>) => void
+    inputRef?: React.Ref<HTMLInputElement>
+}
 
-    delete prop.value
+const TextMaskCustom = React.forwardRef<HTMLInputElement, TextMaskCustomProps>(
+    function TextMaskCustom({ imaskConfig, onMaskChange, name, ...restProps }, ref) {
+        const maskRef = useRef<any>(null)
+        const [value, setValue] = useState('')
+        const [mask, setMask] = useState<IMaskConfig['mask']>(imaskConfig.mask)
+        const context = useContext(FormContext)!
 
-    const myRef = useRef<any | null>(null)
-    const [myValue, setMyValue] = useState('')
-    const context = useContext(FormContext)!
+        // Observa mudanças externas (ex: formReset)
+        const formValue = context.formWatch(name)
 
-    useEffect(() => {
-        if (watchValue) {
-            setMyValue(watchValue)
-        }
-    }, [watchValue])
+        // Sincroniza quando o valor do form muda externamente
+        useEffect(() => {
+            if (formValue !== undefined && formValue !== value) {
+                setValue(formValue)
+            }
+        }, [formValue])
 
-    useEffect(() => {
-        context.formSetValue(prop.name, myRef.current.element.value)
-    }, [myValue])
+        // Propaga o valor mascarado para o React Hook Form
+        useEffect(() => {
+            const maskedValue = maskRef.current?.maskRef?.value
+            if (maskedValue !== undefined) {
+                context.formSetValue(name, maskedValue)
+            }
+        }, [value, name])
 
-    delete prop.watchValue
+        const MaskedInput = IMaskInput as any
 
-    return (
-        <IMaskInput
-            {...prop}
-            mask={mask}
-            value={myValue}
-            ref={myRef}
-            inputRef={ref}
-            onChange={(e) => { }}
-            onAccept={(value, mask) => {
-                setMyValue(value)
-                mask.updateValue()
+        return (
+            <MaskedInput
+                {...restProps}
+                {...imaskConfig}
+                name={name}
+                mask={mask}
+                value={value}
+                ref={maskRef}
+                inputRef={ref}
+                onAccept={(newValue: string, maskInstance: any) => {
+                    setValue(newValue)
+                    maskInstance.updateValue()
+                    onMaskChange?.(newValue, setMask)
+                }}
+            />
+        )
+    }
+)
 
-                if (!onMask) return
-
-                onMask(value, setMask)
-            }}
-            {...imaskConfig}
-        />
-    )
-})
-
-export default function MaskInput(props: {
-    formConfig: object
+interface MaskInputProps {
+    formConfig: { name: string } & Record<string, any>
     defaultValue?: string
     disabled?: boolean
-    watchValue?: string
-    onMask?: (value: string, setMask: React.Dispatch<React.SetStateAction<string>>) => void
-    imaskConfig?: IMaskConfig
-}) {
-    const context = useContext(FormContext)!
-    const [maskValue, setMaskValue] = useState('')
+    imaskConfig: IMaskConfig
+    onMaskChange?: (value: string, setMask: React.Dispatch<React.SetStateAction<IMaskConfig['mask']>>) => void
+}
 
+export default function MaskInput({ formConfig, disabled, imaskConfig, onMaskChange }: MaskInputProps) {
     return (
-        <>
-            <TextField
-                {...props.formConfig}
-                onInput={(e) => {
-                    const name = (props.formConfig as any).name as string
-                    const value = (e.target as any).value
-
-                    context.formSetValue(name, value)
-                }}
-                InputProps={{
-                    inputComponent: TextMaskCustom as any,
-                    inputProps: { onMask: props.onMask, maskValue, setMaskValue, watchValue: props.watchValue, imaskConfig: props.imaskConfig },
-                }}
-                disabled={props.disabled}
-                fullWidth
-            />
-        </>
+        <TextField
+            {...formConfig}
+            disabled={disabled}
+            fullWidth
+            InputProps={{
+                inputComponent: TextMaskCustom as any,
+                inputProps: {
+                    imaskConfig,
+                    onMaskChange,
+                },
+            }}
+        />
     )
 }

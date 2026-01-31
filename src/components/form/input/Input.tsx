@@ -1,26 +1,15 @@
-import { Grid, InputLabel, TextField, Box } from '@mui/material'
+import { Grid, InputLabel, TextField, Box, SxProps, Theme } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutline } from '@mui/icons-material'
 
-export function Input({
-    type = 'input',
-    numberMask = '000000000000000',
-    xs = 12,
-    sm,
-    inputMinLength = 1,
-    inputMaxLength = 255,
-    defaultValue = '',
-    md,
-    disabled = false,
-    watchValue,
-    ...props
-}: {
-    type: 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'input' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
+type InputType = 'cnpj' | 'cpf' | 'input' | 'email' | 'cpf_cnpj' | 'phone' | 'number' | 'rg' | 'password' | 'cep' | 'sei'
+
+interface InputProps {
+    type?: InputType
     name: string
-    watchValue?: string
     title?: string
     required?: boolean
     numberMask?: string
@@ -32,235 +21,163 @@ export function Input({
     sm?: number
     md?: number
     disabled?: boolean
-    imaskConfig?: IMaskConfig
-    customValidate?: (value: string, form: any) => string | undefined
-}) {
+    customValidate?: (value: string, form: Record<string, any>) => string | undefined
+}
+
+// Configurações de máscara por tipo
+const MASK_CONFIGS: Record<string, IMaskConfig> = {
+    cep: { mask: '00000-000' },
+    phone: { mask: '(00) [9]0000-0000' },
+    sei: { mask: '00000-00000000/0000-00' },
+    cpf: { mask: '000.000.000-00' },
+    cnpj: { mask: '00.000.000/0000-00' },
+    rg: { mask: '00000[000000]' },
+    cpf_cnpj: {
+        mask: [{ mask: '000.000.000-00' }, { mask: '00.000.000/0000-00' }],
+        dispatch: (appended: string, dynamicMasked: any) => {
+            const number = (dynamicMasked.value + appended).replace(/\D/g, '')
+            return dynamicMasked.compiledMasks[number.length > 11 ? 1 : 0]
+        },
+    },
+}
+
+// Validações por tipo
+const VALIDATIONS: Record<string, { length: number; message: string }> = {
+    cnpj: { length: 18, message: 'O CNPJ precisa ter no mínimo 14 dígitos' },
+    cpf: { length: 14, message: 'O CPF precisa ter no mínimo 11 dígitos' },
+    sei: { length: 22, message: 'O Número SEI precisa ter no mínimo 19 dígitos' },
+    cep: { length: 9, message: 'O CEP precisa ter no mínimo 8 dígitos' },
+    phone: { length: 14, message: 'O número precisa ter pelo menos 10 dígitos' },
+}
+
+// Estilos do campo
+const textFieldSx: SxProps<Theme> = {
+    backgroundColor: 'white',
+    '& .MuiOutlinedInput-root': {
+        borderRadius: '8px',
+        transition: 'all 0.2s',
+        '& fieldset': { borderColor: '#E0E0E0' },
+        '&:hover fieldset': { borderColor: '#BDBDBD' },
+        '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: '2px' },
+        '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderWidth: '2px' },
+    },
+}
+
+const getHelperTextProps = (hasError: boolean): { sx: SxProps<Theme> } => ({
+    sx: {
+        backgroundColor: hasError ? '#FFEBEE' : 'transparent',
+        borderRadius: '8px',
+        padding: hasError ? '8px 12px' : 0,
+        marginBottom: hasError ? '4px' : 0,
+        marginTop: hasError ? '8px' : 0,
+        border: hasError ? '1px solid #FFCDD2' : 'none',
+        color: 'error.main',
+        marginLeft: 0,
+        marginRight: 0,
+    },
+})
+
+export function Input({
+    type = 'input',
+    numberMask = '000000000000000',
+    xs = 12,
+    sm,
+    md,
+    inputMinLength = 1,
+    inputMaxLength = 255,
+    defaultValue = '',
+    disabled = false,
+    name,
+    title,
+    required,
+    customPlaceholder,
+    customValidate,
+}: InputProps) {
     const context = useContext(FormContext)!
 
-    const chooseInput = () => {
-        const inputConfig: object = {
-            fullWidth: true,
-            size: 'small',
-            placeholder: props.customPlaceholder ? props.customPlaceholder : props.title,
+    const validate = (value: string | undefined, formData: Record<string, any>) => {
+        const val = value ?? ''
+
+        if (val.length === 0 && required) {
+            return 'Este campo é obrigatório'
         }
 
-        const name = props.name!
-        const errorData = get(context?.errors, props.name!)
-        let helperText: React.ReactNode = errorData?.message as string
-        const error = errorData ? true : false
-
-        if (error) {
-            helperText = (
-                <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <ErrorOutline fontSize='small' />
-                    {helperText}
-                </Box>
-            )
+        if (customValidate) {
+            const customError = customValidate(val, formData)
+            if (customError) return customError
         }
 
-        const formConfig = {
-            ...context?.formRegister(name, {
-                validate: (v, f) => {
-                    const value = v ?? ''
-
-                    if (value.length <= 0 && props.required) return 'Este campo é obrigatório'
-
-                    if (props.customValidate) {
-                        const errorMessage = props.customValidate(value, f)
-                        if (errorMessage) return errorMessage
-                    }
-
-                    if (type === 'cnpj') {
-                        if (value.length < 18 && props.required) return 'O CNPJ precisa ter no mínimo 14 dígitos'
-                    }
-                    //
-                    else if (type === 'cpf') {
-                        if (value.length < 14 && props.required) return 'O CPF precisa ter no mínimo 11 dígitos'
-                    } //
-                    else if (type === 'sei') {
-                        if (value.length < 22 && props.required) return 'O Número SEI precisa ter no mínimo 19 dígitos'
-                    }
-                    //
-                    else if (type === 'cep') {
-                        if (value.length < 9 && props.required) return 'O CPF precisa ter no mínimo 8 dígitos'
-                    }
-                    //
-                    else if (type === 'input' || type === 'password' || type === 'number') {
-                        if (value.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
-                        if (value.length < inputMinLength && props.required) return `Limite mínimo de ${inputMinLength} caracteres`
-                    }
-                    //
-                    else if (type === 'email') {
-                        if (value.length > 50) return 'Limite máximo de 50 caracteres'
-                        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(v) && props.required) return 'O e-mail inserido não é valido'
-                    }
-                    //
-                    else if (type === 'cpf_cnpj') {
-                        if ((value.length < 14 || (value.length > 14 && value.length < 18)) && props.required) return 'O CPF/CNPJ precisa ter no mínimo 11/14 dígitos'
-                    }
-                    //
-                    else if (type === 'phone') {
-                        if (value.length < 14 && props.required) return 'O número precisa ter pelo menos 10 dígitos'
-                    }
-                },
-            }),
-            error,
-            helperText,
-            ...inputConfig,
-            FormHelperTextProps: {
-                sx: {
-                    backgroundColor: error ? '#FFEBEE' : 'transparent',
-                    borderRadius: '8px',
-                    padding: error ? '8px 12px' : 0,
-                    marginBottom: error ? '4px' : 0,
-                    marginTop: error ? '8px' : 0,
-                    border: error ? '1px solid #FFCDD2' : 'none',
-                    color: 'error.main',
-                    marginLeft: 0,
-                    marginRight: 0,
-                },
-            },
-            sx: {
-                backgroundColor: 'white',
-                '& .MuiOutlinedInput-root': {
-                    borderRadius: '8px',
-                    transition: 'all 0.2s',
-                    '& fieldset': {
-                        borderColor: '#E0E0E0',
-                    },
-                    '&:hover fieldset': {
-                        borderColor: '#BDBDBD',
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: 'primary.main',
-                        borderWidth: '2px',
-                    },
-                    '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-                        borderWidth: '2px',
-                    },
-                },
-            },
+        // Validação por tipo com máscara
+        const validation = VALIDATIONS[type]
+        if (validation && val.length < validation.length && required) {
+            return validation.message
         }
 
-        switch (type) {
-            case 'input':
-            case 'email':
-                return <TextField {...formConfig} defaultValue={defaultValue} disabled={disabled} />
-            case 'password':
-                return <TextField {...formConfig} type='password' disabled={disabled} />
-            case 'number':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: numberMask,
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'cep':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: '00000-000',
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'phone':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: '(00) [9]0000-0000',
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'sei':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: '00000-00000000/0000-00',
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'cpf_cnpj':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: [{ mask: '000.000.000-00' }, { mask: '00.000.000/0000-00' }],
-                            dispatch: (appended: any, dynamicMasked: any) => {
-                                const number = (dynamicMasked.value + appended).replace(/\D/g, '')
+        // Validações específicas para tipos sem máscara
+        if (type === 'input' || type === 'password' || type === 'number') {
+            if (val.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
+            if (val.length < inputMinLength && required) return `Limite mínimo de ${inputMinLength} caracteres`
+        }
 
-                                if (number.length > 11) {
-                                    return dynamicMasked.compiledMasks[1]
-                                }
-                                return dynamicMasked.compiledMasks[0]
-                            },
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'cpf':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: '000.000.000-00',
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'cnpj':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: '00.000.000/0000-00',
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
-            case 'rg':
-                return (
-                    <MaskInput
-                        formConfig={formConfig}
-                        defaultValue={defaultValue}
-                        imaskConfig={{
-                            mask: '00000[000000]',
-                        }}
-                        watchValue={watchValue}
-                        disabled={disabled}
-                    />
-                )
+        if (type === 'email') {
+            if (val.length > 50) return 'Limite máximo de 50 caracteres'
+            if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(val) && required) return 'O e-mail inserido não é válido'
+        }
+
+        if (type === 'cpf_cnpj') {
+            const isInvalidLength = val.length < 14 || (val.length > 14 && val.length < 18)
+            if (isInvalidLength && required) return 'O CPF/CNPJ precisa ter no mínimo 11/14 dígitos'
         }
     }
 
+    const errorData = get(context.errors, name)
+    const hasError = Boolean(errorData)
+
+    const helperText = hasError ? (
+        <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ErrorOutline fontSize="small" />
+            {errorData?.message as string}
+        </Box>
+    ) : undefined
+
+    const formConfig = useMemo(() => ({
+        ...context.formRegister(name, { validate }),
+        error: hasError,
+        helperText,
+        fullWidth: true,
+        size: 'small' as const,
+        placeholder: customPlaceholder ?? title,
+        FormHelperTextProps: getHelperTextProps(hasError),
+        sx: textFieldSx,
+    }), [name, hasError, helperText, customPlaceholder, title])
+
+    const renderInput = () => {
+        // Tipos sem máscara
+        if (type === 'input' || type === 'email') {
+            return <TextField {...formConfig} defaultValue={defaultValue} disabled={disabled} />
+        }
+
+        if (type === 'password') {
+            return <TextField {...formConfig} type="password" disabled={disabled} />
+        }
+
+        // Tipos com máscara
+        const maskConfig = type === 'number'
+            ? { mask: numberMask }
+            : MASK_CONFIGS[type]
+
+        if (maskConfig) {
+            return <MaskInput formConfig={formConfig} imaskConfig={maskConfig} disabled={disabled} />
+        }
+
+        return null
+    }
+
     return (
-        <Grid item {...{ xs, sm, md }}>
-            {props.title && (
+        <Grid item xs={xs} sm={sm} md={md}>
+            {title && (
                 <InputLabel
-                    htmlFor='campo'
-                    required={props.required}
+                    required={required}
                     sx={{
                         mb: 1,
                         fontWeight: 500,
@@ -270,10 +187,10 @@ export function Input({
                         position: 'static',
                     }}
                 >
-                    {props.title}
+                    {title}
                 </InputLabel>
             )}
-            {chooseInput()}
+            {renderInput()}
         </Grid>
     )
 }
