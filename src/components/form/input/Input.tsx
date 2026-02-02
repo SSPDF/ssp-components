@@ -58,7 +58,31 @@ export type InputProps = InputOwnProps & GridLayoutProps & Omit<TextFieldProps, 
 // Configurações de máscara por tipo
 const MASK_CONFIGS: Record<string, IMaskConfig> = {
     cep: { mask: '00000-000' },
-    phone: { mask: '(00) [9]0000-0000' },
+    phone: {
+        mask: [
+            { mask: '(00) 0000-0000' }, // Fixo
+            { mask: '(00) 00000-0000' } // Celular (Genérico é melhor que forçar o 9 fixo na string)
+        ],
+        dispatch: (appended: any, dynamicMasked: any) => {
+            const number = (dynamicMasked.value + appended).replace(/\D/g, '')
+
+            // Se ainda estiver digitando o DDD ou vazio, mantém máscara padrão (fixo)
+            if (number.length <= 2) {
+                return dynamicMasked.compiledMasks[0]
+            }
+
+            // Pega o terceiro dígito (logo após o DDD)
+            const thirdDigit = number.substring(2, 3)
+
+            // No Brasil, APENAS celulares começam com 9. Fixos começam com 2, 3, 4 ou 5.
+            // Se o dígito for 9, forçamos a máscara de celular
+            if (thirdDigit === '9') {
+                return dynamicMasked.compiledMasks[1]
+            }
+
+            return dynamicMasked.compiledMasks[0]
+        }
+    },
     sei: { mask: '00000-00000000/0000-00' },
     cpf: { mask: '000.000.000-00' },
     cnpj: { mask: '00.000.000/0000-00' },
@@ -78,7 +102,6 @@ const VALIDATIONS: Record<string, { length: number; message: string }> = {
     cpf: { length: 14, message: 'O CPF precisa ter no mínimo 11 dígitos' },
     sei: { length: 22, message: 'O Número SEI precisa ter no mínimo 19 dígitos' },
     cep: { length: 9, message: 'O CEP precisa ter no mínimo 8 dígitos' },
-    phone: { length: 14, message: 'O número precisa ter pelo menos 10 dígitos' },
 }
 
 // Estilos base do campo
@@ -167,6 +190,23 @@ export function Input({
         if (textTypes.includes(type as string) || type === 'number') {
             if (val.length > inputMaxLength) return `Limite máximo de ${inputMaxLength} caracteres`
             if (val.length < inputMinLength && required) return `Limite mínimo de ${inputMinLength} caracteres`
+        }
+
+        // phone validation
+        if (type === 'phone') {
+            const cleanValue = val.replace(/\D/g, '')
+            if (cleanValue.length > 2) {
+                const thirdDigit = cleanValue.substring(2, 3)
+                if (thirdDigit === '9') {
+                    // mobile number validation
+                    if (val.length < 15 && required) return 'O número de celular precisa ter 11 dígitos'
+                } else {
+                    // fixed number validation
+                    if (val.length < 14 && required) return 'O número fixo precisa ter 10 dígitos'
+                }
+            } else {
+                if (val.length < 14 && required) return 'O número precisa ter pelo menos 10 dígitos'
+            }
         }
 
         // Validação de email

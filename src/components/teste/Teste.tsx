@@ -39,7 +39,7 @@ export function Exemplo() {
                 <Input name='teste_input_2' type='input' title='Input' required />
                 <Input name='teste_number' type='number' title='Input' required />
                 <Input name='teste_password' type='password' title='Input' required />
-                <Input name='teste_phone' type='phone' title='Input' required />
+                <Input name='teste_phone' type='phone' title='Telefone' required />
                 <Input name='teste_rg' type='rg' title='Input' required />
 
                 <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' watchValue={test} required />
