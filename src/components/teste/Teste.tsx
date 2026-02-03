@@ -22,7 +22,7 @@ import OtherCheckBox from '../form/input/OtherCheckBox'
 
 const token = ``
 
-export function Exemplo() {
+export function Exemplo({ required = false }: { required?: boolean }) {
     const context = useContext(FormContext)!
 
     const [test, setTest] = useState<{ id: number | string; label: string } | undefined>(undefined)
@@ -30,38 +30,38 @@ export function Exemplo() {
     return (
         <Stepper debugLog>
             <StepperBlock title='Testando'>
-                <Input name='teste' type='input' title='Input' required />
-                <Input name='teste_cep' type='cep' title='Input' required />
-                <Input name='teste_cnpj' type='cnpj' title='Input' required />
-                <Input name='teste_cpf' type='cpf' title='Input' required />
-                <Input name='teste_cpf_cnpj' type='cpf_cnpj' title='Input' required />
-                <Input name='teste_email' type='email' title='Input' required />
-                <Input name='teste_input_2' type='input' title='Input' required />
-                <Input name='teste_number' type='number' title='Input' required />
-                <Input name='teste_password' type='password' title='Input' required />
-                <Input name='teste_phone' type='phone' title='Telefone' required />
-                <Input name='teste_rg' type='rg' title='Input' required />
+                <Input name='teste' type='input' title='Input' required={required} />
+                <Input name='teste_cep' type='cep' title='Input' required={required} />
+                <Input name='teste_cnpj' type='cnpj' title='Input' required={required} />
+                <Input name='teste_cpf' type='cpf' title='Input' required={required} />
+                <Input name='teste_cpf_cnpj' type='cpf_cnpj' title='Input' required={required} />
+                <Input name='teste_email' type='email' title='Input' required={required} />
+                <Input name='teste_input_2' type='input' title='Input' required={required} />
+                <Input name='teste_number' type='number' title='Input' required={required} />
+                <Input name='teste_password' type='password' title='Input' required={required} />
+                <Input name='teste_phone' type='phone' title='Telefone' required={required} />
+                <Input name='teste_rg' type='rg' title='Input' required={required} />
 
-                <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' watchValue={test} required />
+                <FetchAutoComplete name='ronald' title='Testando' url='http://localhost:7171/autocomplete' watchValue={test} required={required} />
 
-                <MultInput name='teste_multi' title='Input' required />
+                <MultInput name='teste_multi' title='Input' required={required} />
 
                 <CheckBox name='teste_checkbox' title='Input' />
 
-                <OtherCheckBox name='conhecimento_outro' md={12} />
+                <OtherCheckBox name='conhecimento_outro' md={12} required={required} />
 
-                <RequiredCheckBoxGroup name='x'>
+                <RequiredCheckBoxGroup name='x' >
                     <CheckBox name='teste_check_1' title='Input' />
                     <CheckBox name='teste_check_2' title='Input' />
                 </RequiredCheckBoxGroup>
 
                 <CheckBoxWarning name='teste_warning' title='Input' customWarning={<>Apensa um teste</>} />
 
-                <DatePicker name='teste_date' title='Input' required />
-                <TimePicker name='teste_time' title='Input' required />
+                <DatePicker name='teste_date' title='Input' required={required} />
+                <TimePicker name='teste_time' title='Input' required={required} />
 
-                <FileUpload apiURL='#' name='teste_file' title='Input' tipoArquivo='0' required />
-                <DropFileUpload apiURL='#' name='teste_drop' title='Input' tipoArquivo='0' required />
+                <FileUpload apiURL='#' name='teste_file' title='Input' tipoArquivo='0' required={required} />
+                <DropFileUpload apiURL='#' name='teste_drop' title='Input' tipoArquivo='0' required={required} />
 
                 <FixedAutoComplete
                     name='motivoDesliga'
@@ -76,6 +76,7 @@ export function Exemplo() {
                             label: 'Engano',
                         },
                     ]}
+                    required={required}
                 />
 
                 <Radio
@@ -85,14 +86,9 @@ export function Exemplo() {
                         { label: 'Opção 1', value: '1' },
                         { label: 'Opção 2', value: '2' },
                     ]}
+                    required={required}
                 />
 
-
-                {/* <FileUpload name='raj' title='Tst' apiURL='https:hmgapieventosexterno.ssp.df.gov.br/files' tipoArquivo='22' required /> */}
-                {/* <DropFileUpload name='file' apiURL='https:hmgapieventosexterno.ssp.df.gov.br/files' title='Teste Arquivo' tipoArquivo='22' tstToken={token} multiple={true} required /> */}
-
-
-                {/* <MultInput name='haha' /> */}
             </StepperBlock>
             <StepperBlock title='Segundo'>
                 <Input name='teste2' type='input' />
@@ -242,26 +238,10 @@ export default function Teste() {
         label: 'CONSEG PARANOÁ',
     }
 
-    // return <Exemplo />
+    return <Exemplo required />
 
     return (
         <Box bgcolor='#F9F9F9'>
-
-            <FixedAutoComplete
-                name='motivoDesliga'
-                title='Motivo para não registrar ocorrência'
-                list={[
-                    {
-                        id: 1,
-                        label: 'Agradecimento',
-                    },
-                    {
-                        id: 2,
-                        label: 'Engano',
-                    },
-                ]}
-                required
-            />
 
 
             {/* <Input
@@ -941,3 +921,4 @@ export default function Teste() {
         </Box>
     )
 }
+// 

@@ -155,8 +155,7 @@ export default function FetchAutoComplete({
                 type='text'
                 {...context?.formRegister(name!, {
                     validate: (v, f) => {
-                        if (!v) return 'Este campo é obrigatório'
-                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                        if (required && !v) return 'Este campo é obrigatório'
                     },
                 })}
                 hidden
