@@ -76,7 +76,6 @@ export function Exemplo() {
                             label: 'Engano',
                         },
                     ]}
-                    required={true}
                 />
 
                 <Radio
@@ -86,7 +85,6 @@ export function Exemplo() {
                         { label: 'Opção 1', value: '1' },
                         { label: 'Opção 2', value: '2' },
                     ]}
-                    required
                 />
 
 
@@ -244,10 +242,27 @@ export default function Teste() {
         label: 'CONSEG PARANOÁ',
     }
 
-    return <Exemplo />
+    // return <Exemplo />
 
     return (
         <Box bgcolor='#F9F9F9'>
+
+            <FixedAutoComplete
+                name='motivoDesliga'
+                title='Motivo para não registrar ocorrência'
+                list={[
+                    {
+                        id: 1,
+                        label: 'Agradecimento',
+                    },
+                    {
+                        id: 2,
+                        label: 'Engano',
+                    },
+                ]}
+                required
+            />
+
 
             {/* <Input
                 type='input'
