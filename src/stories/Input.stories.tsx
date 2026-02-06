@@ -75,3 +75,26 @@ export const EdicaoComRequisicao: Story = {
         )
     },
 }
+
+/** Campo "Saudação" sincronizado com "Nome" via watchValue. Digite no Nome e veja a Saudação atualizar. */
+function InputComWatchValue() {
+    const context = useContext(FormContext)!
+    const nome = context.formWatch('nome') ?? ''
+    return (
+        <Input
+            name='saudacao'
+            type='input'
+            title='Saudação (observa Nome)'
+            watchValue={`Olá, ${nome}`}
+        />
+    )
+}
+
+export const ComWatchValue: Story = {
+    render: () => (
+        <Box display='flex' flexDirection='column' gap={2}>
+            <Input type='input' name='nome' title='Nome' required />
+            <InputComWatchValue />
+        </Box>
+    ),
+}

@@ -1,6 +1,6 @@
 import { Grid, GridProps, InputLabel, InputLabelProps, TextField, TextFieldProps, Box, SxProps, Theme } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutline } from '@mui/icons-material'
@@ -39,6 +39,8 @@ interface InputOwnProps {
     inputMaxLength?: number
     /** Validação customizada */
     customValidate?: (value: string, form: Record<string, any>) => string | undefined
+    /** Valor observado externamente: quando informado, o campo é sincronizado com esse valor (ex.: watchValue={context.formWatch('outroCampo')}) */
+    watchValue?: string
     /** Props do Grid container */
     gridProps?: Omit<GridProps, 'item' | 'xs' | 'sm' | 'md'>
     /** Props do InputLabel */
@@ -152,6 +154,7 @@ export function Input({
     inputMinLength = 1,
     inputMaxLength = 255,
     customValidate,
+    watchValue,
     // Props de layout
     xs = 12,
     sm,
@@ -166,6 +169,11 @@ export function Input({
     ...textFieldProps
 }: InputProps) {
     const context = useContext(FormContext)!
+
+    useEffect(() => {
+        if (watchValue !== undefined) context.formSetValue(name, watchValue)
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- context não deve estar nas deps para evitar loop (objeto recriado a cada render)
+    }, [watchValue, name])
 
     const validate = (value: string | undefined, formData: Record<string, any>) => {
         const val = value ?? ''
