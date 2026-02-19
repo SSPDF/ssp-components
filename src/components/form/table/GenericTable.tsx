@@ -137,6 +137,10 @@ export function GenericTable<T>({
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
+    useEffect(() => {
+        setData(initialData)
+    }, [initialData])
+
     localTableName = `tableFilter_${id}`
     localTableNameCache = `tableFilterCache_${id}`
     filtersFuncData = filtersFunc ?? {}
@@ -156,7 +160,7 @@ export function GenericTable<T>({
             count = count < 1 ? 1 : count
             return Math.ceil(count)
         },
-        [itemsCount]
+        [itemsCount],
     )
 
     const getData = useCallback((dt: any) => {
@@ -169,6 +173,8 @@ export function GenericTable<T>({
         if (error || !getData(data)) return
 
         const value = getData(data)
+
+        startData = JSON.parse(JSON.stringify(value))
 
         setList(value)
         setListClone(value)
@@ -455,7 +461,7 @@ export function GenericTable<T>({
                 link.click()
             }
         },
-        [list]
+        [list],
     )
 
     function transformArrayObjectInString(o: Object): String {
@@ -523,7 +529,7 @@ export function GenericTable<T>({
             link.setAttribute('download', `${csv?.fileName}.csv`)
             link.click()
         },
-        [list]
+        [list],
     )
 
     function expandAll() {
@@ -891,7 +897,7 @@ export function GenericTable<T>({
                                             filtrar={filtrar}
                                             baseFilters={[...filters]}
                                             filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
-                                        />
+                                        />,
                                     )
                                 }
                                 sx={{
@@ -968,10 +974,10 @@ export function GenericTable<T>({
                                         {Array.isArray(x.value)
                                             ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
                                             : typeof x.value === 'object'
-                                            ? (x.value as { id: string; label: string }).label
-                                            : x.operator === 'entre'
-                                            ? `${x.value ? x.value : 'Antes'} e ${x.value2 ? x.value2 : 'Depois'}`
-                                            : x.value.toString()}
+                                              ? (x.value as { id: string; label: string }).label
+                                              : x.operator === 'entre'
+                                                ? `${x.value ? x.value : 'Antes'} e ${x.value2 ? x.value2 : 'Depois'}`
+                                                : x.value.toString()}
                                     </Typography>
                                     <IconButton
                                         onClick={(e) => {

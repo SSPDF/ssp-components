@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import Link from 'next/link'
 import { GenericTable } from '../components/form/table/GenericTable'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import React from 'react'
 
 interface FakeDataProps {
     id: string
@@ -75,6 +76,8 @@ export const Base: Story = {
         itemCount: 20,
         csvShowAllButton: true,
         csvWithoutZip: true,
+        csvButtonTitle: 'Salvar em .ZIP',
+        csvNoZipText: 'Salvar em .CSV',
         action: (data) => (
             <Stack direction='row' spacing={1.5}>
                 <Paper elevation={12} sx={{ '& a': { textDecoration: 'none' } }}>
@@ -159,5 +162,32 @@ export const Base: Story = {
         //         },
         //     ],
         // },
+    },
+}
+
+export const APIPaginada: Story = {
+    render: (args) => {
+        const [data, setData] = React.useState<FakeDataProps[] | null>(null)
+        const [loading, setLoading] = React.useState(true)
+
+        React.useEffect(() => {
+            // Simulando uma chamada de API
+            setTimeout(() => {
+                const fakeResponse: FakeDataProps[] = Array.from({ length: 53 }).map((_, i) => ({
+                    id: (i + 1).toString(),
+                    name: `Usuário ${i + 1}`,
+                    date: new Date().toLocaleString('pt-BR'),
+                    status: i % 2 === 0 ? 'ATIVO' : 'INATIVO',
+                }))
+                setData(fakeResponse)
+                setLoading(false)
+            }, 1000)
+        }, [])
+
+        return <GenericTable {...args} initialData={data} isLoading={loading} />
+    },
+    args: {
+        ...Base.args,
+        itemCount: 10,
     },
 }
