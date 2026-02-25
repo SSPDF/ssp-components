@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Menu, MenuItem } from '@mui/material'
+import { ButtonProps, Menu, MenuItem } from '@mui/material'
 import React from 'react'
 import Bt from './Bt'
 
@@ -34,7 +34,7 @@ export default function CustomMenu({ data = [], ...props }: MenuProps) {
             >
                 {data.map((x) => (
                     <MenuItem
-                        onClick={(e) => {
+                        onClick={() => {
                             x.onClick && x.onClick()
                             handleClose()
                         }}

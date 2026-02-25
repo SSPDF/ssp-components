@@ -284,4 +284,10 @@ export interface TableProps2 {
 
     /** Flag para sempre manter as linhas expandidas */
     alwaysExpanded?: boolean
+
+    /** Total count of items on the server */
+    totalCount?: number
+
+    /** Maximum limit per page from the server */
+    pageLimit?: number
 }

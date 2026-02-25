@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '@mui/material'
-import React from 'react'
+
 import tinycolor from 'tinycolor2'
 
 interface CustomButton extends ButtonProps {

@@ -1,10 +1,8 @@
 import get from 'lodash.get'
-import { CsvConfigProp, CsvMapProps, FilterValue, OrderBy } from './types'
+import { CsvConfigProp, FilterValue, OrderBy } from './types'
 import dayjs from 'dayjs'
-import JSZip from 'jszip'
 import cloneDeep from 'lodash.clonedeep'
 import * as XLSX from 'xlsx'
-
 
 export const getCount = (countData: any[], itemsCount: number) => {
     if (countData.length <= 0) return 1
@@ -201,7 +199,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                     switch (dt.operator) {
                         case 'data inicio':
                             currentData.forEach((cd) => {
-                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter((d) => d !== undefined && d !== '')
 
                                 if (dates.length <= 0) return
 
@@ -215,7 +213,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                             break
                         case 'data fim':
                             currentData.forEach((cd) => {
-                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter((d) => d !== undefined && d !== '')
 
                                 if (dates.length <= 0) return
 
@@ -231,7 +229,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                             break
                         case 'tem a data':
                             currentData.forEach((cd) => {
-                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter((d) => d !== undefined && d !== '')
 
                                 if (dates.includes(dt.value)) {
                                     filteredData.push(cd)
@@ -243,7 +241,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                             const dateB = dt.value2 ? dayjs(dt.value2 as string, 'DD/MM/YYYY') : dayjs('31/12/2030', 'DD/MM/YYYY')
 
                             currentData.forEach((cd) => {
-                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter(d => d !== undefined && d !== '')
+                                const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter((d) => d !== undefined && d !== '')
 
                                 let isBetween = false
 
@@ -303,36 +301,35 @@ export function ordenarDados({ order, list, orderAsc = false }: OrdenarDadosProp
     return sortedList
 }
 
-
 export async function downloadCSVFile(list: any[], config: CsvConfigProp, filters: FilterValue[]) {
     if (list.length <= 0) return
-    
-    let data:any[] = []
+
+    let data: any[] = []
 
     if (config.downloadAll && config.customAll) data = config.customAll(list, filters)
     else if (!config.downloadAll && config.customFiltered) data = config.customFiltered(list, filters)
     else {
-            // definindo os campos especificados do csv
-            list.forEach(x => {
-                const obj = {}
-            
-                config.map.forEach(m => {
-                    // opção de usar o valor do filtro no próprio campo
-                    if (m.useFilterValue && !config.downloadAll && !m.onlyAll) {
-                        const filterValueList = filters.filter(f => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator))  
-                        const filterValue = filterValueList.length > 0 ? (filterValueList.reduce(r => r.value).value || undefined) : undefined
-            
-                        obj[m.name] = filterValue || get(x, m.key)
-                        return
-                    }
-            
-                    if (m.onlyFilter) return
-            
-                    obj[m.name] = get(x, m.key)
-                })
-            
-                data.push(obj)
+        // definindo os campos especificados do csv
+        list.forEach((x) => {
+            const obj = {}
+
+            config.map.forEach((m) => {
+                // opção de usar o valor do filtro no próprio campo
+                if (m.useFilterValue && !config.downloadAll && !m.onlyAll) {
+                    const filterValueList = filters.filter((f) => f.label == m.useFilterValue.label && m.useFilterValue.operators.includes(f.operator))
+                    const filterValue = filterValueList.length > 0 ? filterValueList.reduce((r) => r.value).value || undefined : undefined
+
+                    obj[m.name] = filterValue || get(x, m.key)
+                    return
+                }
+
+                if (m.onlyFilter) return
+
+                obj[m.name] = get(x, m.key)
             })
+
+            data.push(obj)
+        })
     }
 
     const worksheet = XLSX.utils.json_to_sheet(data)
@@ -358,7 +355,7 @@ export function downloadCSVAll(e: React.MouseEvent, list: any[], keys: string[],
                     if (typeof x[k] === 'object' && x[k] !== null) return `"${transformArrayObjectInString(x[k]).slice(1, -1)}"`
                     return x[k]
                 })
-                .join(',')
+                .join(','),
         )
         .join('\n')
 

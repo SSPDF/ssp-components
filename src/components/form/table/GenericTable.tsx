@@ -1,74 +1,27 @@
-import { ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, PendingRounded, Refresh, ReportProblemRounded } from '@mui/icons-material'
+import { ExpandLess, ExpandMore, FilterAlt, KeyboardArrowDown, KeyboardArrowUp, PendingRounded, ReportProblemRounded } from '@mui/icons-material'
 import Clear from '@mui/icons-material/Clear'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
-import { default as Search, default as SearchIcon } from '@mui/icons-material/Search'
-import {
-    Alert,
-    Autocomplete,
-    Box,
-    BoxProps,
-    Button,
-    Collapse,
-    FormControl,
-    IconButton,
-    LinearProgress,
-    Menu,
-    MenuItem,
-    PaginationItem,
-    Paper,
-    Select,
-    Skeleton,
-    Stack,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import { Box, Button, Collapse, IconButton, LinearProgress, PaginationItem, Paper, Skeleton, Stack, useMediaQuery, useTheme } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Pagination from '@mui/material/Pagination'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
 import JSZip from 'jszip'
 import get from 'lodash.get'
-import React, { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils/CustomMenu'
-import { FilterOperators, FilterValue, OrderBy, TableProps, TableProps2 } from './types'
-
-function removePunctuationAndAccents(text: string) {
-    // Remove accents and diacritics
-    const normalizedText = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-
-    // Remove punctuation marks
-    const cleanedText = normalizedText.replace(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g, '')
-
-    return cleanedText
-}
-
-function formatarString(str: string | number) {
-    const value: string = typeof str !== 'string' ? str.toString() : str
-
-    return value
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim()
-}
-
-let startData: any[] = []
-let isExpandAll: boolean = false
-let localTableName = ''
-let orderAsc = false
-let filtersFuncData: { [key: string]: (value: string) => any } = {}
-let localTableNameCache = ''
+import { FilterValue, OrderBy, TableProps2 } from './types'
+import { FilterMenu } from './FilterSection'
+import { filtrarDados, ordenarDados, removePunctuationAndAccents, getCount, transformArrayObjectInString } from './utils'
 
 /**
  * Tabela cujo dados devem ser passados via props
  */
-export function GenericTable<T>({
+export function GenericTable({
     mediaQueryLG,
     columns,
     emptyMsg = {
@@ -81,12 +34,10 @@ export function GenericTable<T>({
     columnSize,
     action,
     useKC = true,
-    statusKeyName = '',
     csvExcludeKeys = [],
     csvExcludeKeysCSV = [],
     csvExcludeKeysAll = [],
     csvCustomKeyNames = {},
-    csvExcludeValidate = (key, value) => false,
     csvButtonTitle = 'Salvar .CSV',
     csvNoZipText = 'Salvar .CSV',
     csvAllButtonTitle = 'Salvar todos em CSV',
@@ -114,19 +65,20 @@ export function GenericTable<T>({
     initialData = null,
     isLoading,
     alwaysExpanded = false,
+    totalCount,
+    pageLimit,
 }: TableProps2) {
-    const [error, setError] = useState<null | { status: number }>(null)
+    const [error] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(initialData)
 
     const { user, userLoaded } = useContext(AuthContext)
     const [list, setList] = useState<any[]>([])
     const [listClone, setListClone] = useState<any[]>([])
     //numero de items pra ser mostrado
-    const [itemsCount, setItemsCount] = useState(itemCount)
+    const [itemsCount] = useState(pageLimit ?? itemCount)
     const [currentPage, setCurrentPage] = useState(0)
     const [paginationCount, setPagCount] = useState(1)
     const [listPage, setListPage] = useState(1)
-    const [oldSelectState, setOldSelectState] = useState<string>('')
     const [expandObj, setExpandObj] = useState<{ [key: number]: boolean }>({})
     const [showExpandObj, setShowExpandObj] = useState<{ [key: number]: boolean }>({})
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
@@ -137,59 +89,56 @@ export function GenericTable<T>({
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
+    const startData = useRef<any[]>([])
+    const isExpandAll = useRef<boolean>(false)
+    const localTableName = `tableFilter_${id}`
+    const localTableNameCache = `tableFilterCache_${id}`
+    const orderAsc = useRef<boolean>(false)
+    const filtersFuncData = filtersFunc ?? {}
+
     useEffect(() => {
         setData(initialData)
     }, [initialData])
 
-    localTableName = `tableFilter_${id}`
-    localTableNameCache = `tableFilterCache_${id}`
-    filtersFuncData = filtersFunc ?? {}
+    useEffect(() => {
+        if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
 
-    if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+        if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
+            localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+            localStorage.removeItem(localTableName)
+        }
+    }, [filters, localTableNameCache, localTableName])
 
-    if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
-        localStorage.setItem(localTableNameCache, JSON.stringify(filters))
-        localStorage.removeItem(localTableName)
-    }
+    const getData = useCallback(
+        (dt: any) => {
+            if (Array.isArray(dt)) return dt
 
-    const getCount = useCallback(
-        (countData: any[]) => {
-            if (countData.length <= 0) return 1
-
-            let count = countData.length / itemsCount
-            count = count < 1 ? 1 : count
-            return Math.ceil(count)
+            if (typeof dt === 'object') return get(dt, dataPath)
         },
-        [itemsCount],
+        [dataPath],
     )
-
-    const getData = useCallback((dt: any) => {
-        if (Array.isArray(dt)) return dt
-
-        if (typeof dt === 'object') return get(dt, dataPath)
-    }, [])
 
     useEffect(() => {
         if (error || !getData(data)) return
 
         const value = getData(data)
 
-        startData = JSON.parse(JSON.stringify(value))
+        startData.current = JSON.parse(JSON.stringify(value))
 
         setList(value)
         setListClone(value)
-        setPagCount(getCount(value))
+        setPagCount(totalCount !== undefined ? Math.ceil(totalCount / itemsCount) : getCount(value, itemsCount))
 
         if (localStorage.getItem(localTableName)) {
             filtrar(JSON.parse(localStorage.getItem(localTableName) as string) as FilterValue[])
         }
-    }, [itemsCount, data, getCount, error])
+    }, [itemsCount, data, error, getData, totalCount, localTableName])
 
     useEffect(() => {
         setCurrentPage(listPage - 1)
     }, [listPage])
 
-    const onPaginationChange = useCallback((e: ChangeEvent<unknown>, page: number) => {
+    const onPaginationChange = useCallback((_e: ChangeEvent<unknown>, page: number) => {
         setListPage(page)
     }, [])
 
@@ -199,7 +148,7 @@ export function GenericTable<T>({
 
         if (searchValue === '') {
             setList(listClone)
-            setPagCount(getCount(getData(list)))
+            setPagCount(totalCount !== undefined ? Math.ceil(totalCount / itemsCount) : getCount(getData(list), itemsCount))
             return
         }
 
@@ -276,8 +225,13 @@ export function GenericTable<T>({
             newList.push(x)
         })
 
+        if (newList.length === 0) {
+            setList([])
+            setPagCount(1)
+            return
+        }
         setList(newList)
-        setPagCount(getCount(newList))
+        setPagCount(totalCount !== undefined ? Math.ceil(totalCount / itemsCount) : getCount(newList, itemsCount))
         setCurrentPage(0)
         setListPage(1)
     }
@@ -286,26 +240,6 @@ export function GenericTable<T>({
         const start = currentPage * itemsCount
         return list.slice(start, start + itemsCount)
     }, [list, itemsCount, currentPage])
-
-    function defineCSVCells(key: any, cell: any): string {
-        if (typeof cell === 'string') {
-            let item = csvUpper && !csvExcludeUpper.includes(key) ? (cell as string).toUpperCase() : cell
-
-            item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
-
-            return removeQuotes ? `${item}` : `"${item}"`
-        } else if (typeof cell === 'object' && !Array.isArray(cell) && cell !== null) {
-            let strItemAsObject = transformArrayObjectInString(cell).slice(1, -1) // key: label (Ex.: jsNaturezaEvento)
-
-            let item = csvUpper && !csvExcludeUpper.includes(key) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
-
-            item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
-
-            return removeQuotes ? `${item}` : `"${item}"`
-        }
-
-        return cell
-    }
 
     // download file
     const downloadCSV = useCallback(
@@ -333,40 +267,29 @@ export function GenericTable<T>({
                     const values: string[] = []
 
                     obj[objKey].forEach((x: any) => {
-                        let include = true
+                        const value = keys
+                            .map((k: string) => {
+                                if (typeof x[k] === 'string') {
+                                    let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
 
-                        originalKeys.forEach((k: string) => {
-                            //verificar se pode incluir
-                            if (csvExcludeValidate(k, x[k])) {
-                                include = false
-                            }
-                        })
+                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
-                        if (include) {
-                            const value = keys
-                                .map((k: string) => {
-                                    if (typeof x[k] === 'string') {
-                                        let item = csvUpper ? (x[k] as string).toUpperCase() : x[k]
+                                    return removeQuotes ? `${item}` : `"${item}"`
+                                } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
+                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
-                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
-                                        return removeQuotes ? `${item}` : `"${item}"`
-                                    } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                        let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
-                                        let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
+                                    return removeQuotes ? `${item}` : `"${item}"`
+                                }
 
-                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+                                return x[k]
+                            })
+                            .join(',')
 
-                                        return removeQuotes ? `${item}` : `"${item}"`
-                                    }
-
-                                    return x[k]
-                                })
-                                .join(',')
-
-                            values.push(value)
-                        }
+                        values.push(value)
                     })
 
                     const csvData = hideTitleCSV ? values.join('\n') : '\uFEFF' + header + values.join('\n')
@@ -401,54 +324,43 @@ export function GenericTable<T>({
                 const values: string[] = []
 
                 list.forEach((x: any) => {
-                    let include = true
+                    const value = keys
+                        .map((k: string) => {
+                            if (k === 'dtInicio') return '{dtInicio}'
+                            else if (k === 'hrInicio') return '{hrInicio}'
+                            else if (k === 'hrTermino') return '{hrTermino}'
+                            else {
+                                if (typeof x[k] === 'string') {
+                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
 
-                    originalKeys.forEach((k: string) => {
-                        //verificar se pode incluir
-                        if (csvExcludeValidate(k, x[k])) {
-                            include = false
-                        }
-                    })
+                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
-                    if (include) {
-                        const value = keys
-                            .map((k: string) => {
-                                if (k === 'dtInicio') return '{dtInicio}'
-                                else if (k === 'hrInicio') return '{hrInicio}'
-                                else if (k === 'hrTermino') return '{hrTermino}'
-                                else {
-                                    if (typeof x[k] === 'string') {
-                                        let item = csvUpper && !csvExcludeUpper.includes(k) ? (x[k] as string).toUpperCase() : x[k]
+                                    return removeQuotes ? `${item}` : `"${item}"`
+                                } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
+                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
-                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
+                                    let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
-                                        return removeQuotes ? `${item}` : `"${item}"`
-                                    } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                        let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                    item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
 
-                                        let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
-
-                                        item = normalize ? item.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : item
-
-                                        return removeQuotes ? `${item}` : `"${item}"`
-                                    }
-
-                                    return x[k]
+                                    return removeQuotes ? `${item}` : `"${item}"`
                                 }
-                            })
-                            .join(',')
 
-                        if (multipleDataPath !== '') {
-                            const dates = x[multipleDataPath]
-
-                            if (dates) {
-                                ;(dates as any[]).forEach((d) => {
-                                    values.push(value.replace('{dtInicio}', d.dtInicio).replace('{hrInicio}', d.hrInicio).replace('{hrTermino}', d.hrTermino))
-                                })
+                                return x[k]
                             }
-                        } else {
-                            values.push(value)
+                        })
+                        .join(',')
+
+                    if (multipleDataPath !== '') {
+                        const dates = x[multipleDataPath]
+
+                        if (dates) {
+                            ;(dates as any[]).forEach((d) => {
+                                values.push(value.replace('{dtInicio}', d.dtInicio).replace('{hrInicio}', d.hrInicio).replace('{hrTermino}', d.hrTermino))
+                            })
                         }
+                    } else {
+                        values.push(value)
                     }
                 })
 
@@ -463,25 +375,6 @@ export function GenericTable<T>({
         },
         [list],
     )
-
-    function transformArrayObjectInString(o: Object): String {
-        let arrString: string[] = []
-
-        if (typeof o === 'object' && !Array.isArray(o) && o !== null) {
-            for (let [key, value] of Object.entries(o)) {
-                if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-                    arrString.push(key + ': ' + transformArrayObjectInString(value))
-                } else {
-                    if (value) {
-                        // Is true
-                        arrString.push(key)
-                    }
-                }
-            }
-        }
-
-        return '[' + arrString.join(' - ') + ']'
-    }
 
     const downloadCSVAll = useCallback(
         (e: React.MouseEvent) => {
@@ -535,244 +428,57 @@ export function GenericTable<T>({
     function expandAll() {
         let obj: { [key: number]: boolean } = {}
 
-        for (let i = 0; i < itemCount; i++) {
-            obj[i] = !isExpandAll
+        for (let i = 0; i < itemsCount; i++) {
+            obj[i] = !isExpandAll.current
         }
 
         setShowExpandObjOnExited(obj)
         setExpandObj(obj)
 
-        isExpandAll = !isExpandAll
+        isExpandAll.current = !isExpandAll.current
     }
 
     function reset() {
-        setList(startData)
-        setListClone(startData)
-        setPagCount(getCount(startData))
+        setList(startData.current)
+        setListClone(startData.current)
+        setPagCount(totalCount !== undefined ? Math.ceil(totalCount / itemsCount) : getCount(startData.current, itemsCount))
         setCurrentPage(0)
         setListPage(1)
         localStorage.removeItem(localTableName)
         setFilterKey(new Date().getTime().toString())
     }
 
-    function filtrar(filterData: FilterValue[]) {
-        if (!startData) return
+    const filtrar = useCallback(
+        (filterData: FilterValue[]) => {
+            filtrarDados({
+                filterData,
+                filtersFuncData,
+                localTableName,
+                setCurrentPage,
+                setList,
+                setListClone,
+                setListPage,
+                setPagCount,
+                startData: startData.current,
+                itemsCount,
+            })
+        },
+        [filtersFuncData, localTableName, itemsCount],
+    )
 
-        let currentData: any[] = JSON.parse(JSON.stringify(startData))
-
-        filterData
-            .filter((dt) => dt.value || (dt.operator === 'entre' && (dt.value || dt.value2)))
-            .forEach((dt) => {
-                let filteredData: any[] = []
-
-                switch (dt.type) {
-                    case 'number':
-                        switch (dt.operator) {
-                            case 'igual':
-                                currentData.forEach((cd) => {
-                                    const value = Number(get(cd, dt.keyName, ''))
-                                    if (value === Number(dt.value)) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                            case 'maior que':
-                                currentData.forEach((cd) => {
-                                    const value = Number(get(cd, dt.keyName, ''))
-
-                                    if (value > Number(dt.value)) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                            case 'menor que':
-                                currentData.forEach((cd) => {
-                                    const value = Number(get(cd, dt.keyName, ''))
-
-                                    if (value < Number(dt.value)) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                        }
-                        break
-                    case 'string':
-                        console.log('ata: ', dt.operator)
-                        switch (dt.operator) {
-                            case 'igual':
-                                currentData.forEach((cd) => {
-                                    const value = get(cd, dt.keyName, '')
-
-                                    if (dt.useList) {
-                                        if (formatarString(value) === formatarString(dt.value.id)) {
-                                            filteredData.push(cd)
-                                        }
-                                    } else {
-                                        if (formatarString(value) === formatarString(dt.value)) {
-                                            filteredData.push(cd)
-                                        }
-                                    }
-                                })
-                                break
-                            case 'contem':
-                                currentData.forEach((cd) => {
-                                    const value: string = get(cd, dt.keyName, '')
-
-                                    if (!value) return
-
-                                    if (dt.useList) {
-                                        if (formatarString(value).includes(formatarString(dt.value.id))) {
-                                            filteredData.push(cd)
-                                        }
-                                    } else {
-                                        if (formatarString(value).includes(formatarString(dt.value as string))) {
-                                            filteredData.push(cd)
-                                        }
-                                    }
-                                })
-                                break
-                            case 'tem um dos':
-                                currentData.forEach((cd) => {
-                                    const value: string = get(cd, dt.keyName, '')
-
-                                    if (!value) return
-
-                                    if ((dt.value as { id: any; label: string }[]).map((x) => formatarString(x.id)).includes(formatarString(value))) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                        }
-                        break
-                    case 'date':
-                        switch (dt.operator) {
-                            case 'data exata':
-                                currentData.forEach((cd) => {
-                                    const value = dayjs(get(cd, dt.keyName, ''), 'DD/MM/YYYY')
-
-                                    if (!value.isValid()) return
-
-                                    if (value.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                            case 'entre':
-                                const dateA = dt.value ? dayjs(dt.value as string, 'DD/MM/YYYY') : dayjs('01/01/2000', 'DD/MM/YYYY')
-                                const dateB = dt.value2 ? dayjs(dt.value2 as string, 'DD/MM/YYYY') : dayjs('31/12/2030', 'DD/MM/YYYY')
-
-                                currentData.forEach((cd) => {
-                                    const value = dayjs(get(cd, dt.keyName, ''), 'DD/MM/YYYY')
-
-                                    if ((value.isAfter(dateA) || value.isSame(dateA)) && (value.isBefore(dateB) || value.isSame(dateB))) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                        }
-                        break
-                    case 'dates':
-                        switch (dt.operator) {
-                            case 'data inicio':
-                                currentData.forEach((cd) => {
-                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
-
-                                    if (dates.length <= 0) return
-
-                                    var inicioDate = dates[0]
-                                    var inicioValue = dayjs(inicioDate, 'DD/MM/YYYY')
-
-                                    if (inicioValue.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                            case 'data fim':
-                                currentData.forEach((cd) => {
-                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
-
-                                    if (dates.length <= 0) return
-
-                                    var fimDate = dates[dates.length - 1]
-                                    var fimValue = dayjs(fimDate, 'DD/MM/YYYY')
-
-                                    if (fimValue.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                            case 'tem a data':
-                                currentData.forEach((cd) => {
-                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
-
-                                    if (dates.includes(dt.value)) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                            case 'entre':
-                                const dateA = dt.value ? dayjs(dt.value as string, 'DD/MM/YYYY') : dayjs('01/01/2000', 'DD/MM/YYYY')
-                                const dateB = dt.value2 ? dayjs(dt.value2 as string, 'DD/MM/YYYY') : dayjs('31/12/2030', 'DD/MM/YYYY')
-
-                                currentData.forEach((cd) => {
-                                    const dates: string[] = filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []
-
-                                    let isBetween = false
-
-                                    dates.forEach((dtStr) => {
-                                        if (isBetween) return
-
-                                        const dt = dayjs(dtStr, 'DD/MM/YYYY')
-
-                                        if (!dt.isValid()) return
-
-                                        if ((dt.isAfter(dateA) || dt.isSame(dateA)) && (dt.isBefore(dateB) || dt.isSame(dateB))) {
-                                            isBetween = true
-                                        }
-                                    })
-
-                                    if (isBetween) {
-                                        filteredData.push(cd)
-                                    }
-                                })
-                                break
-                        }
-                        break
-                }
-
-                currentData = filteredData
+    const ordenar = useCallback(
+        (order: OrderBy) => {
+            const sortedList = ordenarDados({
+                order,
+                list,
+                orderAsc: orderAsc.current,
             })
 
-        setList(currentData)
-        setPagCount(getCount(currentData))
-        setCurrentPage(0)
-        setListPage(1)
-        localStorage.setItem(localTableName, JSON.stringify(filterData))
-        setListClone(currentData)
-    }
-
-    function ordenar(order: OrderBy) {
-        let oldList = [...list]
-
-        oldList.sort((a, b) => {
-            const aValue = order.type === 'string' ? get(a, order.key, '') : Number(get(a, order.key, 0))
-            const bValue = order.type === 'string' ? get(b, order.key, '') : Number(get(b, order.key, 0))
-
-            if (orderAsc) {
-                if (aValue < bValue) return -1
-                if (aValue > bValue) return 1
-            } else {
-                if (aValue > bValue) return -1
-                if (aValue < bValue) return 1
-            }
-
-            return 0
-        })
-
-        orderAsc = !orderAsc
-
-        setList(oldList)
-    }
+            orderAsc.current = !orderAsc.current
+            setList(sortedList)
+        },
+        [list],
+    )
 
     // effect usado quando for mostrar "VER MAIS" e "VER MENOS"
     useEffect(() => {
@@ -831,8 +537,9 @@ export function GenericTable<T>({
                     <LinearProgress color='inherit' />
                     {Array(10)
                         .fill('')
-                        .map((x) => (
+                        .map((_x, idx1) => (
                             <Stack
+                                key={idx1}
                                 direction={{
                                     xs: 'column',
                                     md: 'row',
@@ -847,8 +554,8 @@ export function GenericTable<T>({
                             >
                                 {Array(7)
                                     .fill(0)
-                                    .map((y) => (
-                                        <Box>
+                                    .map((_y, idx2) => (
+                                        <Box key={idx2}>
                                             <Skeleton width={60} />
                                             <Skeleton width={120} />
                                         </Box>
@@ -889,9 +596,9 @@ export function GenericTable<T>({
                             <Button
                                 startIcon={<FilterAlt />}
                                 variant='contained'
-                                onClick={(e) =>
+                                onClick={() =>
                                     MODAL.open(
-                                        <CriarFiltro
+                                        <FilterMenu
                                             key={filterKey}
                                             reset={reset}
                                             filtrar={filtrar}
@@ -956,7 +663,7 @@ export function GenericTable<T>({
                         </Typography>
                         <Stack justifyContent='center'>
                             <Typography>
-                                Exibindo {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
+                                Exibindo {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {totalCount ? totalCount : list.length}
                             </Typography>
                         </Stack>
                     </Stack>
@@ -1049,7 +756,7 @@ export function GenericTable<T>({
                                                 <Collapse
                                                     in={alwaysExpanded || expandObj[index] === true}
                                                     collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
-                                                    onExited={(e) => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}
+                                                    onExited={() => setShowExpandObjOnExited((s) => ({ ...s, [index]: false }))}
                                                 >
                                                     <Box
                                                         sx={{
@@ -1090,9 +797,8 @@ export function GenericTable<T>({
                                     {showExpandObj[index] && !alwaysExpanded && (
                                         <Stack direction='row' justifyContent='flex-end' bottom={0} width='100%'>
                                             <Button
-                                                onClick={(e) => {
+                                                onClick={() => {
                                                     setExpandObj((s) => ({ ...s, [index]: !s[index] }))
-                                                    setShowExpandObjOnExited((s) => ({ ...s, [index]: true }))
                                                 }}
                                                 sx={{
                                                     padding: 0,
@@ -1254,380 +960,6 @@ export function GenericTable<T>({
             </Stack>
         </>
     )
-}
-
-function CriarFiltro({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
-    const [data, setData] = useState<FilterValue[]>(filters)
-    const [resetFields, setResetFields] = useState(false)
-
-    function addRule(filter: FilterValue) {
-        setData((dt) => {
-            return [...dt, filter]
-        })
-    }
-
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-    const open = Boolean(anchorEl)
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-    const handleClose = () => {
-        setAnchorEl(null)
-    }
-
-    return (
-        <Box
-            width={{
-                xs: 'inherit',
-                md: 850,
-            }}
-        >
-            <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-                {baseFilters.map((x) => (
-                    <MenuItem
-                        onClick={(e) => {
-                            addRule(x)
-                            setAnchorEl(null)
-                        }}
-                    >
-                        {x.label}
-                    </MenuItem>
-                ))}
-            </Menu>
-
-            <Stack direction='row' justifyContent='space-between'>
-                {/* <Button
-                    variant='contained'
-                    onClick={handleClick}
-                    sx={{
-                        marginBottom: 2,
-                        textTransform: 'capitalize',
-                    }}
-                    endIcon={<ExpandMore />}
-                >
-                    Adicionar Regra
-                </Button> */}
-                <Typography fontWeight={700} fontSize={18}>
-                    Filtrar
-                </Typography>
-                <Button
-                    startIcon={<Refresh />}
-                    sx={{
-                        textTransform: 'capitalize',
-                    }}
-                    onClick={(e) => {
-                        reset()
-                        MODAL.close()
-                    }}
-                >
-                    Limpar
-                </Button>
-            </Stack>
-
-            <Box marginBottom={1}>
-                <Alert severity='warning'>Preencha apenas os campos que deseja filtrar.</Alert>
-            </Box>
-
-            <Stack>
-                {resetFields ? (
-                    data.map((d, idx) => (
-                        <FilterRow
-                            filterValue={d}
-                            setReset={setResetFields}
-                            idx={idx}
-                            setDt={(valueData) => {
-                                setData((dt) => {
-                                    let arr = [...dt]
-                                    arr[idx] = valueData
-                                    return arr
-                                })
-                            }}
-                            removeDt={() => {
-                                setData((dt) => {
-                                    let arr = [...dt]
-                                    arr.splice(idx, 1)
-                                    return arr
-                                })
-                            }}
-                        />
-                    ))
-                ) : (
-                    <Box>
-                        {data.map((d, idx) => (
-                            <FilterRow
-                                filterValue={d}
-                                setReset={setResetFields}
-                                idx={idx}
-                                setDt={(valueData) => {
-                                    setData((dt) => {
-                                        let arr = [...dt]
-                                        arr[idx] = valueData
-                                        return arr
-                                    })
-                                }}
-                                removeDt={() => {
-                                    setData((dt) => {
-                                        let arr = [...dt]
-                                        arr.splice(idx, 1)
-                                        return arr
-                                    })
-                                }}
-                            />
-                        ))}
-                    </Box>
-                )}
-            </Stack>
-            <Stack direction='row' justifyContent='flex-end' marginTop={1}>
-                <Button
-                    variant='contained'
-                    color='success'
-                    startIcon={<Search />}
-                    sx={{
-                        textTransform: 'capitalize',
-                    }}
-                    onClick={(e) => {
-                        filtrar(data)
-                        MODAL.close()
-                    }}
-                >
-                    Filtrar
-                </Button>
-            </Stack>
-        </Box>
-    )
-}
-
-function FilterRow({
-    filterValue,
-    setDt,
-    removeDt,
-    idx,
-    setReset,
-}: {
-    filterValue: FilterValue
-    setDt: (value: any) => void
-    removeDt: () => void
-    idx: number
-    setReset: React.Dispatch<React.SetStateAction<boolean>>
-}) {
-    const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
-    const [data, setData] = useState<FilterValue>(filterValue)
-    const theme = useTheme()
-    const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
-
-    useEffect(() => {
-        setDt(data)
-    }, [data])
-
-    return (
-        <Stack direction='row' alignItems='end' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
-            {!isSmall && (
-                <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
-                    {filterValue.label}
-                </Typography>
-            )}
-            <FormControl
-                sx={{
-                    width: '100%',
-                }}
-            >
-                {isSmall && <Typography>{filterValue.label}</Typography>}
-                <Select
-                    onChange={(e) => {
-                        const value = e.target.value
-
-                        setData((obj) => ({ ...obj, operator: value as FilterOperators, value: '' }))
-                        setCurrentOperator(value as FilterOperators)
-                    }}
-                    defaultValue={currentOperator}
-                    size='small'
-                    sx={{
-                        bgcolor: 'white',
-                    }}
-                    fullWidth
-                >
-                    {filterValue.operators.map((x) => (
-                        <MenuItem value={x}>{x}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <FilterField
-                filterValue={filterValue}
-                operator={data.operator}
-                onChange={(value, type: 'value' | 'value2' = 'value') => {
-                    setData((obj) => ({ ...obj, [type]: value }))
-                }}
-            />
-            {/* <IconButton
-                onClick={(e) => {
-                    setDt({ ...data, value: '' })
-                    setReset((s) => !s)
-                }}
-            >
-                <Refresh />
-            </IconButton> */}
-        </Stack>
-    )
-}
-
-function FilterField({ filterValue, operator, onChange }: { filterValue: FilterValue; operator: FilterOperators; onChange: (value: string | any[], type?: 'value' | 'value2') => void }) {
-    switch (filterValue.type) {
-        case 'number':
-            return (
-                <TextField
-                    type='number'
-                    size='small'
-                    placeholder='Valor'
-                    defaultValue={filterValue.value}
-                    onChange={(e) => {
-                        onChange(e.target.value)
-                    }}
-                    sx={{
-                        bgcolor: 'white',
-                    }}
-                    fullWidth
-                />
-            )
-        case 'string':
-            if (filterValue.useList) {
-                switch (operator) {
-                    case 'tem um dos':
-                        return (
-                            <Autocomplete
-                                multiple
-                                id='tags-standard'
-                                onChange={(e, value) => {
-                                    if (value.length <= 0) {
-                                        onChange('')
-                                        return
-                                    }
-
-                                    onChange(value)
-                                }}
-                                options={filterValue.useList}
-                                defaultValue={Array.isArray(filterValue.value) ? filterValue.value : []}
-                                renderInput={(params) => <TextField {...params} variant='standard' placeholder='Escolha os valores' fullWidth />}
-                                fullWidth
-                            />
-                        )
-                    case 'contem':
-                    case 'igual':
-                        return (
-                            <Box width='100%'>
-                                <Autocomplete
-                                    options={filterValue.useList}
-                                    onChange={(e, value) => {
-                                        onChange(value as any)
-                                    }}
-                                    defaultValue={typeof filterValue.value === 'object' ? filterValue.value : undefined}
-                                    isOptionEqualToValue={(option, value) => option.label === value.label}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            size='small'
-                                            placeholder='Escolha um valor'
-                                            fullWidth
-                                            sx={{
-                                                bgcolor: 'white',
-                                            }}
-                                        />
-                                    )}
-                                    fullWidth
-                                />
-                            </Box>
-                        )
-                }
-            }
-
-            return (
-                <TextField
-                    size='small'
-                    placeholder='Valor'
-                    defaultValue={filterValue.value}
-                    onChange={(e) => {
-                        onChange(e.target.value)
-                    }}
-                    sx={{
-                        bgcolor: 'white',
-                    }}
-                    fullWidth
-                />
-            )
-        case 'date':
-        case 'dates':
-            switch (operator) {
-                case 'data exata':
-                case 'data fim':
-                case 'data inicio':
-                case 'tem a data':
-                    return (
-                        <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                format='DD/MM/YYYY'
-                                onChange={(dt: any) => {
-                                    onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
-                                }}
-                                defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
-                                sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
-                                    width: '100%',
-                                    bgcolor: 'white',
-                                }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
-                            />
-                        </LocalizationProvider>
-                    )
-                case 'entre':
-                    return (
-                        <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                format='DD/MM/YYYY'
-                                onChange={(dt: any) => {
-                                    onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
-                                }}
-                                defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
-                                sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
-                                    width: '100%',
-                                    bgcolor: 'white',
-                                }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
-                            />
-                            <DatePicker
-                                format='DD/MM/YYYY'
-                                onChange={(dt: any) => {
-                                    onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '', 'value2')
-                                }}
-                                defaultValue={filterValue.value2 ? dayjs(filterValue.value2 as string, 'DD/MM/YYYY') : undefined}
-                                sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
-                                    width: '100%',
-                                    bgcolor: 'white',
-                                }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
-                            />
-                        </LocalizationProvider>
-                    )
-            }
-            break
-    }
-
-    return <></>
 }
 
 export default React.memo(GenericTable)

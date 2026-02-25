@@ -1,7 +1,6 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { Box, Button, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 export let MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
@@ -15,19 +14,11 @@ export let MODAL: {
     reparent: () => <></>,
 }
 
-function ReparentHelper() {
-    const ref = useRef(null)
-
-    return <div ref={ref}></div>
-}
-
 export function CustomModalProvider() {
     const [open, setOpen] = useState(false)
     const [content, setContent] = useState<any>(null)
     // const contentRef = useRef<JSX.Element | JSX.Element[]>(<></>)
     const handleClose = () => setOpen(false)
-    const containerRef = useRef(null)
-
     const theme = useTheme()
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 

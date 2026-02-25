@@ -12,7 +12,6 @@ import { FilterOperators, FilterValue } from './types'
 
 export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
     const [data, setData] = useState<FilterValue[]>(filters)
-    const [resetFields, setResetFields] = useState(false)
 
     function addRule(filter: FilterValue) {
         setData((dt) => {
@@ -22,9 +21,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
+
     const handleClose = () => {
         setAnchorEl(null)
     }
@@ -39,7 +36,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
             <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
                 {baseFilters.map((x) => (
                     <MenuItem
-                        onClick={(e) => {
+                        onClick={() => {
                             addRule(x)
                             setAnchorEl(null)
                         }}
@@ -69,7 +66,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                     sx={{
                         textTransform: 'capitalize',
                     }}
-                    onClick={(e) => {
+                    onClick={() => {
                         reset()
                         MODAL.close()
                     }}
@@ -83,11 +80,11 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
             </Box>
 
             <Stack>
-                {resetFields ? (
-                    data.map((d, idx) => (
+                <Box>
+                    {data.map((d, idx) => (
                         <FilterRow
+                            key={idx}
                             filterValue={d}
-                            setReset={setResetFields}
                             idx={idx}
                             setDt={(valueData) => {
                                 setData((dt) => {
@@ -96,40 +93,9 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                                     return arr
                                 })
                             }}
-                            removeDt={() => {
-                                setData((dt) => {
-                                    let arr = [...dt]
-                                    arr.splice(idx, 1)
-                                    return arr
-                                })
-                            }}
                         />
-                    ))
-                ) : (
-                    <Box>
-                        {data.map((d, idx) => (
-                            <FilterRow
-                                filterValue={d}
-                                setReset={setResetFields}
-                                idx={idx}
-                                setDt={(valueData) => {
-                                    setData((dt) => {
-                                        let arr = [...dt]
-                                        arr[idx] = valueData
-                                        return arr
-                                    })
-                                }}
-                                removeDt={() => {
-                                    setData((dt) => {
-                                        let arr = [...dt]
-                                        arr.splice(idx, 1)
-                                        return arr
-                                    })
-                                }}
-                            />
-                        ))}
-                    </Box>
-                )}
+                    ))}
+                </Box>
             </Stack>
             <Stack direction='row' justifyContent='flex-end' marginTop={1}>
                 <Button
@@ -139,7 +105,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                     sx={{
                         textTransform: 'capitalize',
                     }}
-                    onClick={(e) => {
+                    onClick={() => {
                         filtrar(data)
                         MODAL.close()
                     }}
@@ -151,19 +117,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
     )
 }
 
-function FilterRow({
-    filterValue,
-    setDt,
-    removeDt,
-    idx,
-    setReset,
-}: {
-    filterValue: FilterValue
-    setDt: (value: any) => void
-    removeDt: () => void
-    idx: number
-    setReset: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setDt: (value: any) => void; idx: number }) {
     const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
     const [data, setData] = useState<FilterValue>(filterValue)
     const theme = useTheme()
@@ -250,7 +204,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                             <Autocomplete
                                 multiple
                                 id='tags-standard'
-                                onChange={(e, value) => {
+                                onChange={(_e, value) => {
                                     if (value.length <= 0) {
                                         onChange('')
                                         return
@@ -270,7 +224,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                             <Box width='100%'>
                                 <Autocomplete
                                     options={filterValue.useList}
-                                    onChange={(e, value) => {
+                                    onChange={(_e, value) => {
                                         onChange(value as any)
                                     }}
                                     defaultValue={typeof filterValue.value === 'object' ? filterValue.value : undefined}
