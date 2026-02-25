@@ -238,10 +238,39 @@ export default function Teste() {
         label: 'CONSEG PARANOÁ',
     }
 
-    return <Exemplo required />
+    // return <Exemplo required />
 
     return (
         <Box bgcolor='#F9F9F9'>
+
+            {/* <TabNavBar
+                img='/conoc/logossp.png'
+                color='#208FE8'
+                links={[
+                    {
+                        name: 'Meus atendimentos',
+                        path: '/ocorrencia/doUsuario',
+                    },
+                    {
+                        name: 'Validar certidão',
+                        path: '/ocorrencia/validar',
+                    },
+                    {
+                        name: 'Atendimentos recentes',
+                        path: '/ocorrencia',
+                    },
+                    {
+                        name: 'Pesquisa de atendimentos',
+                        path: '/ocorrencia/consulta',
+                    },
+                ]}
+                pos='inherit'
+                title={'Secretaria de Segurança Pública do Distrito Federal'}
+                menuItems={[]}
+                logoutMsg='Sair'
+                paddingBottom={3}
+                next={false}
+            /> */}
 
 
             {/* <Input
@@ -281,13 +310,13 @@ export default function Teste() {
                 required={true}
             /> */}
             {/* <Input type='input' name='test' title='Teste' required /> */}
-            {/* <Table
+            <Table
                 id='admin'
                 useKC={false}
-                columnSize={11}
+                columnSize={2}
                 tableName='Evento'
                 action={(prop) => <></>}
-                collapsedSize={59}
+                // collapsedSize={59}
                 // dataPath='body.data'
                 alwaysExpanded
                 csvConfig={{
@@ -306,46 +335,46 @@ export default function Teste() {
                             </Stack>
                         ),
                     },
-                    {
-                        keyName: 'dsEnderecoLocal',
-                        title: 'Local',
-                    },
-                    {
-                        keyName: 'dtCadastro',
-                        title: 'Data de Solicitação',
-                    },
+                    // // {
+                    // //     keyName: 'dsEnderecoLocal',
+                    // //     title: 'Local',
+                    // // },
+                    // // {
+                    // //     keyName: 'dtCadastro',
+                    // //     title: 'Data de Solicitação',
+                    // // },
 
-                    {
-                        keyName: 'NO_TITULO',
-                        title: 'Nome do Evento',
-                    },
-                    {
-                        keyName: 'noTableRa',
-                        title: 'RA',
-                    },
-                    {
-                        keyName: 'nuPublicoMaximo',
-                        title: 'Público Máximo',
-                    },
-                    {
-                        keyName: 'dtTableDates',
-                        title: 'Datas',
-                        size: 2,
-                    },
-                    {
-                        keyName: 'nuProcessoFormatadoSei',
-                        title: 'Processo SEI',
-                    },
+                    // // {
+                    // //     keyName: 'NO_TITULO',
+                    // //     title: 'Nome do Evento',
+                    // // },
+                    // // {
+                    // //     keyName: 'noTableRa',
+                    // //     title: 'RA',
+                    // // },
+                    // // {
+                    // //     keyName: 'nuPublicoMaximo',
+                    // //     title: 'Público Máximo',
+                    // // },
+                    // // {
+                    // //     keyName: 'dtTableDates',
+                    // //     title: 'Datas',
+                    // //     size: 2,
+                    // // },
+                    // // {
+                    // //     keyName: 'nuProcessoFormatadoSei',
+                    // //     title: 'Processo SEI',
+                    // },
                     {
                         keyName: 'stEventoExterno',
                         title: 'Status do Evento',
                     },
                 ]}
                 fetchFunc={() => fetch('http://localhost:7171/table2')}
-                mediaQueryLG={{
-                    all: 3.5,
-                    action: 1,
-                }}
+                // mediaQueryLG={{
+                //     all: 3.5,
+                //     action: 1,
+                // }}
                 // filtros
                 filtersFunc={{
                     datas: (value) => {
@@ -458,7 +487,7 @@ export default function Teste() {
                         type: 'number',
                     },
                 ]}
-            /> */}
+            />
             {/* <Map
                 firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
                 mapStyle={{ height: '400px', width: '500px' }}

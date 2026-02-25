@@ -12,10 +12,17 @@ import { AuthContext } from '../../context/auth'
 import { LoginOptions, LogoutOptions } from '../../types/auth'
 
 
-function verificarRota(route: string, path: string) {
-    if (path === '/') return route === path
+function verificarRota(route: string, path: string): boolean {
+    if (route === path) {
+        return true
+    }
 
-    return route.startsWith(path)
+    // matches dynamic next routes
+    if (path !== '/' && route.startsWith(path + '/[')) {
+        return true
+    }
+
+    return false
 }
 
 export default function TabNavBar({
