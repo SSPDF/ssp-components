@@ -401,7 +401,7 @@ export function Table({
                                         filtrar={(dt) => handleFiltrarDados(dt)}
                                         baseFilters={[...filters]}
                                         filters={localStorage.getItem(localTableName) ? (JSON.parse(localStorage.getItem(localTableName)!) as FilterValue[]) : [...filters]}
-                                    />
+                                    />,
                                 )
                             }
                             sx={{
@@ -481,10 +481,10 @@ export function Table({
                                         {Array.isArray(x.value)
                                             ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
                                             : typeof x.value === 'object'
-                                            ? (x.value as { id: string; label: string }).label
-                                            : x.operator === 'entre'
-                                            ? `${x.value ? x.value : 'Antes'} e ${x.value2 ? x.value2 : 'Depois'}`
-                                            : x.value.toString()}
+                                              ? (x.value as { id: string; label: string }).label
+                                              : x.operator === 'entre'
+                                                ? `${x.value ? x.value : 'Antes'} e ${x.value2 ? x.value2 : 'Depois'}`
+                                                : x.value.toString()}
                                     </Typography>
                                     <IconButton
                                         onClick={(e) => {
@@ -546,12 +546,12 @@ export function Table({
                                                 overflow: 'hidden',
                                             }}
                                         >
-                                            <Box sx={{ width: 'max-content', paddingX: 1 }}>
+                                            <Box sx={{ width: '100%', paddingX: 1 }}>
                                                 <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}
                                                 </Typography>
                                             </Box>
-                                            <Box paddingLeft={1} position='relative'>
+                                            <Box paddingLeft={1}>
                                                 <Collapse
                                                     in={alwaysExpanded || expandObj[index] === true}
                                                     collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
@@ -567,21 +567,12 @@ export function Table({
                                                     >
                                                         {c.customComponent ? (
                                                             c.customComponent(get(x, c.keyName), x)
+                                                        ) : alwaysExpanded || expandObj[index] === true ? (
+                                                            get(x, c.keyName, '')
+                                                        ) : (get(x, c.keyName, '') ?? '').toString().length >= expandTextMaxLength ? (
+                                                            <>{(get(x, c.keyName, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
                                                         ) : (
-                                                            <>
-                                                                <Box color='transparent' sx={{ pointerEvents: 'none', userSelect: 'none' }}>
-                                                                    {get(x, c.keyName, '')}
-                                                                </Box>
-                                                                <Box position='absolute' top={0}>
-                                                                    {alwaysExpanded || showExpandObjOnExited[index] ? (
-                                                                        get(x, c.keyName, '')
-                                                                    ) : (get(x, c.keyName, '') ?? '').toString().length >= expandTextMaxLength ? (
-                                                                        <>{(get(x, c.keyName, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
-                                                                    ) : (
-                                                                        get(x, c.keyName, '')
-                                                                    )}
-                                                                </Box>
-                                                            </>
+                                                            get(x, c.keyName, '')
                                                         )}
                                                     </Box>
                                                 </Collapse>

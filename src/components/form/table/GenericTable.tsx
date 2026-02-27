@@ -747,12 +747,12 @@ export function GenericTable({
                                                 overflow: 'hidden',
                                             }}
                                         >
-                                            <Box sx={{ width: 'max-content', paddingX: 1 }}>
+                                            <Box sx={{ width: '100%', paddingX: 1 }}>
                                                 <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}
                                                 </Typography>
                                             </Box>
-                                            <Box paddingLeft={1} position='relative'>
+                                            <Box paddingLeft={1}>
                                                 <Collapse
                                                     in={alwaysExpanded || expandObj[index] === true}
                                                     collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
@@ -768,21 +768,12 @@ export function GenericTable({
                                                     >
                                                         {c.customComponent ? (
                                                             c.customComponent(get(x, c.keyName as any), x)
+                                                        ) : alwaysExpanded || expandObj[index] === true ? (
+                                                            get(x, c?.keyName as any, '')
+                                                        ) : (get(x, c?.keyName as any, '') ?? '').toString().length >= expandTextMaxLength ? (
+                                                            <>{(get(x, c?.keyName as any, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
                                                         ) : (
-                                                            <>
-                                                                <Box color='transparent' sx={{ pointerEvents: 'none', userSelect: 'none' }}>
-                                                                    {get(x, c.keyName as any, '')}
-                                                                </Box>
-                                                                <Box position='absolute' top={0}>
-                                                                    {alwaysExpanded || showExpandObjOnExited[index] ? (
-                                                                        get(x, c?.keyName as any, '')
-                                                                    ) : (get(x, c?.keyName as any, '') ?? '').toString().length >= expandTextMaxLength ? (
-                                                                        <>{(get(x, c?.keyName as any, '') ?? '').toString().substring(0, expandTextMaxLength) + '...'}</>
-                                                                    ) : (
-                                                                        get(x, c?.keyName as any, '')
-                                                                    )}
-                                                                </Box>
-                                                            </>
+                                                            get(x, c?.keyName as any, '')
                                                         )}
                                                     </Box>
                                                 </Collapse>
