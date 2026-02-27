@@ -542,6 +542,9 @@ export function Table({
                                             item
                                             xs={12}
                                             md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
+                                            {...({
+                                                size: { xs: 12, md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1) },
+                                            } as any)}
                                             sx={{
                                                 overflow: 'hidden',
                                             }}
@@ -579,7 +582,12 @@ export function Table({
                                             </Box>
                                         </Grid>
                                     ))}
-                                    <Grid item xs={12} md={lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize}>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        md={lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize}
+                                        {...({ size: { xs: 12, md: lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize } } as any)}
+                                    >
                                         <Stack direction='row' alignItems='center' justifyContent={isSmall ? 'start' : 'flex-end'} sx={{ height: '100%', paddingBottom: isSmall ? 2 : 0 }}>
                                             {action(x)}
                                         </Stack>
