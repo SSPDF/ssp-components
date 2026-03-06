@@ -96,7 +96,7 @@ export function GenericTable({
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
     const startData = useRef<any[]>([])
-    const isExpandAll = useRef<boolean>(false)
+    const [isAllExpanded, setIsAllExpanded] = useState(false)
     const localTableName = `tableFilter_${id}`
     const localTableNameCache = `tableFilterCache_${id}`
     const orderAsc = useRef<boolean>(false)
@@ -442,16 +442,16 @@ export function GenericTable({
     )
 
     function expandAll() {
+        const nextExpanded = !isAllExpanded
         let obj: { [key: number]: boolean } = {}
 
         for (let i = 0; i < itemsCount; i++) {
-            obj[i] = !isExpandAll.current
+            obj[i] = nextExpanded
         }
 
         setShowExpandObjOnExited(obj)
         setExpandObj(obj)
-
-        isExpandAll.current = !isExpandAll.current
+        setIsAllExpanded(nextExpanded)
     }
 
     function reset() {
@@ -654,7 +654,7 @@ export function GenericTable({
                             <Button
                                 variant='contained'
                                 fullWidth
-                                startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                                startIcon={isAllExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                                 sx={{
                                     backgroundColor: '#637082',
                                     ':hover': {
@@ -668,7 +668,7 @@ export function GenericTable({
                                 }}
                                 onClick={expandAll}
                             >
-                                {isExpandAll ? 'Recolher' : 'Expandir'}
+                                {isAllExpanded ? 'Recolher' : 'Expandir'}
                             </Button>
                         </Stack>
                     </Stack>
