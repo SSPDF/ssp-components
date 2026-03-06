@@ -290,4 +290,17 @@ export interface TableProps2 {
 
     /** Maximum limit per page from the server */
     pageLimit?: number
+
+    /**
+     * Quando true, a paginação é controlada externamente (server-side).
+     * - page/onPageChange controlam a página atual; ao mudar página, onPageChange é chamado para o pai buscar os dados.
+     * - initialData deve conter apenas os itens da página atual (já retornados pela API).
+     */
+    serverSidePagination?: boolean
+
+    /** Página atual (1-based). Usado quando serverSidePagination é true. */
+    page?: number
+
+    /** Callback ao mudar de página. Usado quando serverSidePagination é true para o pai buscar a nova página via API. */
+    onPageChange?: (page: number) => void
 }

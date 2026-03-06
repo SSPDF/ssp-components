@@ -1,4 +1,4 @@
-import { Button, Paper, Stack } from '@mui/material'
+import { Box, Button, Paper, Stack, Typography } from '@mui/material'
 import { Meta, StoryObj } from '@storybook/nextjs'
 import Link from 'next/link'
 import { GenericTable } from '../components/form/table/GenericTable'
@@ -189,5 +189,107 @@ export const APIPaginada: Story = {
     args: {
         ...Base.args,
         itemCount: 10,
+    },
+}
+
+const PAGE_SIZE = 10
+const TOTAL_ITEMS_MOCK = 47
+
+function fakeApiFetchPage(page: number): Promise<{ items: FakeDataProps[]; total: number }> {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const start = (page - 1) * PAGE_SIZE
+            const end = Math.min(start + PAGE_SIZE, TOTAL_ITEMS_MOCK)
+            const items: FakeDataProps[] = Array.from({ length: end - start }).map((_, i) => {
+                const idx = start + i + 1
+                return {
+                    id: idx.toString(),
+                    name: `Usuário ${idx}`,
+                    date: new Date().toLocaleString('pt-BR'),
+                    status: idx % 2 === 0 ? 'ATIVO' : 'INATIVO',
+                }
+            })
+            resolve({ items, total: TOTAL_ITEMS_MOCK })
+        }, 600)
+    })
+}
+
+interface ApiCallLog {
+    page: number
+    at: string
+}
+
+export const PaginacaoServerSide: Story = {
+    render: (args) => {
+        const [page, setPage] = React.useState(1)
+        const [data, setData] = React.useState<FakeDataProps[]>([])
+        const [totalCount, setTotalCount] = React.useState(0)
+        const [loading, setLoading] = React.useState(true)
+        const [apiCalls, setApiCalls] = React.useState<ApiCallLog[]>([])
+
+        const loadPage = React.useCallback(async (pageNum: number) => {
+            setLoading(true)
+            setApiCalls((prev) => [
+                ...prev,
+                { page: pageNum, at: new Date().toLocaleTimeString('pt-BR', { hour12: false }) },
+            ])
+            const { items, total } = await fakeApiFetchPage(pageNum)
+            setData(items)
+            setTotalCount(total)
+            setLoading(false)
+        }, [])
+
+        React.useEffect(() => {
+            loadPage(page)
+        }, [page, loadPage])
+
+        return (
+            <Stack spacing={2}>
+                <Box
+                    sx={{
+                        p: 2,
+                        bgcolor: '#f0f9ff',
+                        borderRadius: 2,
+                        border: '1px solid #bae6fd',
+                    }}
+                >
+                    <Typography variant="subtitle2" fontWeight={700} color="#0369a1" gutterBottom>
+                        Chamadas à API (prova de paginação server-side)
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        Cada troca de página dispara uma nova requisição. Registros abaixo:
+                    </Typography>
+                    {apiCalls.length === 0 ? (
+                        <Typography variant="body2" color="text.secondary">
+                            Nenhuma chamada ainda.
+                        </Typography>
+                    ) : (
+                        <Stack direction="column" component="ul" sx={{ m: 0, pl: 2.5, listStyle: 'disc' }} spacing={0.5}>
+                            {apiCalls.map((call, i) => (
+                                <Typography key={i} component="li" variant="body2" display="block">
+                                    <strong>Página {call.page}</strong> às {call.at}
+                                </Typography>
+                            ))}
+                        </Stack>
+                    )}
+                </Box>
+                <GenericTable
+                    {...args}
+                    id="generic-table-server-side"
+                    serverSidePagination
+                    page={page}
+                    onPageChange={setPage}
+                    initialData={data}
+                    totalCount={totalCount}
+                    pageLimit={PAGE_SIZE}
+                    isLoading={loading}
+                />
+            </Stack>
+        )
+    },
+    args: {
+        ...Base.args,
+        id: 'generic-table-server-side',
+        itemCount: PAGE_SIZE,
     },
 }

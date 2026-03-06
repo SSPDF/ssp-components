@@ -67,6 +67,9 @@ export function GenericTable({
     alwaysExpanded = false,
     totalCount,
     pageLimit,
+    serverSidePagination = false,
+    page: controlledPage,
+    onPageChange,
 }: TableProps2) {
     const [error] = useState<null | { status: number }>(null)
     const [data, setData] = useState<any>(initialData)
@@ -79,6 +82,9 @@ export function GenericTable({
     const [currentPage, setCurrentPage] = useState(0)
     const [paginationCount, setPagCount] = useState(1)
     const [listPage, setListPage] = useState(1)
+
+    const isControlledPage = serverSidePagination && controlledPage !== undefined
+    const currentListPage = isControlledPage ? controlledPage : listPage
     const [expandObj, setExpandObj] = useState<{ [key: number]: boolean }>({})
     const [showExpandObj, setShowExpandObj] = useState<{ [key: number]: boolean }>({})
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
@@ -135,12 +141,19 @@ export function GenericTable({
     }, [itemsCount, data, error, getData, totalCount, localTableName])
 
     useEffect(() => {
-        setCurrentPage(listPage - 1)
-    }, [listPage])
+        setCurrentPage(currentListPage - 1)
+    }, [currentListPage])
 
-    const onPaginationChange = useCallback((_e: ChangeEvent<unknown>, page: number) => {
-        setListPage(page)
-    }, [])
+    const onPaginationChange = useCallback(
+        (_e: ChangeEvent<unknown>, page: number) => {
+            if (serverSidePagination && onPageChange) {
+                onPageChange(page)
+            } else {
+                setListPage(page)
+            }
+        },
+        [serverSidePagination, onPageChange],
+    )
 
     function onInputChange(e: ChangeEvent) {
         console.log(listClone)
@@ -237,9 +250,12 @@ export function GenericTable({
     }
 
     const getMaxItems = useCallback(() => {
+        if (serverSidePagination) {
+            return list.slice(0, itemsCount)
+        }
         const start = currentPage * itemsCount
         return list.slice(start, start + itemsCount)
-    }, [list, itemsCount, currentPage])
+    }, [list, itemsCount, currentPage, serverSidePagination])
 
     // download file
     const downloadCSV = useCallback(
@@ -663,7 +679,7 @@ export function GenericTable({
                         </Typography>
                         <Stack justifyContent='center'>
                             <Typography>
-                                Exibindo {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {totalCount ? totalCount : list.length}
+                                Exibindo {getMaxItems().length ? currentPage * itemsCount + 1 : 0}-{currentPage * itemsCount + getMaxItems().length} de {totalCount ?? list.length}
                             </Typography>
                         </Stack>
                     </Stack>
@@ -879,15 +895,15 @@ export function GenericTable({
             <Stack direction='row' justifyContent='center' paddingY={1} paddingTop={2}>
                 <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
                     <Button
-                        onClick={(e) =>
-                            setListPage((s) => {
-                                if (s > 1) {
-                                    return s - 1
-                                }
-
-                                return 1
-                            })
-                        }
+                        onClick={() => {
+                            const nextPage = Math.max(1, currentListPage - 1)
+                            if (serverSidePagination && onPageChange) {
+                                onPageChange(nextPage)
+                            } else {
+                                setListPage(nextPage)
+                            }
+                        }}
+                        disabled={currentListPage <= 1}
                         sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
@@ -928,7 +944,7 @@ export function GenericTable({
                         siblingCount={isSmall ? 0 : 6}
                         size='large'
                         onChange={onPaginationChange}
-                        page={listPage}
+                        page={currentListPage}
                         shape='circular'
                         variant='outlined'
                         sx={{
@@ -942,15 +958,15 @@ export function GenericTable({
                         }}
                     />
                     <Button
-                        onClick={(e) =>
-                            setListPage((s) => {
-                                if (s < paginationCount) {
-                                    return s + 1
-                                }
-
-                                return paginationCount
-                            })
-                        }
+                        onClick={() => {
+                            const nextPage = Math.min(paginationCount, currentListPage + 1)
+                            if (serverSidePagination && onPageChange) {
+                                onPageChange(nextPage)
+                            } else {
+                                setListPage(nextPage)
+                            }
+                        }}
+                        disabled={currentListPage >= paginationCount}
                         sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />
