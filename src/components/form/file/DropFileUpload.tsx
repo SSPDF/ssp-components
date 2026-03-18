@@ -70,7 +70,7 @@ export default function DropFileUpload({
     md?: number
     disabled?: boolean
 }) {
-    const { getRootProps, getInputProps } = useDropzone({
+    const { getRootProps, getInputProps, inputRef } = useDropzone({
         disabled,
         multiple,
         useFsAccessApi: true,
@@ -145,6 +145,20 @@ export default function DropFileUpload({
         },
         ...(dropZoneOptions || {}),
     })
+    const assignRef = <T,>(...refs: Array<React.Ref<T> | undefined>) => {
+        return (node: T | null) => {
+            refs.forEach((ref) => {
+                if (!ref) return
+
+                if (typeof ref === 'function') {
+                    ref(node)
+                    return
+                }
+
+                ;(ref as React.MutableRefObject<T | null>).current = node
+            })
+        }
+    }
     const context = useContext(FormContext)!
     const { user } = useContext(AuthContext)
 
@@ -237,16 +251,18 @@ export default function DropFileUpload({
                         cursor: 'pointer',
                     }}
                 >
-                    <input
-                        {...getInputProps()}
-                        {...context.formRegister(name, {
+                    {(() => {
+                        const inputProps = getInputProps()
+                        const { ref: formRef } = context.formRegister(name, {
                             validate: (v, f) => {
                                 if (required && (v === null || v === undefined || (Array.isArray(v) && v.length === 0))) {
                                     return 'O campo de arquivo é obrigatório'
                                 }
                             },
-                        })}
-                    />
+                        })
+
+                        return <input {...inputProps} ref={assignRef(inputRef, formRef)} />
+                    })()}
                     <Stack spacing={2} alignItems='center'>
                         <Box>
                             <Typography fontWeight={600} fontSize={18}>
@@ -368,3 +384,6 @@ export default function DropFileUpload({
         </Grid>
     )
 }
+
+
+

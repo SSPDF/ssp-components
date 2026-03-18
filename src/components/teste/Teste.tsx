@@ -310,7 +310,7 @@ export default function Teste() {
                 required={true}
             /> */}
             {/* <Input type='input' name='test' title='Teste' required /> */}
-            <Table
+            {/* <Table
                 id='admin'
                 useKC={false}
                 columnSize={2}
@@ -487,7 +487,7 @@ export default function Teste() {
                         type: 'number',
                     },
                 ]}
-            />
+            /> */}
             {/* <Map
                 firstCoords={{ lat: -15.780919186447452, lng: -47.908317328037604 }}
                 mapStyle={{ height: '400px', width: '500px' }}
@@ -497,7 +497,7 @@ export default function Teste() {
                 fixedPosition
             /> */}
 
-            {/* <DropFileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' /> */}
+            <DropFileUpload apiURL='#' name='teste' title='Input' tipoArquivo='0' />
 
             {/* <FixedAutoComplete name='quartel2' title='Quartel' customLoadingText='Carregando quarteis' list={l} watchValue={value} required />
             <Button variant='contained' onClick={(e) => setValue(undefined)}>
