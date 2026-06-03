@@ -43,7 +43,7 @@ import { AuthContext } from './context/auth'
 import { FormContext } from './context/form'
 import Radio from './components/form/radio/Radio'
 
-// Types
+// Types — Auth
 export type {
     User,
     LoginOptions,
@@ -58,6 +58,20 @@ export type {
     KeycloakLogoutOptions,
     KeycloakTokenParsed,
 } from './types/auth'
+
+// Types — Form (enums são valores em runtime, por isso export normal)
+export { FieldType, ColumnDirection } from './types/form'
+export type { FormField, FormData, FormContextType, FilesID } from './types/form'
+
+// Types — Input
+export type { InputProps, InputType, MaskedInputType } from './components/form/input/Input'
+export type { IMaskConfig } from './components/form/input/MaskInput'
+
+// Types — Table
+export type { ColumnData, OrderBy, FilterType, FilterOperators, FilterValue, CsvMapProps, CsvConfigProp, TableProps, TableProps2 } from './components/form/table/types'
+
+// Types — Map
+export type { MapProps } from './components/map/Map'
 
 export {
     ActiveInput,

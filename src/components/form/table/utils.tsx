@@ -2,7 +2,7 @@ import get from 'lodash.get'
 import { CsvConfigProp, FilterValue, OrderBy } from './types'
 import dayjs from 'dayjs'
 import cloneDeep from 'lodash.clonedeep'
-import * as XLSX from 'xlsx'
+import writeXlsxFile from 'write-excel-file/browser'
 
 export const getCount = (countData: any[], itemsCount: number) => {
     if (countData.length <= 0) return 1
@@ -332,11 +332,29 @@ export async function downloadCSVFile(list: any[], config: CsvConfigProp, filter
         })
     }
 
-    const worksheet = XLSX.utils.json_to_sheet(data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, config.fileName)
+    // Colunas derivadas da união das chaves de todas as linhas, preservando a ordem
+    // de inserção (mesmo comportamento que o antigo XLSX.utils.json_to_sheet).
+    const columns: string[] = []
+    data.forEach((row) => {
+        Object.keys(row ?? {}).forEach((key) => {
+            if (!columns.includes(key)) columns.push(key)
+        })
+    })
 
-    XLSX.writeFile(workbook, `${config.fileName}.xlsx`)
+    const toCell = (value: any): any => {
+        if (value === null || value === undefined || value === '') return {}
+        if (typeof value === 'number') return { type: Number, value }
+        if (typeof value === 'boolean') return { type: Boolean, value }
+        return { type: String, value: String(value) }
+    }
+
+    const headerRow = columns.map((name) => ({ type: String, value: name, fontWeight: 'bold' }))
+    const bodyRows = data.map((row) => columns.map((key) => toCell(row?.[key])))
+    const rows: any = [headerRow, ...bodyRows]
+
+    // write-excel-file (browser): writeXlsxFile(rows) retorna { toBlob, toFile };
+    // toFile(nome) gera o .xlsx e dispara o download no navegador.
+    await writeXlsxFile(rows).toFile(`${config.fileName}.xlsx`)
 }
 
 export function downloadCSVAll(e: React.MouseEvent, list: any[], keys: string[], fileName: string) {

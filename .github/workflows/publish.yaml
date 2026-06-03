@@ -29,6 +29,9 @@ jobs:
       - name: Criando readme
         run: cp README.md dist/README.md
 
+      - name: Copiando AGENTS.md
+        run: cp AGENTS.md dist/AGENTS.md
+
       - name: Publicando
         run: npm publish --access public
         working-directory: dist

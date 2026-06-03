@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.347",
+    "version": "0.0.349",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -31,7 +31,7 @@
         "@mui/lab": "^5.0.0-alpha.127",
         "@mui/material": "^5.12.1",
         "@mui/x-date-pickers": "^6.2.0",
-        "axios": "^1.6.7",
+        "axios": "^1.17.0",
         "cookies-next": "^4.2.1",
         "dayjs": "^1.11.11",
         "jszip": "^3.10.1",
@@ -50,7 +50,7 @@
         "react-query": "^3.39.3",
         "react-toastify": "^10.0.4",
         "tinycolor2": "^1.6.0",
-        "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz"
+        "write-excel-file": "^4.0.7"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.21.4",

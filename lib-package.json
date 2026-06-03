@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.348",
+    "version": "0.0.349",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -21,7 +21,7 @@
         }
     },
     "dependencies": {
-        "cookies-next": "^2.1.1",
+        "cookies-next": "^4.2.1",
         "tinycolor2": "^1.6.0",
         "lodash.get": "^4.4.2",
         "jwt-decode": "^3.1.2",
@@ -35,12 +35,12 @@
         "jszip": "^3.10.1",
         "keycloak-js": "^25.0.1",
         "react-toastify": "^10.0.4",
-        "axios": "^1.6.7",
+        "axios": "^1.17.0",
         "react-dropzone": "^14.3.8",
         "leaflet": "^1.9.4",
         "leaflet-defaulticon-compatibility": "^0.1.2",
         "react-leaflet": "^4.2.1",
-        "xlsx": "^0.18.5"
+        "write-excel-file": "^4.0.7"
     },
     "devDependencies": {
         "@types/lodash.clonedeep": "^4.5.9",
