@@ -52,4 +52,27 @@ Both store the JWT in the `nextauth.token` cookie (`cookieName`, also exported a
 
 ### Versioning & publishing
 
-Version lives in **`lib-package.json`** (the package.json that actually gets published — copied to `dist/package.json`), not the root `package.json`. The `prebuild` hook runs `sync-version.cjs`, which copies `lib-package.json`'s version into the root `package.json`. **To release: bump the version in `lib-package.json`.** Pushing to `main` triggers `.github/workflows/publish.yaml`, which builds, copies `lib-package.json`→`dist/package.json` and `README.md`→`dist/`, then `npm publish`es from `dist/`. Commit messages in this repo are conventionally `vNNN - <description>` matching the published version.
+Version lives in **`lib-package.json`** (the package.json that actually gets published — copied to `dist/package.json`), not the root `package.json`. The `prebuild` hook runs `sync-version.cjs`, which copies `lib-package.json`'s version into the root `package.json`. **To release: bump the version in `lib-package.json`, then push a matching `v*` tag** (e.g. `v0.0.350`). `.github/workflows/publish.yaml` runs on that tag (or a manual `workflow_dispatch`), verifies the tag matches `lib-package.json`, refuses a version already on npm, builds, copies `lib-package.json`→`dist/package.json` and `README.md`→`dist/`, then `npm publish`es from `dist/` under the right dist-tag (a pre-release version goes to `next`, never `latest`). **Pushing to `main` no longer publishes** — that changed in Etapa 0 of the upgrade plan. Commit messages in this repo are conventionally `vNNN - <description>` matching the published version.
+
+## Dependency upgrade (Etapa 0 done, Etapa 1 next)
+
+Dependencies are several majors behind (MUI 5→9, Storybook 9→10, `react-query` v3 unmaintained, `microbundle` abandoned). **`UPGRADE_PLAN.md` at the repo root is the agreed plan — read it before touching `package.json` or `lib-package.json`.** Etapa 0 (baseline + safety net) is done; see its "Registro de execução". Things from it that affect everyday work here:
+
+- **`lib-package.json` declares no `peerDependencies` and does not list `@mui/*` or `@emotion/*`, yet the bundle externalizes them** — so the MUI version that actually runs is the *consumer app's*. Any MUI major bump is a coordinated, breaking release, never a patch.
+- **The build can silently produce broken output:** `strict: false` + `noEmit: true` means type errors don't block, and MUI Grid v2 ignores `item`/`xs` without any error. Visual verification through Storybook is mandatory for layout-affecting changes.
+- **The published package's `main`/`exports.require` point at `index.cjs.js`, which the build never emits** (it emits `index.cjs`). Not fixed yet — see UPGRADE_PLAN.md 5.9.
+
+### Verification (added in Etapa 0 — there used to be none)
+
+```bash
+npm run typecheck    # tsc --noEmit
+npm run lint         # eslint 9 flat config (0 errors; warnings are tracked debt)
+npm run format:check # prettier, per .prettierrc
+npm run test         # vitest — auth providers
+npm run snapshots    # visual snapshots of every story, inside a fixed Linux container
+npm run check:package # publint + are-the-types-wrong over dist/
+```
+
+**Snapshots must be generated inside the container** (`npm run snapshots:update`), never straight from macOS — fonts and antialiasing differ from CI and every PNG would show a diff. The baseline lives in `snapshots/baseline/` and is versioned.
+
+When you change a component, update/add its story and run `npm run snapshots`. A layout regression shows up there and nowhere else.

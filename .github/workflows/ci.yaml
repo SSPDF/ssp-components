@@ -1,0 +1,69 @@
+name: CI
+
+# Portão de qualidade dos PRs. Antes da Etapa 0 não existia nenhum workflow de PR:
+# o único workflow do repo publicava no npm a cada push na main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Typecheck, build e stories
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # npm ci (e não npm install) para o lockfile valer de verdade.
+      - name: Instalando dependências
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Formatação
+        run: npm run format:check
+
+      - name: Testes
+        run: npm run test
+
+      - name: Build da lib
+        run: npm run build
+
+      - name: Conferindo a API pública do dist
+        run: node scripts/check-public-api.mjs
+
+      - name: Conferindo o pacote publicável (publint + attw)
+        run: npm run check:package
+
+      - name: Build do Storybook
+        run: npm run build-storybook
+
+      # A MESMA imagem do scripts/snapshots-in-docker.sh. Se divergirem, o baseline
+      # gerado localmente não bate com o do CI e todo PR vira um diff de 77 imagens.
+      - name: Snapshots visuais
+        run: |
+          docker run --rm \
+            -v "$PWD":/work -w /work --ipc=host \
+            mcr.microsoft.com/playwright:v1.55.0-noble \
+            node scripts/visual-snapshots.mjs
+
+      - name: Publicando os diffs visuais
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diffs-visuais
+          path: snapshots/__diff__/
+          if-no-files-found: ignore
