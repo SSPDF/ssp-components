@@ -61,6 +61,9 @@
         "@storybook/nextjs": "^9.0.17",
         "@storybook/react-webpack5": "9.0.17",
         "@storybook/testing-library": "^0.2.2",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.3",
+        "@testing-library/user-event": "^14.6.7",
         "@tsconfig/recommended": "^1.0.2",
         "@types/keycloak-js": "^3.4.1",
         "@types/leaflet": "^1.9.16",
@@ -72,12 +75,26 @@
         "@types/react-dom": "^18.3.0",
         "@types/react-google-recaptcha": "^2.1.5",
         "@types/tinycolor2": "^1.4.6",
+        "@vitest/coverage-v8": "^3.2.7",
+        "eslint": "^9.39.5",
+        "eslint-config-prettier": "^9.1.2",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-storybook": "^9.1.20",
+        "globals": "^15.15.0",
+        "jsdom": "^26.1.0",
         "microbundle": "^0.15.0",
+        "msw": "^2.15.0",
         "next": "^14.2.35",
+        "pixelmatch": "6.0.0",
+        "playwright": "1.55.0",
+        "pngjs": "7.0.0",
+        "prettier": "^3.9.8",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "storybook": "^9.0.17",
-        "typescript": "^5.8.3"
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.70.1",
+        "vitest": "^3.2.7"
     },
     "scripts": {
         "sync-version": "node sync-version.cjs",
@@ -87,6 +104,19 @@
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "api": "json-server --watch api-test.json --port 7171",
-        "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link"
+        "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",
+        "typecheck": "tsc --noEmit",
+        "snapshots": "./scripts/snapshots-in-docker.sh",
+        "snapshots:update": "./scripts/snapshots-in-docker.sh --update",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write \"src/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".storybook/**/*.ts\" \"eslint.config.mjs\"",
+        "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".storybook/**/*.ts\" \"eslint.config.mjs\"",
+        "check:package": "./scripts/check-package.sh",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "engines": {
+        "node": ">=20.19"
     }
 }
