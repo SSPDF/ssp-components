@@ -80,14 +80,7 @@ export const EdicaoComRequisicao: Story = {
 function InputComWatchValue() {
     const context = useContext(FormContext)!
     const nome = context.formWatch('nome') ?? ''
-    return (
-        <Input
-            name='saudacao'
-            type='input'
-            title='Saudação (observa Nome)'
-            watchValue={`Olá, ${nome}`}
-        />
-    )
+    return <Input name='saudacao' type='input' title='Saudação (observa Nome)' watchValue={`Olá, ${nome}`} />
 }
 
 export const ComWatchValue: Story = {

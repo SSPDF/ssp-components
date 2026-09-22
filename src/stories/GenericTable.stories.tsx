@@ -229,10 +229,7 @@ export const PaginacaoServerSide: Story = {
 
         const loadPage = React.useCallback(async (pageNum: number) => {
             setLoading(true)
-            setApiCalls((prev) => [
-                ...prev,
-                { page: pageNum, at: new Date().toLocaleTimeString('pt-BR', { hour12: false }) },
-            ])
+            setApiCalls((prev) => [...prev, { page: pageNum, at: new Date().toLocaleTimeString('pt-BR', { hour12: false }) }])
             const { items, total } = await fakeApiFetchPage(pageNum)
             setData(items)
             setTotalCount(total)
@@ -253,20 +250,20 @@ export const PaginacaoServerSide: Story = {
                         border: '1px solid #bae6fd',
                     }}
                 >
-                    <Typography variant="subtitle2" fontWeight={700} color="#0369a1" gutterBottom>
+                    <Typography variant='subtitle2' fontWeight={700} color='#0369a1' gutterBottom>
                         Chamadas à API (prova de paginação server-side)
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Typography variant='body2' color='text.secondary' sx={{ mb: 1 }}>
                         Cada troca de página dispara uma nova requisição. Registros abaixo:
                     </Typography>
                     {apiCalls.length === 0 ? (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant='body2' color='text.secondary'>
                             Nenhuma chamada ainda.
                         </Typography>
                     ) : (
-                        <Stack direction="column" component="ul" sx={{ m: 0, pl: 2.5, listStyle: 'disc' }} spacing={0.5}>
+                        <Stack direction='column' component='ul' sx={{ m: 0, pl: 2.5, listStyle: 'disc' }} spacing={0.5}>
                             {apiCalls.map((call, i) => (
-                                <Typography key={i} component="li" variant="body2" display="block">
+                                <Typography key={i} component='li' variant='body2' display='block'>
                                     <strong>Página {call.page}</strong> às {call.at}
                                 </Typography>
                             ))}
@@ -275,7 +272,7 @@ export const PaginacaoServerSide: Story = {
                 </Box>
                 <GenericTable
                     {...args}
-                    id="generic-table-server-side"
+                    id='generic-table-server-side'
                     serverSidePagination
                     page={page}
                     onPageChange={setPage}

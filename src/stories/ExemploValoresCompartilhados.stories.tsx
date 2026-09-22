@@ -1,5 +1,5 @@
 import { Button, Grid } from '@mui/material'
-import { Source } from '@storybook/addon-docs/blocks'
+import CodeSample from './CodeSample'
 import { Meta, StoryObj } from '@storybook/nextjs'
 import { useContext, useState } from 'react'
 import 'react-toastify/ReactToastify.min.css'
@@ -43,7 +43,7 @@ function Teste() {
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
                     <Grid item xs={12}>
-                        <Source
+                        <CodeSample
                             code={`
 <Input name='nome' type='input' title='Nome' required />
 

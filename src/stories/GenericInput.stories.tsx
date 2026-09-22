@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/nextjs'
 import GenericInput from '../components/form/input/GenericInput'
-import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import GenericFormBaseDecorator from '../decorators/GenericFormBaseDecorator'
 
 const meta: Meta<typeof GenericInput> = {
     title: 'Input/GenericInput',
@@ -14,7 +14,7 @@ const meta: Meta<typeof GenericInput> = {
             },
         },
     },
-    decorators: [FormBaseDecorator],
+    decorators: [GenericFormBaseDecorator],
 }
 
 export default meta
