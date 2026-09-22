@@ -16,20 +16,7 @@ export interface OrderBy {
 
 export type FilterType = 'string' | 'number' | 'date' | 'dates'
 export type FilterOperators =
-    | 'igual'
-    | 'contem'
-    | 'maior que'
-    | 'menor que'
-    | 'data exata'
-    | 'após'
-    | 'antes de'
-    | 'entre'
-    | 'tem um dos'
-    | 'depois de'
-    | 'antes de'
-    | 'data inicio'
-    | 'data fim'
-    | 'tem a data'
+    'igual' | 'contem' | 'maior que' | 'menor que' | 'data exata' | 'após' | 'antes de' | 'entre' | 'tem um dos' | 'depois de' | 'antes de' | 'data inicio' | 'data fim' | 'tem a data'
 
 export interface FilterValue {
     label: string

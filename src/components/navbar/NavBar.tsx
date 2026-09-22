@@ -77,7 +77,7 @@ export default function NavBar({
                 setLoading(false)
             }
         },
-        [router]
+        [router],
     )
 
     function changeRoute(e: React.MouseEvent, path: string) {

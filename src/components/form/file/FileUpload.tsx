@@ -85,7 +85,7 @@ export default function FileUpload({
                         return true
                     })
                     .map((file, index) => {
-                        let id: number = Date.now() + index
+                        const id: number = Date.now() + index
 
                         // fetch API
 
@@ -137,7 +137,7 @@ export default function FileUpload({
                     }),
             ])
         },
-        [files, context]
+        [files, context],
     )
 
     const removeFile = (id: number, hideMsg?: boolean, fileId?: number) => {

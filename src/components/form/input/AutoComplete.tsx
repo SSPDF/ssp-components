@@ -41,7 +41,7 @@ export default function AutoComplete({
             headers: {
                 Authorization: `Bearer ${user ? user.token : ''}`,
             },
-        }).then((x) => x.json().then((list) => setOptions(getData(list))))
+        }).then((x) => x.json().then((list) => setOptions(getData(list)))),
     )
 
     // transformar isso em um component ou utils
@@ -55,7 +55,7 @@ export default function AutoComplete({
             context?.formSetValue(name!, value ? value.id : '')
             context?.formTrigger(name!)
         },
-        [context, name]
+        [context, name],
     )
 
     return (

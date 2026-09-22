@@ -10,8 +10,6 @@ import { FormContext } from '../../../context/form'
 import { PDFIcon, TrashIcon } from '../../icons/icons'
 import { ErrorOutline } from '@mui/icons-material'
 
-
-
 interface FileState {
     id: number
     name: string
@@ -93,7 +91,7 @@ export default function DropFileUpload({
                     return true
                 })
                 .forEach((file, index) => {
-                    let id: number = Date.now() + index
+                    const id: number = Date.now() + index
 
                     // fetch API
 
@@ -209,8 +207,8 @@ export default function DropFileUpload({
     useEffect(() => {
         if (apiURL) {
             const uploadedFiles = files
-                .filter(f => fileIds[f.id] !== undefined)
-                .map(f => ({
+                .filter((f) => fileIds[f.id] !== undefined)
+                .map((f) => ({
                     CO_SEQ_ARQUIVO: fileIds[f.id],
                     CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
                 }))
@@ -384,6 +382,3 @@ export default function DropFileUpload({
         </Grid>
     )
 }
-
-
-

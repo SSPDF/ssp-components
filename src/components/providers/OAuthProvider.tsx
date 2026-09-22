@@ -34,14 +34,7 @@ export function OAuthProvider({
     testIP?: string
     logoutURL?: string
 }) {
-    const govBrURL =
-        oidcConfig.authority +
-        '/authorize?response_type=code&client_id=' +
-        oidcConfig.client_id +
-        '&scope=' +
-        oidcConfig.scope +
-        '&redirect_uri=' +
-        oidcConfig.redirect_uri
+    const govBrURL = oidcConfig.authority + '/authorize?response_type=code&client_id=' + oidcConfig.client_id + '&scope=' + oidcConfig.scope + '&redirect_uri=' + oidcConfig.redirect_uri
 
     const [user, setUser] = useState<User | null>(null)
     const [userLoaded, setUserLoaded] = useState(false)
@@ -110,7 +103,7 @@ export function OAuthProvider({
                 router.replace(govBrURL)
             }
         },
-        [testIP, testToken, redirectURL, govBrURL, router]
+        [testIP, testToken, redirectURL, govBrURL, router],
     )
 
     // chamado no callback de login
@@ -166,7 +159,7 @@ export function OAuthProvider({
 
             router.replace(redirectURL).finally(() => setUserLoaded(true))
         },
-        [redirectURL, router]
+        [redirectURL, router],
     )
 
     const logout = useCallback(
@@ -195,7 +188,7 @@ export function OAuthProvider({
                     setUserLoaded(true)
                 })
         },
-        [logoutURL, router]
+        [logoutURL, router],
     )
 
     /**
@@ -205,7 +198,7 @@ export function OAuthProvider({
         (role: string): boolean => {
             return user?.roles?.includes(role) ?? false
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -216,7 +209,7 @@ export function OAuthProvider({
             if (!user?.roles || roles.length === 0) return false
             return roles.every((role) => user.roles.includes(role))
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -227,7 +220,7 @@ export function OAuthProvider({
             if (!user?.roles || roles.length === 0) return false
             return roles.some((role) => user.roles.includes(role))
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -254,7 +247,7 @@ export function OAuthProvider({
             hasAnyRole,
             accessToken: user?.token,
         }),
-        [user, userLoaded, login, logout, saveUserData, refreshToken, hasRole, hasAllRoles, hasAnyRole]
+        [user, userLoaded, login, logout, saveUserData, refreshToken, hasRole, hasAllRoles, hasAnyRole],
     )
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

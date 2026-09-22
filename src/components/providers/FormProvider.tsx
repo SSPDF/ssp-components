@@ -43,7 +43,7 @@ export default function FormProvider<T extends FieldValues>({ children, onSubmit
                             type: 'warning',
                             position: 'top-right',
                             theme: 'colored',
-                        })
+                        }),
                 )}
             >
                 {children}

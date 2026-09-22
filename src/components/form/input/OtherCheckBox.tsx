@@ -74,7 +74,7 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     backgroundColor: 'white',
-                                }
+                                },
                             }}
                         />
                     ) : (

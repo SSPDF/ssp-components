@@ -111,7 +111,7 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            let value = dataPath ? get(j, dataPath) : j
+                            const value = dataPath ? get(j, dataPath) : j
 
                             if (!value || !Array.isArray(value)) {
                                 setData({ body: { data: [] } })
@@ -166,7 +166,7 @@ export function Table({
     useEffect(() => {
         if (isLoading || error || !getData(data)) return
 
-        let value = getData(data)
+        const value = getData(data)
 
         setList(value)
         setListClone(value)
@@ -291,7 +291,7 @@ export function Table({
     useEffect(() => {
         const start = currentPage * itemsCount
         const newList = list.slice(start, start + itemsCount)
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
@@ -303,7 +303,7 @@ export function Table({
     }, [list, itemsCount, currentPage])
 
     function expandAll() {
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         for (let i = 0; i < itemCount; i++) {
             obj[i] = !isExpandAll
@@ -541,9 +541,9 @@ export function Table({
                                             key={c.keyName + index}
                                             item
                                             xs={12}
-                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
+                                            md={lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1)}
                                             {...({
-                                                size: { xs: 12, md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1) },
+                                                size: { xs: 12, md: lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1) },
                                             } as any)}
                                             sx={{
                                                 overflow: 'hidden',

@@ -41,7 +41,7 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
                             })
                                 .then((res) => res.blob())
                                 .then((blob) => {
-                                    var file = window.URL.createObjectURL(blob)
+                                    const file = window.URL.createObjectURL(blob)
                                     const a = document.createElement('a')
                                     a.href = file
 

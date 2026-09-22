@@ -57,7 +57,7 @@ export default function GenericFetchAutoComplete({
                 if (res.ok) {
                     console.log('llll')
                     res.json().then((j) => {
-                        let value = get(j, route, j).filter((x: any) => x.id === defaultValue)
+                        const value = get(j, route, j).filter((x: any) => x.id === defaultValue)
                         if (value.length > 0) {
                             setList(get(j, route, j))
                             setLoading(false)

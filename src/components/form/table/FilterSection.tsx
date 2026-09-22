@@ -88,7 +88,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                             idx={idx}
                             setDt={(valueData) => {
                                 setData((dt) => {
-                                    let arr = [...dt]
+                                    const arr = [...dt]
                                     arr[idx] = valueData
                                     return arr
                                 })

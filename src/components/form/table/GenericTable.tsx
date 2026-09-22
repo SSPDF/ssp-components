@@ -292,7 +292,7 @@ export function GenericTable({
 
                                     return removeQuotes ? `${item}` : `"${item}"`
                                 } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                    const strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
                                     let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
@@ -353,7 +353,7 @@ export function GenericTable({
 
                                     return removeQuotes ? `${item}` : `"${item}"`
                                 } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                    const strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
                                     let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
@@ -415,7 +415,7 @@ export function GenericTable({
 
                                 return removeQuotes ? `${item}` : `"${item}"`
                             } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                const strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
                                 let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
@@ -433,7 +433,7 @@ export function GenericTable({
             const csvData = header + values
 
             // download
-            var link = window.document.createElement('a')
+            const link = window.document.createElement('a')
             link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData))
             link.setAttribute('download', `${csv?.fileName}.csv`)
             link.click()
@@ -443,7 +443,7 @@ export function GenericTable({
 
     function expandAll() {
         const nextExpanded = !isAllExpanded
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         for (let i = 0; i < itemsCount; i++) {
             obj[i] = nextExpanded
@@ -500,7 +500,7 @@ export function GenericTable({
     useEffect(() => {
         const start = currentPage * itemsCount
         const newList = list.slice(start, start + itemsCount)
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
@@ -758,9 +758,9 @@ export function GenericTable({
                                             key={String(c?.keyName) + index}
                                             item
                                             xs={12}
-                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
+                                            md={lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1)}
                                             {...({
-                                                size: { xs: 12, md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1) },
+                                                size: { xs: 12, md: lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1) },
                                             } as any)}
                                             sx={{
                                                 overflow: 'hidden',

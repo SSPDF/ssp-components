@@ -34,7 +34,7 @@ export default function CheckBox({
                 onChange?.(e)
             }
         },
-        [context, name, disabled, onChange]
+        [context, name, disabled, onChange],
     )
 
     return (
@@ -72,11 +72,7 @@ export default function CheckBox({
                     }}
                 />
                 {typeof title === 'string' ? (
-                    <Typography
-                        variant='body2'
-                        color={isSelected ? 'primary.main' : 'text.primary'}
-                        fontWeight={isSelected ? 600 : 400}
-                    >
+                    <Typography variant='body2' color={isSelected ? 'primary.main' : 'text.primary'} fontWeight={isSelected ? 600 : 400}>
                         {title}
                     </Typography>
                 ) : (

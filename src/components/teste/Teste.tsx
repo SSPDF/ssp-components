@@ -50,7 +50,7 @@ export function Exemplo({ required = false }: { required?: boolean }) {
 
                 <OtherCheckBox name='conhecimento_outro' md={12} required={required} />
 
-                <RequiredCheckBoxGroup name='x' >
+                <RequiredCheckBoxGroup name='x'>
                     <CheckBox name='teste_check_1' title='Input' />
                     <CheckBox name='teste_check_2' title='Input' />
                 </RequiredCheckBoxGroup>
@@ -88,7 +88,6 @@ export function Exemplo({ required = false }: { required?: boolean }) {
                     ]}
                     required={required}
                 />
-
             </StepperBlock>
             <StepperBlock title='Segundo'>
                 <Input name='teste2' type='input' />
@@ -242,7 +241,6 @@ export default function Teste() {
 
     return (
         <Box bgcolor='#F9F9F9'>
-
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'
@@ -271,7 +269,6 @@ export default function Teste() {
                 paddingBottom={3}
                 next={false}
             /> */}
-
 
             {/* <Input
                 type='input'
@@ -950,4 +947,4 @@ export default function Teste() {
         </Box>
     )
 }
-// 
+//

@@ -34,7 +34,7 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         {...context.formRegister(name!, {
                             validate: (v, f) => {
                                 const value = context.formWatch(checkName)
-                                if (!!value) {
+                                if (value) {
                                     if (!v || (v.length <= 0 && required)) return 'Este campo não pode ser vazio'
                                 }
                             },
