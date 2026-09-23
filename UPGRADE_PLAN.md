@@ -1,15 +1,16 @@
 # Plano de atualização de dependências
 
 > **Status:** Etapas 0 e 1 concluídas (23/09/2026); **próxima: Etapa 2**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
-> **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** — todos os achados desta seção continuam verdadeiros, nada no repo mudou.
-> **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Nenhuma decisão em aberto: a Etapa 0 está pronta para começar.** **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
+> **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** e **de novo em 23/09/2026, após a Etapa 1** — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
+> **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
+> **Decisões em aberto (23/09/2026):** duas, ambas surgidas na revalidação — **D1** bundler da Etapa 3 (`tsup` deixou de ser mantido) e **D2** como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois). Nenhuma bloqueia a Etapa 2. Detalhes na seção 9.
 > **Regra de ouro:** nenhuma etapa avança sem a validação da etapa anterior estar verde. As Etapas 0–6 podem ir para produção **sem tocar em nenhum app consumidor**; só as Etapas 7 e 8 exigem mutirão.
 
 ---
 
 ## 1. Por que este documento existe
 
-41 dependências estão atrasadas, várias com majors acumulados (MUI 5→9, Storybook 9→10, react-query v3 sem manutenção desde jan/2023, `microbundle` abandonado desde 2022). A lib é consumida por vários sistemas internos e **não tem testes nem lint** — as 34 stories são a única superfície de verificação, e ninguém as executa automaticamente.
+41 dependências estão atrasadas, várias com majors acumulados (MUI 5→9, Storybook 9→10, react-query v3 sem manutenção desde jan/2023, `microbundle` abandonado desde 2022). A lib é consumida por vários sistemas internos e **não tinha testes nem lint** — as 34 stories eram a única superfície de verificação, e ninguém as executava automaticamente. *(Desde a Etapa 0: typecheck, lint, 14 testes de auth, snapshots visuais de 83 stories e verificação do pacote, tudo no CI.)*
 
 O objetivo é chegar nas versões atuais **sem quebrar os apps**, em etapas pequenas e verificáveis.
 
@@ -17,14 +18,14 @@ O objetivo é chegar nas versões atuais **sem quebrar os apps**, em etapas pequ
 
 ## 2. Achados críticos da análise
 
-### 2.1 O baseline atual está quebrado
+### 2.1 O baseline atual está quebrado — ✅ resolvido na Etapa 0
 
 - `npm run build` **falha** em máquina com `node_modules` do último `npm install` antigo: `write-excel-file` fica UNMET (é importado em `src/components/form/table/utils.tsx:5` como `write-excel-file/browser`) e o `axios` instalado é 1.6.7 contra `^1.17.0` declarado.
 - `package-lock.json` está defasado: diz versão `0.0.347` e é `lockfileVersion: 2`.
 - CI (`.github/workflows/publish.yaml`) usa **Node 16** (EOL) com `npm install` (ignora o lock). `write-excel-file@4` declara `engines: node >=18`; Storybook 10 exige Node 20.16+/22.19+.
-- `tsconfig.json` tem `strict: false` + `noEmit: true` → o compilador praticamente não protege nada. **Quebra de layout do MUI não gera erro de TS.**
+- `tsconfig.json` tem `strict: false` + `noEmit: true` → o compilador praticamente não protege nada. **Quebra de layout do MUI não gera erro de TS.** *(Continua verdade: o `strict` segue desligado. É por isso que os snapshots visuais existem.)*
 
-### 2.2 O risco nº 1 é o packaging, não a versão das libs
+### 2.2 O risco nº 1 é o packaging, não a versão das libs — ✅ declarado na Etapa 1 (`0.1.0`)
 
 O `lib-package.json` (o package.json que é realmente publicado) **não declara `peerDependencies` e não lista `@mui/material`, `@mui/icons-material`, `@mui/lab`, `@mui/x-date-pickers` nem `@emotion/*`** — confirmado no pacote publicado `0.0.349` no npm. Mas o bundle importa todos eles como externos (veja `dist/index.esm.js`: `from"@mui/material"`, `from"@mui/x-date-pickers"`, `from"@mui/lab"`…).
 
@@ -32,12 +33,12 @@ O `lib-package.json` (o package.json que é realmente publicado) **não declara 
 
 - Subir MUI 5→9 dentro da lib **não tem efeito** num app que tem MUI 5 instalado — e o código novo (Grid `size`, `slotProps`) quebra em runtime contra o MUI 5 do app, **sem erro de compilação**.
 - Não existe "atualizar o MUI sem tocar nos apps". É migração coordenada, obrigatoriamente.
-- `react-hook-form`, `react-query`, `dayjs` e `react-toastify` estão como `dependencies` (não peers) → risco real de duas instâncias na árvore, com contexto de RHF/react-query duplicado e `toast()` de singletons diferentes.
-- Agravante de processo: **tudo sai como patch `0.0.x`**, inclusive mudanças breaking. É o que mais machuca os consumidores hoje.
+- `react-hook-form`, `react-query`, `dayjs` e `react-toastify` estão como `dependencies` (não peers) → risco real de duas instâncias na árvore, com contexto de RHF/react-query duplicado e `toast()` de singletons diferentes. *(RHF, `dayjs` e `react-toastify` viraram peers na `0.1.0`; o `react-query` sai na Etapa 2.)*
+- Agravante de processo: **tudo sai como patch `0.0.x`**, inclusive mudanças breaking. É o que mais machuca os consumidores hoje. *(Semver a partir da `0.1.0`, com `CHANGELOG.md`.)*
 
 O `README.md` já instrui o consumidor a instalar o MUI manualmente — ou seja, o contrato de peer existe na documentação, mas não no `package.json`.
 
-#### 2.2.1 `@mui/lab` não é só peer faltando — é dependência não declarada (bug ativo)
+#### 2.2.1 `@mui/lab` não é só peer faltando — é dependência não declarada (bug ativo) — ✅ corrigido na `0.1.0`
 
 Comparando os dois manifestos, estes estão em `package.json` mas **não** em `lib-package.json` (o que é publicado):
 
@@ -50,11 +51,13 @@ Para MUI/Emotion isso "funciona por acidente": o app consumidor instala essas li
 
 > **Corrigido na `0.1.0` (Etapa 1)**, e não num hotfix `0.0.350` separado: `@mui/lab` entrou em `dependencies`, fixado em `5.0.0-alpha.127`. Não dá para usar `^5.0.0-alpha.127` — o range resolve para o `alpha.177`, cuja peer é `@mui/material >=5.15.0`, e o `npm install` de um app em MUI 5.12 falharia com `ERESOLVE`. O `alpha.127` tem peer `^5.0.0`. Quem estiver fixado em `^0.0.349` não recebe a correção (em `0.0.x` o `^` fixa a versão); se algum app precisar dela sem subir para `0.1.0`, publicar `0.0.350` a partir de `v0-legacy` só com esta linha.
 
-**Consequência no plano:** o item 5.4 deixa de ser limpeza e vira **correção de bug**, com prioridade acima da Etapa 2. Enquanto a lib estiver em MUI 5, `<Button loading>` ainda não existe (é nativo só a partir do 6.4), então a correção imediata é **declarar `@mui/lab` em `lib-package.json`**; a remoção do `LoadingButton` acontece na Etapa 7, junto com o salto de MUI.
+**Consequência no plano:** enquanto a lib estiver em MUI 5, `<Button loading>` não existe (é nativo só a partir do 6.4), então a correção imediata foi **declarar `@mui/lab`**; a remoção do `LoadingButton` acontece na **Etapa 7**, junto com o salto de MUI — **não na Etapa 2**, onde o item 5.4 estava listado originalmente (ver Etapa 2).
+
+**Mesmo mecanismo, outro pacote:** a Etapa 1 achou o `@mui/system` sendo importado sem declaração — só que, por não estar em nenhum manifesto, ele nem virou import externo: foi **copiado para dentro do bundle** (5.12).
 
 **Achado menor:** `dayjs` diverge entre os manifestos — `^1.11.11` na raiz, `^1.11.7` no `lib-package.json`. ~~Alinhar na Etapa 1.~~ Resolvido na Etapa 1: virou peer `^1.11.0` nos dois manifestos.
 
-### 2.3 A cobertura de stories é menor do que parece: 16 dos 46 exports não têm nenhuma
+### 2.3 A cobertura de stories é menor do que parece: 16 dos 46 exports não têm nenhuma — ✅ resolvido na Etapa 0
 
 Levantamento feito sobre o bloco `export { ... }` de `src/index.ts` cruzado com todas as `src/stories/*.stories.tsx`:
 
@@ -74,7 +77,7 @@ Levantamento feito sobre o bloco `export { ... }` de `src/index.ts` cruzado com 
 
 São **12 componentes visuais sem nenhuma verificação** — e quatro deles estão exatamente no caminho das mudanças mais arriscadas da Etapa 7. Escrever essas stories é pré-requisito do baseline visual, não item opcional.
 
-### 2.4 Qualquer push na `main` publica no npm
+### 2.4 Qualquer push na `main` publica no npm — ✅ resolvido na Etapa 0 (publica só por tag `v*`/`workflow_dispatch`)
 
 `.github/workflows/publish.yaml` dispara em `on: push` com `if: github.ref == 'refs/heads/main'` — e **não existe workflow de PR** (`.github/workflows/` só tem esse arquivo). Num plano de ~10 PRs isso significa publicação involuntária a cada merge. Hoje o `npm publish` só falha se a versão não mudou (CI vermelho, sem dano), mas é proteção por acidente, não por desenho. Precisa de portão de release explícito antes da Etapa 1.
 
@@ -106,31 +109,60 @@ A única vantagem da cópia própria ("eu controlo a versão") é ilusória: tro
 
 ### Como declarar (`lib-package.json`)
 
+**Estado atual (`0.1.0`, Etapa 1)** — só o que é verdade hoje:
+
+```json
+"peerDependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.0.0",
+    "@mui/material": "^5.8.6",
+    "@mui/x-date-pickers": "^6.0.0",
+    "dayjs": "^1.11.0",
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-hook-form": "^7.43.0",
+    "react-toastify": "^10.0.0"
+}
+```
+
+**Estado final (após a Etapa 7)** — corrigido na revalidação de 23/09/2026:
+
 ```json
 "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
     "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
-    "@mui/material": "^7.0.0 || ^9.0.0",
+    "@mui/material": "^7.3.0 || ^9.0.0",
     "@mui/icons-material": "^7.0.0 || ^9.0.0",
-    "@mui/x-date-pickers": "^7.0.0 || ^9.0.0",
-    "@emotion/react": "^11.5.0",
-    "@emotion/styled": "^11.3.0",
+    "@mui/x-date-pickers": "^8.0.0 || ^9.0.0",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
     "react-hook-form": "^7.43.0",
     "dayjs": "^1.11.0",
     "react-toastify": "^11.0.0"
 }
 ```
 
-> O range de MUI só pode abrir para `^7 || ^9` **depois** da Etapa 7. Até lá, a linha `0.0.x`/`v0-legacy` declara `"@mui/material": "^5.0.0"`.
+O que mudou em relação à versão original desta seção, e por quê (tudo conferido no registry):
+
+- **`@mui/material` `^7.3.0`, não `^7.0.0`:** o `@mui/x-date-pickers@9` declara peer `@mui/material ^7.3.0 || ^9.0.0`. Um app em MUI 7.0–7.2 não instala.
+- **Emotion `^11.9.0`/`^11.8.1`:** é o piso do `x-date-pickers` (6 e 9). O `^11.5`/`^11.3` original era o piso do `@mui/material`, mais frouxo que o real.
+- **`@mui/x-date-pickers` `^8 || ^9`, não `^7 || ^9`:** a API que a Etapa 7 vai escrever (estrutura acessível, `PickerDay`) é a da v8+; a v7 não foi considerada em lugar nenhum do plano. Atenção: o `x-date-pickers@8` aceita `@mui/material ^5.15.14 || ^6 || ^7` — **não aceita MUI 9**. Então app em MUI 9 usa pickers 9; app em MUI 7 pode usar 8 ou 9. O range é coerente, mas o README precisa dizer isso.
+- **`@mui/icons-material@9` exige `@mui/material ^9.4.0`** (e o 7 exige o 7). O range `^7 || ^9` continua certo — cada app instala o par que casa com o seu MUI —, mas as `devDependencies` da lib precisam ser um par coerente.
+- **`react ^18 || ^19` só é possível se a decisão D2 for resolvida** — hoje o `react-leaflet` (dependência direta) não tem versão que aceite os dois. Ver 4.3 e seção 9.
+- **`next ^15 || ^16` pode abrir antes do React 19:** o `next@16` declara peer `react ^18.2.0 || ^19.0.0`. O bloqueio para abrir o `next` é o `cookies-next@4` (Etapa 2) e testar o smoke-app no 15/16, não o React.
+
+> O range de MUI só pode abrir **depois** da Etapa 7. Até lá, a linha `0.x`/`v0-legacy` declara `"@mui/material": "^5.8.6"`.
 >
 > **Decisão:** todos os apps estão liberados para ir ao **MUI 9**. Mesmo assim mantemos o range em `^7 || ^9` como janela de segurança — o código escrito para Grid v2 + `slotProps` roda nas duas versões, e isso permite que um app suba para 7 primeiro se precisar, sem travar o release da lib.
 
-As mesmas versões devem ir para `devDependencies` (é o que o Storybook usa localmente). Também vale adicionar `peerDependenciesMeta` marcando `next` e `react-leaflet`/`leaflet` como opcionais se quisermos permitir uso fora do Next — hoje `NavBar`, `TabNavBar`, `KeycloakAuthProvider`, `OAuthProvider` e `map/index.tsx` importam `next/router`, `next/image`, `next/link` e `next/dynamic`, então **Next é obrigatório de fato** (Pages Router).
+As mesmas versões devem ir para `devDependencies` (é o que o Storybook usa localmente) **e continuar em `peerDependencies` do `package.json` da raiz** — o microbundle só externaliza o que está em `dependencies`/`peerDependencies`; o que estiver só em `devDependencies` é embutido no `dist/` sem aviso (foi o que aconteceu com o `@mui/system`, 5.12). Também vale adicionar `peerDependenciesMeta` marcando `next` e `react-leaflet`/`leaflet` como opcionais se quisermos permitir uso fora do Next — hoje `NavBar`, `TabNavBar`, `KeycloakAuthProvider`, `OAuthProvider` e `map/index.tsx` importam `next/router`, `next/image`, `next/link` e `next/dynamic`, então **Next é obrigatório de fato** (Pages Router).
 
 ### Continuam como `dependencies` normais (auto-contidas, sem estado compartilhado)
 
-`lodash.get`, `lodash.clonedeep`, `lodash.hasin`, `tinycolor2`, `jszip`, `write-excel-file`, `axios`, `jwt-decode`, `keycloak-js`, `leaflet`, `leaflet-defaulticon-compatibility`, `react-leaflet`.
+`lodash.get`, `lodash.clonedeep`, `lodash.hasin`, `tinycolor2`, `jszip`, `write-excel-file`, `axios`, `jwt-decode`, `keycloak-js`, `leaflet`, `leaflet-defaulticon-compatibility`, `react-leaflet` (*este último depende da decisão D2 — pode virar peer opcional*). Enquanto a Etapa 7 não acontece, também `@mui/lab`, fixado em `5.0.0-alpha.127` (2.2.1).
 
 ### O detalhe que evita o "upgrade em lockstep"
 
@@ -139,7 +171,7 @@ Peer **não** obriga todos os apps a subirem no mesmo dia, se o range for amplo 
 - **MUI 7 e 9 compartilham a API que nos interessa**: `Grid` já é o Grid v2 (`size={{ xs, sm, md }}`) e `slotProps` já é o caminho oficial. Código escrito para a v7 **roda nas duas**.
 - MUI 5 e 6 ficam fora porque lá o Grid v2 só existe como `Unstable_Grid2`/`Grid2`.
 
-**Desenho do release da Etapa 7:** migrar o código para Grid v2 + `slotProps`, declarar `"@mui/material": "^7.0.0 || ^9.0.0"` e publicar `1.0.0`. Cada app sobe de MUI 5 → 7 (ou direto para 9) no seu próprio ritmo. Quem ficar em MUI 5 permanece na linha `v0-legacy`.
+**Desenho do release da Etapa 7:** migrar o código para Grid v2 + `slotProps`, declarar `"@mui/material": "^7.3.0 || ^9.0.0"` e publicar `1.0.0`. Cada app sobe de MUI 5 → 7 (ou direto para 9) no seu próprio ritmo. Quem ficar em MUI 5 permanece na linha `v0-legacy`.
 
 E: **manter `xs`/`sm`/`md` como props públicas dos componentes**, mapeando para `size` internamente, para que a migração do Grid não apareça na API que os apps consomem.
 
@@ -147,7 +179,7 @@ E: **manter `xs`/`sm`/`md` como props públicas dos componentes**, mapeando para
 
 ## 4. Inventário de versões
 
-Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/09/2026.
+Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/09/2026; **atualizado em 23/09/2026** (mudanças marcadas com *23/09*).
 
 ### 4.1 Risco baixo — interno, sem impacto no consumidor
 
@@ -158,41 +190,63 @@ Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/
 | `@types/node` | 20.17 | 20.19 (Node 22: avaliar `^22`) |
 | `@types/react` / `@types/react-dom` | 18.0.37 / 18.3.0 | 18.3.31 / 18.3.7 |
 | `@types/leaflet`, `@types/lodash.*`, `@types/tinycolor2` | várias | latest |
+| `@types/keycloak-js` | 3.4.1 | ***23/09*: remover** — é um stub obsoleto (o `latest` do npm é 2.5.4, *menor* que o instalado); o próprio npm o descreve como *"stub types definition… keycloak-js provides its own type definitions"* (o `keycloak-js` 25 já traz `dist/keycloak.d.ts`) |
 | `typescript` | 5.8.3 | **5.9.3** (não 7.x — ver Etapa 9) |
 | `dayjs` | 1.11.11 | 1.11.23 |
 | `jszip` | 3.10.1 | 3.10.2 |
 | `axios` | ^1.17.0 (1.6.7 instalado) | 1.20.0 |
 | `@emotion/react` / `styled` | 11.10.6 | 11.14.x |
-| `react-hook-form` | 7.43.9 | 7.88.0 |
+| `react-hook-form` | 7.43.9 | 7.88.0 (peer desde a `0.1.0` — sobe só na `devDependency`) |
 | `react` / `react-dom` | 18.2.0 | 18.3.1 |
 | `next` | 14.2.35 | 14.2.35 (já é o último do 14) |
-| `storybook` (pacotes 9.x) | 9.0.17 | 9.1.20 |
+| `storybook` (pacotes 9.x) | core 9.1.20; `addon-docs`/`addon-links`/`react-webpack5` fixados em 9.0.17; `@storybook/nextjs` 9.0.17 | alinhar todos em 9.1.20 (*23/09*: o core já estava em 9.1.20 — versões desalinhadas entre os pacotes do Storybook) |
+| `react-toastify` | 10.0.4 | 10.0.6 (peer desde a `0.1.0`) |
+| `write-excel-file` | 4.0.7 | 4.1.1 |
+| `react-imask`, `react-dropzone` | 6.6.0, 14.3.8 | 6.6.3, 14.4.1 (patch dentro do major; o salto é na Etapa 6) |
 
 ### 4.2 Risco médio — breaking contido, 1 PR por item
 
 | Pacote | Salto | O que muda / onde |
 |---|---|---|
-| `jwt-decode` | 3 → 4 | export default → named `jwtDecode`. Afeta `src/components/providers/OAuthProvider.tsx:2,69,122,124` |
+| `jwt-decode` | 3 → 4 | export default → named `jwtDecode`. Afeta `src/components/providers/OAuthProvider.tsx:2,62,115,117` (linhas atualizadas em 23/09) |
 | `react-imask` | 6 → 7 | imask 7. Afeta `MaskInput.tsx`, `GenericMaskInput.tsx` (já usam `as any`, risco baixo) |
 | `react-toastify` | 10 → 11 | API do `ToastContainer` e **CSS reescrito**. Temos fork vendorizado em `src/css/ReactToastify.css` (704 linhas, com `sourceMappingURL`) — decidir entre importar do pacote ou refazer o fork |
-| `react-dropzone` | 14 → 20 | `DropFileUpload.tsx:73` (`inputRef`, tipos de `DropzoneOptions`) |
-| `keycloak-js` | 25 → 26 | init/refresh/SSO em `KeycloakAuthProvider.tsx` (519 linhas, **sem story**) |
+| `react-dropzone` | 14 → 20 | `DropFileUpload.tsx:70` (`inputRef`, tipos de `DropzoneOptions`). *23/09:* a v20 declara **`engines: node >= 22`** — app que builda em Node 20 recebe `EBADENGINE` (aviso; erro se usar `engine-strict`). Conferir o Node dos apps antes |
+| `keycloak-js` | 25 → 26 (26.2.4) | init/refresh/SSO em `KeycloakAuthProvider.tsx` (519 linhas, sem story — **coberto pelos testes da Etapa 0**) |
 | Storybook | 9 → 10 | **configs ESM-only** + Node 20.16+/22.19+. `@storybook/nextjs` e `@storybook/react-webpack5` continuam existindo em 10.x |
-| `microbundle` | → `tsup` | Abandonado desde ago/2022 e **descarta o `'use client'`** (o build imprime `Module level directives cause errors when bundled, 'use client' was ignored`) — afeta `Map.tsx` e `DraggableMarker.tsx` no App Router |
+| `microbundle` | → **`tsdown` ou `tsup` — decisão D1** | Abandonado desde ago/2022 (último release 0.15.1, 12/08/2022) e **descarta o `'use client'`** (o build imprime `Module level directives cause errors when bundled, 'use client' was ignored`) — afeta `Map.tsx` e `DraggableMarker.tsx` no App Router |
 
 ### 4.3 Risco alto — exige coordenação com os apps
 
 | Pacote | Salto | Bloqueio / impacto |
 |---|---|---|
 | `@mui/material` + `@mui/icons-material` | 5.12 → **9.4** | **Não existe v8** (5 → 6 → 7 → 9). `GridLegacy` foi **removido na v9** → `<Grid item xs>` morre em **28 arquivos de `src/` + 3 stories** |
-| `@mui/x-date-pickers` | 6 → 9 | Exige `@mui/material ^7.3 \|\| ^9` — acoplado ao passo do MUI |
-| `@mui/lab` | 5 → 9 | **Sem release estável desde a v5** (latest = `9.0.0-beta.9`). Uso único: `LoadingButton` em `Stepper.tsx:141` → **remover a dependência** |
-| `react-query` v3 | → `@tanstack/react-query` v5 | v3 sem manutenção desde 25/01/2023. Muda o contexto para os apps → **melhor remover da lib** (ver 5.2) |
+| `@mui/x-date-pickers` | 6 → 9 (9.14) | Exige `@mui/material ^7.3 \|\| ^9` — acoplado ao passo do MUI. **Também é um dos três pacotes que hoje prendem o React em 18** (peer da v6: `react ^17 \|\| ^18`) |
+| `@mui/lab` | 5 → 9 | **Sem release estável desde a v5** (latest = `9.0.0-beta.9`, confirmado em 23/09). Uso único: `LoadingButton` em `Stepper.tsx:141` → **remover a dependência** (Etapa 7). Até lá, fixado em `5.0.0-alpha.127` |
+| `react-query` v3 | → `@tanstack/react-query` v5 | v3 sem manutenção desde 25/01/2023, e peer `react ^16.8 \|\| ^17 \|\| ^18` — **prende o React em 18**. Muda o contexto para os apps → **melhor remover da lib** (ver 5.2) |
 | `cookies-next` | 4 → 6 | peer **`next >= 15`** → **remover a dependência** (ver 5.3) |
-| `react-leaflet` | 4 → 5 | peer **`react ^19.0.0` estrito** → só com React 19 |
+| `react-leaflet` | 4 → 5 | *23/09:* **não existe versão que aceite React 18 e 19 ao mesmo tempo** — o `4.2.1` (último da v4) tem peer `react ^18.0.0` e o `5.0.0` (único da v5) tem `react ^19.0.0`. Enquanto ele for `dependency` direta, a lib não consegue declarar `react ^18 \|\| ^19`. **Decisão D2** |
 | `react` / `next` | 18 / 14 → 19 / 16 | Next 16 exige Node ≥ 20.9; `JSX.Element` global sai dos tipos do React 19 (21 usos em 10 arquivos) |
 
-**Boa notícia:** MUI 9 tem peer `react: ^17 || ^18 || ^19` — **MUI 9 não obriga React 19**. Os dois saltos são independentes.
+**Boa notícia:** MUI 9 tem peer `react: ^17 || ^18 || ^19` — **MUI 9 não obriga React 19**. Os dois saltos são independentes. Idem **Next 16** (peer `react ^18.2.0 || ^19.0.0`).
+
+**Quem prende o React em 18 hoje** (*23/09*): `react-leaflet@4`, `react-query@3` e `@mui/x-date-pickers@6`. Os dois últimos saem nas Etapas 2 e 7; o primeiro é a decisão D2.
+
+### 4.4 Ferramental de desenvolvimento (*23/09*) — adicionado na Etapa 0 já um major atrás
+
+A Etapa 0 instalou as ferramentas nas versões compatíveis com o resto da árvore daquele momento, e várias já têm major novo. Nada disso chega ao consumidor.
+
+| Pacote | Instalado | Latest | Observação |
+|---|---|---|---|
+| `eslint` | 9.39.5 | 10.11.0 | junto com `eslint-config-prettier` 9 → 10, `eslint-plugin-react-hooks` 5 → 7 (a v6+ traz as regras do React Compiler — esperar mais warnings), `globals` 15 → 17, `eslint-plugin-storybook` 9 → 10 (vai junto com a Etapa 5) |
+| `vitest` / `@vitest/coverage-v8` | 3.2.7 | 5.0.1 | dois majors |
+| `jsdom` | 26.1.0 | 29.1.1 | |
+| `@testing-library/jest-dom` | 6.9.1 | 7.0.1 | |
+| `playwright` | 1.55.0 | 1.63.0 | **a versão do pacote tem que casar com a imagem do container** (`mcr.microsoft.com/playwright:v1.55.0-noble` em `scripts/snapshots-in-docker.sh`); subir os dois juntos e **regerar o baseline**, porque o Chromium novo muda antialiasing |
+| `pixelmatch` | 6.0.0 | 7.2.0 | |
+| `@types/node` | 20.17 | 26.x | alinhar com o Node do CI (22) → `^22` |
+
+Sugestão: um PR de ferramental dentro da **Etapa 4** (é o lote de "minors/patches seguros" — estes são majors, mas só de dev), com o baseline de snapshots regerado **num PR separado** do bump do Playwright para o diff ficar legível.
 
 ---
 
@@ -201,24 +255,46 @@ Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/
 Cada item aqui **reduz** a superfície de atualização.
 
 ### 5.1 `react-google-recaptcha` — dependência morta
-Declarada em `package.json` e `lib-package.json` (+ `@types/react-google-recaptcha`), **nunca importada** em `src/`. Remover.
+Declarada em `package.json` e `lib-package.json` (+ `@types/react-google-recaptcha`), **nunca importada** em `src/` (reconferido em 23/09). Remover. Mesmo destino para **`@types/keycloak-js`** (stub obsoleto, ver 4.1).
 
 ### 5.2 `react-query` — sai da lib
-Um único uso real: `src/components/form/input/AutoComplete.tsx:39`, e num padrão errado (`setState` dentro do `queryFn`). Os 3 decorators (`src/decorators/*.tsx`) só instanciam `QueryClientProvider`. Trocar por um hook de fetch interno **remove a dependência da lib inteira** e mata o problema de versão de query com os apps.
+Um único uso real: `src/components/form/input/AutoComplete.tsx:39` (reconferido em 23/09), e num padrão errado (`setState` dentro do `queryFn`). Os 3 decorators (`src/decorators/*.tsx`) só instanciam `QueryClientProvider`. Trocar por um hook de fetch interno **remove a dependência da lib inteira** e mata o problema de versão de query com os apps.
 
 ### 5.3 `cookies-next` — sai da lib
-Usa apenas `getCookie`/`setCookie`/`deleteCookie` em `OAuthProvider.tsx:1,52,92,121,192`. Um helper interno de ~15 linhas **remove o bloqueio do `next >= 15`**.
+Usa apenas `getCookie`/`setCookie`/`deleteCookie` em `OAuthProvider.tsx:1,45,85,114,185` (linhas atualizadas em 23/09). Um helper interno de ~15 linhas **remove o bloqueio do `next >= 15`**.
 
-### 5.4 `@mui/lab` — sai da lib
+### 5.4 `@mui/lab` — sai da lib (**na Etapa 7**, não na 2)
 `LoadingButton` (`Stepper.tsx:4,141,151`) → `<Button loading loadingPosition='start' startIcon={<SaveIcon />}>`, nativo desde MUI 6.4. Evita depender de beta em produção e tira um item da coordenação.
 
 > **Atenção (ver 2.2.1):** hoje `@mui/lab` é uma dependência **não declarada** no pacote publicado — isso é bug ativo, não dívida. A remoção do `LoadingButton` só é possível no MUI ≥ 6.4, ou seja, na Etapa 7. Até lá, **declarar `@mui/lab` em `lib-package.json`** como correção imediata (hotfix `0.0.350`, antes da Etapa 1).
 
 ### 5.5 `decorators/` duplicado
-Existe na raiz **e** em `src/decorators/`, com 3 arquivos cada e conteúdo divergente. As stories importam de `src/decorators/`. Apagar a pasta da raiz.
+Existe na raiz **e** em `src/decorators/`, com 3 arquivos cada e conteúdo divergente (continua assim em 23/09). As stories importam de `src/decorators/`. Apagar a pasta da raiz.
 
-### 5.6 `dist/` publica `stories/` e `decorators/`
+### 5.6 `dist/` publica `stories/`, `decorators/` e `test/`
 Por causa de `rootDir: src`, o build emite `dist/stories/` e `dist/decorators/`. Excluir do build (bloat no pacote publicado). **Desde a Etapa 0 também sai `dist/test/`** (os helpers do vitest em `src/test/`) — o `publint` aponta. Mesmo tratamento.
+
+### 5.7 `src/components/teste/Teste.tsx`
+950 linhas, importa `../../css/globals.css`, **não é exportado** no barrel `src/index.ts`. Candidato a remoção (existe `src/stories/Teste.stories.tsx` referenciando).
+
+### 5.8 Achados da Etapa 0 (22/09/2026) — bugs encontrados ao escrever as stories
+
+Três defeitos que só apareceram quando os 12 componentes sem story ganharam uma. **Status em 23/09:** (a) corrigido na Etapa 0; (b) e (c) continuam abertos e estão na checklist da Etapa 2. Na época, nenhum foi corrigido: a Etapa 0 existe para **congelar** o comportamento atual, não para mudá-lo. Cada um precisa de decisão própria.
+
+**a) `GenericInput.stories.tsx` usava o decorator errado — a story era um falso positivo.**
+A story declarava `FormBaseDecorator` (contexto customizado), mas `GenericInput.tsx:35` usa `useFormContext()` (RHF). Não quebrava porque a chamada é `methods?.register(...)` — com optional chaining o `register` vira `undefined`, o spread `{...undefined}` é no-op e o `TextField` renderiza **sem estar registrado em formulário nenhum**. A story parecia verde e não verificava nada. **Corrigido nesta etapa** (trocado para `GenericFormBaseDecorator`), porque gerar o baseline de snapshots sobre uma story morta contaminaria toda a Etapa 7.
+
+> O optional chaining em `methods?.register` é o que transforma "provider ausente" em falha silenciosa. Vale revisar se ele deve mesmo existir — sem ele, o erro apareceria na hora.
+
+**b) `GenericMaskInput` depende dos dois contextos de formulário ao mesmo tempo.**
+`GenericMaskInput.tsx:58` lê o `FormContext` customizado, enquanto o `TextMaskCustom` interno (`:15`) lê o contexto nativo do RHF. Como `FormProvider` **não** expõe o contexto do RHF (confirmado em `FormProvider.tsx` — ele só popula o `FormContext` próprio), não existe configuração de provider único em que o componente funcione inteiro:
+- sob `GenericFormProvider` (correto para um `Generic*`): renderiza, mas **digitar** dispara `Cannot read properties of undefined (reading 'formSetValue')` no handler `onInput`;
+- sob `FormProvider`: o `TextMaskCustom` fica sem `context.setValue`.
+
+Isso atinge o `GenericInput` em todos os tipos mascarados (`cpf`, `cnpj`, `cep`, `phone`, `sei`, `number`…), já que ele delega para o `GenericMaskInput`. A correção provável é uma linha — `:58` passar a usar `useFormContext()` — mas é **mudança de comportamento da lib**, então fica fora da Etapa 0. A story foi escrita com o decorator arquiteturalmente correto de propósito, para o defeito ficar visível em vez de escondido por um decorator duplo.
+
+**c) `CustomMenu` tipa `btProps` de forma estreita demais.**
+`CustomMenu.tsx` declara `btProps?: ButtonProps` e repassa para `Bt`, que aceita `ButtonProps & { customColor?, customFontColor? }`. Em runtime `customColor` funciona; o TS recusa. Pegou no `npm run typecheck` ao escrever a story. Correção é alargar o tipo (não é breaking), mas também é mudança de lib — fica para a Etapa 2.
 
 ### 5.9 **`main` e `exports.require` do pacote publicado apontam para um arquivo que não existe** — ✅ corrigido na `0.1.0`
 
@@ -249,7 +325,7 @@ Ou seja, qualquer consumidor que resolva pela condição `require` (CommonJS, Je
 
 **Correção original proposta:** ajustar os campos no `lib-package.json` (apontar para `index.cjs`, reordenar `exports`, avaliar `.mjs`). É mudança no pacote publicado, então entra na **Etapa 1**, não aqui. A Etapa 3 (`microbundle` → `tsup`) resolve a raiz, porque o tsup nomeia as saídas de forma consistente.
 
-Verificação adicionada: `npm run check:package` (publint + attw), já ligada ao workflow de PR.
+Verificação adicionada: `npm run check:package` (publint + attw), já ligada ao workflow de PR. **Atenção:** o `check-package.sh` roda com `set -e` e o `publint` sai com código ≠ 0 quando há erro — até a Etapa 1, o `attw` **nunca chegava a rodar** no CI.
 
 ### 5.10 `GenericFormProvider` não é exportado — a família `Generic*` não tem provider acessível — ✅ corrigido na `0.1.0`
 
@@ -276,27 +352,6 @@ Não é regressão — o código não mudou; o smoke-app só não tinha sido bui
 
 **Regra que sai daqui:** depois de todo build, a lista de externos do `dist/index.esm.js` tem que ser igual ao conjunto declarado no `lib-package.json`. Hoje é conferência manual (comando no `CLAUDE.md`); vale virar script em `check:package` na Etapa 3, junto com o `tsup` e os externals explícitos.
 
-### 5.8 Achados da Etapa 0 (22/09/2026) — bugs encontrados ao escrever as stories
-
-Três defeitos que só apareceram quando os 12 componentes sem story ganharam uma. Nenhum foi corrigido ainda: a Etapa 0 existe para **congelar** o comportamento atual, não para mudá-lo. Cada um precisa de decisão própria.
-
-**a) `GenericInput.stories.tsx` usava o decorator errado — a story era um falso positivo.**
-A story declarava `FormBaseDecorator` (contexto customizado), mas `GenericInput.tsx:35` usa `useFormContext()` (RHF). Não quebrava porque a chamada é `methods?.register(...)` — com optional chaining o `register` vira `undefined`, o spread `{...undefined}` é no-op e o `TextField` renderiza **sem estar registrado em formulário nenhum**. A story parecia verde e não verificava nada. **Corrigido nesta etapa** (trocado para `GenericFormBaseDecorator`), porque gerar o baseline de snapshots sobre uma story morta contaminaria toda a Etapa 7.
-
-> O optional chaining em `methods?.register` é o que transforma "provider ausente" em falha silenciosa. Vale revisar se ele deve mesmo existir — sem ele, o erro apareceria na hora.
-
-**b) `GenericMaskInput` depende dos dois contextos de formulário ao mesmo tempo.**
-`GenericMaskInput.tsx:58` lê o `FormContext` customizado, enquanto o `TextMaskCustom` interno (`:15`) lê o contexto nativo do RHF. Como `FormProvider` **não** expõe o contexto do RHF (confirmado em `FormProvider.tsx` — ele só popula o `FormContext` próprio), não existe configuração de provider único em que o componente funcione inteiro:
-- sob `GenericFormProvider` (correto para um `Generic*`): renderiza, mas **digitar** dispara `Cannot read properties of undefined (reading 'formSetValue')` no handler `onInput`;
-- sob `FormProvider`: o `TextMaskCustom` fica sem `context.setValue`.
-
-Isso atinge o `GenericInput` em todos os tipos mascarados (`cpf`, `cnpj`, `cep`, `phone`, `sei`, `number`…), já que ele delega para o `GenericMaskInput`. A correção provável é uma linha — `:58` passar a usar `useFormContext()` — mas é **mudança de comportamento da lib**, então fica fora da Etapa 0. A story foi escrita com o decorator arquiteturalmente correto de propósito, para o defeito ficar visível em vez de escondido por um decorator duplo.
-
-**c) `CustomMenu` tipa `btProps` de forma estreita demais.**
-`CustomMenu.tsx` declara `btProps?: ButtonProps` e repassa para `Bt`, que aceita `ButtonProps & { customColor?, customFontColor? }`. Em runtime `customColor` funciona; o TS recusa. Pegou no `npm run typecheck` ao escrever a story. Correção é alargar o tipo (não é breaking), mas também é mudança de lib — fica para a Etapa 2.
-
-### 5.7 `src/components/teste/Teste.tsx`
-952 linhas, importa `../../css/globals.css`, **não é exportado** no barrel `src/index.ts`. Candidato a remoção (existe `src/stories/Teste.stories.tsx` referenciando).
 
 ---
 
@@ -320,10 +375,10 @@ O caso mais perigoso desta migração: **Grid v2 ignora `item`/`xs` silenciosame
 - [x] **CI para Node 22** (`.github/workflows/publish.yaml` está em Node 16) + `npm ci` em vez de `npm install`.
 - [x] **Workflow de PR** (hoje só existe workflow de publish em push na `main`): typecheck + lint + build + `build-storybook` + testes + snapshots.
 - [x] **Portão de release** (2.4): parar de publicar em todo push na `main`. Opções: publicar só em tag `v*` (`on: push: tags: ['v*']`), ou manter o push na `main` mas com um passo que compara a versão do `lib-package.json` com a do npm (`npm view ... version`) e sai sem publicar se forem iguais. Adicionar também `workflow_dispatch` para republicar manualmente.
-- [~] **`@storybook/addon-vitest` + Playwright:** cada story vira teste de render em browser real (falha em erro de console/render). É a única verificação automatizada viável sem app host.
+- [~] **`@storybook/addon-vitest` + Playwright:** cada story vira teste de render em browser real (falha em erro de console/render). É a única verificação automatizada viável sem app host. *(Parcial: o script de snapshots já falha em `pageerror`. Reavaliar na Etapa 5 — o addon é da linha Storybook 10.)*
 - [x] **Escrever as 12 stories que faltam** (lista em 2.3), priorizando `GenericDatePicker`, `GenericMaskInput`, `MaskInput` e `GenericMultInput` — são os que a Etapa 7 mexe mais. As 34 stories atuais cobrem 30 dos 46 exports; o alvo é **todo export visual com pelo menos uma story**.
 - [x] **Snapshots visuais** das stories via **Playwright, com os PNGs versionados no repo** (decisão 7). É o que pega a quebra silenciosa de Grid e de `slotProps`. Os snapshots são gerados e comparados **dentro de um container Linux fixo** (mesma imagem no CI e localmente, via `docker run`), senão o diff vira ruído de fonte/antialiasing do macOS.
-- [x] **App de fumaça em `examples/smoke-app`** (decisão 8): um Next 14 mínimo consumindo a lib via `npm run link`, com uma página usando `FormProvider` + `Input` + `Table`/`GenericTable` + `DatePicker` + `Map` + auth. Único jeito de validar o cenário real "MUI vem do app". Precisa ficar fora do `include` do `tsconfig` da lib, fora do `build-storybook` e fora do pacote publicado.
+- [x] **App de fumaça em `examples/smoke-app`** (decisão 8) — *ressalva de 23/09: o `file:../../dist` não valida o contrato de dependências e o app **não roda no CI**; ver seção 10*. Um Next 14 mínimo consumindo a lib via `npm run link`, com uma página usando `FormProvider` + `Input` + `Table`/`GenericTable` + `DatePicker` + `Map` + auth. Único jeito de validar o cenário real "MUI vem do app". Precisa ficar fora do `include` do `tsconfig` da lib, fora do `build-storybook` e fora do pacote publicado.
 - [x] **Verificação de artefato:** script comparando exports de `dist/index.d.ts` com `src/index.ts` (pega regressão de API pública) + `publint` e `@arethetypeswrong/cli` no `dist/`.
 - [x] **Cobertura automatizada dos providers de auth** (decisão: preferência por teste automatizado em vez de validação manual no HMG). `KeycloakAuthProvider` (519 linhas) e `OAuthProvider` não têm story nem teste hoje. Plano:
     - `OAuthProvider`: usar o **bypass de localhost** já existente (`testIP`/`testToken`) para testar sem rede — login, `isAuth`/`userLoaded`, `hasRole`/`hasAnyRole`/`hasAllRoles`, gravação do cookie `nextauth.token`, avatar no `localStorage` e `logout`. Tokens de teste gerados no próprio teste (JWT não assinado), sem segredo no repo.
@@ -342,7 +397,7 @@ Nenhuma dependência sobe (só entram devDependencies de teste/lint). Checklist 
 
 #### Registro de execução — 22/09/2026
 
-Estado ao fim desta sessão (**nada commitado ainda**).
+Commitado em 4 commits (`8a68879` → `72ec9af`) no branch `etapa-0-baseline-e-rede-de-seguranca`, **ainda não mergeado na `main`**.
 
 | Verificação | Comando | Resultado |
 |---|---|---|
@@ -375,7 +430,7 @@ Estado ao fim desta sessão (**nada commitado ainda**).
 - `GenericInput.stories.tsx` usava o decorator errado (ver 5.8a).
 - `Table.stories.tsx` estava **inteiramente comentada** — dependia do json-server na porta 7171. Reescrita com `fetchFunc` devolvendo `Response` de um JSON estático, e tipada contra a `TableProps` atual (a story `Base/Table (sem o fetchFunc)` passa props obsoletas usando `as unknown`).
 
-**Achados que NÃO foram corrigidos** (mudam comportamento da lib, então saem da Etapa 0): seções **5.8**, **5.9** e **5.10**. O 5.9 (`main`/`exports.require` apontando para arquivo inexistente) é o mais urgente.
+**Achados que NÃO foram corrigidos** (mudam comportamento da lib, então saem da Etapa 0): seções **5.8**, **5.9** e **5.10**. O 5.9 (`main`/`exports.require` apontando para arquivo inexistente) é o mais urgente. *(5.9 e 5.10 corrigidos na Etapa 1.)*
 
 ---
 
@@ -422,21 +477,25 @@ Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-segur
 **Para publicar:** merge da Etapa 0 e desta etapa na `main`, depois `git tag v0.1.0 && git push origin v0.1.0`.
 
 ### Etapa 2 — Limpeza e desacoplamento
-- [ ] Remover `react-google-recaptcha` + `@types` (5.1).
+- [ ] Remover `react-google-recaptcha` + `@types` e `@types/keycloak-js` (5.1).
 - [ ] Remover `react-query`: hook de fetch interno no `AutoComplete` + limpar os 3 decorators (5.2).
 - [ ] Remover `cookies-next`: helper interno de cookies (5.3).
-- [ ] Remover `@mui/lab`: `LoadingButton` → `<Button loading>` (5.4).
+- ~~Remover `@mui/lab`: `LoadingButton` → `<Button loading>` (5.4).~~ **Movido para a Etapa 7**: `<Button loading>` só existe no MUI ≥ 6.4 (ver 2.2.1). Enquanto isso, `@mui/lab` fica declarado e fixado.
 - [ ] Apagar `decorators/` da raiz (5.5).
-- [ ] Excluir `stories/` e `decorators/` do build (5.6).
+- [ ] Excluir `stories/`, `decorators/` e `test/` do build (5.6).
 - [ ] Decidir sobre `src/components/teste/Teste.tsx` (5.7).
 - [ ] `Table`/`GenericTable` sem acesso a `localStorage` no render (5.11).
 - [ ] Rodar o smoke-app (tarball + `next build`) no `ci.yaml`.
+- [ ] `GenericMaskInput` lendo o contexto do RHF (5.8b) e `CustomMenu` com `btProps` alargado (5.8c). O 5.8b muda comportamento — story nova digitando nos tipos mascarados do `GenericInput`.
+- [ ] Script que compara os externos do `dist/` com o que o `lib-package.json` declara (5.12), no `check:package`.
 
-**Impacto:** nenhuma mudança visual; os apps podem remover `react-query` da árvore.
+**Impacto:** nenhuma mudança visual; os apps podem remover `react-query` da árvore. Release **`0.2.0`** se o 5.8b entrar (muda comportamento), senão `0.1.x`.
 **Validação:** snapshots **idênticos** ao baseline; diff de exports vazio.
 
-### Etapa 3 — Build: `microbundle` → `tsup`
+### Etapa 3 — Build: `microbundle` → `tsdown` (ou `tsup` — decisão D1)
 - [ ] Migrar o build (cjs + esm + d.ts), com `'use client'` **preservado** e externals explícitos.
+- [ ] Saídas com extensão explícita (`.mjs`/`.cjs` e `.d.mts`/`.d.cts`), inclusive nos chunks (hoje o chunk do `Map` sai como `.js` nos dois formatos) — é o que zera o 🚭 do attw em node16-ESM (5.9).
+- [ ] Se for `tsdown`: subir `engines.node` para `^22.18 || >=24.11` e o Node local/CI (a máquina usada em 23/09 está em 22.17.1, abaixo do mínimo).
 - [ ] Manter os subpath exports atuais (`./types/auth`, `./types/form`).
 - [ ] Rodar `publint` + `attw`.
 
@@ -445,12 +504,14 @@ Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-segur
 
 ### Etapa 4 — Lote de minors/patches seguros
 - [ ] Tudo da seção 4.1, num PR só.
+- [ ] Ferramental de dev da seção 4.4, em PR próprio (majors, mas só de dev). Bump do Playwright + imagem do container + **baseline regerado** em PR separado.
 
 **Validação:** stories + snapshots idênticos.
 
 ### Etapa 5 — Storybook 9 → 10
-- [ ] `npx storybook@latest upgrade`; converter `.storybook/main.ts` e `preview.ts` para ESM-only.
-- [ ] Remover `@storybook/testing-library` (0.2.2, deprecado; não é usado em nenhuma story) — usar `storybook/test`.
+- [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.
+- [ ] Remover `@storybook/testing-library` (0.2.2, deprecado desde o Storybook 8 — o npm marca como `deprecated`; não é usado em nenhuma story) — usar `storybook/test`.
+- [ ] `eslint-plugin-storybook` 9 → 10 junto.
 - [ ] Confirmar Node ≥ 20.16 no CI e no `engines` do `package.json`.
 
 **Impacto:** nenhum (dev only).
@@ -460,7 +521,7 @@ Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-segur
 - [ ] `jwt-decode` 3 → 4
 - [ ] `react-imask` 6 → 7
 - [ ] `react-toastify` 10 → 11 (decidir o destino do CSS vendorizado)
-- [ ] `react-dropzone` 14 → 20
+- [ ] `react-dropzone` 14 → 20 (*`engines: node >= 22` — conferir o Node dos apps*)
 - [ ] `keycloak-js` 25 → 26
 
 **Validação:** story dedicada por lib + app de fumaça. Para `keycloak-js` 25 → 26: suíte com MSW da Etapa 0 + **e2e contra o Keycloak de HMG** (job sob demanda). Teste manual só se o e2e apontar divergência.
@@ -476,7 +537,10 @@ Sub-etapas, cada uma com snapshots revisados:
 - [ ] **`@mui/x-date-pickers` 6 → 9** (`npx @mui/x-codemod@latest v9.0.0/pickers/preset-safe src`). `enableAccessibleFieldDOMStructure` deixa de existir (estrutura acessível passa a ser obrigatória); `PickersDay` → `PickerDay`.
 - [ ] **Ajustes de comportamento:** `Stepper` agora renderiza `<ol>` e `Step` `<li>` (revisar CSS do `Stepper`/`StepperBlock`); `Grid` não aceita mais `direction="column"` (usar `Stack`); `InputLabel` `size` `normal` → `medium`; deep imports com mais de um nível deixam de funcionar (revisar `@mui/material/Grid`, `@mui/icons-material/Save` etc.).
 - [ ] **Browsers mínimos sobem** para Chrome 117+, Firefox 121+, Safari 17+ — **sem impedimento** (decisão: o público dos sistemas usa browsers recentes). Registrar no `README.md`.
-- [ ] Abrir o peer para `"@mui/material": "^7.0.0 || ^9.0.0"`.
+- [ ] Abrir o peer para `"@mui/material": "^7.3.0 || ^9.0.0"` (piso do `x-date-pickers@9`) e `"@mui/x-date-pickers": "^8.0.0 || ^9.0.0"`.
+- [ ] Remover `@mui/lab` (`LoadingButton` → `<Button loading>`, 5.4).
+- [ ] **API pública:** o `Input` repassa `InputProps`/`InputLabelProps`/`FormHelperTextProps` do `TextFieldProps` (`Input.tsx:167-168,256-259`) — e o consumidor pode passá-los. O codemod migra o código da lib, **não o dos apps**. Decidir: aceitar os dois formatos e mapear para `slotProps` internamente (como com `xs`/`sm`/`md`), ou registrar como breaking no `CHANGELOG.md`.
+- [ ] Tipos públicos que dependem do Grid legado: `Input.tsx:45,52-54` (`GridProps['xs']`, `Omit<GridProps, 'item' | ...>`).
 - [ ] Publicar **`1.0.0-rc.1` sob a dist-tag `next`** (`npm publish --tag next`), o app piloto valida em homologação instalando `@ssplib/react-components@next`, e só depois promover para `latest` (`npm dist-tag add @ssplib/react-components@1.0.0 latest`). **Nunca** publicar o `1.0.0` direto em `latest` — é o que impede a quebra simultânea de todos os apps.
 - [ ] Atualizar `README.md` (hoje diz "baseada em MUI v5") e `DESIGN_SYSTEM.md`.
 
@@ -487,14 +551,16 @@ Sub-etapas, cada uma com snapshots revisados:
 - [ ] `@types/react` 19, `@types/react-dom` 19.
 - [ ] `JSX.Element` → `React.JSX.Element` em 10 arquivos (Apêndice C).
 - [ ] Revisar os 2 `forwardRef` (`MaskInput.tsx:15`, `GenericMaskInput.tsx:7`).
-- [ ] `react-leaflet` 4 → 5. **Atenção:** a v5 tem peer `react ^19.0.0` **estrito** — publicar isso torna React 19 **obrigatório** para todos os apps. É o único pacote do plano que força a versão do React, então ele fecha a etapa, depois dos apps já estarem migrados.
-- [ ] Next 16: exige Node ≥ 20.9. Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
+- [ ] `react-leaflet` 4 → 5. **Atenção:** a v5 tem peer `react ^19.0.0` **estrito** e a v4 tem `react ^18.0.0` estrito — não há versão que sirva aos dois (reconferido em 23/09). Como `dependency` direta, o bump torna React 19 **obrigatório** para todos os apps. Ver decisão D2 para a alternativa (peer opcional, o app escolhe a versão).
+- [ ] Next 16 (16.3.6 em 23/09): exige Node ≥ 20.9 e aceita React 18.2+ — **pode subir antes do React 19**, se for útil a algum app. Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
 - [ ] `cookies-next` foi removido na Etapa 2 (helper interno) — **não precisa voltar**. Só reavaliar se quisermos o helper deles de novo.
 
-**Impacto:** breaking coordenado → publicar como **major `2.0.0`** com peer `react: ^19.0.0`. A lib fica em `react: ^18 || ^19` desde a Etapa 1, então até aqui os apps em React 18 continuam atendidos por `1.x`.
+**Impacto:** breaking coordenado → publicar como **major `2.0.0`** com peer `react: ^19.0.0`.
+
+> *Correção de 23/09:* o texto original dizia que "a lib fica em `react: ^18 || ^19` desde a Etapa 1". **Não fica** — a Etapa 1 declarou `^18.0.0`, porque `react-leaflet@4`, `react-query@3` e `x-date-pickers@6` recusam o 19. Depois das Etapas 2 e 7 sobra só o `react-leaflet`, e aí `1.x` só consegue declarar `^18 || ^19` se a decisão D2 tirar o `react-leaflet` das `dependencies`. Sem isso, `1.x` = React 18 e `2.0.0` = React 19, sem janela de convivência.
 
 ### Etapa 9 — TypeScript 7
-- [ ] O `latest` do npm já é `7.0.2` (port nativo em Go). Ficar em **5.9 até a Etapa 8 concluir** e então subir, com dois critérios objetivos de entrada: (a) `tsup`/`rollup-plugin-dts` e o Storybook em uso geram `.d.ts` corretos com TS 7; (b) `typescript-eslint` suporta TS 7 na versão que estivermos usando. Se algum falhar, permanecer em 5.9 — é a única dependência do plano em que "mais nova" ainda não é claramente melhor.
+- [ ] O `latest` do npm já é `7.0.2` (port nativo em Go). Ficar em **5.9 até a Etapa 8 concluir** e então subir, com dois critérios objetivos de entrada: (a) o bundler da Etapa 3 e o Storybook em uso geram `.d.ts` corretos com TS 7 (*o `tsdown@0.23` já declara peer `typescript ^5 || ^6 || ^7`; o `tsup@8.5.1` declara `>=4.5.0` sem garantia*); (b) `typescript-eslint` suporta TS 7 na versão que estivermos usando. Se algum falhar, permanecer em 5.9 — é a única dependência do plano em que "mais nova" ainda não é claramente melhor.
 
 ---
 
@@ -502,6 +568,7 @@ Sub-etapas, cada uma com snapshots revisados:
 
 - **Branches:** `v0-legacy` (MUI 5) recebe só correções; `main` vira `1.x` (MUI ≥ 7).
 - **Ordem de rollout:** 1 app piloto em homologação → demais apps, um a um.
+- **Linha `0.x` antes do `1.0.0`:** `0.1.0` (packaging), depois `0.2.0`/`0.1.x` conforme a Etapa 2 mude comportamento ou não. Todo app sai de `^0.0.349` para `^0.1.0` **manualmente** — em `0.0.x` o `^` fixa a versão exata, então nenhum app recebe a `0.1.0` sem editar o `package.json`.
 - **Range amplo de peer** (`^7 || ^9`) dá janela de migração: o app sobe de MUI 5 → 7 sem precisar ir direto ao 9.
 - **Semver de verdade** a partir da Etapa 1. Breaking change = major. Nunca mais em patch.
 - **Changelog:** criar `CHANGELOG.md` com as quebras de cada release (hoje só existe a mensagem de commit `vNNN - ...`).
@@ -525,11 +592,47 @@ Sub-etapas, cada uma com snapshots revisados:
 | 8 | **App de fumaça em `examples/smoke-app` neste repo** (decidido em 22/09/2026) | A validação "MUI vem do app" roda no CI sem token nem checkout cruzado. Precisa ficar **fora do `tsconfig`/build da lib** e fora do pacote publicado (`.npmignore`/`files`), e ter `node_modules` próprio |
 | 9 | **Dist-tags confirmadas** (decidido em 22/09/2026) | `latest` = estável, `next` = pré-releases (`1.0.0-rc.x`), `legacy-v0` = última `0.0.x`. Exatamente como na seção 8 |
 
+### Decisões em aberto (surgidas na revalidação de 23/09/2026)
+
+| # | Questão | Opções | Recomendação |
+|---|---|---|---|
+| **D1** | **Bundler da Etapa 3.** O `tsup` foi escolhido na análise de 21/09, mas o README dele hoje diz *"This project is not actively maintained anymore. Please consider using tsdown"* (último release 8.5.1, nov/2025) — trocar um bundler abandonado (`microbundle`) por outro abandonado não resolve o problema de fundo. | (a) **`tsdown`** (sucessor indicado pelo próprio tsup, baseado em rolldown; 0.23.0 — **ainda pré-1.0**; exige Node `^22.18 \|\| >=24.11`; integra `publint`/`attw`); (b) `tsup` 8.5.1 (funciona, congelado); (c) `rollup` + `rollup-plugin-dts` direto (maduro, mais configuração) | **(a) `tsdown`**, com (c) como plano B se algum critério da Etapa 3 falhar (`'use client'` preservado, d.ts corretos, diff de exports vazio). O pré-1.0 pesa menos porque o build é verificado por `check:package` + diff de API + smoke-app |
+| **D2** | **Como `1.x` atende React 18 e 19.** O plano promete essa janela, mas o `react-leaflet` (dependência direta, só usado pelo `Map`) não tem versão que aceite os dois. | (a) **`react-leaflet`/`leaflet` viram `peerDependencies` opcionais** (`peerDependenciesMeta`), com range `^4.2.1 \|\| ^5.0.0`: app em React 18 instala o 4, app em React 19 instala o 5, app sem mapa não instala nada. Exige que o `Map.tsx`/`DraggableMarker.tsx` funcionem nas duas (a v5 é basicamente a v4 com React 19) — verificar com story nas duas versões; (b) manter como dependência: `1.x` = React 18, `2.0.0` = React 19, sem convivência | **(a)** — é o mesmo raciocínio da seção 3 (peer com range amplo evita lockstep), e ainda tira o Leaflet da árvore de quem não usa o mapa. Entraria na Etapa 7 (já é breaking) ou numa `0.x` |
+
 **Informação pendente (não bloqueia o início):** a **lista dos sistemas que consomem a lib**. Necessária na Etapa 7 para escolher o app piloto e ordenar o rollout. Ideal levantar com `npm` ou por busca nos repos da organização e registrar aqui.
 
 ### Único ponto que ainda depende de calendário
 
-`react-leaflet` 5 tem peer `react ^19.0.0` **estrito**: no dia em que ele entrar, React 19 passa a ser obrigatório em **todos** os apps. Por isso ele é o último item da Etapa 8, e a lib declara `react: ^18 || ^19` desde a Etapa 1 — assim `1.x` atende os apps em React 18 enquanto eles migram, e `2.0.0` só sai quando todos estiverem em React 19. Nenhum outro pacote do plano força a versão do React.
+`react-leaflet` 5 tem peer `react ^19.0.0` **estrito**, e o 4 tem `react ^18.0.0` estrito: no dia em que o 5 entrar como dependência, React 19 passa a ser obrigatório em **todos** os apps. Por isso ele é o último item da Etapa 8. *(Corrigido em 23/09: o texto anterior dizia que a lib declarava `react: ^18 || ^19` desde a Etapa 1 e que nenhum outro pacote forçava a versão do React. Na verdade a `0.1.0` declara `^18.0.0`, e `react-query@3` e `x-date-pickers@6` também prendem em 18 até as Etapas 2 e 7. A janela React 18 + 19 em `1.x` depende da decisão D2.)*
+
+---
+
+## 10. Revalidação de 23/09/2026 (após a Etapa 1)
+
+Conferência de cada afirmação do plano contra o código (`grep` no `src/`), o registry do npm (`npm view`, `npm outdated`) e o que a execução das Etapas 0 e 1 mostrou. As seções acima já estão corrigidas; esta lista registra **o que mudou e por quê**.
+
+**Confirmado sem mudança**
+- Apêndices A, B e C: 28 arquivos com `<Grid>` (25 com `item` + `File.tsx`, `Table.tsx`, `GenericTable.tsx` sem `item`), 3 stories, 8 arquivos com props legadas, 21 usos de `JSX.Element` em 10 arquivos, 2 `forwardRef` — tudo bate.
+- `react-google-recaptcha` sem nenhum import; `react-query` com um único uso (`AutoComplete.tsx:39`) mais os 3 decorators; `LoadingButton` em `Stepper.tsx:4,141,151`; `decorators/` ainda duplicado; 12 arquivos com `useTheme`/`useMediaQuery`; 5 arquivos importando `next/*`.
+- Registry: `@mui/lab` segue sem estável (9.0.0-beta.9); `cookies-next@6` exige `next >= 15`; `@mui/material@9` aceita React 17–19; `microbundle` sem release desde 12/08/2022; TS `latest` = 7.0.2.
+
+**Corrigido no texto**
+- Números de linha que mudaram com o `eslint --fix`/prettier da Etapa 0: `OAuthProvider.tsx` (`jwt-decode`: 62, 115, 117; `cookies-next`: 45, 85, 114, 185), `DropFileUpload.tsx:70`, `Teste.tsx` 950 linhas.
+- Peer final de MUI: `^7.3.0 || ^9.0.0` (piso do `x-date-pickers@9`), Emotion `^11.9.0`/`^11.8.1`, `x-date-pickers ^8 || ^9` (seção 3).
+- **A promessa de `react ^18 || ^19` desde a Etapa 1 era impossível** — três dependências recusam o 19 e o `react-leaflet` não tem versão para os dois (4.3, Etapa 8, seção 9 → D2).
+- **`@mui/lab` sai na Etapa 7, não na 2** — a Etapa 2 listava a remoção, mas o substituto só existe no MUI ≥ 6.4.
+- Status de cada achado da seção 2 e da seção 5 (resolvido/aberto); seção 5 reordenada numericamente; registro da Etapa 0 dizia "nada commitado".
+
+**Novo**
+- **`tsup` não é mais mantido** → decisão D1 (Etapa 3).
+- **Ferramental da Etapa 0 já um major atrás** (eslint 10, vitest 5, jsdom 29, playwright 1.63…) → seção 4.4. O bump do Playwright exige regerar o baseline.
+- **`@types/keycloak-js` é stub obsoleto** → remover na Etapa 2.
+- **Pacotes do Storybook desalinhados** (core 9.1.20, addons 9.0.17).
+- **`react-dropzone@20` exige Node ≥ 22** nos apps.
+- **`Next 16` aceita React 18.2** — o salto de Next não depende do de React.
+- **O `Input` expõe `InputProps`/`InputLabelProps` na API pública** → a migração para `slotProps` na Etapa 7 pode ser breaking para os apps, não só interna.
+- **`check-package.sh` nunca rodava o `attw`** enquanto o `publint` tinha erro (`set -e`). Resolvido de tabela com a Etapa 1 (publint sem erros), mas vale saber se o publint voltar a falhar.
+- Da Etapa 1: 5.11 (`Table` quebra no SSR), 5.12 (`@mui/system` embutido no bundle) e a limitação do `file:../../dist` no smoke-app, que **não roda no CI**.
 
 ---
 
