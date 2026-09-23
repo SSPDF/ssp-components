@@ -1,7 +1,14 @@
 import { Alert, Box, Button, Container, Divider, Paper, Stack, Typography } from '@mui/material'
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
-import { DatePicker, FormProvider, GenericInput, Input, MODAL, Table } from '@ssplib/react-components'
-import { FormProvider as RhfFormProvider, useForm } from 'react-hook-form'
+import { DatePicker, FormProvider, GenericFormProvider, GenericInput, Input, MODAL } from '@ssplib/react-components'
+
+/**
+ * `Table` lê o `localStorage` durante o render (`Table.tsx:75`), então quebra no SSR
+ * (`ReferenceError: localStorage is not defined` no `next build`). Hoje o app
+ * consumidor precisa carregá-la sem SSR, como aqui. Ver UPGRADE_PLAN.md 5.11.
+ */
+const Table = dynamic(() => import('@ssplib/react-components').then((m) => m.Table), { ssr: false })
 
 /**
  * Página de fumaça: exercita os dois sistemas de formulário, a tabela, o
@@ -26,29 +33,21 @@ function Secao({ titulo, children }: { titulo: string; children: React.ReactNode
 }
 
 /**
- * Os componentes `Generic*` consomem o contexto nativo do react-hook-form. A lib
- * tem um `GenericFormProvider` pronto para isso, mas ele **não é exportado** no
- * barrel (`src/index.ts`) e o `exports` do package.json só declara `.`,
- * `./types/auth` e `./types/form` — então deep import também não resolve.
- *
- * Ou seja: hoje o consumidor precisa montar o provider do RHF na mão, como aqui.
- * Ver UPGRADE_PLAN.md 5.10.
+ * Os componentes `Generic*` consomem o contexto nativo do react-hook-form, que o
+ * `GenericFormProvider` da lib fornece (exportado a partir da 0.1.0 — ver
+ * UPGRADE_PLAN.md 5.10).
  */
 function FormularioRhf({ onSubmit, enviado }: { onSubmit: (d: unknown) => void; enviado: unknown }) {
-    const methods = useForm()
-
     return (
-        <RhfFormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-                <Stack spacing={2}>
-                    <GenericInput name='email' type='email' title='E-mail' required />
-                    <Button type='submit' variant='contained'>
-                        Enviar
-                    </Button>
-                    {!!enviado && <pre>{JSON.stringify(enviado, null, 2)}</pre>}
-                </Stack>
-            </form>
-        </RhfFormProvider>
+        <GenericFormProvider onSubmit={onSubmit}>
+            <Stack spacing={2}>
+                <GenericInput name='email' type='email' title='E-mail' required />
+                <Button type='submit' variant='contained'>
+                    Enviar
+                </Button>
+                {!!enviado && <pre>{JSON.stringify(enviado, null, 2)}</pre>}
+            </Stack>
+        </GenericFormProvider>
     )
 }
 

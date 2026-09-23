@@ -34,6 +34,7 @@ import { MODAL } from './components/modal/Modal'
 import NavBar from './components/navbar/NavBar'
 import TabNavBar from './components/navbar/TabNavBar'
 import FormProvider from './components/providers/FormProvider'
+import GenericFormProvider from './components/providers/GenericFormProvider'
 import { KeycloakAuthProvider } from './components/providers/KeycloakAuthProvider'
 import { cookieName as AUTH_COOKIE_NAME, OAuthProvider } from './components/providers/OAuthProvider'
 import { SspComponentsProvider } from './components/providers/SspComponentsProvider'
@@ -97,6 +98,7 @@ export {
     FormProvider,
     GenericDatePicker,
     GenericFetchAutoComplete,
+    GenericFormProvider,
     GenericInput,
     GenericMaskInput,
     GenericMultInput,

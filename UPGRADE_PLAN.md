@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** planejado, nada implementado. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0 e 1 concluídas (23/09/2026); **próxima: Etapa 2**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** — todos os achados desta seção continuam verdadeiros, nada no repo mudou.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Nenhuma decisão em aberto: a Etapa 0 está pronta para começar.** **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Regra de ouro:** nenhuma etapa avança sem a validação da etapa anterior estar verde. As Etapas 0–6 podem ir para produção **sem tocar em nenhum app consumidor**; só as Etapas 7 e 8 exigem mutirão.
@@ -48,9 +48,11 @@ Comparando os dois manifestos, estes estão em `package.json` mas **não** em `l
 
 Para MUI/Emotion isso "funciona por acidente": o app consumidor instala essas libs de qualquer forma, então o import externalizado resolve. **`@mui/lab` é o caso diferente** — nenhum app instala `@mui/lab` por conta própria, e `src/components/form/stepper/Stepper.tsx:4` importa `LoadingButton` dele em runtime. Como o microbundle externaliza tudo que está no `package.json` da raiz, o `dist` publicado carrega um `import '@mui/lab'` que **ninguém declara e ninguém instala** → o `Stepper` provavelmente já está quebrado em produção em qualquer app sem `@mui/lab` na árvore por outro motivo.
 
+> **Corrigido na `0.1.0` (Etapa 1)**, e não num hotfix `0.0.350` separado: `@mui/lab` entrou em `dependencies`, fixado em `5.0.0-alpha.127`. Não dá para usar `^5.0.0-alpha.127` — o range resolve para o `alpha.177`, cuja peer é `@mui/material >=5.15.0`, e o `npm install` de um app em MUI 5.12 falharia com `ERESOLVE`. O `alpha.127` tem peer `^5.0.0`. Quem estiver fixado em `^0.0.349` não recebe a correção (em `0.0.x` o `^` fixa a versão); se algum app precisar dela sem subir para `0.1.0`, publicar `0.0.350` a partir de `v0-legacy` só com esta linha.
+
 **Consequência no plano:** o item 5.4 deixa de ser limpeza e vira **correção de bug**, com prioridade acima da Etapa 2. Enquanto a lib estiver em MUI 5, `<Button loading>` ainda não existe (é nativo só a partir do 6.4), então a correção imediata é **declarar `@mui/lab` em `lib-package.json`**; a remoção do `LoadingButton` acontece na Etapa 7, junto com o salto de MUI.
 
-**Achado menor:** `dayjs` diverge entre os manifestos — `^1.11.11` na raiz, `^1.11.7` no `lib-package.json`. Alinhar na Etapa 1.
+**Achado menor:** `dayjs` diverge entre os manifestos — `^1.11.11` na raiz, `^1.11.7` no `lib-package.json`. ~~Alinhar na Etapa 1.~~ Resolvido na Etapa 1: virou peer `^1.11.0` nos dois manifestos.
 
 ### 2.3 A cobertura de stories é menor do que parece: 16 dos 46 exports não têm nenhuma
 
@@ -216,9 +218,9 @@ Usa apenas `getCookie`/`setCookie`/`deleteCookie` em `OAuthProvider.tsx:1,52,92,
 Existe na raiz **e** em `src/decorators/`, com 3 arquivos cada e conteúdo divergente. As stories importam de `src/decorators/`. Apagar a pasta da raiz.
 
 ### 5.6 `dist/` publica `stories/` e `decorators/`
-Por causa de `rootDir: src`, o build emite `dist/stories/` e `dist/decorators/`. Excluir do build (bloat no pacote publicado).
+Por causa de `rootDir: src`, o build emite `dist/stories/` e `dist/decorators/`. Excluir do build (bloat no pacote publicado). **Desde a Etapa 0 também sai `dist/test/`** (os helpers do vitest em `src/test/`) — o `publint` aponta. Mesmo tratamento.
 
-### 5.9 **`main` e `exports.require` do pacote publicado apontam para um arquivo que não existe**
+### 5.9 **`main` e `exports.require` do pacote publicado apontam para um arquivo que não existe** — ✅ corrigido na `0.1.0`
 
 Encontrado ao rodar `publint` sobre o `dist/` (Etapa 0). É o achado mais grave até agora e **já está em produção**.
 
@@ -243,11 +245,13 @@ Ou seja, qualquer consumidor que resolva pela condição `require` (CommonJS, Je
 - `types` precisa ser a **primeira** chave de `exports["."]` (as condições são sensíveis à ordem, senão o TS não resolve);
 - `index.esm.js` é ESM mas a extensão `.js` sem `"type": "module"` faz o Node interpretar como CJS (`attw`: 🚭 *Unexpected module syntax*, e `🐛 Used fallback condition` em node16 CJS/ESM e bundler).
 
-**Correção:** ajustar os campos no `lib-package.json` (apontar para `index.cjs`, reordenar `exports`, avaliar `.mjs`). É mudança no pacote publicado, então entra na **Etapa 1**, não aqui. A Etapa 3 (`microbundle` → `tsup`) resolve a raiz, porque o tsup nomeia as saídas de forma consistente.
+**Feito na Etapa 1:** `main` e `exports.require` → `./index.cjs`, `types` como primeira condição. `publint` foi de 3 erros para 0. **Não resolvido:** o aviso de ESM interpretado como CJS (`attw` 🚭 em `node16 (from ESM)`). Adicionar `"type": "module"` não serve — o chunk CJS do `Map` (`Map-<hash>.js`) também tem extensão `.js` e passaria a ser lido como ESM. Fica para o `tsup` na Etapa 3. Bundlers (o caso de todos os apps) não são afetados.
+
+**Correção original proposta:** ajustar os campos no `lib-package.json` (apontar para `index.cjs`, reordenar `exports`, avaliar `.mjs`). É mudança no pacote publicado, então entra na **Etapa 1**, não aqui. A Etapa 3 (`microbundle` → `tsup`) resolve a raiz, porque o tsup nomeia as saídas de forma consistente.
 
 Verificação adicionada: `npm run check:package` (publint + attw), já ligada ao workflow de PR.
 
-### 5.10 `GenericFormProvider` não é exportado — a família `Generic*` não tem provider acessível
+### 5.10 `GenericFormProvider` não é exportado — a família `Generic*` não tem provider acessível — ✅ corrigido na `0.1.0`
 
 Encontrado ao montar o `examples/smoke-app`. Os seis componentes `Generic*` (`GenericInput`, `GenericTable`, `GenericFetchAutoComplete`, `GenericMaskInput`, `GenericMultInput`, `GenericDatePicker`) consomem o contexto nativo do react-hook-form, e a lib tem um `GenericFormProvider` pronto para fornecê-lo — mas:
 
@@ -257,6 +261,20 @@ Encontrado ao montar o `examples/smoke-app`. Os seis componentes `Generic*` (`Ge
 O arquivo é emitido (`dist/components/providers/GenericFormProvider.d.ts` existe), mas é inalcançável. Na prática o consumidor tem que montar `useForm()` + o `FormProvider` do próprio react-hook-form na mão — é o que o smoke-app faz, de propósito, para documentar a experiência real.
 
 **Correção:** adicionar `GenericFormProvider` ao barrel. Uma linha, não é breaking (só adiciona). Entra na **Etapa 1**, junto com o restante do packaging.
+
+### 5.11 `Table` quebra no SSR (achado na Etapa 1, 23/09/2026) — **não corrigido**
+
+O primeiro `next build` do `examples/smoke-app` falhou no prerender com `ReferenceError: localStorage is not defined`. Origem: `src/components/form/table/Table.tsx:75` — `useRef(localStorage.getItem(...))` roda **durante o render** (e `:82-86` também leem/gravam `localStorage` fora de `useEffect`). O `GenericTable` tem o mesmo padrão em `:622` e `:688-707` (dentro do JSX).
+
+Não é regressão — o código não mudou; o smoke-app só não tinha sido buildado na Etapa 0. Os apps que usam `Table` com SSR hoje só funcionam se já a carregam com `next/dynamic` + `ssr: false`, que é o que o smoke-app passou a fazer (documentado no `README.md` e no `CHANGELOG.md`).
+
+**Correção:** mover as leituras para `useEffect`/inicializador lazy protegido por `typeof window !== 'undefined'`. É mudança de comportamento da lib (primeiro render sem o estado salvo), então fica para a Etapa 2, com story/snapshot conferindo.
+
+### 5.12 O bundle embutia uma cópia do `@mui/system` (achado e corrigido na Etapa 1)
+
+`FileUpload.tsx` e `DropFileUpload.tsx` importavam `Stack` de `@mui/system`, pacote que **não estava em nenhum manifesto**. O microbundle só externaliza o que está em `dependencies` + `peerDependencies`, então copiou o `@mui/system` 5.12 (com `@mui/utils` etc.) para dentro do `dist/` — **sem aviso**. Troca para `import { Stack } from '@mui/material'` (mesmo componente, já externo): o bundle caiu de 150 kB para 110 kB (ESM) e 161 kB para 120 kB (CJS), com snapshots idênticos.
+
+**Regra que sai daqui:** depois de todo build, a lista de externos do `dist/index.esm.js` tem que ser igual ao conjunto declarado no `lib-package.json`. Hoje é conferência manual (comando no `CLAUDE.md`); vale virar script em `check:package` na Etapa 3, junto com o `tsup` e os externals explícitos.
 
 ### 5.8 Achados da Etapa 0 (22/09/2026) — bugs encontrados ao escrever as stories
 
@@ -362,14 +380,46 @@ Estado ao fim desta sessão (**nada commitado ainda**).
 ---
 
 ### Etapa 1 — Packaging correto → `0.1.0`
-- [ ] Declarar `peerDependencies` no `lib-package.json` conforme seção 3 (com MUI ainda em `^5.0.0`).
-- [ ] Mover `react-hook-form`, `dayjs`, `react-toastify` de `dependencies` para `peerDependencies`.
-- [ ] Espelhar em `devDependencies`.
-- [ ] **Abandonar `0.0.x`** e passar a usar semver de verdade a partir de `0.1.0`. Atualizar a convenção de commit (`vNNN - ...`) para refletir isso.
-- [ ] Documentar no `README.md` o contrato de peers.
+- [x] Declarar `peerDependencies` no `lib-package.json` conforme seção 3 (com MUI ainda em 5 — ver desvios no registro abaixo).
+- [x] Mover `react-hook-form`, `dayjs`, `react-toastify` de `dependencies` para `peerDependencies`.
+- [x] Espelhar em `devDependencies`.
+- [x] **Abandonar `0.0.x`** e passar a usar semver de verdade a partir de `0.1.0`. Atualizar a convenção de commit (`vNNN - ...`) para refletir isso.
+- [x] Documentar no `README.md` o contrato de peers.
+- [x] *(entrou junto)* Corrigir `main`/`exports` (5.9), exportar `GenericFormProvider` (5.10), declarar `@mui/lab` (2.2.1), parar de embutir o `@mui/system` (5.12), criar `CHANGELOG.md`.
 
 **Impacto no consumidor:** nenhum funcional — apenas warnings de peer corretos no `npm install`.
 **Validação:** `publint` + `attw` no `dist/`, app de fumaça.
+
+#### Registro de execução — 23/09/2026
+
+Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-seguranca` (a Etapa 0 ainda não foi mergeada na `main`).
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| Typecheck | `npm run typecheck` | verde |
+| Lint | `npm run lint` | 0 erros, 331 warnings (igual à Etapa 0) |
+| Formatação | `npm run format:check` | verde |
+| Testes | `npm run test` | 14 testes, verde |
+| Build | `npm run build` | verde |
+| API pública | `node scripts/check-public-api.mjs` | **78 exports** (77 + `GenericFormProvider`), íntegra |
+| publint | `npm run check:package` | **0 erros** (eram 3); restam 2 warnings de ESM/CJS → Etapa 3 |
+| attw | `npm run check:package` | 🟢 node10, node16-CJS, bundler; 🚭 node16-ESM → Etapa 3 |
+| Snapshots | `npm run snapshots` | 83 stories, **0 diffs**, 0 erros de runtime |
+| Árvore de dependências | `npm ls --all` antes/depois | **idêntica** — o lockfile só mudou flags `dev`/`peer` |
+| App de fumaça | tarball do `npm pack` instalado no `examples/smoke-app` | sem `ERESOLVE`; uma cópia de MUI/Emotion/RHF/dayjs/toastify; `@mui/lab` instalado e deduplicado; `next build` verde; no browser: tema roxo do app chega no `Input` da lib, `GenericFormProvider` submete, máscara de CPF funciona, zero erro de console |
+
+**Desvios em relação à seção 3** (todos para declarar só o que é verdade *hoje*; a seção 3 descreve o estado final):
+
+- **`react`/`react-dom` ficam em `^18.0.0`, não `^18 || ^19`.** `react-leaflet@4`, `react-query@3` e `@mui/x-date-pickers@6` — dependências/peers atuais — declaram peer `react ^18` estrito ou `^17 || ^18`. Declarar `^19` agora seria prometer algo que o `npm install` recusaria. Abre quando essas três saírem (Etapas 2, 7 e 8).
+- **`next` fica em `^14.0.0`.** Next 15/16 não foram testados; abrir quando o smoke-app rodar neles.
+- **`@mui/material` com piso `^5.8.6`, não `^5.0.0`** — é o piso real imposto pelo `@mui/x-date-pickers@6`. Pelo mesmo motivo, Emotion ficou em `^11.9.0`/`^11.8.1`.
+- **`react-toastify` em `^10.0.0`**, não `^11` — o CSS vendorizado é da v10; a v11 é a Etapa 6.
+- **`@mui/lab` fixado em `5.0.0-alpha.127`** como `dependency` (motivo em 2.2.1).
+- Na raiz, os peers ficam em `peerDependencies` **e** `devDependencies`. Não podem ir só para `devDependencies`: o microbundle deixaria de tratá-los como externos e os embutiria no `dist/` (o mesmo mecanismo do 5.12).
+
+**Achados novos:** 5.11 (`Table` quebra no SSR — não corrigido, vai para a Etapa 2) e 5.12 (cópia do `@mui/system` no bundle — corrigido). Também: o `file:../../dist` do smoke-app **não** valida o contrato de dependências (o npm não instala as deps de um link e o Node resolve o MUI da raiz do repo); a validação real é com o tarball — documentado no `examples/smoke-app/README.md`. Vale ligar isso no CI (hoje o smoke-app não roda no `ci.yaml`).
+
+**Para publicar:** merge da Etapa 0 e desta etapa na `main`, depois `git tag v0.1.0 && git push origin v0.1.0`.
 
 ### Etapa 2 — Limpeza e desacoplamento
 - [ ] Remover `react-google-recaptcha` + `@types` (5.1).
@@ -379,6 +429,8 @@ Estado ao fim desta sessão (**nada commitado ainda**).
 - [ ] Apagar `decorators/` da raiz (5.5).
 - [ ] Excluir `stories/` e `decorators/` do build (5.6).
 - [ ] Decidir sobre `src/components/teste/Teste.tsx` (5.7).
+- [ ] `Table`/`GenericTable` sem acesso a `localStorage` no render (5.11).
+- [ ] Rodar o smoke-app (tarball + `next build`) no `ci.yaml`.
 
 **Impacto:** nenhuma mudança visual; os apps podem remover `react-query` da árvore.
 **Validação:** snapshots **idênticos** ao baseline; diff de exports vazio.

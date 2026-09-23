@@ -1,17 +1,17 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.349",
+    "version": "0.1.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
-    "main": "index.cjs.js",
+    "main": "index.cjs",
     "module": "index.esm.js",
     "types": "index.d.ts",
     "exports": {
         ".": {
+            "types": "./index.d.ts",
             "import": "./index.esm.js",
-            "require": "./index.cjs.js",
-            "types": "./index.d.ts"
+            "require": "./index.cjs"
         },
         "./types/auth": {
             "types": "./types/auth.d.ts"
@@ -20,26 +20,37 @@
             "types": "./types/form.d.ts"
         }
     },
+    "peerDependencies": {
+        "@emotion/react": "^11.9.0",
+        "@emotion/styled": "^11.8.1",
+        "@mui/icons-material": "^5.0.0",
+        "@mui/material": "^5.8.6",
+        "@mui/x-date-pickers": "^6.0.0",
+        "dayjs": "^1.11.0",
+        "next": "^14.0.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "react-hook-form": "^7.43.0",
+        "react-toastify": "^10.0.0"
+    },
     "dependencies": {
-        "cookies-next": "^4.2.1",
-        "tinycolor2": "^1.6.0",
-        "lodash.get": "^4.4.2",
-        "jwt-decode": "^3.1.2",
-        "react-hook-form": "^7.43.9",
-        "react-imask": "^6.6.0",
-        "react-query": "^3.39.3",
-        "dayjs": "^1.11.7",
-        "lodash.clonedeep": "^4.5.0",
-        "lodash.hasin": "^4.5.2",
-        "react-google-recaptcha": "^2.1.0",
-        "jszip": "^3.10.1",
-        "keycloak-js": "^25.0.1",
-        "react-toastify": "^10.0.4",
+        "@mui/lab": "5.0.0-alpha.127",
         "axios": "^1.17.0",
-        "react-dropzone": "^14.3.8",
+        "cookies-next": "^4.2.1",
+        "jszip": "^3.10.1",
+        "jwt-decode": "^3.1.2",
+        "keycloak-js": "^25.0.1",
         "leaflet": "^1.9.4",
         "leaflet-defaulticon-compatibility": "^0.1.2",
+        "lodash.clonedeep": "^4.5.0",
+        "lodash.get": "^4.4.2",
+        "lodash.hasin": "^4.5.2",
+        "react-dropzone": "^14.3.8",
+        "react-google-recaptcha": "^2.1.0",
+        "react-imask": "^6.6.0",
         "react-leaflet": "^4.2.1",
+        "react-query": "^3.39.3",
+        "tinycolor2": "^1.6.0",
         "write-excel-file": "^4.0.7"
     },
     "devDependencies": {

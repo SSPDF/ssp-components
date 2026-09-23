@@ -27,12 +27,35 @@ npm run dev              # http://localhost:3100
 `@ssplib/react-components` é instalado via `file:../../dist`, então **é preciso
 rodar `npm run build` na raiz antes** e de novo a cada alteração na lib.
 
+### Validando o contrato de dependências (peers)
+
+O link `file:../../dist` é bom para iterar, mas **não reproduz a instalação real**:
+o npm (`install-links=false`) cria só um symlink, não instala as `dependencies` da
+lib, e a partir do caminho real do `dist/` o Node resolve pacotes — inclusive o
+`@mui/material` — no `node_modules` da raiz do repo. Para validar o que vai ser
+publicado, instale o tarball:
+
+```bash
+# na raiz do repo
+npm run build && cp lib-package.json dist/package.json
+(cd dist && npm pack --pack-destination /tmp)
+
+cd examples/smoke-app
+npm install --no-save /tmp/ssplib-react-components-<versão>.tgz
+npm ls @mui/material @emotion/react react-hook-form   # uma cópia de cada, todas "deduped"
+npm run build && npm start
+```
+
+O `npm install` cria um `package-lock.json` com o caminho do tarball — não
+versione.
+
 ## O que a página exercita
 
 - `SspComponentsProvider` (portal de modal + toasts)
 - `FormProvider` + `Input` (contexto customizado) — incluindo tipos mascarados
-- `GenericFormProvider` + `GenericInput` (contexto nativo do react-hook-form)
-- `Table` com dados estáticos
+- `GenericFormProvider` (exportado desde a 0.1.0) + `GenericInput` (contexto nativo do react-hook-form)
+- `Table` com dados estáticos, carregada com `next/dynamic` + `ssr: false` (ela lê o
+  `localStorage` no render e quebra no SSR — UPGRADE_PLAN.md 5.11)
 - `DatePicker`
 - `MODAL`
 - um `ThemeProvider` com paleta própria, para confirmar que o tema do app
