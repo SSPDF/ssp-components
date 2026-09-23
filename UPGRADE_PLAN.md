@@ -1,9 +1,9 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0 e 1 concluídas (23/09/2026); **próxima: Etapa 2**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Próxima: Etapa 3** — decidida (D1 = `tsdown`) e pronta para começar; checklist e config de partida na própria etapa. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** e **de novo em 23/09/2026, após a Etapa 1** — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
-> **Decisões em aberto (23/09/2026):** duas, ambas surgidas na revalidação — **D1** bundler da Etapa 3 (`tsup` deixou de ser mantido) e **D2** como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois). Nenhuma bloqueia a Etapa 2. Detalhes na seção 9.
+> **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
 > **Regra de ouro:** nenhuma etapa avança sem a validação da etapa anterior estar verde. As Etapas 0–6 podem ir para produção **sem tocar em nenhum app consumidor**; só as Etapas 7 e 8 exigem mutirão.
 
 ---
@@ -214,7 +214,7 @@ Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/
 | `react-dropzone` | 14 → 20 | `DropFileUpload.tsx:70` (`inputRef`, tipos de `DropzoneOptions`). *23/09:* a v20 declara **`engines: node >= 22`** — app que builda em Node 20 recebe `EBADENGINE` (aviso; erro se usar `engine-strict`). Conferir o Node dos apps antes |
 | `keycloak-js` | 25 → 26 (26.2.4) | init/refresh/SSO em `KeycloakAuthProvider.tsx` (519 linhas, sem story — **coberto pelos testes da Etapa 0**) |
 | Storybook | 9 → 10 | **configs ESM-only** + Node 20.16+/22.19+. `@storybook/nextjs` e `@storybook/react-webpack5` continuam existindo em 10.x |
-| `microbundle` | → **`tsdown` ou `tsup` — decisão D1** | Abandonado desde ago/2022 (último release 0.15.1, 12/08/2022) e **descarta o `'use client'`** (o build imprime `Module level directives cause errors when bundled, 'use client' was ignored`) — afeta `Map.tsx` e `DraggableMarker.tsx` no App Router |
+| `microbundle` | → **`tsdown`** (D1, decidida em 23/09) | Abandonado desde ago/2022 (último release 0.15.1, 12/08/2022) e **descarta o `'use client'`** (o build imprime `Module level directives cause errors when bundled, 'use client' was ignored`) — afeta `Map.tsx` e `DraggableMarker.tsx` no App Router |
 
 ### 4.3 Risco alto — exige coordenação com os apps
 
@@ -254,13 +254,13 @@ Sugestão: um PR de ferramental dentro da **Etapa 4** (é o lote de "minors/patc
 
 Cada item aqui **reduz** a superfície de atualização.
 
-### 5.1 `react-google-recaptcha` — dependência morta
+### 5.1 `react-google-recaptcha` — dependência morta — ✅ removida na `0.2.0`
 Declarada em `package.json` e `lib-package.json` (+ `@types/react-google-recaptcha`), **nunca importada** em `src/` (reconferido em 23/09). Remover. Mesmo destino para **`@types/keycloak-js`** (stub obsoleto, ver 4.1).
 
-### 5.2 `react-query` — sai da lib
+### 5.2 `react-query` — sai da lib — ✅ removido na `0.2.0`
 Um único uso real: `src/components/form/input/AutoComplete.tsx:39` (reconferido em 23/09), e num padrão errado (`setState` dentro do `queryFn`). Os 3 decorators (`src/decorators/*.tsx`) só instanciam `QueryClientProvider`. Trocar por um hook de fetch interno **remove a dependência da lib inteira** e mata o problema de versão de query com os apps.
 
-### 5.3 `cookies-next` — sai da lib
+### 5.3 `cookies-next` — sai da lib — ✅ removido na `0.2.0`
 Usa apenas `getCookie`/`setCookie`/`deleteCookie` em `OAuthProvider.tsx:1,45,85,114,185` (linhas atualizadas em 23/09). Um helper interno de ~15 linhas **remove o bloqueio do `next >= 15`**.
 
 ### 5.4 `@mui/lab` — sai da lib (**na Etapa 7**, não na 2)
@@ -268,18 +268,18 @@ Usa apenas `getCookie`/`setCookie`/`deleteCookie` em `OAuthProvider.tsx:1,45,85,
 
 > **Atenção (ver 2.2.1):** hoje `@mui/lab` é uma dependência **não declarada** no pacote publicado — isso é bug ativo, não dívida. A remoção do `LoadingButton` só é possível no MUI ≥ 6.4, ou seja, na Etapa 7. Até lá, **declarar `@mui/lab` em `lib-package.json`** como correção imediata (hotfix `0.0.350`, antes da Etapa 1).
 
-### 5.5 `decorators/` duplicado
+### 5.5 `decorators/` duplicado — ✅ apagado na Etapa 2
 Existe na raiz **e** em `src/decorators/`, com 3 arquivos cada e conteúdo divergente (continua assim em 23/09). As stories importam de `src/decorators/`. Apagar a pasta da raiz.
 
-### 5.6 `dist/` publica `stories/`, `decorators/` e `test/`
+### 5.6 `dist/` publica `stories/`, `decorators/` e `test/` — ✅ excluídos na Etapa 2 (`tsconfig.microbundle.json`)
 Por causa de `rootDir: src`, o build emite `dist/stories/` e `dist/decorators/`. Excluir do build (bloat no pacote publicado). **Desde a Etapa 0 também sai `dist/test/`** (os helpers do vitest em `src/test/`) — o `publint` aponta. Mesmo tratamento.
 
-### 5.7 `src/components/teste/Teste.tsx`
+### 5.7 `src/components/teste/Teste.tsx` — ✅ decidido na Etapa 2: **fica, fora do build**
 950 linhas, importa `../../css/globals.css`, **não é exportado** no barrel `src/index.ts`. Candidato a remoção (existe `src/stories/Teste.stories.tsx` referenciando).
 
 ### 5.8 Achados da Etapa 0 (22/09/2026) — bugs encontrados ao escrever as stories
 
-Três defeitos que só apareceram quando os 12 componentes sem story ganharam uma. **Status em 23/09:** (a) corrigido na Etapa 0; (b) e (c) continuam abertos e estão na checklist da Etapa 2. Na época, nenhum foi corrigido: a Etapa 0 existe para **congelar** o comportamento atual, não para mudá-lo. Cada um precisa de decisão própria.
+Três defeitos que só apareceram quando os 12 componentes sem story ganharam uma. **Status em 23/09:** (a) corrigido na Etapa 0; (b) e (c) corrigidos na Etapa 2 (`0.2.0`). Na época, nenhum foi corrigido: a Etapa 0 existe para **congelar** o comportamento atual, não para mudá-lo. Cada um precisa de decisão própria.
 
 **a) `GenericInput.stories.tsx` usava o decorator errado — a story era um falso positivo.**
 A story declarava `FormBaseDecorator` (contexto customizado), mas `GenericInput.tsx:35` usa `useFormContext()` (RHF). Não quebrava porque a chamada é `methods?.register(...)` — com optional chaining o `register` vira `undefined`, o spread `{...undefined}` é no-op e o `TextField` renderiza **sem estar registrado em formulário nenhum**. A story parecia verde e não verificava nada. **Corrigido nesta etapa** (trocado para `GenericFormBaseDecorator`), porque gerar o baseline de snapshots sobre uma story morta contaminaria toda a Etapa 7.
@@ -338,7 +338,7 @@ O arquivo é emitido (`dist/components/providers/GenericFormProvider.d.ts` exist
 
 **Correção:** adicionar `GenericFormProvider` ao barrel. Uma linha, não é breaking (só adiciona). Entra na **Etapa 1**, junto com o restante do packaging.
 
-### 5.11 `Table` quebra no SSR (achado na Etapa 1, 23/09/2026) — **não corrigido**
+### 5.11 `Table` quebra no SSR (achado na Etapa 1, 23/09/2026) — ✅ corrigido na `0.2.0`
 
 O primeiro `next build` do `examples/smoke-app` falhou no prerender com `ReferenceError: localStorage is not defined`. Origem: `src/components/form/table/Table.tsx:75` — `useRef(localStorage.getItem(...))` roda **durante o render** (e `:82-86` também leem/gravam `localStorage` fora de `useEffect`). O `GenericTable` tem o mesmo padrão em `:622` e `:688-707` (dentro do JSX).
 
@@ -352,6 +352,17 @@ Não é regressão — o código não mudou; o smoke-app só não tinha sido bui
 
 **Regra que sai daqui:** depois de todo build, a lista de externos do `dist/index.esm.js` tem que ser igual ao conjunto declarado no `lib-package.json`. Hoje é conferência manual (comando no `CLAUDE.md`); vale virar script em `check:package` na Etapa 3, junto com o `tsup` e os externals explícitos.
 
+
+### 5.13 Achados da Etapa 2 (23/09/2026) — **não corrigidos**, candidatos à Etapa 4 ou a um patch
+
+- **a) `Table` guarda o nome da tabela em variáveis de módulo.** `Table.tsx:23-27` declara `let localTableName`, `localTableNameCache` e `filtersFuncData` no topo do arquivo e as reatribui a cada render. Com **duas `Table` na mesma página**, as duas passam a ler e gravar os filtros da última que renderizou. O `GenericTable` já faz certo (`const` dentro do componente). Correção de uma linha por variável, mas muda comportamento (conserta o compartilhamento) — precisa de teste com duas tabelas.
+- **b) `GenericTable` tinha um `console.log` de depuração em produção:** `useEffect(() => console.log(filterContainer.current), [filterContainer.current])`. — ✅ **removido na Etapa 2**, junto com o `filterContainer`, um `useRef` que nunca era ligado a elemento nenhum (o log sempre imprimia `null`). Saiu também o `console.log(listClone)` do `onInputChange`, que imprimia a lista inteira a cada tecla na busca.
+- **e) Outros `console.log` de depuração na lib** (não removidos): `GenericFetchAutoComplete.tsx:58` (`'llll'`), `TabNavBar.tsx:153` (`pathname`), `table/utils.tsx:220` (`dates`). Os `console.log(err)` em `catch` de `FileUpload`, `DropFileUpload` e `Table` deveriam ser `console.error`. Ficam de fora os intencionais: `Stepper` (atrás da prop `debugLog`) e o logger do `KeycloakAuthProvider`. Candidatos a uma regra `no-console` (`warn`, permitindo `error`/`warn`) no ESLint.
+- **f) `npm run link` não funciona.** O script roda `npx tsc`, mas o `tsconfig.json` tem `noEmit: true` — não gera nada, e o `npm link` publica o `dist/` que estiver lá (de um build anterior, ou nenhum). Além disso, o link é um symlink: o app passa a resolver React/MUI pelo `node_modules` da lib (duas cópias). **Substituído na prática pelo `npm run pack:local`** (Etapa 2), que gera o `.tgz` idêntico ao do publish; o `link` fica para ser removido ou refeito na Etapa 3.
+- **g) `.babelrc.json` é lido pelo Storybook, não só pelo microbundle.** A presença do arquivo faz o `@storybook/nextjs` compilar com Babel em vez de SWC. Remover o microbundle (Etapa 3) **não** libera a remoção dos `@babel/preset-*` — isso fica para a Etapa 5.
+- **h) MUI 5 não tem campo `exports`**, então os deep imports da lib falham no ESM nativo do Node e só resolvem via CJS (detalhes em D1). É o que segura o ESM-only até a Etapa 7.
+- **c) A documentação dizia que os dois providers de auth gravam o cookie `nextauth.token`.** Só o `OAuthProvider` grava; o `KeycloakAuthProvider` declara `cookieName` e nunca o usa. README e `CLAUDE.md` corrigidos para refletir o código — **se algum app lê esse cookie esperando o token do Keycloak, ele nunca existiu**.
+- **d) `scripts/snapshots-in-docker.sh` só buildava o Storybook se `storybook-static/` não existisse.** Com um build antigo na máquina, os snapshots comparavam o código de outra etapa e passavam. **Foi o que aconteceu no registro da Etapa 1**: o "83 stories, 0 diffs" comparou o Storybook da Etapa 0 e não verificou a troca do `Stack` (5.12). Na Etapa 2 o Storybook foi rebuildado e **o resultado cobre as duas etapas contra o baseline original: 0 diffs** — a troca do `Stack` está verificada, só que depois. O script agora sempre rebuilda (`SKIP_STORYBOOK_BUILD=1` pula). O CI nunca foi afetado: ele builda o Storybook antes.
 
 ---
 
@@ -397,7 +408,7 @@ Nenhuma dependência sobe (só entram devDependencies de teste/lint). Checklist 
 
 #### Registro de execução — 22/09/2026
 
-Commitado em 4 commits (`8a68879` → `72ec9af`) no branch `etapa-0-baseline-e-rede-de-seguranca`, **ainda não mergeado na `main`**.
+Commitado em 4 commits (`8a68879` → `72ec9af`), **ainda não mergeado na `main`**. Todas as etapas vivem num único branch, `atualizacao-dependencias` (os branches por etapa foram consolidados em 23/09/2026 — eram lineares, sem merge).
 
 | Verificação | Comando | Resultado |
 |---|---|---|
@@ -447,7 +458,7 @@ Commitado em 4 commits (`8a68879` → `72ec9af`) no branch `etapa-0-baseline-e-r
 
 #### Registro de execução — 23/09/2026
 
-Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-seguranca` (a Etapa 0 ainda não foi mergeada na `main`).
+Branch `atualizacao-dependencias`, commits `6d8bb08` e `21e36ae` (a Etapa 0 ainda não foi mergeada na `main`).
 
 | Verificação | Comando | Resultado |
 |---|---|---|
@@ -459,7 +470,7 @@ Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-segur
 | API pública | `node scripts/check-public-api.mjs` | **78 exports** (77 + `GenericFormProvider`), íntegra |
 | publint | `npm run check:package` | **0 erros** (eram 3); restam 2 warnings de ESM/CJS → Etapa 3 |
 | attw | `npm run check:package` | 🟢 node10, node16-CJS, bundler; 🚭 node16-ESM → Etapa 3 |
-| Snapshots | `npm run snapshots` | 83 stories, **0 diffs**, 0 erros de runtime |
+| Snapshots | `npm run snapshots` | 83 stories, **0 diffs**, 0 erros de runtime — *correção: comparou um `storybook-static/` antigo (5.13d); a verificação real da troca do `Stack` saiu na Etapa 2, também com 0 diffs* |
 | Árvore de dependências | `npm ls --all` antes/depois | **idêntica** — o lockfile só mudou flags `dev`/`peer` |
 | App de fumaça | tarball do `npm pack` instalado no `examples/smoke-app` | sem `ERESOLVE`; uma cópia de MUI/Emotion/RHF/dayjs/toastify; `@mui/lab` instalado e deduplicado; `next build` verde; no browser: tema roxo do app chega no `Input` da lib, `GenericFormProvider` submete, máscara de CPF funciona, zero erro de console |
 
@@ -472,35 +483,106 @@ Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-segur
 - **`@mui/lab` fixado em `5.0.0-alpha.127`** como `dependency` (motivo em 2.2.1).
 - Na raiz, os peers ficam em `peerDependencies` **e** `devDependencies`. Não podem ir só para `devDependencies`: o microbundle deixaria de tratá-los como externos e os embutiria no `dist/` (o mesmo mecanismo do 5.12).
 
-**Achados novos:** 5.11 (`Table` quebra no SSR — não corrigido, vai para a Etapa 2) e 5.12 (cópia do `@mui/system` no bundle — corrigido). Também: o `file:../../dist` do smoke-app **não** valida o contrato de dependências (o npm não instala as deps de um link e o Node resolve o MUI da raiz do repo); a validação real é com o tarball — documentado no `examples/smoke-app/README.md`. Vale ligar isso no CI (hoje o smoke-app não roda no `ci.yaml`).
+**Achados novos:** 5.11 (`Table` quebra no SSR — não corrigido, vai para a Etapa 2) e 5.12 (cópia do `@mui/system` no bundle — corrigido). Também: o `file:../../dist` do smoke-app **não** valida o contrato de dependências (o npm não instala as deps de um link e o Node resolve o MUI da raiz do repo); a validação real é com o tarball — documentado no `examples/smoke-app/README.md`. Vale ligar isso no CI (hoje o smoke-app não roda no `ci.yaml`). *(Ligado na Etapa 2: `npm run smoke`.)*
 
 **Para publicar:** merge da Etapa 0 e desta etapa na `main`, depois `git tag v0.1.0 && git push origin v0.1.0`.
 
 ### Etapa 2 — Limpeza e desacoplamento
-- [ ] Remover `react-google-recaptcha` + `@types` e `@types/keycloak-js` (5.1).
-- [ ] Remover `react-query`: hook de fetch interno no `AutoComplete` + limpar os 3 decorators (5.2).
-- [ ] Remover `cookies-next`: helper interno de cookies (5.3).
+- [x] Remover `react-google-recaptcha` + `@types` e `@types/keycloak-js` (5.1).
+- [x] Remover `react-query`: hook de fetch interno no `AutoComplete` + limpar os 3 decorators (5.2).
+- [x] Remover `cookies-next`: helper interno de cookies (5.3).
 - ~~Remover `@mui/lab`: `LoadingButton` → `<Button loading>` (5.4).~~ **Movido para a Etapa 7**: `<Button loading>` só existe no MUI ≥ 6.4 (ver 2.2.1). Enquanto isso, `@mui/lab` fica declarado e fixado.
-- [ ] Apagar `decorators/` da raiz (5.5).
-- [ ] Excluir `stories/`, `decorators/` e `test/` do build (5.6).
-- [ ] Decidir sobre `src/components/teste/Teste.tsx` (5.7).
-- [ ] `Table`/`GenericTable` sem acesso a `localStorage` no render (5.11).
-- [ ] Rodar o smoke-app (tarball + `next build`) no `ci.yaml`.
-- [ ] `GenericMaskInput` lendo o contexto do RHF (5.8b) e `CustomMenu` com `btProps` alargado (5.8c). O 5.8b muda comportamento — story nova digitando nos tipos mascarados do `GenericInput`.
-- [ ] Script que compara os externos do `dist/` com o que o `lib-package.json` declara (5.12), no `check:package`.
+- [x] Apagar `decorators/` da raiz (5.5).
+- [x] Excluir `stories/`, `decorators/` e `test/` do build (5.6).
+- [x] Decidir sobre `src/components/teste/Teste.tsx` (5.7).
+- [x] `Table`/`GenericTable` sem acesso a `localStorage` no render (5.11).
+- [x] Rodar o smoke-app (tarball + `next build`) no `ci.yaml`.
+- [x] `GenericMaskInput` lendo o contexto do RHF (5.8b) e `CustomMenu` com `btProps` alargado (5.8c). O 5.8b muda comportamento — ~~story nova~~ **teste** digitando nos tipos mascarados do `GenericInput` (snapshot não digita).
+- [x] Script que compara os externos do `dist/` com o que o `lib-package.json` declara (5.12), no `check:package`.
 
 **Impacto:** nenhuma mudança visual; os apps podem remover `react-query` da árvore. Release **`0.2.0`** se o 5.8b entrar (muda comportamento), senão `0.1.x`.
 **Validação:** snapshots **idênticos** ao baseline; diff de exports vazio.
 
-### Etapa 3 — Build: `microbundle` → `tsdown` (ou `tsup` — decisão D1)
-- [ ] Migrar o build (cjs + esm + d.ts), com `'use client'` **preservado** e externals explícitos.
-- [ ] Saídas com extensão explícita (`.mjs`/`.cjs` e `.d.mts`/`.d.cts`), inclusive nos chunks (hoje o chunk do `Map` sai como `.js` nos dois formatos) — é o que zera o 🚭 do attw em node16-ESM (5.9).
-- [ ] Se for `tsdown`: subir `engines.node` para `^22.18 || >=24.11` e o Node local/CI (a máquina usada em 23/09 está em 22.17.1, abaixo do mínimo).
-- [ ] Manter os subpath exports atuais (`./types/auth`, `./types/form`).
-- [ ] Rodar `publint` + `attw`.
+#### Registro de execução — 23/09/2026
 
-**Impacto:** nenhum — melhora o suporte a App Router.
-**Validação:** diff de exports, app de fumaça, comparar tamanho/forma do `dist/`.
+Branch `atualizacao-dependencias`. **Não commitado** (a pedido). Versão **`0.2.0`** — o 5.8b entrou e o `AutoComplete` mudou de comportamento.
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| Typecheck | `npm run typecheck` | verde |
+| Lint | `npm run lint` | 0 erros, 330 warnings (eram 331) |
+| Formatação | `npm run format:check` | verde |
+| Testes | `npm run test` | **41 testes em 7 arquivos** (eram 14 em 2) |
+| Build | `npm run build` | verde; `dist/` sem `stories/`, `decorators/`, `test/`, `teste/` |
+| API pública | `node scripts/check-public-api.mjs` | 78 exports, íntegra (diff vazio) |
+| Externos | `node scripts/check-externals.mjs` (novo, dentro do `check:package`) | 23 importados, 26 declarados, batem |
+| publint / attw | `npm run check:package` | 0 erros; só o 🚭 node16-ESM conhecido (Etapa 3) |
+| Snapshots | `npm run snapshots` (Storybook rebuildado) | **84 stories** (83 + `Menu/ComCorCustomizada`), **0 diffs** contra o baseline da Etapa 0 |
+| App de fumaça | `npm run smoke` (novo, no CI) | sem `ERESOLVE`, uma cópia de cada peer, **`next build` com a `Table` importada direto** (SSR); no browser: zero erro/aviso/mismatch de hidratação, inclusive recarregando com o `localStorage` já gravado |
+| Árvore | `npm ls --all` antes/depois | **só remoções**: 18 pacotes (`react-query` + 8 transitivas, `cookies-next` + `cookie` + `@types/cookie`, `react-google-recaptcha` + `react-async-script`, os 2 `@types`) |
+
+**Como cada mudança de comportamento foi verificada** — todo teste novo foi rodado também contra o código antigo:
+
+| Mudança | Teste | Código antigo | Código novo |
+|---|---|---|---|
+| 5.8b `GenericMaskInput` | `GenericInput.test.tsx` digita `cpf`/`cep` sob `GenericFormProvider` | ✗ `Cannot read properties of null (reading 'formSetValue')` | ✓ |
+| 5.11 SSR | `Table.ssr.test.tsx` (`@vitest-environment node`, `renderToString`) | ✗ `localStorage is not defined` (as duas tabelas) | ✓ |
+| 5.11 sem regressão no browser | `Table.test.tsx`: filtro salvo aparece após montar; é descartado se a definição dos filtros mudou | ✓ | ✓ (mesmo resultado → comportamento preservado) |
+| 5.3 cookies | `cookies.test.ts`: strings **capturadas do `cookies-next@4.3.0`** antes de removê-lo (gravação com `Path=/`, `encodeURIComponent`, `Max-Age=-1`) | — | ✓ byte a byte |
+| 5.2 `AutoComplete` | `AutoComplete.test.tsx`: sem `QueryClientProvider`; token no header, `dataPath`, `dataPath` inexistente, erro de rede, abort ao desmontar | — | ✓ |
+
+**Decisões tomadas nesta etapa:**
+
+- **`AutoComplete`:** `useEffect` + `fetch` + `AbortController`, não `@tanstack/react-query` — o objetivo do 5.2 era a lib não impor biblioteca de query aos apps. Diferenças documentadas no `CHANGELOG.md`: sem retry (eram 3), sem refetch ao focar a janela, sem cache compartilhado por `name`; `dataPath` inexistente vira lista vazia em vez de `undefined`.
+- **`cookies-next` saiu também das `devDependencies`**: o teste de equivalência rodou contra ele uma vez e as strings esperadas foram congeladas no teste.
+- **SSR das tabelas com `useIsClient()`, não com um wrapper que devolve `null` no servidor.** O wrapper trocaria o crash por mismatch de hidratação sempre que houvesse filtro salvo. Com o hook, servidor e primeiro render do cliente são iguais e o estado salvo entra um render depois. As escritas que o `Table` fazia **durante o render** (`:82-86`) viraram efeito, declarado antes dos demais para manter a ordem.
+- **`Teste.tsx` (5.7) fica** como fixture de story, fora do build: é a única story que compõe quase todos os componentes num `Stepper` — útil na Etapa 7 — e era mantida até a v348. Reversível.
+- **`src/test/setup.ts`** passou a tolerar `@vitest-environment node` (pulava direto para `localStorage.clear()`).
+
+**Achados novos:** 5.13 (variáveis de módulo compartilhadas entre `Table`s, `console.log` no `GenericTable`, doc errada sobre o cookie do Keycloak, e o script de snapshots que comparava build velho — este último corrigido).
+
+**Tamanho do bundle:** `index.esm.js` 109 971 → 110 379 bytes (+0,4 kB: helper de cookie e o efeito de fetch no lugar do import do react-query). No smoke-app, o JS compartilhado da página caiu de **432 kB para 350 kB** — o react-query deixou de entrar no bundle do app.
+
+### Etapa 3 — Build: `microbundle` → `tsdown` (D1) → `0.3.0`
+
+**Decidido (23/09/2026):** `tsdown` em modo **`unbundle`** (um arquivo de saída por módulo, como o MUI publica), formatos **ESM + CJS**. Motivos, números e o teste comparativo com Rslib e Vite em "D1 — teste empírico" (seção 9). ESM-only não entra aqui: com MUI 5 os deep imports da lib quebram no ESM nativo do Node — volta a ser avaliado na Etapa 7.
+
+**Por que sobe o minor:** muda o layout do `dist/` (nomes e extensões dos arquivos). Quem importa só pela raiz (`@ssplib/react-components`) não percebe; quem fizesse deep import em `dist/components/...` quebra — e o `exports` nunca permitiu isso, mas vale o registro no `CHANGELOG.md`.
+
+**Pré-requisitos:**
+- [ ] Node **≥ 22.18** em quem builda (exigência do `tsdown`: `^22.18.0 || ^24.11.0 || >=26.0.0`). Recomendado: **24 LTS**. *Em 23/09 o shell usado na sessão ainda reportava 22.17.1 mesmo após a atualização local — conferir `node -v` num terminal novo / o default do nvm.*
+- [ ] CI: `node-version: 22` → **`24`** no `ci.yaml` e no `publish.yaml`; `engines.node` do `package.json` raiz → `^22.18.0 || >=24.11.0`. É requisito de **build**, não de runtime: os apps continuam com o Node que o Next deles pede (Next 14: ≥ 18.17; Next 16: ≥ 20.9).
+
+**Checklist:**
+- [ ] `npm i -D tsdown unrun` (o `unrun` é peer do `tsdown`, necessário para carregar o arquivo de config) e remover `microbundle` e `tsconfig.microbundle.json`. **Não remover** os `@babel/preset-*` nem o `.babelrc.json`: o `@storybook/nextjs` também lê o `.babelrc.json` (a presença do arquivo o faz compilar as stories com Babel em vez de SWC). Avaliar a remoção na **Etapa 5** (Storybook 10), com os snapshots conferindo.
+- [ ] `tsdown.config.ts` — ponto de partida já validado no teste de D1:
+  ```ts
+  import { defineConfig } from 'tsdown'
+  import lib from './lib-package.json' with { type: 'json' }
+
+  const pacotes = [...Object.keys(lib.dependencies), ...Object.keys(lib.peerDependencies)]
+
+  export default defineConfig({
+      entry: { index: 'src/index.ts', 'types/auth': 'src/types/auth.ts', 'types/form': 'src/types/form.ts' },
+      unbundle: true, // preserva o 'use client' de Map/DraggableMarker
+      format: ['esm', 'cjs'],
+      dts: true, // gera .d.mts (ESM) e .d.ts (CJS)
+      platform: 'neutral',
+      external: pacotes.map((p) => new RegExp(`^${p.replace('/', '\\/')}(/.*)?$`)),
+      sourcemap: true,
+      clean: true,
+      // excluir do build: stories, decorators, test, *.test.*, components/teste (hoje em tsconfig.microbundle.json)
+  })
+  ```
+- [ ] `lib-package.json`: `main` → `./index.js` (CJS), `module` → `./index.mjs`, `types` → `./index.d.ts`, e `exports["."]` com condições separadas: `import: { types: './index.d.mts', default: './index.mjs' }`, `require: { types: './index.d.ts', default: './index.js' }`. Idem para `./types/auth` e `./types/form`. Conferir os nomes reais que o `tsdown` gerar antes de escrever.
+- [ ] **Não** declarar `"sideEffects": false`: `Map.tsx` importa `leaflet-defaulticon-compatibility` e CSS do Leaflet só pelo efeito colateral. Se quiser tree-shaking, declarar a lista: `["**/*.css", "./components/map/**"]`.
+- [ ] Scripts: `build` → `tsdown`; `link` (hoje usa `npx tsc`, que nem emite — `noEmit: true`) → `npm run build && cp lib-package.json dist/package.json && cd dist && npm link`, ou removê-lo em favor do `pack:local`.
+- [ ] Ajustar os scripts de verificação ao novo layout: `check-public-api.mjs` lê `dist/index.d.ts` (continua existindo, mas conferir também o `index.d.mts`); `check-externals.mjs` lista só a raiz do `dist/` — com `unbundle` os imports ficam espalhados em `dist/**` → **tornar recursivo**.
+- [ ] Ignorar o aviso `MODULE_LEVEL_DIRECTIVE` do rolldown no modo `unbundle` (falso positivo — a diretiva é preservada) e **conferir no `dist/`** que `components/map/Map.mjs`, `Map.js` e `DraggableMarker.*` começam com `"use client"`. Vale um teste automatizado disso (ex.: no `check:package`).
+- [ ] Rodar `publint` + `attw`: o objetivo é **zerar o 🚭 do node16-ESM** (5.9).
+
+**Impacto:** nenhum para quem importa pela raiz — melhora o suporte a App Router (`'use client'` preservado).
+**Validação:** `check:package` (externos + publint + attw) sem erros **e sem o 🚭**; diff de exports vazio; `npm run smoke` verde; snapshots idênticos (o Storybook não usa o `dist/`, então aqui é só sanidade); comparar tamanho/forma do `dist/` com o da `0.2.0`; `'use client'` presente nos arquivos do mapa.
 
 ### Etapa 4 — Lote de minors/patches seguros
 - [ ] Tudo da seção 4.1, num PR só.
@@ -510,6 +592,7 @@ Branch `etapa-1-packaging`, criado a partir de `etapa-0-baseline-e-rede-de-segur
 
 ### Etapa 5 — Storybook 9 → 10
 - [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.
+- [ ] Avaliar remover o `.babelrc.json` (+ `@babel/preset-*`): sem ele o `@storybook/nextjs` passa a usar SWC, mais rápido. Snapshots têm que ficar idênticos (a config atual mira `chrome: 100`).
 - [ ] Remover `@storybook/testing-library` (0.2.2, deprecado desde o Storybook 8 — o npm marca como `deprecated`; não é usado em nenhuma story) — usar `storybook/test`.
 - [ ] `eslint-plugin-storybook` 9 → 10 junto.
 - [ ] Confirmar Node ≥ 20.16 no CI e no `engines` do `package.json`.
@@ -592,12 +675,30 @@ Sub-etapas, cada uma com snapshots revisados:
 | 8 | **App de fumaça em `examples/smoke-app` neste repo** (decidido em 22/09/2026) | A validação "MUI vem do app" roda no CI sem token nem checkout cruzado. Precisa ficar **fora do `tsconfig`/build da lib** e fora do pacote publicado (`.npmignore`/`files`), e ter `node_modules` próprio |
 | 9 | **Dist-tags confirmadas** (decidido em 22/09/2026) | `latest` = estável, `next` = pré-releases (`1.0.0-rc.x`), `legacy-v0` = última `0.0.x`. Exatamente como na seção 8 |
 
-### Decisões em aberto (surgidas na revalidação de 23/09/2026)
+### Decisões surgidas na revalidação de 23/09/2026 (D1 decidida, D2 em aberto)
 
 | # | Questão | Opções | Recomendação |
 |---|---|---|---|
-| **D1** | **Bundler da Etapa 3.** O `tsup` foi escolhido na análise de 21/09, mas o README dele hoje diz *"This project is not actively maintained anymore. Please consider using tsdown"* (último release 8.5.1, nov/2025) — trocar um bundler abandonado (`microbundle`) por outro abandonado não resolve o problema de fundo. | (a) **`tsdown`** (sucessor indicado pelo próprio tsup, baseado em rolldown; 0.23.0 — **ainda pré-1.0**; exige Node `^22.18 \|\| >=24.11`; integra `publint`/`attw`); (b) `tsup` 8.5.1 (funciona, congelado); (c) `rollup` + `rollup-plugin-dts` direto (maduro, mais configuração) | **(a) `tsdown`**, com (c) como plano B se algum critério da Etapa 3 falhar (`'use client'` preservado, d.ts corretos, diff de exports vazio). O pré-1.0 pesa menos porque o build é verificado por `check:package` + diff de API + smoke-app |
+| **D1** ✅ *decidida: `tsdown`* | **Bundler da Etapa 3.** O `tsup` foi escolhido na análise de 21/09, mas o README dele hoje diz *"This project is not actively maintained anymore. Please consider using tsdown"* (último release 8.5.1, nov/2025) — trocar um bundler abandonado (`microbundle`) por outro abandonado não resolve o problema de fundo. | (a) **`tsdown`** (sucessor indicado pelo próprio tsup, baseado em rolldown; 0.23.0 — **ainda pré-1.0**; exige Node `^22.18 \|\| >=24.11`; integra `publint`/`attw`); (b) `tsup` 8.5.1 (funciona, congelado); (c) `rollup` + `rollup-plugin-dts` direto (maduro, mais configuração) | **(a) `tsdown`**, com (c) como plano B se algum critério da Etapa 3 falhar (`'use client'` preservado, d.ts corretos, diff de exports vazio). O pré-1.0 pesa menos porque o build é verificado por `check:package` + diff de API + smoke-app |
 | **D2** | **Como `1.x` atende React 18 e 19.** O plano promete essa janela, mas o `react-leaflet` (dependência direta, só usado pelo `Map`) não tem versão que aceite os dois. | (a) **`react-leaflet`/`leaflet` viram `peerDependencies` opcionais** (`peerDependenciesMeta`), com range `^4.2.1 \|\| ^5.0.0`: app em React 18 instala o 4, app em React 19 instala o 5, app sem mapa não instala nada. Exige que o `Map.tsx`/`DraggableMarker.tsx` funcionem nas duas (a v5 é basicamente a v4 com React 19) — verificar com story nas duas versões; (b) manter como dependência: `1.x` = React 18, `2.0.0` = React 19, sem convivência | **(a)** — é o mesmo raciocínio da seção 3 (peer com range amplo evita lockstep), e ainda tira o Leaflet da árvore de quem não usa o mapa. Entraria na Etapa 7 (já é breaking) ou numa `0.x` |
+
+> **D1 decidida em 23/09/2026: `tsdown` em modo `unbundle`**, saída ESM + CJS. **ESM-only fica para a Etapa 7** (`1.0.0`): com MUI 5 os deep imports da lib (`@mui/material/Grid`, `@mui/icons-material/Save`, `@mui/x-date-pickers/AdapterDayjs`) **falham no ESM nativo do Node** (`ERR_UNSUPPORTED_DIR_IMPORT`/`ERR_MODULE_NOT_FOUND` — o MUI 5 não tem campo `exports`), enquanto o `require` do CJS resolve. O MUI 7/9 e o x-date-pickers 9 têm `exports`, então o problema some junto com a Etapa 7 — é lá que ESM-only volta a ser avaliado, junto com o Jest dos apps.
+
+#### D1 — teste empírico (23/09/2026)
+
+Os três candidatos foram rodados de verdade contra o `src/` da lib (no scratchpad, sem tocar no repo), com os externos do `lib-package.json`:
+
+| | `tsdown` 0.23 (bundle) | **`tsdown` 0.23 (`unbundle`)** | Vite 8.3 lib mode + `vite-plugin-dts` | Rslib 1.0 (bundleless) |
+|---|---|---|---|---|
+| `'use client'` preservado | ✗ (igual ao microbundle) | ✓ ESM e CJS | ✓ com `preserveModules` | ✓ (CJS: `"use strict"; "use client";`, válido) |
+| Tipos ESM + CJS (`.d.mts` + `.d.ts`) | ✓ | ✓ | só `.d.ts` | ✓ |
+| API pública (78 exports) | ✓ | ✓ | ✓ | ✓ |
+| Tempo de build | 1,7 s | 1,0 s | 3,8 s | 4,6 s |
+| Configuração | ~10 linhas | ~10 linhas | ~20 linhas + ajustes (copiou `public/`, nomes de arquivo, sem `.d.mts`) | ~15 linhas |
+
+Downloads mensais (npm): `tsdown` 0,8M (set/25) → **18M** (últimos 30 dias); `tsup` 28M, mas sem release desde nov/2025 e o próprio README manda migrar para o `tsdown`; `@rslib/core` 1,2M. O `tsdown` roda sobre o `rolldown` 1.2 — **o mesmo motor do Vite 8** — e é mantido na organização do rolldown.
+
+Observações: o `tsdown` precisa do pacote `unrun` para carregar o arquivo de config e de Node `^22.18` (a máquina local está em 22.17.1). O aviso `MODULE_LEVEL_DIRECTIVE` do rolldown aparece mesmo no modo `unbundle`, em que a diretiva **é** preservada — é falso positivo. O `check-public-api.mjs` não reconhecia `export declare enum` (formato que o `tsdown` gera); corrigido.
 
 **Informação pendente (não bloqueia o início):** a **lista dos sistemas que consomem a lib**. Necessária na Etapa 7 para escolher o app piloto e ordenar o rollout. Ideal levantar com `npm` ou por busca nos repos da organização e registrar aqui.
 
@@ -624,6 +725,7 @@ Conferência de cada afirmação do plano contra o código (`grep` no `src/`), o
 - Status de cada achado da seção 2 e da seção 5 (resolvido/aberto); seção 5 reordenada numericamente; registro da Etapa 0 dizia "nada commitado".
 
 **Novo**
+- *(Etapa 2)* O registro da Etapa 1 afirmava snapshots verdes sobre um `storybook-static/` antigo — ver 5.13d.
 - **`tsup` não é mais mantido** → decisão D1 (Etapa 3).
 - **Ferramental da Etapa 0 já um major atrás** (eslint 10, vitest 5, jsdom 29, playwright 1.63…) → seção 4.4. O bump do Playwright exige regerar o baseline.
 - **`@types/keycloak-js` é stub obsoleto** → remover na Etapa 2.

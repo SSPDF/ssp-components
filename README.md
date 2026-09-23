@@ -34,15 +34,11 @@ O `@mui/lab` **não** precisa ser instalado pelo app: ele é dependência da lib
 
 > O `npm install` avisa quando uma peer está faltando ou fora da faixa. Não ignore o aviso — é exatamente o cenário em que os componentes quebram em runtime sem erro de compilação.
 
-### `Table` e SSR
+### SSR
 
-`Table` lê o `localStorage` durante o render e quebra no SSR do Next (`localStorage is not defined`). Até isso ser corrigido, carregue-a sem SSR:
+Os componentes renderizam no servidor (Next.js Pages Router). `Table` e `GenericTable` restauram os filtros e a ordenação salvos no `localStorage` logo depois da montagem — até a `0.1.x` elas liam o `localStorage` durante o render e precisavam de `next/dynamic` com `ssr: false`, o que pode ser removido.
 
-```tsx
-import dynamic from 'next/dynamic'
-
-const Table = dynamic(() => import('@ssplib/react-components').then((m) => m.Table), { ssr: false })
-```
+`AutoComplete` não precisa mais de `QueryClientProvider` (a lib deixou de usar react-query na `0.2.0`).
 
 ## Conceito central: os dois sistemas de formulário
 
@@ -104,7 +100,7 @@ Dois providers alimentam o mesmo `AuthContext` (formato `AuthReturnData`): `user
 - **`KeycloakAuthProvider`** — Keycloak/Active Directory (`type: 'ad'`), com refresh automático de token e init de SSO.
 - **`OAuthProvider`** — OIDC gov.br (`type: 'govbr'`). Em `localhost` (ou um `testIP`), faz bypass do fluxo real e loga com um `testToken`.
 
-Ambos guardam o JWT no cookie `nextauth.token` (exportado como `AUTH_COOKIE_NAME`).
+O `OAuthProvider` guarda o JWT no cookie `nextauth.token` (exportado como `AUTH_COOKIE_NAME`). O `KeycloakAuthProvider` **não** grava esse cookie — o token fica com o `keycloak-js` e é exposto por `accessToken`.
 
 ```tsx
 import { useContext } from 'react'
@@ -134,10 +130,21 @@ npm run lint           # eslint
 npm run format:check   # prettier
 npm run test           # vitest (providers de auth)
 npm run snapshots      # snapshots visuais de todas as stories, dentro de container Linux
-npm run check:package  # publint + are-the-types-wrong sobre o dist/
+npm run check:package  # externos do bundle x lib-package.json, publint e are-the-types-wrong sobre o dist/
+npm run smoke          # instala o dist/ empacotado no examples/smoke-app e roda o next build (SSR)
+npm run pack:local     # gera pack/*.tgz idêntico ao que seria publicado, para testar num app real
 ```
 
 As **stories** (`src/**/*.stories.tsx`) são a principal superfície de verificação, e os snapshots visuais comparam cada uma com o baseline em `snapshots/baseline/`. Formatação: Prettier (4 espaços, sem ponto-e-vírgula, aspas simples, `printWidth` 200).
+
+### Testar uma versão local num app
+
+```bash
+npm run pack:local                                   # aqui: gera pack/ssplib-react-components-<versão>.tgz
+npm install /caminho/ate/pack/ssplib-react-components-<versão>.tgz   # no app, num branch de teste
+```
+
+Não use `npm link`: o symlink faz o app resolver React/MUI/Emotion a partir do `node_modules` deste repo, e aparecem duas cópias na árvore — o tema do app para de chegar nos componentes e os erros não são os que aconteceriam em produção.
 
 ### Publicação / versão
 
