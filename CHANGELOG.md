@@ -2,6 +2,20 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 0.2.1
+
+**A peer `next` passa a aceitar o Next 15 e 16** (`^14.0.0 || ^15.0.0 || ^16.0.0`). Nenhum código mudou.
+
+Até a `0.2.0` a faixa era `^14.0.0`, e **nenhum app em Next 16 conseguia instalar a lib** sem `--legacy-peer-deps` (`ERESOLVE`). A `0.0.x` instalava porque não declarava peer nenhuma — então esses apps já rodavam a lib no Next 16, só que sem garantia. Agora roda com garantia: o app de fumaça é buildado e testado no navegador com Next 16, incluindo os componentes que importam `next/*` (`NavBar`: `next/image`, `next/link`, `next/router`; `Map`: `next/dynamic`), e o CI passa a rodá-lo no 14 e no 16.
+
+### O que o app precisa fazer
+
+Nada, além de trocar a versão. As demais peers **não mudaram**: MUI 5, `@mui/x-date-pickers` 6, React 18 e `react-toastify` 10. Um app em MUI 7, x-date-pickers 7/8, React 19 ou toastify 11 continua fora da faixa — ver "Problema conhecido".
+
+### Problema conhecido
+
+- **Apps em MUI 7, React 19, `@mui/x-date-pickers` 7+ ou `react-toastify` 11 recebem `ERESOLVE`.** Essas faixas abrem nas próximas etapas do `UPGRADE_PLAN.md` (MUI na `1.0.0`, React 19 na `2.0.0`). Até lá, para testar num app assim, instale com `npm install --legacy-peer-deps` — é o mesmo que a `0.0.x` já fazia sem avisar.
+
 ## 0.2.0
 
 Limpeza de dependências e correção de três bugs. **Sobe o minor porque duas correções mudam comportamento** (`GenericInput` mascarado e `AutoComplete`). Visual idêntico: os 83 snapshots da `0.1.0` continuam iguais.

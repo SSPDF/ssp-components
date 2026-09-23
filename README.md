@@ -19,7 +19,7 @@ A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as 
 | Pacote | Versão |
 |---|---|
 | `react`, `react-dom` | `^18.0.0` |
-| `next` | `^14.0.0` (Pages Router — os componentes de auth e navbar usam `next/router`) |
+| `next` | `^14.0.0 \|\| ^15.0.0 \|\| ^16.0.0` (Pages Router — os componentes de auth e navbar usam `next/router`) |
 | `@mui/material` | `^5.8.6` |
 | `@mui/icons-material` | `^5.0.0` |
 | `@mui/x-date-pickers` | `^6.0.0` |

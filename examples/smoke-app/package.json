@@ -2,7 +2,7 @@
     "name": "smoke-app",
     "private": true,
     "version": "0.0.0",
-    "description": "App Next 14 mínimo que consome @ssplib/react-components para validar o cenário real: o MUI vem do app, não da lib.",
+    "description": "App Next mínimo (14 por padrão; SMOKE_NEXT=16 para o 16) que consome @ssplib/react-components para validar o cenário real: o MUI vem do app, não da lib.",
     "scripts": {
         "dev": "next dev -p 3100",
         "build": "next build",

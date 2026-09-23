@@ -1,6 +1,8 @@
 # smoke-app
 
-App Next 14 mínimo que consome a lib como um sistema de verdade consome.
+App Next mínimo que consome a lib como um sistema de verdade consome. O `package.json`
+fixa o **Next 14**, o piso da peer; o `npm run smoke` também roda no **Next 16**, o
+topo da faixa e a versão que os apps usam (ver abaixo).
 
 ## Para que serve
 
@@ -49,6 +51,23 @@ npm run build && npm start
 O `npm install` cria um `package-lock.json` com o caminho do tarball — não
 versione.
 
+O `npm run smoke` (na raiz) faz tudo isso sozinho — e é o que roda no CI.
+
+### Outra versão do Next
+
+A peer `next` é `^14 || ^15 || ^16`. O CI roda o smoke duas vezes: com o Next do
+`package.json` (14) e com o 16:
+
+```bash
+# na raiz do repo, depois de `npm run build`
+SMOKE_NEXT=16 npm run smoke   # ou 15
+```
+
+O `SMOKE_NEXT` troca a faixa do `next` no `package.json` só durante a execução; o
+script devolve o `package.json` e o `tsconfig.json` (que o `next build` reescreve)
+ao estado original no fim. O `node_modules` fica com o Next testado — o próximo
+`npm run smoke` reinstala conforme o `package.json`.
+
 ## O que a página exercita
 
 - `SspComponentsProvider` (portal de modal + toasts)
@@ -58,6 +77,8 @@ versione.
   até a 0.1.x lia o `localStorage` no render e exigia `next/dynamic` + `ssr: false`)
 - `DatePicker`
 - `MODAL`
+- em `/next-apis`: `NavBar` (`next/image`, `next/link`, `next/router`) e `Map`
+  (`next/dynamic` com `ssr: false`) — a superfície que um major do Next pode quebrar
 - um `ThemeProvider` com paleta própria, para confirmar que o tema do app
   chega nos componentes da lib (é o que quebra se o MUI duplicar na árvore)
 

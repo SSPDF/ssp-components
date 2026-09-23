@@ -46,4 +46,4 @@ Todos pela raiz: `import type { InputProps, InputType, CsvConfigProp, FilterValu
 
 ## Requisitos de ambiente
 
-React 18, Next.js 14 (Pages Router — auth usa `next/router`). Peers (declaradas em `lib-package.json` desde a 0.1.0): `react`, `react-dom`, `next`, `@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers`, `@emotion/react`, `@emotion/styled`, `react-hook-form`, `dayjs`, `react-toastify`. `@mui/lab` é dependência da lib, não peer. Faixas no `README.md`.
+React 18, Next.js 14, 15 ou 16 (Pages Router — auth usa `next/router`). Peers (declaradas em `lib-package.json` desde a 0.1.0): `react`, `react-dom`, `next`, `@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers`, `@emotion/react`, `@emotion/styled`, `react-hook-form`, `dayjs`, `react-toastify`. `@mui/lab` é dependência da lib, não peer. Faixas no `README.md`.

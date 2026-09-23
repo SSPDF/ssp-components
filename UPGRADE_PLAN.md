@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Próxima: Etapa 3** — decidida (D1 = `tsdown`) e pronta para começar; checklist e config de partida na própria etapa. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Próxima: Etapa 3** — decidida (D1 = `tsdown`) e pronta para começar; checklist e config de partida na própria etapa. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** e **de novo em 23/09/2026, após a Etapa 1** — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -109,7 +109,7 @@ A única vantagem da cópia própria ("eu controlo a versão") é ilusória: tro
 
 ### Como declarar (`lib-package.json`)
 
-**Estado atual (`0.1.0`, Etapa 1)** — só o que é verdade hoje:
+**Estado atual (`0.2.1`, Etapa 2.1)** — só o que é verdade hoje:
 
 ```json
 "peerDependencies": {
@@ -119,7 +119,7 @@ A única vantagem da cópia própria ("eu controlo a versão") é ilusória: tro
     "@mui/material": "^5.8.6",
     "@mui/x-date-pickers": "^6.0.0",
     "dayjs": "^1.11.0",
-    "next": "^14.0.0",
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.43.0",
@@ -152,7 +152,7 @@ O que mudou em relação à versão original desta seção, e por quê (tudo con
 - **`@mui/x-date-pickers` `^8 || ^9`, não `^7 || ^9`:** a API que a Etapa 7 vai escrever (estrutura acessível, `PickerDay`) é a da v8+; a v7 não foi considerada em lugar nenhum do plano. Atenção: o `x-date-pickers@8` aceita `@mui/material ^5.15.14 || ^6 || ^7` — **não aceita MUI 9**. Então app em MUI 9 usa pickers 9; app em MUI 7 pode usar 8 ou 9. O range é coerente, mas o README precisa dizer isso.
 - **`@mui/icons-material@9` exige `@mui/material ^9.4.0`** (e o 7 exige o 7). O range `^7 || ^9` continua certo — cada app instala o par que casa com o seu MUI —, mas as `devDependencies` da lib precisam ser um par coerente.
 - **`react ^18 || ^19` só é possível se a decisão D2 for resolvida** — hoje o `react-leaflet` (dependência direta) não tem versão que aceite os dois. Ver 4.3 e seção 9.
-- **`next ^15 || ^16` pode abrir antes do React 19:** o `next@16` declara peer `react ^18.2.0 || ^19.0.0`. O bloqueio para abrir o `next` é o `cookies-next@4` (Etapa 2) e testar o smoke-app no 15/16, não o React.
+- **`next ^15 || ^16` pode abrir antes do React 19:** o `next@16` declara peer `react ^18.2.0 || ^19.0.0`. O bloqueio para abrir o `next` é o `cookies-next@4` (Etapa 2) e testar o smoke-app no 15/16, não o React. — ✅ **aberto na `0.2.1` (Etapa 2.1)**.
 
 > O range de MUI só pode abrir **depois** da Etapa 7. Até lá, a linha `0.x`/`v0-legacy` declara `"@mui/material": "^5.8.6"`.
 >
@@ -477,7 +477,7 @@ Branch `atualizacao-dependencias`, commits `6d8bb08` e `21e36ae` (a Etapa 0 aind
 **Desvios em relação à seção 3** (todos para declarar só o que é verdade *hoje*; a seção 3 descreve o estado final):
 
 - **`react`/`react-dom` ficam em `^18.0.0`, não `^18 || ^19`.** `react-leaflet@4`, `react-query@3` e `@mui/x-date-pickers@6` — dependências/peers atuais — declaram peer `react ^18` estrito ou `^17 || ^18`. Declarar `^19` agora seria prometer algo que o `npm install` recusaria. Abre quando essas três saírem (Etapas 2, 7 e 8).
-- **`next` fica em `^14.0.0`.** Next 15/16 não foram testados; abrir quando o smoke-app rodar neles.
+- **`next` fica em `^14.0.0`.** Next 15/16 não foram testados; abrir quando o smoke-app rodar neles. *(Aberto na `0.2.1` — ver Etapa 2.1.)*
 - **`@mui/material` com piso `^5.8.6`, não `^5.0.0`** — é o piso real imposto pelo `@mui/x-date-pickers@6`. Pelo mesmo motivo, Emotion ficou em `^11.9.0`/`^11.8.1`.
 - **`react-toastify` em `^10.0.0`**, não `^11` — o CSS vendorizado é da v10; a v11 é a Etapa 6.
 - **`@mui/lab` fixado em `5.0.0-alpha.127`** como `dependency` (motivo em 2.2.1).
@@ -542,6 +542,41 @@ Branch `atualizacao-dependencias`. **Não commitado** (a pedido). Versão **`0.2
 **Achados novos:** 5.13 (variáveis de módulo compartilhadas entre `Table`s, `console.log` no `GenericTable`, doc errada sobre o cookie do Keycloak, e o script de snapshots que comparava build velho — este último corrigido).
 
 **Tamanho do bundle:** `index.esm.js` 109 971 → 110 379 bytes (+0,4 kB: helper de cookie e o efeito de fetch no lugar do import do react-query). No smoke-app, o JS compartilhado da página caiu de **432 kB para 350 kB** — o react-query deixou de entrar no bundle do app.
+
+### Etapa 2.1 — Peer `next` aberta para 15 e 16 → `0.2.1`
+
+**Por que existe (achado de 23/09/2026):** ao instalar o tarball da `0.2.0` no `conoc-frontend` para testá-lo num app real, o `npm install` falhou com `ERESOLVE`. Levantando os apps consumidores, **todos estão em Next 16** — a `0.2.0` não instalava em nenhum deles. A `0.0.x` instalava porque não declarava peer nenhuma: esses apps já rodam a lib no Next 16 há tempo, só que sem ninguém ter verificado. O bloqueio técnico (`cookies-next@4`) já tinha saído na Etapa 2; faltava só o teste.
+
+- [x] Smoke-app com Next 16.3.6 (e 15.5.26) contra o tarball com a peer ampliada.
+- [x] Página `/next-apis` no smoke-app: `NavBar` (`next/image`, `next/link`, `next/router`) e `Map` (`next/dynamic`, `ssr: false`) — os 5 arquivos da lib que importam `next/*` passam por ela ou pelo mesmo import.
+- [x] `SMOKE_NEXT=<major> npm run smoke`; o CI roda o smoke no 14 (piso) e no 16 (topo).
+- [x] Peer `next` → `^14.0.0 || ^15.0.0 || ^16.0.0` no `lib-package.json` e no `package.json` raiz; versão **`0.2.1`** (amplia a faixa, não quebra ninguém).
+
+#### Registro de execução — 23/09/2026
+
+| Verificação | Next 14.2.35 | Next 15.5.26 | Next 16.3.6 |
+|---|---|---|---|
+| `npm install` do tarball (peer ampliada) | sem `ERESOLVE` | sem `ERESOLVE` | sem `ERESOLVE` |
+| `npm ls` (uma cópia de `next`, MUI, Emotion, RHF, toastify, dayjs) | ✓ | ✓ | ✓ |
+| `next build` (prerender de `/` e `/next-apis` = SSR) | ✓ | ✓ | ✓ Turbopack **e** `--webpack` |
+| Browser, build de produção | (Etapa 2) | não rodado | ✓ tema roxo do app nos componentes da lib; `Input` com máscara de CPF + submit do `FormProvider`; `GenericInput` + submit do `GenericFormProvider`; `Table`; `MODAL`; logo pelo otimizador do `next/image`; `href` do `next/link`; `router.push` da `NavBar` navega; `Map` monta com os 12 tiles; console limpo |
+| Browser, `next dev` | — | — | ✓ sem erro nem mismatch de hidratação, inclusive recarregando com `order-<id>` da `Table` no `localStorage`. Único aviso é interno do Next (`[HMR] Invalid message … isrManifest`, do indicador de página estática), sem relação com a lib |
+
+O Next 15 só teve install + build, não browser: fica coberto por estar entre dois majors testados e por não haver API do 15 que a lib use. Se algum app ficar no 15, vale um `SMOKE_NEXT=15` no browser.
+
+**Consumidores da lib levantados (23/09/2026)** — resolve a "informação pendente" da seção 9. Versões do `package.json` de cada app nos repos locais:
+
+| App | Lib | Next | React | `@mui/material` | `x-date-pickers` | `react-toastify` | Instala a `0.2.1`? |
+|---|---|---|---|---|---|---|---|
+| `specto-frontend` | `^0.0.348` | 16.2.6 | 18 | ^5.15.5 | ^6.19.0 | ^10.0.4 | **sim** |
+| `viva-flor-frontend` | `^0.0.349` | 16.3.1 | 18 | ^5.15.5 | ^6.19.0 | ^10.0.4 | **sim** |
+| `copom` | `^0.0.348` | 16.2.7 | 18 | ^5.18.0 | **^7.27.0** | **^11.0.5** | não — pickers 7, toastify 11 |
+| `conoc-frontend` | `^0.0.347` | ^16.1.6 | **^19.2.4** | **^7.3.8** | **^8.27.2** | **^11.0.5** | não — MUI 7, React 19, pickers 8, toastify 11 |
+
+Consequências para o plano:
+- **`specto-frontend` e `viva-flor-frontend`** são os candidatos naturais a app piloto da linha `0.x` (e depois da Etapa 7).
+- **`conoc-frontend` já roda a lib (`0.0.347`) em cima de MUI 7 + React 19**, sem peer que avise. É evidência (não garantia) de que o código atual funciona no MUI 7 — e é o app que mais ganha com a Etapa 7. Até lá, só instala uma `0.x` com `--legacy-peer-deps`.
+- **`react-toastify` 11 já está em dois apps.** A faixa final da seção 3 prevê `^11.0.0`; vale avaliar abrir `^10 || ^11` antes da Etapa 7, do mesmo jeito que o `next` aqui (smoke com toastify 11 + `SspComponentsProvider`), para destravar o `copom` junto com o x-date-pickers.
 
 ### Etapa 3 — Build: `microbundle` → `tsdown` (D1) → `0.3.0`
 
@@ -638,7 +673,7 @@ Sub-etapas, cada uma com snapshots revisados:
 - [ ] `JSX.Element` → `React.JSX.Element` em 10 arquivos (Apêndice C).
 - [ ] Revisar os 2 `forwardRef` (`MaskInput.tsx:15`, `GenericMaskInput.tsx:7`).
 - [ ] `react-leaflet` 4 → 5. **Atenção:** a v5 tem peer `react ^19.0.0` **estrito** e a v4 tem `react ^18.0.0` estrito — não há versão que sirva aos dois (reconferido em 23/09). Como `dependency` direta, o bump torna React 19 **obrigatório** para todos os apps. Ver decisão D2 para a alternativa (peer opcional, o app escolhe a versão).
-- [ ] Next 16 (16.3.6 em 23/09): exige Node ≥ 20.9 e aceita React 18.2+ — **pode subir antes do React 19**, se for útil a algum app. Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
+- [ ] Next 16 (16.3.6 em 23/09): exige Node ≥ 20.9 e aceita React 18.2+ — **pode subir antes do React 19**, se for útil a algum app. *A peer já aceita o 16 desde a `0.2.1` (Etapa 2.1), validado no smoke-app; o que sobra aqui é subir o `next` das `devDependencies` (Storybook) e a avaliação do App Router abaixo.* Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
 - [ ] `cookies-next` foi removido na Etapa 2 (helper interno) — **não precisa voltar**. Só reavaliar se quisermos o helper deles de novo.
 
 **Impacto:** breaking coordenado → publicar como **major `2.0.0`** com peer `react: ^19.0.0`.
@@ -703,7 +738,7 @@ Downloads mensais (npm): `tsdown` 0,8M (set/25) → **18M** (últimos 30 dias); 
 
 Observações: o `tsdown` precisa do pacote `unrun` para carregar o arquivo de config e de Node `^22.18` (a máquina local está em 22.17.1). O aviso `MODULE_LEVEL_DIRECTIVE` do rolldown aparece mesmo no modo `unbundle`, em que a diretiva **é** preservada — é falso positivo. O `check-public-api.mjs` não reconhecia `export declare enum` (formato que o `tsdown` gera); corrigido.
 
-**Informação pendente (não bloqueia o início):** a **lista dos sistemas que consomem a lib**. Necessária na Etapa 7 para escolher o app piloto e ordenar o rollout. Ideal levantar com `npm` ou por busca nos repos da organização e registrar aqui.
+~~**Informação pendente (não bloqueia o início):** a **lista dos sistemas que consomem a lib**.~~ **Levantada em 23/09/2026** — tabela na Etapa 2.1 (`specto-frontend`, `viva-flor-frontend`, `copom`, `conoc-frontend`; todos em Next 16). Levantada nos repos locais; se houver consumidor fora deles, acrescentar lá.
 
 ### Único ponto que ainda depende de calendário
 

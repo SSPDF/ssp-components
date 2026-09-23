@@ -54,6 +54,11 @@ jobs:
       - name: App de fumaça (tarball + next build)
         run: npm run smoke
 
+      # A peer `next` é `^14 || ^15 || ^16`: o passo acima testa o piso (14, o do
+      # package.json do smoke-app) e este o topo, que é o que os apps usam.
+      - name: App de fumaça com Next 16
+        run: SMOKE_NEXT=16 npm run smoke
+
       - name: Build do Storybook
         run: npm run build-storybook
 
