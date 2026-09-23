@@ -69,6 +69,16 @@ Dependencies are several majors behind (MUI 5→9, Storybook 9→10, `microbundl
 - **The smoke app's `file:../../dist` link does not install the lib's own `dependencies`** (npm `install-links=false`) and resolves MUI from the repo root. `npm run smoke` does it right: packs `dist/`, installs the tarball in `examples/smoke-app` and runs `next build` (which also SSR-renders the page). It runs in CI.
 - **`check:package` now starts with `scripts/check-externals.mjs`**: fails if the bundle imports an undeclared package, if `src/` imports a package missing from `lib-package.json` (microbundle would silently bundle it), or if a declared dependency is unused.
 
+### Agent tooling: the tsdown skill
+
+`.claude/skills/tsdown/` is the **official** agent skill from the `rolldown/tsdown` repo (installed 23/09/2026 with `npx skills add rolldown/tsdown --skill tsdown -a claude-code -y`, project scope, pinned by hash in `skills-lock.json`). It is project tooling for agents, **not** a requirement for people: build correctness is guaranteed by `check:package`, the public-API diff, `npm run smoke` and the snapshots, whoever writes the config.
+
+- **Use it whenever you touch the build** (`tsdown.config.*`, `exports`, `.d.ts`, externals). tsdown is pre-1.0 and v0.23 **silently ignores removed options** — wrong output, no error. Check every option against `references/option-*.md` instead of relying on memory (e.g. externals are `deps.neverBundle` in 0.23, not `external`).
+- **Keep it in sync with the installed tsdown.** When bumping tsdown, run `npx skills update tsdown` (project scope — never `-g`) and review the diff in the PR. The skill says which tsdown version its docs were generated from; a skill older than the installed tsdown is the problem it exists to prevent.
+- **Review it like code.** It is third-party instruction text that runs with the agent's permissions. The installed copy was reviewed on 23/09/2026: Markdown only, no scripts, byte-identical to `rolldown/tsdown@eb40c95`. The `skills` CLI's own scan labelled it "Critical Risk" without detail (Socket: 0 alerts, Snyk: low); the only candidates found are doc examples with `execSync('rm -rf dist')` and a release script that runs `execSync('npm publish')`.
+- **Never follow that `npm publish` example here.** This repo publishes only through the `v*` tag workflow (`.github/workflows/publish.yaml`); no script or agent runs `npm publish`.
+- Only the `tsdown` skill is installed. The repo's other skill, `tsdown-migrate`, is for migrating from `tsup` — we come from microbundle, so it doesn't apply.
+
 ### Verification (added in Etapa 0 — there used to be none)
 
 ```bash

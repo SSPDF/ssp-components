@@ -554,6 +554,7 @@ Branch `atualizacao-dependencias`. **Não commitado** (a pedido). Versão **`0.2
 - [ ] CI: `node-version: 22` → **`24`** no `ci.yaml` e no `publish.yaml`; `engines.node` do `package.json` raiz → `^22.18.0 || >=24.11.0`. É requisito de **build**, não de runtime: os apps continuam com o Node que o Next deles pede (Next 14: ≥ 18.17; Next 16: ≥ 20.9).
 
 **Checklist:**
+- [ ] **Trabalhar com a skill oficial do tsdown** (`.claude/skills/tsdown/`, instalada em 23/09/2026): conferir cada opção do config na referência dela (`references/option-*.md`) em vez de confiar em memória — o `tsdown` é pré-1.0 e a 0.23 ignora em silêncio opções removidas.
 - [ ] `npm i -D tsdown unrun` (o `unrun` é peer do `tsdown`, necessário para carregar o arquivo de config) e remover `microbundle` e `tsconfig.microbundle.json`. **Não remover** os `@babel/preset-*` nem o `.babelrc.json`: o `@storybook/nextjs` também lê o `.babelrc.json` (a presença do arquivo o faz compilar as stories com Babel em vez de SWC). Avaliar a remoção na **Etapa 5** (Storybook 10), com os snapshots conferindo.
 - [ ] `tsdown.config.ts` — ponto de partida já validado no teste de D1:
   ```ts
@@ -568,7 +569,9 @@ Branch `atualizacao-dependencias`. **Não commitado** (a pedido). Versão **`0.2
       format: ['esm', 'cjs'],
       dts: true, // gera .d.mts (ESM) e .d.ts (CJS)
       platform: 'neutral',
-      external: pacotes.map((p) => new RegExp(`^${p.replace('/', '\\/')}(/.*)?$`)),
+      // Na 0.23 é `deps.neverBundle` (o `external` usado no teste de D1 não é a opção documentada, e opção
+      // desconhecida é ignorada em silêncio). Dependência não declarada é EMBUTIDA sem aviso → check-externals.
+      deps: { neverBundle: pacotes.map((p) => new RegExp(`^${p.replace('/', '\\/')}(/.*)?$`)) },
       sourcemap: true,
       clean: true,
       // excluir do build: stories, decorators, test, *.test.*, components/teste (hoje em tsconfig.microbundle.json)
