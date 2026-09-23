@@ -48,6 +48,12 @@ jobs:
       - name: Conferindo o pacote publicável (publint + attw)
         run: npm run check:package
 
+      # Instala o dist/ empacotado no examples/smoke-app, como um app instalaria, e
+      # roda o `next build` (que faz SSR da página). É o único passo que exercita o
+      # cenário real "o MUI vem do app".
+      - name: App de fumaça (tarball + next build)
+        run: npm run smoke
+
       - name: Build do Storybook
         run: npm run build-storybook
 

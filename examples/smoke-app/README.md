@@ -54,8 +54,8 @@ versione.
 - `SspComponentsProvider` (portal de modal + toasts)
 - `FormProvider` + `Input` (contexto customizado) — incluindo tipos mascarados
 - `GenericFormProvider` (exportado desde a 0.1.0) + `GenericInput` (contexto nativo do react-hook-form)
-- `Table` com dados estáticos, carregada com `next/dynamic` + `ssr: false` (ela lê o
-  `localStorage` no render e quebra no SSR — UPGRADE_PLAN.md 5.11)
+- `Table` com dados estáticos, importada direto (renderiza no SSR desde a 0.2.0 —
+  até a 0.1.x lia o `localStorage` no render e exigia `next/dynamic` + `ssr: false`)
 - `DatePicker`
 - `MODAL`
 - um `ThemeProvider` com paleta própria, para confirmar que o tema do app

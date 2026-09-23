@@ -1,14 +1,6 @@
 import { Alert, Box, Button, Container, Divider, Paper, Stack, Typography } from '@mui/material'
-import dynamic from 'next/dynamic'
 import { useState } from 'react'
-import { DatePicker, FormProvider, GenericFormProvider, GenericInput, Input, MODAL } from '@ssplib/react-components'
-
-/**
- * `Table` lê o `localStorage` durante o render (`Table.tsx:75`), então quebra no SSR
- * (`ReferenceError: localStorage is not defined` no `next build`). Hoje o app
- * consumidor precisa carregá-la sem SSR, como aqui. Ver UPGRADE_PLAN.md 5.11.
- */
-const Table = dynamic(() => import('@ssplib/react-components').then((m) => m.Table), { ssr: false })
+import { DatePicker, FormProvider, GenericFormProvider, GenericInput, Input, MODAL, Table } from '@ssplib/react-components'
 
 /**
  * Página de fumaça: exercita os dois sistemas de formulário, a tabela, o

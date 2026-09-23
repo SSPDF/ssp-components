@@ -32,8 +32,8 @@ function exportedNames(code) {
             nomes.add((alias[1] ?? alias[0]).trim())
         }
     }
-    // `export declare const X` / `export declare function X` no .d.ts
-    for (const m of semComentarios.matchAll(/export\s+declare\s+(?:const|function|class|type|interface)\s+([A-Za-z_$][\w$]*)/g)) {
+    // `export declare const X` / `function` / `enum` … no .d.ts (o `enum` apareceu com o tsdown)
+    for (const m of semComentarios.matchAll(/export\s+declare\s+(?:const\s+enum|const|function|class|type|interface|enum)\s+([A-Za-z_$][\w$]*)/g)) {
         nomes.add(m[1])
     }
     return nomes

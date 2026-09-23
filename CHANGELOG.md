@@ -2,6 +2,31 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 0.2.0
+
+Limpeza de dependências e correção de três bugs. **Sobe o minor porque duas correções mudam comportamento** (`GenericInput` mascarado e `AutoComplete`). Visual idêntico: os 83 snapshots da `0.1.0` continuam iguais.
+
+### O que o app pode fazer
+
+- **Remover o `react-query` e o `QueryClientProvider`**, se eles só existiam por causa do `AutoComplete` da lib. Ele não usa mais react-query.
+- **Remover o `next/dynamic` + `ssr: false` da `Table`**, se foi colocado por causa do `localStorage is not defined` no SSR.
+- Nada é obrigatório: nenhuma API pública mudou e nenhum peer mudou.
+
+### Mudanças
+
+- **Corrigido: `GenericInput` com tipo mascarado (`cpf`, `cnpj`, `cep`, `phone`, `sei`, `number`…) quebrava ao digitar** sob o `GenericFormProvider`, com `Cannot read properties of undefined (reading 'formSetValue')` a cada tecla. O `GenericMaskInput` lia o contexto do `FormProvider` clássico em vez do react-hook-form. Quem montava os dois providers juntos para contornar pode tirar o `FormProvider`.
+- **Corrigido: `Table` e `GenericTable` quebravam no SSR** (`ReferenceError: localStorage is not defined`). Agora renderizam no servidor; os filtros e a ordenação salvos no `localStorage` entram logo depois da montagem, sem mismatch de hidratação.
+- **`AutoComplete` não depende mais de react-query.** Busca as opções ao montar e quando `url` ou o token do usuário mudam, e cancela a requisição ao desmontar. Diferenças em relação ao `useQuery` do react-query v3: **não tenta de novo** em caso de erro (antes eram 3 tentativas), **não busca de novo** quando a janela volta ao foco, e dois `AutoComplete` com o mesmo `name` não compartilham mais cache. Se o `dataPath` não existir na resposta, a lista fica vazia (antes ficava `undefined` e o componente quebrava ao abrir).
+- **`cookies-next` removido.** O `OAuthProvider` usa um helper interno que grava e lê o cookie `nextauth.token` exatamente como o `cookies-next@4` (conferido byte a byte) — sessões abertas com versões anteriores continuam válidas. Era o que impedia abrir a peer `next` para 15/16.
+- **`react-google-recaptcha` removido** (declarado, nunca usado).
+- **`GenericTable` não polui mais o console**: imprimia `null` a cada render e a lista inteira a cada tecla na busca (restos de depuração).
+- **`Menu`: `btProps` aceita `customColor` e `customFontColor`** (antes o TypeScript recusava, embora funcionasse).
+- O pacote publicado não inclui mais `stories/`, `decorators/` e helpers de teste.
+
+### Dependências que saíram da árvore do app
+
+`react-query`, `cookies-next` e `react-google-recaptcha` — 18 pacotes a menos no `npm install`.
+
 ## 0.1.0
 
 Primeira versão com packaging correto. Nenhum componente muda de comportamento ou de visual — os 83 snapshots das stories são idênticos aos da `0.0.349`.
@@ -29,4 +54,4 @@ Se o `npm install` acusar peer fora da faixa, as faixas estão no `README.md` ("
 
 ### Problema conhecido
 
-- `Table` lê o `localStorage` durante o render e quebra no SSR do Next. Carregue-a com `next/dynamic` e `ssr: false` (exemplo no `README.md`). Já acontecia nas versões anteriores.
+- `Table` lê o `localStorage` durante o render e quebra no SSR do Next. Carregue-a com `next/dynamic` e `ssr: false`. Já acontecia nas versões anteriores. **Corrigido na `0.2.0`.**

@@ -18,7 +18,7 @@ import prettier from 'eslint-config-prettier'
  */
 export default tseslint.config(
     {
-        ignores: ['dist/**', 'storybook-static/**', 'node_modules/**', 'snapshots/**', 'decorators/**', 'examples/**', '*.cjs'],
+        ignores: ['dist/**', 'storybook-static/**', 'node_modules/**', 'snapshots/**', 'examples/**', '*.cjs'],
     },
     js.configs.recommended,
     ...tseslint.configs.recommended,

@@ -14,6 +14,7 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useStat
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils/CustomMenu'
+import { useIsClient } from '../../utils/useIsClient'
 import { FilterValue, OrderBy, TableProps2 } from './types'
 import { FilterMenu } from './FilterSection'
 import { filtrarDados, ordenarDados, removePunctuationAndAccents, getCount, transformArrayObjectInString } from './utils'
@@ -91,7 +92,6 @@ export function GenericTable({
     const [filterKey, setFilterKey] = useState('filterKey')
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
-    const filterContainer = useRef(null)
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
@@ -101,6 +101,8 @@ export function GenericTable({
     const localTableNameCache = `tableFilterCache_${id}`
     const orderAsc = useRef<boolean>(false)
     const filtersFuncData = filtersFunc ?? {}
+    // `localStorage` só existe no browser: nada de lê-lo durante o render (quebra o SSR — UPGRADE_PLAN.md 5.11)
+    const isClient = useIsClient()
 
     useEffect(() => {
         setData(initialData)
@@ -156,7 +158,6 @@ export function GenericTable({
     )
 
     function onInputChange(e: ChangeEvent) {
-        console.log(listClone)
         const searchValue = (e.target as HTMLInputElement).value
 
         if (searchValue === '') {
@@ -511,10 +512,6 @@ export function GenericTable({
         setShowExpandObj(obj)
     }, [list, itemsCount, currentPage])
 
-    useEffect(() => {
-        console.log(filterContainer.current)
-    }, [filterContainer.current])
-
     if (error)
         return (
             <Box bgcolor='#fff2c8' color='#3e3129' padding={2} marginX={2} borderRadius={4}>
@@ -685,7 +682,7 @@ export function GenericTable({
                     </Stack>
                 </Stack>
 
-                {localStorage.getItem(localTableName) && (
+                {isClient && localStorage.getItem(localTableName) && (
                     <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
                         {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
                             .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2)))

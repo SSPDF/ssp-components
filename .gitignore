@@ -10,3 +10,6 @@ coverage
 examples/*/node_modules
 examples/*/.next
 examples/*/next-env.d.ts
+
+# npm run pack:local — tarball para testar num app real
+pack/

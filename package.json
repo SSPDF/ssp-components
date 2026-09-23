@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -35,7 +35,6 @@
     "dependencies": {
         "@mui/lab": "5.0.0-alpha.127",
         "axios": "^1.17.0",
-        "cookies-next": "^4.2.1",
         "jszip": "^3.10.1",
         "jwt-decode": "^3.1.2",
         "keycloak-js": "^25.0.1",
@@ -45,10 +44,8 @@
         "lodash.get": "^4.4.2",
         "lodash.hasin": "^4.5.2",
         "react-dropzone": "^14.3.8",
-        "react-google-recaptcha": "^2.1.0",
         "react-imask": "^6.6.0",
         "react-leaflet": "^4.2.1",
-        "react-query": "^3.39.3",
         "tinycolor2": "^1.6.0",
         "write-excel-file": "^4.0.7"
     },
@@ -70,7 +67,6 @@
         "@testing-library/react": "^16.3.3",
         "@testing-library/user-event": "^14.6.7",
         "@tsconfig/recommended": "^1.0.2",
-        "@types/keycloak-js": "^3.4.1",
         "@types/leaflet": "^1.9.16",
         "@types/lodash.clonedeep": "^4.5.9",
         "@types/lodash.get": "^4.4.7",
@@ -78,7 +74,6 @@
         "@types/node": "^20.0.0",
         "@types/react": "^18.0.37",
         "@types/react-dom": "^18.3.0",
-        "@types/react-google-recaptcha": "^2.1.5",
         "@types/tinycolor2": "^1.4.6",
         "@vitest/coverage-v8": "^3.2.7",
         "dayjs": "^1.11.11",
@@ -121,6 +116,8 @@
         "format": "prettier --write \"src/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".storybook/**/*.ts\" \"eslint.config.mjs\"",
         "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".storybook/**/*.ts\" \"eslint.config.mjs\"",
         "check:package": "./scripts/check-package.sh",
+        "smoke": "./scripts/smoke-app.sh",
+        "pack:local": "./scripts/pack-local.sh",
         "test": "vitest run",
         "test:watch": "vitest"
     },

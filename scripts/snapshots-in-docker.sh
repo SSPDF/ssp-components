@@ -17,8 +17,10 @@ IMAGE="mcr.microsoft.com/playwright:v1.55.0-noble"
 
 cd "$(dirname "$0")/.."
 
-if [ ! -d storybook-static ]; then
-    echo "storybook-static/ não existe — rodando build-storybook primeiro."
+# Sempre rebuilda: antes só buildava se `storybook-static/` não existisse, e um build
+# velho fazia a comparação passar contra o código de outra etapa (aconteceu na Etapa 1).
+# `SKIP_STORYBOOK_BUILD=1` pula, para quem acabou de buildar.
+if [ "${SKIP_STORYBOOK_BUILD:-}" != "1" ]; then
     npm run build-storybook
 fi
 

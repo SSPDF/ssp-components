@@ -2,6 +2,7 @@
 #
 # Confere o pacote que vai realmente ser publicado (dist/ + lib-package.json).
 #
+# externos: o que o bundle importa bate com o que o lib-package.json declara.
 # publint: aponta entrypoints quebrados, ordem errada das condições de `exports`, etc.
 # attw:    aponta se os tipos resolvem em cada modo (node10/node16/bundler).
 #
@@ -15,6 +16,11 @@ if [ ! -f dist/index.d.ts ]; then
 fi
 
 cp lib-package.json dist/package.json
+
+echo "── externos ─────────────────────────────────────────"
+node scripts/check-externals.mjs
+
+echo
 
 echo "── publint ──────────────────────────────────────────"
 npx --yes publint@latest ./dist

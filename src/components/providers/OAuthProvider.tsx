@@ -1,9 +1,9 @@
-import { deleteCookie, getCookie, setCookie } from 'cookies-next'
 import jwt_decode from 'jwt-decode'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { AuthClaims, AuthReturn, AuthSspToken, LoginOptions, LogoutOptions, User } from '../../types/auth'
+import { deleteCookie, getCookie, setCookie } from '../utils/cookies'
 
 interface OiDcConfig {
     client_id: string
@@ -42,7 +42,7 @@ export function OAuthProvider({
     const router = useRouter()
 
     useEffect(() => {
-        const token = getCookie(cookieName) as string
+        const token = getCookie(cookieName)
 
         if (!token) {
             setUserLoaded(true)

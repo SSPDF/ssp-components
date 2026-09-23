@@ -3,17 +3,13 @@ import GenericMaskInput from '../components/form/input/GenericMaskInput'
 import GenericFormBaseDecorator from '../decorators/GenericFormBaseDecorator'
 
 /**
- * `GenericMaskInput` é o input mascarado usado internamente pelo `GenericInput`.
+ * `GenericMaskInput` é o input mascarado usado internamente pelo `GenericInput`, e
+ * consome o contexto nativo do react-hook-form — por isso o `GenericFormBaseDecorator`.
  *
- * **Atenção:** apesar do prefixo `Generic*`, o corpo do componente lê o `FormContext`
- * customizado (`GenericMaskInput.tsx:58`) enquanto o `TextMaskCustom` interno lê o
- * contexto nativo do react-hook-form (`:15`). Ou seja, ele depende dos **dois**
- * providers ao mesmo tempo. Sob o `GenericFormBaseDecorator` — o decorator correto
- * para um componente `Generic*` — a renderização funciona, mas digitar dispara
- * `Cannot read properties of undefined (reading 'formSetValue')` no handler `onInput`.
- *
- * A story usa o decorator arquiteturalmente correto de propósito, para que o
- * comportamento real fique visível em vez de mascarado por um decorator duplo.
+ * Até a 0.1.x o corpo do componente lia o `FormContext` customizado, e digitar sob o
+ * `GenericFormProvider` quebrava com `Cannot read properties of undefined (reading
+ * 'formSetValue')` (UPGRADE_PLAN.md 5.8b). A digitação é coberta por
+ * `GenericInput.test.tsx`.
  */
 const meta: Meta<typeof GenericMaskInput> = {
     title: 'Input/GenericMaskInput',

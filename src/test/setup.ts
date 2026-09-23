@@ -3,6 +3,9 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, beforeEach } from 'vitest'
 
 beforeEach(() => {
+    // Testes de SSR rodam em `@vitest-environment node`, sem `localStorage`/`document`
+    if (typeof document === 'undefined') return
+
     localStorage.clear()
     // jsdom não zera document.cookie entre testes
     for (const c of document.cookie.split(';')) {

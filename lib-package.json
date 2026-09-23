@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -36,7 +36,6 @@
     "dependencies": {
         "@mui/lab": "5.0.0-alpha.127",
         "axios": "^1.17.0",
-        "cookies-next": "^4.2.1",
         "jszip": "^3.10.1",
         "jwt-decode": "^3.1.2",
         "keycloak-js": "^25.0.1",
@@ -46,10 +45,8 @@
         "lodash.get": "^4.4.2",
         "lodash.hasin": "^4.5.2",
         "react-dropzone": "^14.3.8",
-        "react-google-recaptcha": "^2.1.0",
         "react-imask": "^6.6.0",
         "react-leaflet": "^4.2.1",
-        "react-query": "^3.39.3",
         "tinycolor2": "^1.6.0",
         "write-excel-file": "^4.0.7"
     },

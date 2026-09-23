@@ -5,5 +5,18 @@
         "jsxFactory": null,
         "jsxFragmentFactory": null,
         "allowImportingTsExtensions": null
-    }
+    },
+    "exclude": [
+        "node_modules",
+        "dist",
+        "scripts",
+        "examples",
+        "storybook-static",
+        "src/stories",
+        "src/decorators",
+        "src/test",
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+        "src/components/teste"
+    ]
 }
