@@ -59,6 +59,23 @@ jobs:
       - name: App de fumaça com Next 16
         run: SMOKE_NEXT=16 npm run smoke
 
+      # Versão de desenvolvimento sem npm: o mesmo .tgz que o publish geraria (pack:local
+      # repete os passos do publish.yaml). Só sobe se o check:package e os dois smokes
+      # passaram. No app: baixar o artefato do run e `npm install ./<arquivo>.tgz`.
+      - name: Empacotando o dist/ (tarball de desenvolvimento)
+        id: pack
+        run: |
+          npm run pack:local
+          echo "name=ssplib-react-components-$(node -p "require('./lib-package.json').version")-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Publicando o tarball como artefato do run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.pack.outputs.name }}
+          path: pack/*.tgz
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Build do Storybook
         run: npm run build-storybook
 
