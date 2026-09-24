@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) executada em 24/09/2026, não commitada — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **Próxima: Etapa 4.** Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Próxima: Etapa 4.** Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** e **de novo em 23/09/2026, após a Etapa 1** — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -244,7 +244,8 @@ A Etapa 0 instalou as ferramentas nas versões compatíveis com o resto da árvo
 | `@testing-library/jest-dom` | 6.9.1 | 7.0.1 | |
 | `playwright` | 1.55.0 | 1.63.0 | **a versão do pacote tem que casar com a imagem do container** (`mcr.microsoft.com/playwright:v1.55.0-noble` em `scripts/snapshots-in-docker.sh`); subir os dois juntos e **regerar o baseline**, porque o Chromium novo muda antialiasing |
 | `pixelmatch` | 6.0.0 | 7.2.0 | |
-| `@types/node` | 20.17 | 26.x | alinhar com o Node do CI (22) → `^22` |
+| `@types/node` | 20.17 | 26.x | alinhar com o Node do CI → **`^24`** (o CI passou para Node 24 na Etapa 3) |
+| `actions/checkout`, `setup-node`, `upload-artifact` | v4 | v7 | ✅ *feito em 24/09/2026* (fora da Etapa 4): a v4 roda em Node 20, que o GitHub descontinuou e já força para 24. Breaking das v5–v7 conferidos: só runtime Node 24, ESM interno, cache automático do `setup-node` (usamos `cache: npm` explícito) e o fim do `NODE_AUTH_TOKEN` falso do `setup-node` v7 — o `npm ci` do `publish.yaml` com npm 11 funciona sem ele (testado), e o passo de publish define o token |
 
 Sugestão: um PR de ferramental dentro da **Etapa 4** (é o lote de "minors/patches seguros" — estes são majors, mas só de dev), com o baseline de snapshots regerado **num PR separado** do bump do Playwright para o diff ficar legível.
 
@@ -604,7 +605,7 @@ Consequências para o plano:
 
 #### Registro de execução — 24/09/2026
 
-Branch `atualizacao-dependencias`. **Não commitado** (a pedido). Versão **`0.3.0`**. `tsdown` 0.23.0 + `rolldown` 1.2.10, Node 24.21.0.
+Branch `atualizacao-dependencias`, commit `f0c9495`. Versão **`0.3.0`**. `tsdown` 0.23.0 + `rolldown` 1.2.10, Node 24.21.0.
 
 | Verificação | Comando | Resultado |
 |---|---|---|
@@ -640,6 +641,12 @@ O (2) é pego pelo smoke no Next 14; o (1) não é pego por nada que já existia
 - **`deps.onlyBundle: []` e `deps.onlyImport`** (com a lista do `lib-package.json`): o próprio build falha se embutir qualquer coisa de `node_modules` (o `@mui/system` do 5.12) ou se o `dist/` — JS ou `.d.ts` — importar pacote não declarado. O `check-externals.mjs` continua (pega também dependência declarada sem uso).
 - **Sem minificação** (padrão do `tsdown`), sourcemaps mantidos.
 - **`./types/auth` e `./types/form` ganharam JS**: antes eram só `.d.ts`, e `FieldType`/`ColumnDirection` (enums, valores de runtime) importados por esse caminho quebravam no app.
+
+**Primeiro CI do branch (24/09/2026):** push do branch e PR #4 em rascunho, só para disparar o `ci.yaml` (evento `pull_request`; o `publish.yaml` do branch só reage a tag). Verde em 5 min 20 s, todos os passos — é a primeira vez que o CI das Etapas 0–3 roda de verdade. Dois ajustes saíram dele:
+- **Tarball de desenvolvimento como artefato**: o CI roda o `pack:local` depois do `check:package` e dos smokes e sobe o `.tgz` (30 dias). O nome leva o SHA do topo do branch (`github.event.pull_request.head.sha`) — o `github.sha` de um PR é o commit de merge temporário, que não aparece no `git log`.
+- **Actions `checkout`/`setup-node`/`upload-artifact` v4 → v7** (seção 4.4): a v4 roda em Node 20, descontinuado nos runners.
+
+Aviso para acompanhar: `ubuntu-latest` passa a ser Ubuntu 26 em 19/10/2026. Os snapshots rodam numa imagem fixada e não devem mudar, mas vale conferir o primeiro run depois dessa data.
 
 **Decisão pendente (não bloqueia a Etapa 4):** zerar o 🚭 exige `.mjs`, e o `.mjs` exige **tirar o Next 14 da peer** (`^15 || ^16`, e testar o 15 no browser). Nenhum app consumidor está no 14 (tabela da Etapa 2.1 — todos em 16), então seria breaking só no papel; mas é mudança de contrato e não ganha nada em runtime até a Etapa 7. Recomendação: **deixar para a Etapa 7**, quando o MUI com `exports` tira a causa (deep import CJS) e o ESM-only volta à mesa.
 

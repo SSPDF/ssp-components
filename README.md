@@ -144,6 +144,8 @@ npm run pack:local                                   # aqui: gera pack/ssplib-re
 npm install /caminho/ate/pack/ssplib-react-components-<versão>.tgz   # no app, num branch de teste
 ```
 
+Sem clonar nem buildar: cada run do CI (em todo PR) sobe o mesmo `.tgz` como artefato, chamado `ssplib-react-components-<versão>-<sha>` (o SHA é o do último commit do branch). Baixe-o na página do run (seção *Artifacts*) ou com `gh run download <id-do-run>`, e instale no app com `npm install ./ssplib-react-components-<versão>.tgz`. Fica disponível por 30 dias e não passa pelo npm.
+
 Não use `npm link`: o symlink faz o app resolver React/MUI/Emotion a partir do `node_modules` deste repo, e aparecem duas cópias na árvore — o tema do app para de chegar nos componentes e os erros não são os que aconteceriam em produção.
 
 ### Publicação / versão

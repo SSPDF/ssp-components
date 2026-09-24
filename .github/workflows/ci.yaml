@@ -16,9 +16,9 @@ jobs:
     name: Typecheck, build e stories
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -62,14 +62,19 @@ jobs:
       # Versão de desenvolvimento sem npm: o mesmo .tgz que o publish geraria (pack:local
       # repete os passos do publish.yaml). Só sobe se o check:package e os dois smokes
       # passaram. No app: baixar o artefato do run e `npm install ./<arquivo>.tgz`.
+      # O nome leva o SHA do topo do branch: num PR o `github.sha` é o commit de merge
+      # temporário que o GitHub cria (e que ninguém acha no `git log`). O conteúdo é o
+      # desse merge com a main — igual ao do topo enquanto o branch estiver atualizado.
       - name: Empacotando o dist/ (tarball de desenvolvimento)
         id: pack
+        env:
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           npm run pack:local
-          echo "name=ssplib-react-components-$(node -p "require('./lib-package.json').version")-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "name=ssplib-react-components-$(node -p "require('./lib-package.json').version")-${SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Publicando o tarball como artefato do run
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.pack.outputs.name }}
           path: pack/*.tgz
@@ -90,7 +95,7 @@ jobs:
 
       - name: Publicando os diffs visuais
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: diffs-visuais
           path: snapshots/__diff__/

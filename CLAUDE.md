@@ -14,7 +14,7 @@ npm run build            # production build via tsdown -> dist/ (one file per mo
 npm run dev              # tsc --watch (type-check only; noEmit is on in tsconfig)
 npm run api              # json-server mock API on :7171, serving api-test.json (for Fetch* components in stories)
 npm run build-storybook  # static Storybook -> storybook-static/
-npm run pack:local       # build + pack dist/ into pack/*.tgz exactly as publish would — install that tarball in a consumer app to test
+npm run pack:local       # build + pack dist/ into pack/*.tgz exactly as publish would — install that tarball in a consumer app to test (CI also uploads it as a run artifact, `ssplib-react-components-<version>-<head sha>`, on every PR)
 ```
 
 Storybook stories are the main verification surface — when you change a component, update/add its `*.stories.tsx` and check it renders; the full check suite (typecheck, lint, vitest, visual snapshots, package checks, smoke app) is under **Verification** below. Formatting is Prettier (`.prettierrc`): 4-space tabs, single quotes, **no semicolons**, `printWidth: 200`, JSX single quotes. Match this exactly.
