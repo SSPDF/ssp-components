@@ -2,6 +2,26 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 0.3.0
+
+**Troca do bundler (`microbundle` → `tsdown`) e novo layout do `dist/`.** Nenhum componente muda de comportamento nem de visual (os 84 snapshots das stories são idênticos), a API pública é a mesma (78 exports, 49 valores de runtime) e nenhuma peer mudou.
+
+**Sobe o minor porque os arquivos publicados mudaram de nome e de forma:** em vez de um `index.esm.js` e um `index.cjs` com tudo dentro, o pacote passa a ter **um arquivo por módulo** (como o MUI publica): `index.js` + `components/**/*.js` em ESM, `index.cjs` + `components/**/*.cjs` em CommonJS, e tipos separados para cada um (`.d.ts` e `.d.cts`).
+
+### O que o app precisa fazer
+
+Nada, se importa pela raiz (`@ssplib/react-components`) ou por `@ssplib/react-components/types/auth` / `types/form` — que é tudo o que o `exports` do pacote permite. Só quebraria quem importasse arquivos internos do `dist/` (ex.: `@ssplib/react-components/components/...`), o que o `exports` já bloqueava.
+
+### Mudanças
+
+- **`'use client'` preservado no `Map`.** O microbundle juntava tudo num arquivo e descartava a diretiva; agora `components/map/Map` e `DraggableMarker` saem com ela, nas duas saídas. Melhora o uso da lib no App Router.
+- **`@ssplib/react-components/types/form` agora funciona em runtime.** Antes só tinha o `.d.ts`: `import { FieldType } from '@ssplib/react-components/types/form'` passava no TypeScript e quebrava no build do app, porque `FieldType` e `ColumnDirection` são `enum` (valores, não só tipos). Pela raiz sempre funcionou.
+- **Código publicado não é mais minificado** — fica legível no stack trace e no debugger. O bundler do app minifica no build de produção; no app de fumaça (Next 14), o JS compartilhado pelas páginas foi de 355 para 357 kB.
+
+### Problema conhecido (inalterado desde a `0.1.0`)
+
+- O ESM da lib continua em arquivos `.js` num pacote sem `"type"`, então **`import` nativo do Node** (sem bundler) não o carrega — o `are-the-types-wrong` segue marcando `node16 (from ESM)`. Não afeta Next, webpack, Turbopack nem Vite. Não dá para resolver antes da `1.0.0`: os deep imports do MUI 5 (`@mui/material/Grid`…) também não carregam no ESM nativo do Node, e publicar o ESM como `.mjs` quebra o SSR do Next 14 (detalhes no `UPGRADE_PLAN.md`, Etapa 3).
+
 ## 0.2.1
 
 **A peer `next` passa a aceitar o Next 15 e 16** (`^14.0.0 || ^15.0.0 || ^16.0.0`). Nenhum código mudou.

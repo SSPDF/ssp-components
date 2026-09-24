@@ -1,5 +1,6 @@
 /**
- * Compara os exports de `src/index.ts` com os de `dist/index.d.ts`.
+ * Compara os exports de `src/index.ts` com os de `dist/index.d.ts` (tipos do ESM) e
+ * `dist/index.d.cts` (tipos do CJS, desde a Etapa 3).
  *
  * Existe porque o build não protege nada: `tsconfig.json` tem `strict: false` e
  * `noEmit: true`, então um export que some do bundle não gera erro nenhum — só
@@ -13,11 +14,13 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const srcFile = path.join(root, 'src', 'index.ts')
-const distFile = path.join(root, 'dist', 'index.d.ts')
+const distFiles = ['index.d.ts', 'index.d.cts']
 
-if (!fs.existsSync(distFile)) {
-    console.error('dist/index.d.ts não existe. Rode `npm run build` antes.')
-    process.exit(1)
+for (const f of distFiles) {
+    if (!fs.existsSync(path.join(root, 'dist', f))) {
+        console.error(`dist/${f} não existe. Rode \`npm run build\` antes.`)
+        process.exit(1)
+    }
 }
 
 /** Nomes dentro de cada bloco `export { ... }`, já sem comentários e sem `as`. */
@@ -40,21 +43,26 @@ function exportedNames(code) {
 }
 
 const esperados = exportedNames(fs.readFileSync(srcFile, 'utf8'))
-const publicados = exportedNames(fs.readFileSync(distFile, 'utf8'))
 
-const faltando = [...esperados].filter((n) => !publicados.has(n)).sort()
-const sobrando = [...publicados].filter((n) => !esperados.has(n)).sort()
+let falhou = false
+for (const f of distFiles) {
+    const publicados = exportedNames(fs.readFileSync(path.join(root, 'dist', f), 'utf8'))
 
-console.log(`src/index.ts: ${esperados.size} exports | dist/index.d.ts: ${publicados.size} exports`)
+    const faltando = [...esperados].filter((n) => !publicados.has(n)).sort()
+    const sobrando = [...publicados].filter((n) => !esperados.has(n)).sort()
 
-if (faltando.length) {
-    console.error(`\nFALTANDO no dist (regressão de API pública — quebra o app consumidor):`)
-    for (const n of faltando) console.error(`  ✗ ${n}`)
+    console.log(`src/index.ts: ${esperados.size} exports | dist/${f}: ${publicados.size} exports`)
+
+    if (faltando.length) {
+        falhou = true
+        console.error(`\nFALTANDO no dist/${f} (regressão de API pública — quebra o app consumidor):`)
+        for (const n of faltando) console.error(`  ✗ ${n}`)
+    }
+    if (sobrando.length) {
+        console.warn(`\nSó no dist/${f} (provavelmente reexport interno, confira):`)
+        for (const n of sobrando) console.warn(`  ? ${n}`)
+    }
 }
-if (sobrando.length) {
-    console.warn(`\nSó no dist (provavelmente reexport interno, confira):`)
-    for (const n of sobrando) console.warn(`  ? ${n}`)
-}
 
-if (faltando.length) process.exit(1)
+if (falhou) process.exit(1)
 console.log('\nAPI pública íntegra.')

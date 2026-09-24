@@ -1,23 +1,42 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
-    "main": "index.cjs",
-    "module": "index.esm.js",
-    "types": "index.d.ts",
+    "main": "./index.cjs",
+    "module": "./index.js",
+    "types": "./index.d.cts",
     "exports": {
         ".": {
-            "types": "./index.d.ts",
-            "import": "./index.esm.js",
-            "require": "./index.cjs"
+            "import": {
+                "types": "./index.d.ts",
+                "default": "./index.js"
+            },
+            "require": {
+                "types": "./index.d.cts",
+                "default": "./index.cjs"
+            }
         },
         "./types/auth": {
-            "types": "./types/auth.d.ts"
+            "import": {
+                "types": "./types/auth.d.ts",
+                "default": "./types/auth.js"
+            },
+            "require": {
+                "types": "./types/auth.d.cts",
+                "default": "./types/auth.cjs"
+            }
         },
         "./types/form": {
-            "types": "./types/form.d.ts"
+            "import": {
+                "types": "./types/form.d.ts",
+                "default": "./types/form.js"
+            },
+            "require": {
+                "types": "./types/form.d.cts",
+                "default": "./types/form.cjs"
+            }
         }
     },
     "peerDependencies": {

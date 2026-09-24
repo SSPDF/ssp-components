@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Próxima: Etapa 3** — decidida (D1 = `tsdown`) e pronta para começar; checklist e config de partida na própria etapa. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) executada em 24/09/2026, não commitada — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **Próxima: Etapa 4.** Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** e **de novo em 23/09/2026, após a Etapa 1** — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -585,42 +585,63 @@ Consequências para o plano:
 **Por que sobe o minor:** muda o layout do `dist/` (nomes e extensões dos arquivos). Quem importa só pela raiz (`@ssplib/react-components`) não percebe; quem fizesse deep import em `dist/components/...` quebra — e o `exports` nunca permitiu isso, mas vale o registro no `CHANGELOG.md`.
 
 **Pré-requisitos:**
-- [ ] Node **≥ 22.18** em quem builda (exigência do `tsdown`: `^22.18.0 || ^24.11.0 || >=26.0.0`). Recomendado: **24 LTS**. *Em 23/09 o shell usado na sessão ainda reportava 22.17.1 mesmo após a atualização local — conferir `node -v` num terminal novo / o default do nvm.*
-- [ ] CI: `node-version: 22` → **`24`** no `ci.yaml` e no `publish.yaml`; `engines.node` do `package.json` raiz → `^22.18.0 || >=24.11.0`. É requisito de **build**, não de runtime: os apps continuam com o Node que o Next deles pede (Next 14: ≥ 18.17; Next 16: ≥ 20.9).
+- [x] Node **≥ 22.18** em quem builda (exigência do `tsdown`: `^22.18.0 || ^24.11.0 || >=26.0.0`). Recomendado: **24 LTS**. *Em 24/09 o shell da sessão já estava em 24.21.0 (default do nvm).*
+- [x] CI: `node-version: 22` → **`24`** no `ci.yaml` e no `publish.yaml`; `engines.node` do `package.json` raiz → `^22.18.0 || >=24.11.0`. É requisito de **build**, não de runtime: os apps continuam com o Node que o Next deles pede (Next 14: ≥ 18.17; Next 16: ≥ 20.9).
 
 **Checklist:**
-- [ ] **Trabalhar com a skill oficial do tsdown** (`.claude/skills/tsdown/`, instalada em 23/09/2026): conferir cada opção do config na referência dela (`references/option-*.md`) em vez de confiar em memória — o `tsdown` é pré-1.0 e a 0.23 ignora em silêncio opções removidas.
-- [ ] `npm i -D tsdown unrun` (o `unrun` é peer do `tsdown`, necessário para carregar o arquivo de config) e remover `microbundle` e `tsconfig.microbundle.json`. **Não remover** os `@babel/preset-*` nem o `.babelrc.json`: o `@storybook/nextjs` também lê o `.babelrc.json` (a presença do arquivo o faz compilar as stories com Babel em vez de SWC). Avaliar a remoção na **Etapa 5** (Storybook 10), com os snapshots conferindo.
-- [ ] `tsdown.config.ts` — ponto de partida já validado no teste de D1:
-  ```ts
-  import { defineConfig } from 'tsdown'
-  import lib from './lib-package.json' with { type: 'json' }
-
-  const pacotes = [...Object.keys(lib.dependencies), ...Object.keys(lib.peerDependencies)]
-
-  export default defineConfig({
-      entry: { index: 'src/index.ts', 'types/auth': 'src/types/auth.ts', 'types/form': 'src/types/form.ts' },
-      unbundle: true, // preserva o 'use client' de Map/DraggableMarker
-      format: ['esm', 'cjs'],
-      dts: true, // gera .d.mts (ESM) e .d.ts (CJS)
-      platform: 'neutral',
-      // Na 0.23 é `deps.neverBundle` (o `external` usado no teste de D1 não é a opção documentada, e opção
-      // desconhecida é ignorada em silêncio). Dependência não declarada é EMBUTIDA sem aviso → check-externals.
-      deps: { neverBundle: pacotes.map((p) => new RegExp(`^${p.replace('/', '\\/')}(/.*)?$`)) },
-      sourcemap: true,
-      clean: true,
-      // excluir do build: stories, decorators, test, *.test.*, components/teste (hoje em tsconfig.microbundle.json)
-  })
-  ```
-- [ ] `lib-package.json`: `main` → `./index.js` (CJS), `module` → `./index.mjs`, `types` → `./index.d.ts`, e `exports["."]` com condições separadas: `import: { types: './index.d.mts', default: './index.mjs' }`, `require: { types: './index.d.ts', default: './index.js' }`. Idem para `./types/auth` e `./types/form`. Conferir os nomes reais que o `tsdown` gerar antes de escrever.
-- [ ] **Não** declarar `"sideEffects": false`: `Map.tsx` importa `leaflet-defaulticon-compatibility` e CSS do Leaflet só pelo efeito colateral. Se quiser tree-shaking, declarar a lista: `["**/*.css", "./components/map/**"]`.
-- [ ] Scripts: `build` → `tsdown`; `link` (hoje usa `npx tsc`, que nem emite — `noEmit: true`) → `npm run build && cp lib-package.json dist/package.json && cd dist && npm link`, ou removê-lo em favor do `pack:local`.
-- [ ] Ajustar os scripts de verificação ao novo layout: `check-public-api.mjs` lê `dist/index.d.ts` (continua existindo, mas conferir também o `index.d.mts`); `check-externals.mjs` lista só a raiz do `dist/` — com `unbundle` os imports ficam espalhados em `dist/**` → **tornar recursivo**.
-- [ ] Ignorar o aviso `MODULE_LEVEL_DIRECTIVE` do rolldown no modo `unbundle` (falso positivo — a diretiva é preservada) e **conferir no `dist/`** que `components/map/Map.mjs`, `Map.js` e `DraggableMarker.*` começam com `"use client"`. Vale um teste automatizado disso (ex.: no `check:package`).
-- [ ] Rodar `publint` + `attw`: o objetivo é **zerar o 🚭 do node16-ESM** (5.9).
+- [x] **Trabalhar com a skill oficial do tsdown** (`.claude/skills/tsdown/`): cada opção do config foi conferida em `references/option-*.md` e nos tipos do `tsdown@0.23.0` instalado (`outExtensions` aceita `{ js, dts }`; `deps.onlyBundle`/`onlyImport` existem na 0.23).
+- [x] `npm i -D tsdown unrun` e remover `microbundle` e `tsconfig.microbundle.json`. *O `npm i` dá `ERESOLVE` com o microbundle ainda instalado (`postcss-modules@4` dele × peer opcional do `@tsdown/css`) — desinstalar o microbundle primeiro.* **Não** foram removidos os `@babel/preset-*` nem o `.babelrc.json` (Storybook; Etapa 5).
+- [x] `tsdown.config.mts` — o ponto de partida de D1, com quatro mudanças (motivos no registro abaixo): extensões fixadas por `outExtensions`, `target: 'es2020'`, `deps.onlyBundle: []` + `deps.onlyImport` como trava de externos no próprio build, e `suppressWarnings` para o `MODULE_LEVEL_DIRECTIVE`. `.mts` e não `.ts` porque a raiz deixou de ter `"type": "module"`.
+- [x] `lib-package.json`: ~~`main` → `./index.js` (CJS), `module` → `./index.mjs`~~ **ESM em `.js`, CJS em `.cjs`** (o `.mjs` quebra o SSR no Next 14 — ver registro): `main` → `./index.cjs`, `module` → `./index.js`, `types` → `./index.d.cts`, e `exports` com condições separadas `import: { types: './index.d.ts', default: './index.js' }`, `require: { types: './index.d.cts', default: './index.cjs' }`. Idem para `./types/auth` e `./types/form`, que ganharam JS (antes só `.d.ts`). **Sem `"type"`** — ver registro.
+- [x] **Não** declarar `"sideEffects": false` (`Map.tsx` importa CSS e `leaflet-defaulticon-compatibility` pelo efeito colateral). Não declarado nada.
+- [x] Scripts: `build` → `tsdown`; **`link` removido** em favor do `pack:local` (5.13f).
+- [x] Scripts de verificação: `check-public-api.mjs` confere `index.d.ts` **e** `index.d.cts`; `check-externals.mjs` ficou **recursivo** e passou a ler também os `.d.ts`/`.d.cts` (import de pacote não declarado num tipo quebra o typecheck do app).
+- [x] Aviso `MODULE_LEVEL_DIRECTIVE` suprimido no config, e **`scripts/check-use-client.mjs`** (novo, no `check:package`) garante que todo módulo de `src/` com `'use client'` sai com a diretiva no `.js` e no `.cjs`. Testado contra um `dist/` adulterado (falha como deveria).
+- [~] Rodar `publint` + `attw`: o objetivo era **zerar o 🚭 do node16-ESM** (5.9). **Alcançado com `.mjs`, mas revertido** — o `.mjs` quebra o SSR do Next 14. Com `.js`/`.cjs` o 🚭 continua (igual à `0.2.1`). Ver registro e "Decisão pendente".
 
 **Impacto:** nenhum para quem importa pela raiz — melhora o suporte a App Router (`'use client'` preservado).
-**Validação:** `check:package` (externos + publint + attw) sem erros **e sem o 🚭**; diff de exports vazio; `npm run smoke` verde; snapshots idênticos (o Storybook não usa o `dist/`, então aqui é só sanidade); comparar tamanho/forma do `dist/` com o da `0.2.0`; `'use client'` presente nos arquivos do mapa.
+**Validação:** `check:package` (externos + publint + attw) sem erros ~~**e sem o 🚭**~~; diff de exports vazio; `npm run smoke` verde; snapshots idênticos (o Storybook não usa o `dist/`, então aqui é só sanidade); comparar tamanho/forma do `dist/` com o da `0.2.0`; `'use client'` presente nos arquivos do mapa.
+
+#### Registro de execução — 24/09/2026
+
+Branch `atualizacao-dependencias`. **Não commitado** (a pedido). Versão **`0.3.0`**. `tsdown` 0.23.0 + `rolldown` 1.2.10, Node 24.21.0.
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| Typecheck | `npm run typecheck` | verde |
+| Lint | `npm run lint` | 0 erros, 329 warnings (eram 330) |
+| Formatação | `npm run format:check` | verde |
+| Testes | `npm run test` | 41 testes em 7 arquivos, verde |
+| Build | `npm run build` | verde, **~1 s** (ESM e CJS em paralelo) |
+| API pública | `node scripts/check-public-api.mjs` | 78 exports em `index.d.ts` **e** em `index.d.cts` |
+| Exports de runtime | `require` do `index.cjs` da 0.2.1 × da 0.3.0 | **49 = 49**, mesmos nomes |
+| Externos | `check-externals.mjs` (agora recursivo, com os tipos) | 23 importados, 26 declarados, batem — igual à Etapa 2 |
+| `'use client'` | `check-use-client.mjs` (novo) | `Map` e `DraggableMarker`, no `.js` e no `.cjs` |
+| publint | `npm run check:package` | 0 erros, 3 warnings (eram 2) — todos o mesmo caso: ESM em `.js` sem `"type"` |
+| attw | `npm run check:package` | 🟢 node10, node16-CJS, bundler nas 3 entradas; 🚭 node16-ESM em `.` e `./types/form` (como na 0.2.1) |
+| Interop do CJS | `check:package` (trava nova) | nenhum `__toESM(x, 1)` em `dist/**/*.cjs`; testado contra um `.cjs` adulterado (falha como deveria) |
+| App de fumaça | `npm run smoke` / `SMOKE_NEXT=16 npm run smoke` / Next 16 `--webpack` | **verde nos três** (prerender de `/`, `/next-apis`, `/404`, `/500`) |
+| Snapshots | `npm run snapshots` (Storybook rebuildado) | 84 stories, **0 diffs**, 0 erros de runtime |
+| Árvore de dependências | `npm ls --all` antes/depois | −153 pacotes (cadeia babel/rollup/postcss do microbundle), +68 (`tsdown`, `rolldown`, `oxc`…) |
+
+**Forma do `dist/`:** 74 → 329 arquivos (um por módulo, ×2 formatos, + tipos e sourcemaps), 1,4 → 2,3 MB em disco. JS de runtime: ESM 110 kB → 231 kB, CJS 120 kB → 275 kB — **não é regressão**: o microbundle minificava, o `tsdown` não (é o padrão de lib; o bundler do app minifica). No smoke-app (Next 14), o JS compartilhado pelas páginas foi de **355 kB (0.2.1) para 357 kB (0.3.0)**, medido com o mesmo app e o `dist/` antigo empacotado.
+
+**Achados — dois bugs que o build gerava sem nenhum erro** (os dois passariam por publint, attw, testes, snapshots e diff de API), e um problema antigo do `check:package`:
+
+1. **O `"type": "module"` do `package.json` raiz quebrava o CJS.** O rolldown lê o `type` do `package.json` mais próximo *do fonte*; com `"module"`, trata os `.tsx` como ESM do Node e gera `__toESM(require(x), 1)` — interop em "modo Node", que ignora o `__esModule`. Resultado: `import Grid from '@mui/material/Grid'` virava, no CJS, `Grid.default = { default: Grid, gridClasses, … }` (um objeto, não o componente) — conferido carregando o `.cjs` no Node. O pacote publicado nunca teve `"type"`, então a raiz divergia dele. **Correção: tirar o `"type": "module"` da raiz** (nada dependia dele — os scripts são `.mjs`/`.cjs` explícitos; Storybook, vitest e ESLint conferidos) e renomear o config para `tsdown.config.mts`. Depois disso, zero `__toESM(…, 1)` no `dist/`.
+2. **ESM em `.mjs` quebra o SSR no Next 14.** Com o layout do plano (`.mjs`/`.js`), o `next build` do smoke-app no Next 14 falhou no prerender de todas as páginas: `TypeError: useMediaQuery is not a function` no `CustomModalProvider` (via `SspComponentsProvider`, no `_app`). Causa: o Next reescreve `import { useMediaQuery } from '@mui/material'` para `import useMediaQuery from '@mui/material/useMediaQuery'` (otimização de barrel — o MUI está na lista padrão), que no servidor resolve para o build **CJS** do MUI 5; e, **dentro de um `.mjs`**, o webpack aplica interop estrito (default de CJS = `module.exports`). O `index.esm.js` da 0.2.1 funcionava por ser `.js` sem `"type"`, que o webpack trata como `javascript/auto` e respeita o `__esModule`. No **Next 16** o `.mjs` funcionou (Turbopack **e** `--webpack`), mas o 14 é o piso da peer e roda no CI. **Correção: ESM em `.js`, CJS em `.cjs`** — o mesmo contrato de interop da 0.2.1, só que um arquivo por módulo. Com isso o 🚭 node16-ESM do attw volta: o Node nativo leria o `.js` como CJS. Na prática não muda nada — `import` nativo do Node já não funciona com MUI 5 (`ERR_UNSUPPORTED_DIR_IMPORT`, D1) — e publint sugere `"type": "commonjs"`, que **não pode** ser aplicado: faria os `.js` ESM serem lidos como CJS.
+
+3. **O `check:package` nunca passou nesta linha:** o attw sai com código 1 quando acha o 🚭 — já na 0.2.1 (conferido rodando-o sobre o `dist/` antigo). No CI, esse passo vem antes do smoke e dos snapshots, então os dois nunca teriam rodado; o branch ainda não passou por CI, por isso ninguém viu. Os registros das Etapas 1 e 2 leram a saída ("0 erros") e não o código de saída. **Correção:** `--ignore-rules unexpected-module-syntax` no attw — só a regra do 🚭 conhecido; as demais continuam bloqueando.
+
+O (2) é pego pelo smoke no Next 14; o (1) não é pego por nada que já existia — o smoke consome o ESM — e **ganhou trava própria no `check:package`** (falha se houver `__toESM(x, 1)` em `dist/**/*.cjs`).
+
+**Outras decisões:**
+- **`target: 'es2020'`** explícito: sem ele o `tsdown` derivaria o target do `engines.node` da raiz, que agora é requisito de build (Node 22), não de runtime.
+- **`deps.onlyBundle: []` e `deps.onlyImport`** (com a lista do `lib-package.json`): o próprio build falha se embutir qualquer coisa de `node_modules` (o `@mui/system` do 5.12) ou se o `dist/` — JS ou `.d.ts` — importar pacote não declarado. O `check-externals.mjs` continua (pega também dependência declarada sem uso).
+- **Sem minificação** (padrão do `tsdown`), sourcemaps mantidos.
+- **`./types/auth` e `./types/form` ganharam JS**: antes eram só `.d.ts`, e `FieldType`/`ColumnDirection` (enums, valores de runtime) importados por esse caminho quebravam no app.
+
+**Decisão pendente (não bloqueia a Etapa 4):** zerar o 🚭 exige `.mjs`, e o `.mjs` exige **tirar o Next 14 da peer** (`^15 || ^16`, e testar o 15 no browser). Nenhum app consumidor está no 14 (tabela da Etapa 2.1 — todos em 16), então seria breaking só no papel; mas é mudança de contrato e não ganha nada em runtime até a Etapa 7. Recomendação: **deixar para a Etapa 7**, quando o MUI com `exports` tira a causa (deep import CJS) e o ESM-only volta à mesa.
 
 ### Etapa 4 — Lote de minors/patches seguros
 - [ ] Tudo da seção 4.1, num PR só.
@@ -660,6 +681,7 @@ Sub-etapas, cada uma com snapshots revisados:
 - [ ] **Browsers mínimos sobem** para Chrome 117+, Firefox 121+, Safari 17+ — **sem impedimento** (decisão: o público dos sistemas usa browsers recentes). Registrar no `README.md`.
 - [ ] Abrir o peer para `"@mui/material": "^7.3.0 || ^9.0.0"` (piso do `x-date-pickers@9`) e `"@mui/x-date-pickers": "^8.0.0 || ^9.0.0"`.
 - [ ] Remover `@mui/lab` (`LoadingButton` → `<Button loading>`, 5.4).
+- [ ] **ESM em `.mjs` / ESM-only** (pendência da Etapa 3): com o MUI tendo `exports`, repetir o teste da Etapa 3 — `tsdown.config.mts` com `.mjs`/`.d.mts` para ESM, `npm run smoke` no piso da peer `next` — e, se passar, zerar o 🚭 node16-ESM do attw. Avaliar ESM-only junto.
 - [ ] **API pública:** o `Input` repassa `InputProps`/`InputLabelProps`/`FormHelperTextProps` do `TextFieldProps` (`Input.tsx:167-168,256-259`) — e o consumidor pode passá-los. O codemod migra o código da lib, **não o dos apps**. Decidir: aceitar os dois formatos e mapear para `slotProps` internamente (como com `xs`/`sm`/`md`), ou registrar como breaking no `CHANGELOG.md`.
 - [ ] Tipos públicos que dependem do Grid legado: `Input.tsx:45,52-54` (`GridProps['xs']`, `Omit<GridProps, 'item' | ...>`).
 - [ ] Publicar **`1.0.0-rc.1` sob a dist-tag `next`** (`npm publish --tag next`), o app piloto valida em homologação instalando `@ssplib/react-components@next`, e só depois promover para `latest` (`npm dist-tag add @ssplib/react-components@1.0.0 latest`). **Nunca** publicar o `1.0.0` direto em `latest` — é o que impede a quebra simultânea de todos os apps.

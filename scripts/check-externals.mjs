@@ -1,5 +1,5 @@
 /**
- * Compara os pacotes importados pelo bundle (`dist/*.js`, `dist/*.cjs`) com o que o
+ * Compara os pacotes importados pelo bundle (todo `.js`/`.mjs`/`.d.ts`/`.d.mts` em `dist/`) com o que o
  * `lib-package.json` declara em `dependencies` + `peerDependencies`.
  *
  * Existe por causa de dois achados (UPGRADE_PLAN.md 2.2.1 e 5.12):
@@ -7,7 +7,8 @@
  *   acaso, estiver na árvore (o `@mui/lab` do `Stepper`);
  * - pacote que não está em manifesto nenhum nem vira import externo: o microbundle o
  *   **embute** no `dist/` sem avisar (o `@mui/system`). Esse caso não aparece como
- *   import — é pego conferindo que nada em `src/` importa pacote fora da lista.
+ *   import — é pego conferindo que nada em `src/` importa pacote fora da lista. (Desde a
+ *   Etapa 3 o `tsdown.config.mts` também barra isso no build, com `deps.onlyBundle: []`.)
  * E o inverso: dependência declarada que o bundle não usa é peso morto no `npm
  * install` de todo app (o `react-google-recaptcha`).
  *
@@ -37,10 +38,17 @@ function importsDe(codigo) {
     return specs
 }
 
-// 1. O que o bundle importa
-const arquivos = fs.readdirSync(dist).filter((f) => /\.(c|m)?js$/.test(f))
+// 1. O que o bundle importa — com o `unbundle` do tsdown (Etapa 3) é um arquivo por módulo,
+// espalhados em dist/**. Os tipos entram também: import de pacote não declarado num .d.ts
+// quebra o typecheck do app.
+const arquivosDoDist = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+        const p = path.join(dir, e.name)
+        if (e.isDirectory()) return arquivosDoDist(p)
+        return /\.(c|m)?js$|\.d\.(c|m)?ts$/.test(e.name) ? [p] : []
+    })
 const usados = new Set()
-for (const f of arquivos) for (const spec of importsDe(fs.readFileSync(path.join(dist, f), 'utf8'))) usados.add(pacoteDe(spec))
+for (const f of arquivosDoDist(dist)) for (const spec of importsDe(fs.readFileSync(f, 'utf8'))) usados.add(pacoteDe(spec))
 
 // 2. O que o src/ importa (pega o pacote embutido, que some dos imports do dist/)
 function listar(dir) {
@@ -79,7 +87,7 @@ if (naoDeclaradosNoBundle.length) {
 }
 if (naoDeclaradosNoSrc.length) {
     falhou = true
-    console.error('\n✗ Importados em src/, mas não declarados (o microbundle embute uma cópia no dist/):')
+    console.error('\n✗ Importados em src/, mas não declarados (sem estar declarado, o build embutiria uma cópia no dist/):')
     for (const p of naoDeclaradosNoSrc) console.error(`    ${p}  ← ${usadosNoSrc.get(p)}`)
 }
 if (semUso.length) {

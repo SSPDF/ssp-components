@@ -10,12 +10,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run storybook        # dev environment — Storybook on :6006 (primary way to run/preview components)
-npm run build            # production build via microbundle -> dist/ (cjs + esm + d.ts). Runs prebuild (sync-version) first.
+npm run build            # production build via tsdown -> dist/ (one file per module: ESM .js + CJS .cjs + .d.ts/.d.cts). Needs Node ≥ 22.18. Runs prebuild (sync-version) first.
 npm run dev              # tsc --watch (type-check only; noEmit is on in tsconfig)
 npm run api              # json-server mock API on :7171, serving api-test.json (for Fetch* components in stories)
 npm run build-storybook  # static Storybook -> storybook-static/
 npm run pack:local       # build + pack dist/ into pack/*.tgz exactly as publish would — install that tarball in a consumer app to test
-npm run link             # legacy: runs `npx tsc` (which emits nothing, noEmit is on) + npm link. Don't use it — symlinks duplicate React/MUI in the app. Use pack:local.
 ```
 
 Storybook stories are the main verification surface — when you change a component, update/add its `*.stories.tsx` and check it renders; the full check suite (typecheck, lint, vitest, visual snapshots, package checks, smoke app) is under **Verification** below. Formatting is Prettier (`.prettierrc`): 4-space tabs, single quotes, **no semicolons**, `printWidth: 200`, JSX single quotes. Match this exactly.
@@ -47,7 +46,7 @@ Only `OAuthProvider` writes the JWT to the `nextauth.token` cookie (`cookieName`
 
 ### Public API & build
 
-`src/index.ts` is the single barrel — **every public component and type must be exported here** or it won't ship. The build is `microbundle` using `tsconfig.microbundle.json`; note root `tsconfig.json` has `noEmit: true` and `strict: false`, so type errors do not block the build — be careful, the compiler will not catch much for you.
+`src/index.ts` is the single barrel — **every public component and type must be exported here** or it won't ship. The build is `tsdown` (`tsdown.config.mts`, `unbundle` mode — only what `src/index.ts` and `src/types/{auth,form}.ts` reach is emitted, so stories/decorators/tests stay out without an exclude list); note root `tsconfig.json` has `strict: false`, so type errors do not block the build — be careful, the compiler will not catch much for you.
 
 `SspComponentsProvider` is the top-level app wrapper consumers mount once: it renders the modal portal (`CustomModalProvider` from `src/components/modal/Modal.tsx`, exported as `MODAL`) and the react-toastify `ToastContainer`.
 
@@ -55,19 +54,20 @@ Only `OAuthProvider` writes the JWT to the `nextauth.token` cookie (`cookieName`
 
 Version lives in **`lib-package.json`** (the package.json that actually gets published — copied to `dist/package.json`), not the root `package.json`. The `prebuild` hook runs `sync-version.cjs`, which copies `lib-package.json`'s version into the root `package.json`. **To release: bump the version in `lib-package.json`, then push a matching `v*` tag** (e.g. `v0.1.1`). `.github/workflows/publish.yaml` runs on that tag (or a manual `workflow_dispatch`), verifies the tag matches `lib-package.json`, refuses a version already on npm, builds, copies `lib-package.json`→`dist/package.json` and `README.md`/`CHANGELOG.md`→`dist/`, then `npm publish`es from `dist/` under the right dist-tag (a pre-release version goes to `next`, never `latest`). **Pushing to `main` no longer publishes** — that changed in Etapa 0 of the upgrade plan. **Semver since `0.1.0`** (the `0.0.x` line shipped everything, breaking changes included, as patches): while in `0.x`, a breaking change bumps the minor. Every release gets an entry in `CHANGELOG.md`. Release commits are `vX.Y.Z - <description>` (the old `vNNN - …` convention ended at `v0.0.349`); other commits use conventional-commit style (`feat:`, `fix:`, `chore:`…).
 
-## Dependency upgrade (Etapas 0–2.1 done, Etapa 3 next — ready to start)
+## Dependency upgrade (Etapas 0–3 done, Etapa 4 next)
 
-Dependencies are several majors behind (MUI 5→9, Storybook 9→10, `microbundle` abandoned). **`UPGRADE_PLAN.md` at the repo root is the agreed plan — read it before touching `package.json` or `lib-package.json`.** Etapa 0 (baseline + safety net), Etapa 1 (packaging → `0.1.0`), Etapa 2 (cleanup → `0.2.0`) and Etapa 2.1 (`next` peer opened to 15/16 → `0.2.1`) are done; see their "Registro de execução". All stages live on a **single branch, `atualizacao-dependencias`** (not merged into `main`, nothing published) — don't create one branch per stage. **Etapa 3 is decided: `tsdown` in `unbundle` mode, ESM + CJS** (decision D1 in the plan; the plan's Etapa 3 has the checklist and a validated starting config). It needs Node ≥ 22.18 to build (24 LTS recommended) — a build-time requirement only. Things from these stages that affect everyday work here:
+Dependencies are several majors behind (MUI 5→9, Storybook 9→10). **`UPGRADE_PLAN.md` at the repo root is the agreed plan — read it before touching `package.json` or `lib-package.json`.** Etapa 0 (baseline + safety net), Etapa 1 (packaging → `0.1.0`), Etapa 2 (cleanup → `0.2.0`), Etapa 2.1 (`next` peer opened to 15/16 → `0.2.1`) and Etapa 3 (`microbundle` → `tsdown` → `0.3.0`) are done; see their "Registro de execução". All stages live on a **single branch, `atualizacao-dependencias`** (not merged into `main`, nothing published) — don't create one branch per stage. The build is **`tsdown` in `unbundle` mode, ESM + CJS** (decision D1); it needs Node ≥ 22.18 to build (24 LTS in CI) — a build-time requirement only. Things from these stages that affect everyday work here:
 
-- **MUI, Emotion, `react-hook-form`, `dayjs` and `react-toastify` are peers** — the version that actually runs is the *consumer app's*. Any MUI major bump is a coordinated, breaking release. Peers live in `peerDependencies` **and** `devDependencies` of the root `package.json` (microbundle externalizes only `dependencies` + `peerDependencies` — anything missing from both gets **bundled into `dist/` silently**, which is how a copy of `@mui/system` ended up there before 0.1.0). The root `dependencies` must equal `lib-package.json`'s `dependencies`.
-- **Import MUI only from `@mui/material` / `@mui/icons-material` / `@mui/x-date-pickers`**, never `@mui/system` or other undeclared packages. After a build, `grep -oE 'from ?"[^"]+"' dist/index.esm.js | sort -u` lists the externals — every one must be declared in `lib-package.json`.
+- **MUI, Emotion, `react-hook-form`, `dayjs` and `react-toastify` are peers** — the version that actually runs is the *consumer app's*. Any MUI major bump is a coordinated, breaking release. Peers live in `peerDependencies` **and** `devDependencies` of the root `package.json` (a package missing from both used to get **bundled into `dist/` silently** — how a copy of `@mui/system` ended up there before 0.1.0; `tsdown.config.mts` now fails the build on that via `deps.onlyBundle: []` / `deps.onlyImport`). The root `dependencies` must equal `lib-package.json`'s `dependencies`.
+- **Import MUI only from `@mui/material` / `@mui/icons-material` / `@mui/x-date-pickers`**, never `@mui/system` or other undeclared packages. `node scripts/check-externals.mjs` (part of `check:package`) checks every import in `dist/**` against `lib-package.json`.
 - **The build can silently produce broken output:** `strict: false` + `noEmit: true` means type errors don't block, and MUI Grid v2 ignores `item`/`xs` without any error. Visual verification through Storybook is mandatory for layout-affecting changes.
-- **`index.esm.js` is ESM with a `.js` extension and no `"type"`**, so attw flags `node16 (from ESM)`. Bundlers are fine; Etapa 3 (`tsdown`, explicit `.mjs`/`.d.mts`) fixes it. `main`/`exports.require` were fixed in 0.1.0.
+- **Published layout: ESM in `.js`, CJS in `.cjs`, no `"type"` field — on purpose.** ESM as `.mjs` breaks Next 14 SSR (webpack applies strict interop inside `.mjs`, and Next's barrel optimization turns `import { useMediaQuery } from '@mui/material'` into a default import of MUI 5's CJS build). So attw keeps flagging `node16 (from ESM)` until Etapa 7 (`check-package.sh` ignores exactly that rule, `unexpected-module-syntax`); don't "fix" it with `.mjs` or `"type": "commonjs"` (publint suggests it — it would make the ESM `.js` files CJS).
+- **The root `package.json` must not have `"type": "module"`.** rolldown reads it for the sources and switches to Node-mode interop (`__toESM(x, 1)`), which makes every default import of a CJS module (`import Grid from '@mui/material/Grid'`) resolve to the module object in the CJS output. The smoke app consumes the ESM, so it would not catch this; `check:package` fails on any `__toESM(x, 1)` in `dist/**/*.cjs`.
 - **Don't go ESM-only before Etapa 7.** MUI 5 has no `exports` field, so the lib's deep imports (`@mui/material/Grid`, `@mui/icons-material/Save`, `@mui/x-date-pickers/AdapterDayjs`) fail under native Node ESM (`ERR_UNSUPPORTED_DIR_IMPORT`) while CJS `require` resolves them. MUI 7/9 have `exports`.
-- **`.babelrc.json` is read by `@storybook/nextjs` too** (its presence switches Storybook from SWC to Babel), not only by microbundle — don't delete it or the `@babel/preset-*` devDeps when removing microbundle.
+- **`.babelrc.json` is read by `@storybook/nextjs`** (its presence switches Storybook from SWC to Babel) — it outlived microbundle; don't delete it or the `@babel/preset-*` devDeps before Etapa 5.
 - **Never touch browser APIs (`localStorage`, `window`, `document`) during render** — it breaks SSR in the consumer apps. Read them in `useEffect`, or gate the JSX with `useIsClient()` (`src/components/utils/useIsClient.ts`), as `Table`/`GenericTable` do. `Table.ssr.test.tsx` renders in a `node` environment to catch this.
 - **The smoke app's `file:../../dist` link does not install the lib's own `dependencies`** (npm `install-links=false`) and resolves MUI from the repo root. `npm run smoke` does it right: packs `dist/`, installs the tarball in `examples/smoke-app` and runs `next build` (which also SSR-renders the pages). It runs in CI twice: on Next 14 (the smoke app's own version, the peer floor) and with `SMOKE_NEXT=16` (the top of the range — **every consumer app is on Next 16**). The `/next-apis` page covers the lib's `next/*` imports (`NavBar`, `Map`).
-- **`check:package` now starts with `scripts/check-externals.mjs`**: fails if the bundle imports an undeclared package, if `src/` imports a package missing from `lib-package.json` (microbundle would silently bundle it), or if a declared dependency is unused.
+- **`check:package` now starts with `scripts/check-externals.mjs`**: fails if the bundle (JS or `.d.ts`, recursively) imports an undeclared package, if `src/` imports a package missing from `lib-package.json`, or if a declared dependency is unused. Then `scripts/check-use-client.mjs` checks that every `'use client'` module in `src/` keeps the directive in `dist/` (`.js` and `.cjs`) — rolldown warns `MODULE_LEVEL_DIRECTIVE` falsely in unbundle mode and the warning is suppressed in the config.
 
 ### Agent tooling: the tsdown skill
 
@@ -87,7 +87,7 @@ npm run lint         # eslint 9 flat config (0 errors; warnings are tracked debt
 npm run format:check # prettier, per .prettierrc
 npm run test         # vitest — auth providers, cookie helper, AutoComplete, masked GenericInput, tables (incl. SSR in a node env)
 npm run snapshots    # visual snapshots of every story, inside a fixed Linux container (rebuilds Storybook first; SKIP_STORYBOOK_BUILD=1 to skip)
-npm run check:package # externals vs lib-package.json + publint + are-the-types-wrong over dist/
+npm run check:package # externals vs lib-package.json + 'use client' + publint + are-the-types-wrong over dist/
 npm run smoke         # packed dist/ installed in examples/smoke-app + next build
 ```
 

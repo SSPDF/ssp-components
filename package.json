@@ -1,19 +1,23 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
     "private": false,
-    "type": "module",
-    "main": "dist/index.cjs.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.cts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.esm.js",
-            "require": "./dist/index.cjs.js"
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
         }
     },
     "files": [
@@ -83,7 +87,6 @@
         "eslint-plugin-storybook": "^9.1.20",
         "globals": "^15.15.0",
         "jsdom": "^26.1.0",
-        "microbundle": "^0.15.0",
         "msw": "^2.15.0",
         "next": "^14.2.35",
         "pixelmatch": "6.0.0",
@@ -95,19 +98,20 @@
         "react-hook-form": "^7.43.9",
         "react-toastify": "^10.0.4",
         "storybook": "^9.0.17",
+        "tsdown": "^0.23.0",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.70.1",
+        "unrun": "^0.3.1",
         "vitest": "^3.2.7"
     },
     "scripts": {
         "sync-version": "node sync-version.cjs",
         "prebuild": "npm run sync-version",
-        "build": "microbundle --tsconfig tsconfig.microbundle.json --format \"cjs,es\"",
+        "build": "tsdown",
         "dev": "tsc --watch",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "api": "json-server --watch api-test.json --port 7171",
-        "link": "npx tsc && cp lib-package.json dist/package.json && cd dist && npm link",
         "typecheck": "tsc --noEmit",
         "snapshots": "./scripts/snapshots-in-docker.sh",
         "snapshots:update": "./scripts/snapshots-in-docker.sh --update",
@@ -122,6 +126,6 @@
         "test:watch": "vitest"
     },
     "engines": {
-        "node": ">=20.19"
+        "node": "^22.18.0 || >=24.11.0"
     }
 }
