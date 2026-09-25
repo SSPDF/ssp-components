@@ -2,7 +2,7 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
-## Não lançado
+## 0.3.1
 
 **Atualização de patches e minors (Etapa 4 do `UPGRADE_PLAN.md`).** Nenhum componente muda de comportamento nem de visual (os 84 snapshots são idênticos), e as peers e a API pública são as mesmas.
 
