@@ -2,6 +2,21 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 0.3.2
+
+**As peers passam a aceitar `@mui/x-date-pickers` 7 e `react-toastify` 11:** `^6.0.0 || ^7.0.0` e `^10.0.0 || ^11.0.0`. Com isso, um app em MUI 5 com pickers 7 e toastify 11 (como o `copom`) instala a linha `0.x` sem `--legacy-peer-deps`. As outras peers não mudaram: MUI 5, React 18 e Next 14–16.
+
+### O que o app precisa fazer
+
+Nada, além de trocar a versão. Para quem sobe o próprio app para essas versões:
+
+- **`x-date-pickers` 7 exige `@mui/material ^5.15.14`**, piso mais alto que o da lib (`^5.8.6`). O npm avisa se o MUI do app for mais antigo.
+- **`react-toastify` 11 injeta o próprio CSS.** O `import 'react-toastify/dist/ReactToastify.css'` do app pode ficar (as regras são as mesmas e não brigam) ou sair. O que **quebra** é importar `react-toastify/ReactToastify.min.css`, caminho que a v11 não exporta mais.
+
+### Correção
+
+- **`DatePicker`, `GenericDatePicker` e `TimePicker` perdiam o valor padrão com `x-date-pickers` 7.** O primeiro picker da página aparecia vazio e marcado com erro. A lib dependia de um plugin do `dayjs` (`customParseFormat`) que o `x-date-pickers` 6 registrava ao ser importado e o 7 só registra mais tarde. Agora a lib registra o plugin ela mesma. Com o pickers 6 nada muda. O mesmo plugin é usado pelos filtros de data da `Table`, que também passam a funcionar independentemente da versão dos pickers.
+
 ## 0.3.1
 
 **Atualização de patches e minors (Etapa 4 do `UPGRADE_PLAN.md`).** Nenhum componente muda de comportamento nem de visual (os 84 snapshots são idênticos), e as peers e a API pública são as mesmas.

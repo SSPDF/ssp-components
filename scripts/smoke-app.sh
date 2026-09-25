@@ -13,10 +13,14 @@
 #
 # Roda depois de `npm run build`.
 #
-# Por padrão usa o Next do package.json do smoke-app (14, o piso da peer). Para
-# testar outro major da faixa declarada (`^14 || ^15 || ^16`):
+# Por padrão usa as versões do package.json do smoke-app, que são o piso das peers
+# (Next 14, x-date-pickers 6, react-toastify 10). Para testar outro major da faixa
+# declarada:
 #
-#   SMOKE_NEXT=16 npm run smoke
+#   SMOKE_NEXT=16 npm run smoke                                   # next ^14 || ^15 || ^16
+#   SMOKE_PICKERS=7 npm run smoke                                 # x-date-pickers ^6 || ^7
+#   SMOKE_TOASTIFY=11 npm run smoke                               # react-toastify ^10 || ^11
+#   SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke # combinação do copom
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -38,19 +42,31 @@ cp lib-package.json dist/package.json
 tarball="$(cd dist && npm pack --silent --pack-destination "$tmp")"
 
 cd "$app"
+# No package.json, e não como `npm install pacote@X`: senão o `npm ls` abaixo
+# acusa o pacote instalado como fora da faixa do package.json.
 if [ -n "${SMOKE_NEXT:-}" ]; then
-    # No package.json, e não como `npm install next@X`: senão o `npm ls` abaixo
-    # acusa o next instalado como fora da faixa do package.json.
     npm pkg set "dependencies.next=^$SMOKE_NEXT"
 fi
-echo "── instalando $tarball no smoke-app (next $(npm pkg get dependencies.next)) ──"
+if [ -n "${SMOKE_PICKERS:-}" ]; then
+    npm pkg set "dependencies.@mui/x-date-pickers=^$SMOKE_PICKERS"
+fi
+if [ -n "${SMOKE_TOASTIFY:-}" ]; then
+    npm pkg set "dependencies.react-toastify=^$SMOKE_TOASTIFY"
+fi
+versoes="next $(npm pkg get dependencies.next), x-date-pickers $(npm pkg get dependencies.@mui/x-date-pickers), react-toastify $(npm pkg get dependencies.react-toastify)"
+echo "── instalando $tarball no smoke-app ($versoes) ──"
 npm install --no-save --no-audit --no-fund "$tmp/$tarball"
 
 echo
 echo "── uma cópia de cada peer? ──────────────────────────"
 # `npm ls` sai com erro se houver peer inválida ou duplicata não deduplicada
-npm ls next @mui/material @emotion/react react-hook-form react-toastify dayjs
+npm ls next @mui/material @mui/x-date-pickers @emotion/react react-hook-form react-toastify dayjs
 
 echo
 echo "── next build ───────────────────────────────────────"
 npm run build
+
+echo
+echo "── valor padrão do DatePicker na primeira montagem ──"
+# UPGRADE_PLAN.md 5.17 — detalhes no próprio script.
+node verificar-datepicker.cjs

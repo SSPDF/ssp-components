@@ -66,7 +66,10 @@ export default function Home() {
                             <Input name='nome' type='input' title='Nome' required />
                             <Input name='cpf' type='cpf' title='CPF' />
                             <Input name='celular' type='phone' title='Celular' />
-                            <DatePicker name='dataFato' title='Data do fato' />
+                            {/* Valor padrão de propósito: com x-date-pickers 7 e sem o customParseFormat
+                                registrado pela lib, o primeiro picker da página sai vazio no browser
+                                (UPGRADE_PLAN.md 5.17; o smoke confere com verificar-datepicker.cjs). */}
+                            <DatePicker name='dataFato' title='Data do fato' defaultValue='15/03/2024' />
                             <Button type='submit' variant='contained'>
                                 Enviar
                             </Button>

@@ -1,6 +1,6 @@
 import get from 'lodash.get'
 import { CsvConfigProp, FilterValue, OrderBy } from './types'
-import dayjs from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import cloneDeep from 'lodash.clonedeep'
 import writeXlsxFile from 'write-excel-file/browser'
 

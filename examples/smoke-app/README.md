@@ -53,17 +53,19 @@ versione.
 
 O `npm run smoke` (na raiz) faz tudo isso sozinho — e é o que roda no CI.
 
-### Outra versão do Next
+### Outras versões das peers
 
-A peer `next` é `^14 || ^15 || ^16`. O CI roda o smoke duas vezes: com o Next do
-`package.json` (14) e com o 16:
+O `package.json` do smoke-app fica no piso das peers (Next 14, `x-date-pickers` 6,
+`react-toastify` 10). O CI roda o smoke três vezes: no piso, com o Next 16 e na
+combinação do `copom`:
 
 ```bash
 # na raiz do repo, depois de `npm run build`
-SMOKE_NEXT=16 npm run smoke   # ou 15
+SMOKE_NEXT=16 npm run smoke                                    # next ^14 || ^15 || ^16
+SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke  # x-date-pickers ^6 || ^7, react-toastify ^10 || ^11
 ```
 
-O `SMOKE_NEXT` troca a faixa do `next` no `package.json` só durante a execução; o
+`SMOKE_NEXT`, `SMOKE_PICKERS` e `SMOKE_TOASTIFY` trocam a faixa no `package.json` só durante a execução; o
 script devolve o `package.json` e o `tsconfig.json` (que o `next build` reescreve)
 ao estado original no fim. O `node_modules` fica com o Next testado — o próximo
 `npm run smoke` reinstala conforme o `package.json`.

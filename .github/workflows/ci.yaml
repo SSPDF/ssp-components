@@ -59,8 +59,13 @@ jobs:
       - name: App de fumaça com Next 16
         run: SMOKE_NEXT=16 npm run smoke
 
+      # O topo das outras faixas abertas na 0.3.2 (`x-date-pickers ^6 || ^7`, `react-toastify
+      # ^10 || ^11`), na combinação que o copom usa: MUI 5.18 + pickers 7 + toastify 11 + Next 16.
+      - name: App de fumaça na combinação do copom (pickers 7, toastify 11, Next 16)
+        run: SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke
+
       # Versão de desenvolvimento sem npm: o mesmo .tgz que o publish geraria (pack:local
-      # repete os passos do publish.yaml). Só sobe se o check:package e os dois smokes
+      # repete os passos do publish.yaml). Só sobe se o check:package e os três smokes
       # passaram. No app: baixar o artefato do run e `npm install ./<arquivo>.tgz`.
       # O nome leva o SHA do topo do branch: num PR o `github.sha` é o commit de merge
       # temporário que o GitHub cria (e que ninguém acha no `git log`). O conteúdo é o

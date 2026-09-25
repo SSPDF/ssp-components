@@ -22,11 +22,11 @@ A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as 
 | `next` | `^14.0.0 \|\| ^15.0.0 \|\| ^16.0.0` (Pages Router — os componentes de auth e navbar usam `next/router`) |
 | `@mui/material` | `^5.8.6` |
 | `@mui/icons-material` | `^5.0.0` |
-| `@mui/x-date-pickers` | `^6.0.0` |
+| `@mui/x-date-pickers` | `^6.0.0 \|\| ^7.0.0` (a v7 exige `@mui/material ^5.15.14`) |
 | `@emotion/react` / `@emotion/styled` | `^11.9.0` / `^11.8.1` |
 | `react-hook-form` | `^7.43.0` |
 | `dayjs` | `^1.11.0` |
-| `react-toastify` | `^10.0.0` |
+| `react-toastify` | `^10.0.0 \|\| ^11.0.0` |
 
 Por que peer e não dependência própria: com duas cópias de `@mui/material` o `ThemeProvider` do app não alcança os componentes da lib (eles caem no tema default), duas cópias do Emotion geram briga de estilos e mismatch de hidratação no SSR, e os tipos do MUI na API pública (`InputProps`, `SxProps<Theme>`) deixam de ser compatíveis. Com duas cópias de `react-hook-form` ou `react-toastify`, o contexto do formulário e o `toast()` do app deixam de enxergar os da lib.
 

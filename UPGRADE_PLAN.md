@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito, verificado e commitado em 25/09/2026 como **`0.3.1`** (ver o registro e o achado 5.16). **Etapa 2.2 aprovada em 25/09/2026 → `0.3.2`.** Depois dela vem o ferramental da 4.4. **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito, verificado e commitado em 25/09/2026 como **`0.3.1`** (ver o registro e o achado 5.16). **Etapa 2.2** (peers pickers `^6 || ^7` e toastify `^10 || ^11`) feita em 25/09/2026 como **`0.3.2`**, o que destrava o `copom` (achados 5.17 e 5.18). **Próximo: o ferramental da 4.4.** **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, e **em 25/09/2026, após a Etapa 3** (seção 11) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -109,7 +109,7 @@ A única vantagem da cópia própria ("eu controlo a versão") é ilusória: tro
 
 ### Como declarar (`lib-package.json`)
 
-**Estado atual (`0.2.1`, Etapa 2.1)** — só o que é verdade hoje:
+**Estado atual (`0.3.2`, Etapa 2.2)** — só o que é verdade hoje:
 
 ```json
 "peerDependencies": {
@@ -117,13 +117,13 @@ A única vantagem da cópia própria ("eu controlo a versão") é ilusória: tro
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.8.6",
-    "@mui/x-date-pickers": "^6.0.0",
+    "@mui/x-date-pickers": "^6.0.0 || ^7.0.0",
     "dayjs": "^1.11.0",
     "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.43.0",
-    "react-toastify": "^10.0.0"
+    "react-toastify": "^10.0.0 || ^11.0.0"
 }
 ```
 
@@ -397,6 +397,21 @@ Não muda nada na linha `0.x` (que declara MUI 5 e não promete funcionar no 7),
 - **Correção:** nos três pickers, o `inputRef` passa a só chamar o `register`, sem retornar nada. Com isso a validação continua registrada exatamente nos mesmos momentos. No `FilterSection`, o `inputRef` foi removido. O novo `src/components/form/date/pickers.test.tsx` submete cada picker obrigatório vazio e confere que o submit é bloqueado com a mensagem. Ele **passa no código da 0.3.0 e no novo, e falha quando o `register` é desligado**, o que foi conferido nos três casos.
 - **Para a Etapa 7:** o codemod do `x-date-pickers` v9 não sabe que a validação mora no `inputRef`. Ao migrar os pickers, manter o `register` (ou mover a validação para um lugar explícito, como o `rules`/`useController`) e rodar o `pickers.test.tsx`. O ideal é trocar esse efeito colateral por registro explícito, mas isso muda o momento do registro e por isso ficou fora de um lote "seguro".
 
+### 5.17 Com `x-date-pickers` 7, o primeiro picker da página perde o valor padrão (achado na Etapa 2.2, 25/09/2026) — ✅ corrigido na `0.3.2`
+
+A lib faz parse de datas com formato em cinco arquivos (`DatePicker`, `GenericDatePicker`, `TimePicker`, `FilterSection` e `table/utils`), como `dayjs('15/03/2024', 'DD/MM/YYYY')`. Isso só respeita o formato com o plugin **`customParseFormat`**, e a lib **nunca o registrou**: dependia do `AdapterDayjs` do `x-date-pickers` 6, que faz `dayjs.extend(customParseFormat)` **no import do módulo**. A partir da v7 (e na 8 e na 9), o adapter só registra o plugin **no construtor**, quando o `LocalizationProvider` monta. Isso acontece *depois* do `useState(dayjs(defaultValue, …))` do componente.
+
+- **Efeito:** a primeira montagem de um picker no processo recebe uma data inválida. O campo aparece vazio (`DD/MM/YYYY`) e com borda de erro, e o valor padrão se perde. Da segunda montagem em diante funciona, porque o adapter já registrou o plugin. **No browser cada carregamento de página é um processo novo, então o bug aparece sempre.** Os filtros de data da `Table` (`table/utils`) também dependem do plugin: sem ele, o `dayjs` cai no `Date` nativo, que lê `MM/DD`. Com dia até 12 a data sai trocada de mês, e com dia acima de 12 sai inválida.
+- **Como apareceu:** nos snapshots com pickers 7 (`date-genericdatepicker--com-valor-padrao`). Typecheck, testes e o `next build` do smoke passavam. O `next build` renderiza a página mais de uma vez no mesmo processo, então o HTML prerenderizado saía certo.
+- **Correção:** `src/components/utils/dayjs.ts` registra o plugin, e os cinco arquivos importam o `dayjs` de lá. **Regra: parse com formato na lib sempre por esse módulo**, nunca direto do `'dayjs'`.
+- **Travas:** `src/components/utils/dayjs.test.tsx`, com o filtro antes de qualquer picker e o picker como primeira montagem, e o `examples/smoke-app/verificar-datepicker.cjs`, que renderiza num processo novo com as versões que o smoke instalou. Os dois **falham com o plugin desligado** (conferido). No CI, só o segundo roda com a v7 (o terceiro smoke). O teste do vitest roda com a v6 das `devDependencies`, que registra o plugin no import e mascara o problema.
+
+### 5.18 Os snapshots foram gerados com MUI 5.12, e os apps estão em 5.15–5.18 (achado na Etapa 2.2, 25/09/2026) — **não corrigido**
+
+Com o `@mui/material` das `devDependencies` em 5.18.0 (o do `specto` e do `copom`), **8 stories mudam**: `Table` (5 stories), `GenericTable`, `Category` e `Stepper`. As tabelas ficam mais largas e o `Stepper` desloca na vertical. É o layout que esses apps **já veem hoje**, não uma regressão da lib, mas o baseline não o representa. Conferido isolando a variável: com MUI 5.18 + pickers 6 + toastify 10, os diffs são idênticos pixel a pixel aos da combinação do `copom`.
+
+Proposta: subir o MUI e o `x-date-pickers` das `devDependencies` dentro do 5/6 (5.18 / 6.20), revisar os 8 diffs e regerar o baseline num commit próprio. Vale fazer antes da Etapa 7, para que o baseline de partida dela seja o que os apps rodam.
+
 ---
 
 ## 6. Rede de segurança (Etapa 0) — obrigatória antes de qualquer bump
@@ -617,10 +632,36 @@ Consequências para o plano:
 
 **Por que:** é o que falta para o `copom` instalar a linha `0.x` sem `--legacy-peer-deps` (ele tem pickers 7.29.4 e toastify 11.0.5, com MUI 5.18). Mesmo raciocínio da Etapa 2.1: amplia a faixa, não quebra ninguém. Não resolve o `conoc-frontend` (MUI 7 + pickers 8 + React 19), que depende da Etapa 7.
 
-- [ ] Registry (conferido em 25/09): `@mui/x-date-pickers@7.29.4` tem peer `@mui/material ^5.15.14 || ^6 || ^7`, `react ^17 || ^18 || ^19`, Emotion `^11.9.0`/`^11.8.1`. **Piso de MUI sobe para `^5.15.14` para quem usar pickers 7** — o range da lib pode continuar `^5.8.6` (o npm resolve o par).
-- [ ] Pickers 7: conferir no código os usos que a v7 removeu (props deprecadas da v6 em `DatePicker.tsx`, `GenericDatePicker.tsx`, `TimePicker.tsx`); um `SMOKE_PICKERS=7` no smoke-app (a criar, nos moldes do `SMOKE_NEXT`) + stories do `DatePicker`/`GenericDatePicker`/`TimePicker` renderizadas com pickers 7.
-- [ ] Toastify 11: a v11 injeta o próprio CSS e mudou a API do `ToastContainer`; o `SspComponentsProvider` renderiza o `ToastContainer` e a lib tem o fork vendorizado do CSS da v10 (`src/css/ReactToastify.css`). Testar no smoke com toastify 11 que o toast do `FormProvider` (submit inválido) aparece e não duplica estilo. Se o CSS vendorizado brigar com o da v11, este item vai inteiro para a Etapa 6.
-- [ ] CI: smoke com a combinação do `copom` (MUI 5.18 + pickers 7 + toastify 11 + Next 16).
+- [x] Registry (conferido em 25/09): `@mui/x-date-pickers@7.29.4` tem peer `@mui/material ^5.15.14 || ^6 || ^7`, `react ^17 || ^18 || ^19`, Emotion `^11.9.0`/`^11.8.1`. **Piso de MUI sobe para `^5.15.14` para quem usar pickers 7** — o range da lib pode continuar `^5.8.6` (o npm resolve o par). A v7 também tem `@mui/system` como peer.
+- [x] Pickers 7: typecheck e testes da lib passam com a v7. **Achou um bug que nada mais pegaria (5.17)**, corrigido. `SMOKE_PICKERS=7` criado e stories renderizadas com pickers 7.
+- [x] Toastify 11: **o CSS vendorizado não está no pacote** (o import no `SspComponentsProvider` está comentado; só os decorators das stories o usam), então não há briga de CSS na lib. Testado no browser: o toast do `FormProvider` aparece uma vez e com o estilo certo. Não vai para a Etapa 6.
+- [x] CI: smoke com a combinação do `copom` (MUI 5.18 + pickers 7 + toastify 11 + Next 16).
+
+#### Registro de execução — 25/09/2026
+
+Branch `atualizacao-dependencias`, sobre a `0.3.1`. Versão **`0.3.2`**. Node 24.21.0.
+
+**O que mudou:**
+- **Peers:** `@mui/x-date-pickers` `^6.0.0 || ^7.0.0` e `react-toastify` `^10.0.0 || ^11.0.0`, no `lib-package.json` e no `package.json` raiz. As `devDependencies` continuam no piso (pickers 6.2, toastify 10.0.6), e o topo das faixas é testado pelo smoke.
+- **`src/components/utils/dayjs.ts` (novo)** registra o `customParseFormat`. Os cinco arquivos que fazem parse com formato passam a importar o `dayjs` dali (5.17).
+- **Smoke:** `SMOKE_PICKERS` e `SMOKE_TOASTIFY`, nos moldes do `SMOKE_NEXT`. O `npm ls` também confere o `x-date-pickers`. A página usa `defaultValue` no `DatePicker`, e o `examples/smoke-app/verificar-datepicker.cjs` (novo) renderiza o picker num processo novo e falha se o valor sair vazio.
+- **CI:** um terceiro smoke, `SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11`.
+- **Três stories** importavam `react-toastify/ReactToastify.min.css`, que a v11 não exporta mais (o Storybook nem buildava com a v11). Passaram a importar `react-toastify/ReactToastify.css`, que existe nas duas versões.
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| Typecheck e testes com o topo das faixas | `npm install --no-save` de pickers 7.29.4 + toastify 11.1.0 + MUI 5.18 | verdes |
+| Typecheck | `npm run typecheck` | verde |
+| Lint | `npm run lint` | 0 erros, 323 warnings (igual à 0.3.1) |
+| Testes | `npm run test` | **46 testes em 9 arquivos** (+2: `utils/dayjs.test.tsx`) |
+| Build, API pública e pacote | `build` / `check-public-api.mjs` / `check:package` | verdes |
+| Smoke | piso (14 · pickers 6 · toastify 10), `SMOKE_NEXT=16`, `copom` (16 · 7 · 11), 14 · 7 · 11 | **verde nos quatro**, incluindo o `verificar-datepicker.cjs` |
+| Browser | `next start` do smoke (14 · 7 · 11) no Chromium | o picker mostra `15/03/2024`. O toast do submit inválido aparece uma vez, `colored`/warning (`#f1c40f`), sem erro no console. O CSS do toastify vem de duas fontes (o import do app e o `<style>` que a v11 injeta), com as mesmas regras e sem conflito |
+| Snapshots no piso | `npm run snapshots` | 84 stories, **0 diffs** |
+| Snapshots com pickers 7 + toastify 11 (+ MUI 5.18) | idem, com `--no-save` | antes da correção, **9 diffs**, um deles o `GenericDatePicker` com valor padrão vazio e em erro (5.17). Depois, **8 diffs, idênticos pixel a pixel aos de só subir o MUI para 5.18** (5.18). Pickers 7 e toastify 11 não acrescentam nenhum |
+| Instalação no `copom` | `npm install --package-lock-only` do tarball numa cópia do `package.json`/lockfile | a `0.3.0` dá `ERESOLVE` (`peer @mui/x-date-pickers@"^6.0.0"`); **a `0.3.2` resolve**, com uma cópia só de MUI, pickers, toastify, RHF, dayjs, Emotion e React. O único aninhado é o `@mui/lab` da lib com um `@mui/system` 5.18 próprio, porque o `copom` declara `@mui/system ^7.3.3` na raiz (é o caso do 5.14, que só afeta o `Stepper`) |
+
+Nenhum repo consumidor foi alterado: o teste do `copom` foi numa cópia no scratchpad.
 
 **Validação:** smoke verde nas combinações do piso (Etapa 2.1) e do `copom`; `npm install` do tarball no `copom` sem `ERESOLVE`.
 
@@ -740,7 +781,7 @@ Branch `atualizacao-dependencias`, sobre `2ffd47e`. Node 24.21.0. Commit `chore(
 ### Etapa 6 — Libs de runtime de risco médio (um PR por lib, nesta ordem)
 - [ ] `jwt-decode` 3 → 4
 - [ ] `react-imask` 6 → 7
-- [ ] `react-toastify` 10 → 11 (decidir o destino do CSS vendorizado)
+- [ ] `react-toastify` 10 → 11 nas `devDependencies` (decidir o destino do CSS vendorizado). *25/09: a peer já aceita o 11 desde a `0.3.2`, e o CSS vendorizado só é usado pelos decorators das stories, não vai no pacote. Então este item virou só dev: Storybook e snapshots na v11.*
 - [ ] `react-dropzone` 14 → 20 (*`engines: node >= 22` — em 25/09 o `conoc-frontend` builda em `node:20`; subir o Dockerfile dele para 22/24 antes, ou segurar esta lib*)
 - [ ] `keycloak-js` 25 → 26
 
