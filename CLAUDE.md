@@ -95,6 +95,8 @@ npm run smoke         # packed dist/ installed in examples/smoke-app + next buil
 
 **Vitest 5: a `vi.fn` with an arrow-function implementation can't be called with `new`** — mock constructors with `vi.fn(function () { return obj })` (see `KeycloakAuthProvider.test.tsx`).
 
+**Each story is captured in a fresh browser context** (`scripts/visual-snapshots.mjs`): with one shared page, some stories rendered differently depending on the stories before them, and the old baseline recorded that (UPGRADE_PLAN.md 5.18). Keep the isolation.
+
 **Snapshots must be generated inside the container** (`npm run snapshots:update`), never straight from macOS — fonts and antialiasing differ from CI and every PNG would show a diff. The baseline lives in `snapshots/baseline/` and is versioned.
 
 When you change a component, update/add its story and run `npm run snapshots`. A layout regression shows up there and nowhere else.

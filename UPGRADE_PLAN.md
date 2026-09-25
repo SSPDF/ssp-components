@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito, verificado e commitado em 25/09/2026 como **`0.3.1`** (ver o registro e o achado 5.16). **Etapa 2.2** (peers pickers `^6 || ^7` e toastify `^10 || ^11`) feita em 25/09/2026 como **`0.3.2`**, o que destrava o `copom` (achados 5.17 e 5.18). **Etapa 4 concluída em 25/09/2026** com o ferramental da 4.4 (eslint 10, vitest 5, jsdom 30, Playwright 1.63; sem release). **Próxima: Etapa 5** (Storybook 10). Pendente fora das etapas: o baseline em MUI 5.12 (5.18). **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito, verificado e commitado em 25/09/2026 como **`0.3.1`** (ver o registro e o achado 5.16). **Etapa 2.2** (peers pickers `^6 || ^7` e toastify `^10 || ^11`) feita em 25/09/2026 como **`0.3.2`**, o que destrava o `copom` (achados 5.17 e 5.18). **Etapa 4 concluída em 25/09/2026** com o ferramental da 4.4 (eslint 10, vitest 5, jsdom 30, Playwright 1.63; sem release). Depois dela, o MUI e o `x-date-pickers` das `devDependencies` subiram para 5.18/6.20, a versão dos apps, e a captura de snapshots passou a isolar cada story (5.18). **Próxima: Etapa 5** (Storybook 10). **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, e **em 25/09/2026, após a Etapa 3** (seção 11) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -406,11 +406,19 @@ A lib faz parse de datas com formato em cinco arquivos (`DatePicker`, `GenericDa
 - **Correção:** `src/components/utils/dayjs.ts` registra o plugin, e os cinco arquivos importam o `dayjs` de lá. **Regra: parse com formato na lib sempre por esse módulo**, nunca direto do `'dayjs'`.
 - **Travas:** `src/components/utils/dayjs.test.tsx`, com o filtro antes de qualquer picker e o picker como primeira montagem, e o `examples/smoke-app/verificar-datepicker.cjs`, que renderiza num processo novo com as versões que o smoke instalou. Os dois **falham com o plugin desligado** (conferido). No CI, só o segundo roda com a v7 (o terceiro smoke). O teste do vitest roda com a v6 das `devDependencies`, que registra o plugin no import e mascara o problema.
 
-### 5.18 Os snapshots foram gerados com MUI 5.12, e os apps estão em 5.15–5.18 (achado na Etapa 2.2, 25/09/2026) — **não corrigido**
+### 5.18 O baseline de snapshots dependia da ordem das stories (achado na Etapa 2.2, 25/09/2026; causa real achada em 25/09/2026) — ✅ corrigido
 
-Com o `@mui/material` das `devDependencies` em 5.18.0 (o do `specto` e do `copom`), **8 stories mudam**: `Table` (5 stories), `GenericTable`, `Category` e `Stepper`. As tabelas ficam mais largas e o `Stepper` desloca na vertical. É o layout que esses apps **já veem hoje**, não uma regressão da lib, mas o baseline não o representa. Conferido isolando a variável: com MUI 5.18 + pickers 6 + toastify 10, os diffs são idênticos pixel a pixel aos da combinação do `copom`.
+**Registro original (errado):** com o `@mui/material` das `devDependencies` em 5.18.0, 8 stories mudavam (`Table` ×5, `GenericTable`, `Category`, `Stepper`), e isso foi atribuído ao MUI 5.18, como se fosse o layout que os apps em 5.18 já viam.
 
-Proposta: subir o MUI e o `x-date-pickers` das `devDependencies` dentro do 5/6 (5.18 / 6.20), revisar os 8 diffs e regerar o baseline num commit próprio. Vale fazer antes da Etapa 7, para que o baseline de partida dela seja o que os apps rodam.
+**Causa real:** o `scripts/visual-snapshots.mjs` usava **uma página só para as 84 stories**. Com o MUI 5.12, o render daquelas 8 dependia do que as stories anteriores deixavam na página, e o baseline registrou esse estado. Com o 5.18 isso não acontece. Conferido no container, com a mesma imagem:
+- as 8 stories renderizadas **isoladamente com o MUI 5.12** diferem do baseline pelas **mesmas contagens de pixels** que o 5.18 dava (42.989, 7.311, 15.585, 5.267…);
+- o 5.12 isolado é **idêntico pixel a pixel** ao 5.18 na execução sequencial;
+- com a captura isolada, as imagens do 5.12 e do 5.18 são **idênticas byte a byte** nas 8 stories;
+- no Chromium do macOS, as posições de todos os elementos dessas stories são iguais nas duas versões.
+
+Ou seja, **o MUI 5.12 → 5.18 não muda nada visual** na lib. Não investiguei qual estado vazava, porque o isolamento elimina a classe inteira do problema.
+
+**Correção (registro da atualização do MUI, na Etapa 4):** a captura passou a abrir **um contexto de browser novo por story** (localStorage, cookies e cache zerados), e o baseline foi regerado com o MUI 5.18. Mudaram 13 PNGs: os 8 acima e 5 que já diferiam abaixo da tolerância (`Table` com erro da API e sem permissão, `TimePicker`, `Modal` reparented e `StepperBlock`, de 4 a 5.962 px). Uma segunda captura completa saiu igual nas 84 stories, então a captura é determinista.
 
 ---
 
@@ -658,7 +666,7 @@ Branch `atualizacao-dependencias`, sobre a `0.3.1`. Versão **`0.3.2`**. Node 24
 | Smoke | piso (14 · pickers 6 · toastify 10), `SMOKE_NEXT=16`, `copom` (16 · 7 · 11), 14 · 7 · 11 | **verde nos quatro**, incluindo o `verificar-datepicker.cjs` |
 | Browser | `next start` do smoke (14 · 7 · 11) no Chromium | o picker mostra `15/03/2024`. O toast do submit inválido aparece uma vez, `colored`/warning (`#f1c40f`), sem erro no console. O CSS do toastify vem de duas fontes (o import do app e o `<style>` que a v11 injeta), com as mesmas regras e sem conflito |
 | Snapshots no piso | `npm run snapshots` | 84 stories, **0 diffs** |
-| Snapshots com pickers 7 + toastify 11 (+ MUI 5.18) | idem, com `--no-save` | antes da correção, **9 diffs**, um deles o `GenericDatePicker` com valor padrão vazio e em erro (5.17). Depois, **8 diffs, idênticos pixel a pixel aos de só subir o MUI para 5.18** (5.18). Pickers 7 e toastify 11 não acrescentam nenhum |
+| Snapshots com pickers 7 + toastify 11 (+ MUI 5.18) | idem, com `--no-save` | antes da correção, **9 diffs**, um deles o `GenericDatePicker` com valor padrão vazio e em erro (5.17). Depois, **8 diffs, idênticos pixel a pixel aos de só subir o MUI para 5.18**. Pickers 7 e toastify 11 não acrescentam nenhum. *(Correção posterior: esses 8 não vinham do MUI, e sim da captura sequencial do baseline; ver 5.18.)* |
 | Instalação no `copom` | `npm install --package-lock-only` do tarball numa cópia do `package.json`/lockfile | a `0.3.0` dá `ERESOLVE` (`peer @mui/x-date-pickers@"^6.0.0"`); **a `0.3.2` resolve**, com uma cópia só de MUI, pickers, toastify, RHF, dayjs, Emotion e React. O único aninhado é o `@mui/lab` da lib com um `@mui/system` 5.18 próprio, porque o `copom` declara `@mui/system ^7.3.3` na raiz (é o caso do 5.14, que só afeta o `Stepper`) |
 
 Nenhum repo consumidor foi alterado: o teste do `copom` foi numa cópia no scratchpad.
@@ -792,6 +800,14 @@ Branch `atualizacao-dependencias`, sobre a `0.3.2`. Node 24.21.0. **Sem release:
 | Build, `check:package`, smoke | verdes |
 | Snapshots (Playwright 1.55, antes da parte 2) | 84 stories, 0 diffs |
 | Snapshots (Playwright 1.63, baseline novo) | 84 stories, 0 diffs, 0 erros de runtime |
+
+#### Registro de execução — 25/09/2026 (MUI 5.18 nas `devDependencies`)
+
+Fora da lista original da Etapa 4, proposto no 5.18. `@mui/material` e `@mui/icons-material` 5.12.1/5.11.16 → **5.18.0**, e `@mui/x-date-pickers` 6.2.0 → **6.20.2** (a versão do `specto`). Assim o Storybook e os testes rodam no MUI que os apps usam. **Só `devDependencies`:** as peers continuam `^5.8.6` / `^6 || ^7`, e não há release.
+
+- Instalou com uma cópia só de cada pacote (o `@mui/lab` fixado passa a usar a `@mui/system` 5.18).
+- Typecheck, lint (0 erros, 352 warnings), 46 testes, build, `check:package` e smoke: verdes.
+- Snapshots: os 8 diffs esperados apareceram, e a investigação mostrou que **não eram do MUI** (5.18). A captura passou a isolar cada story, e o baseline foi regerado (13 PNGs).
 
 ### Etapa 5 — Storybook 9 → 10
 - [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.

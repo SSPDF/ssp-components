@@ -88,17 +88,18 @@ async function main() {
     await fs.rm(diffDir, { recursive: true, force: true })
 
     const browser = await chromium.launch()
-    const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1, timezoneId: 'America/Sao_Paulo', locale: 'pt-BR' })
-    await page.clock.setFixedTime(HORA_FIXA)
-
-    // Congela animações e o cursor piscando: sem isso o mesmo container gera diffs.
-    await page.addStyleTag({ content: '' }).catch(() => {})
 
     const failures = []
     const renderErrors = []
     let written = 0
 
     for (const id of ids) {
+        // Um contexto novo por story (localStorage, cookies e cache zerados). Com uma página só
+        // para todas, o render de algumas stories dependia do que as anteriores deixaram: com
+        // MUI 5.12, 8 stories saíam diferentes do render isolado (UPGRADE_PLAN.md 5.18).
+        const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1, timezoneId: 'America/Sao_Paulo', locale: 'pt-BR' })
+        const page = await context.newPage()
+        await page.clock.setFixedTime(HORA_FIXA)
         const errors = []
         page.on('pageerror', (e) => errors.push(String(e)))
         await page.goto(`${base}/iframe.html?id=${id}&viewMode=story`, { waitUntil: 'networkidle' })
@@ -111,7 +112,7 @@ async function main() {
         const file = path.join(baselineDir, `${id}.png`)
 
         if (errors.length) renderErrors.push({ id, errors })
-        page.removeAllListeners('pageerror')
+        await context.close()
 
         if (update || !existsSync(file)) {
             await fs.writeFile(file, shot)
