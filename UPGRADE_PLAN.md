@@ -1,7 +1,7 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Próxima: Etapa 4.** Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
-> **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026** e **de novo em 23/09/2026, após a Etapa 1** — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Próxima: Etapa 4.** **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, e **em 25/09/2026, após a Etapa 3** (seção 11) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
 > **Regra de ouro:** nenhuma etapa avança sem a validação da etapa anterior estar verde. As Etapas 0–6 podem ir para produção **sem tocar em nenhum app consumidor**; só as Etapas 7 e 8 exigem mutirão.
@@ -47,7 +47,7 @@ Comparando os dois manifestos, estes estão em `package.json` mas **não** em `l
 @mui/icons-material   @mui/lab   @mui/x-date-pickers
 ```
 
-Para MUI/Emotion isso "funciona por acidente": o app consumidor instala essas libs de qualquer forma, então o import externalizado resolve. **`@mui/lab` é o caso diferente** — nenhum app instala `@mui/lab` por conta própria, e `src/components/form/stepper/Stepper.tsx:4` importa `LoadingButton` dele em runtime. Como o microbundle externaliza tudo que está no `package.json` da raiz, o `dist` publicado carrega um `import '@mui/lab'` que **ninguém declara e ninguém instala** → o `Stepper` provavelmente já está quebrado em produção em qualquer app sem `@mui/lab` na árvore por outro motivo.
+Para MUI/Emotion isso "funciona por acidente": o app consumidor instala essas libs de qualquer forma, então o import externalizado resolve. **`@mui/lab` é o caso diferente** — ~~nenhum app instala `@mui/lab` por conta própria~~ *(corrigido em 25/09: os quatro apps consumidores declaram `@mui/lab` no próprio `package.json` — ver seção 11 —, então o `Stepper` funcionava neles; o bug valia para um app hipotético sem o `@mui/lab`)*, e `src/components/form/stepper/Stepper.tsx:4` importa `LoadingButton` dele em runtime. Como o microbundle externaliza tudo que está no `package.json` da raiz, o `dist` publicado carrega um `import '@mui/lab'` que **ninguém declara e ninguém instala** → o `Stepper` provavelmente já está quebrado em produção em qualquer app sem `@mui/lab` na árvore por outro motivo.
 
 > **Corrigido na `0.1.0` (Etapa 1)**, e não num hotfix `0.0.350` separado: `@mui/lab` entrou em `dependencies`, fixado em `5.0.0-alpha.127`. Não dá para usar `^5.0.0-alpha.127` — o range resolve para o `alpha.177`, cuja peer é `@mui/material >=5.15.0`, e o `npm install` de um app em MUI 5.12 falharia com `ERESOLVE`. O `alpha.127` tem peer `^5.0.0`. Quem estiver fixado em `^0.0.349` não recebe a correção (em `0.0.x` o `^` fixa a versão); se algum app precisar dela sem subir para `0.1.0`, publicar `0.0.350` a partir de `v0-legacy` só com esta linha.
 
@@ -179,13 +179,13 @@ E: **manter `xs`/`sm`/`md` como props públicas dos componentes**, mapeando para
 
 ## 4. Inventário de versões
 
-Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/09/2026; **atualizado em 23/09/2026** (mudanças marcadas com *23/09*).
+Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/09/2026; **atualizado em 23/09/2026** e **em 25/09/2026** (mudanças marcadas com *23/09* / *25/09*).
 
 ### 4.1 Risco baixo — interno, sem impacto no consumidor
 
 | Pacote | Atual | Alvo |
 |---|---|---|
-| `@babel/preset-env` / `-react` / `-typescript` | 7.27–7.28 | 7.29.7 |
+| `@babel/preset-env` / `-react` / `-typescript` | 7.27–7.28 | 7.29.7 — *25/09*: **Babel 8 saiu** (8.0.x, peer `@babel/core ^8`, Node `^22.18 \|\| >=24.11`). **Não** subir para o 8: os presets só existem por causa do `.babelrc.json` do Storybook e devem sair na Etapa 5 |
 | `@tsconfig/recommended` | 1.0.2 | 1.0.13 |
 | `@types/node` | 20.17 | 20.19 (Node 22: avaliar `^22`) |
 | `@types/react` / `@types/react-dom` | 18.0.37 / 18.3.0 | 18.3.31 / 18.3.7 |
@@ -194,15 +194,16 @@ Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/
 | `typescript` | 5.8.3 | **5.9.3** (não 7.x — ver Etapa 9) |
 | `dayjs` | 1.11.11 | 1.11.23 |
 | `jszip` | 3.10.1 | 3.10.2 |
-| `axios` | ^1.17.0 (1.6.7 instalado) | 1.20.0 |
+| `axios` | 1.17.0 (*25/09*: o 1.6.7 era o `node_modules` antigo, resolvido no `npm install` da Etapa 0) | 1.20.0 |
 | `@emotion/react` / `styled` | 11.10.6 | 11.14.x |
 | `react-hook-form` | 7.43.9 | 7.88.0 (peer desde a `0.1.0` — sobe só na `devDependency`) |
 | `react` / `react-dom` | 18.2.0 | 18.3.1 |
 | `next` | 14.2.35 | 14.2.35 (já é o último do 14) |
 | `storybook` (pacotes 9.x) | core 9.1.20; `addon-docs`/`addon-links`/`react-webpack5` fixados em 9.0.17; `@storybook/nextjs` 9.0.17 | alinhar todos em 9.1.20 (*23/09*: o core já estava em 9.1.20 — versões desalinhadas entre os pacotes do Storybook) |
-| `react-toastify` | 10.0.4 | 10.0.6 (peer desde a `0.1.0`) |
+| `react-toastify` | 10.0.4 | 10.0.6 (peer desde a `0.1.0`; *25/09*: latest da v11 é 11.1.0) |
 | `write-excel-file` | 4.0.7 | 4.1.1 |
 | `react-imask`, `react-dropzone` | 6.6.0, 14.3.8 | 6.6.3, 14.4.1 (patch dentro do major; o salto é na Etapa 6) |
+| `prettier` | 3.9.8 | 3.9.9 (*25/09*) — patch; conferir que o `format:check` continua verde (patch do prettier às vezes muda formatação) |
 
 ### 4.2 Risco médio — breaking contido, 1 PR por item
 
@@ -211,7 +212,7 @@ Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/
 | `jwt-decode` | 3 → 4 | export default → named `jwtDecode`. Afeta `src/components/providers/OAuthProvider.tsx:2,62,115,117` (linhas atualizadas em 23/09) |
 | `react-imask` | 6 → 7 | imask 7. Afeta `MaskInput.tsx`, `GenericMaskInput.tsx` (já usam `as any`, risco baixo) |
 | `react-toastify` | 10 → 11 | API do `ToastContainer` e **CSS reescrito**. Temos fork vendorizado em `src/css/ReactToastify.css` (704 linhas, com `sourceMappingURL`) — decidir entre importar do pacote ou refazer o fork |
-| `react-dropzone` | 14 → 20 | `DropFileUpload.tsx:70` (`inputRef`, tipos de `DropzoneOptions`). *23/09:* a v20 declara **`engines: node >= 22`** — app que builda em Node 20 recebe `EBADENGINE` (aviso; erro se usar `engine-strict`). Conferir o Node dos apps antes |
+| `react-dropzone` | 14 → 20 | `DropFileUpload.tsx:70` (`inputRef`, tipos de `DropzoneOptions`). *23/09:* a v20 declara **`engines: node >= 22`** — app que builda em Node 20 recebe `EBADENGINE` (aviso; erro se usar `engine-strict`). Conferir o Node dos apps antes. *25/09:* conferido nos `Dockerfile`s — `specto-frontend`, `viva-flor-frontend` e `copom` buildam em `node:24`; **`conoc-frontend` builda em `node:20`** e receberia o `EBADENGINE` |
 | `keycloak-js` | 25 → 26 (26.2.4) | init/refresh/SSO em `KeycloakAuthProvider.tsx` (519 linhas, sem story — **coberto pelos testes da Etapa 0**) |
 | Storybook | 9 → 10 | **configs ESM-only** + Node 20.16+/22.19+. `@storybook/nextjs` e `@storybook/react-webpack5` continuam existindo em 10.x |
 | `microbundle` | → **`tsdown`** (D1, decidida em 23/09) | Abandonado desde ago/2022 (último release 0.15.1, 12/08/2022) e **descarta o `'use client'`** (o build imprime `Module level directives cause errors when bundled, 'use client' was ignored`) — afeta `Map.tsx` e `DraggableMarker.tsx` no App Router |
@@ -238,13 +239,13 @@ A Etapa 0 instalou as ferramentas nas versões compatíveis com o resto da árvo
 
 | Pacote | Instalado | Latest | Observação |
 |---|---|---|---|
-| `eslint` | 9.39.5 | 10.11.0 | junto com `eslint-config-prettier` 9 → 10, `eslint-plugin-react-hooks` 5 → 7 (a v6+ traz as regras do React Compiler — esperar mais warnings), `globals` 15 → 17, `eslint-plugin-storybook` 9 → 10 (vai junto com a Etapa 5) |
-| `vitest` / `@vitest/coverage-v8` | 3.2.7 | 5.0.1 | dois majors |
-| `jsdom` | 26.1.0 | 29.1.1 | |
+| `eslint` | 9.39.5 | 10.11.0 | *25/09:* o `typescript-eslint` 8.70.1 aceita `eslint ^8.57 \|\| ^9 \|\| ^10` — sem bloqueio. Junto com `eslint-config-prettier` 9 → 10, `eslint-plugin-react-hooks` 5 → 7 (a v6+ traz as regras do React Compiler — esperar mais warnings), `globals` 15 → 17, `eslint-plugin-storybook` 9 → 10 (vai junto com a Etapa 5) |
+| `vitest` / `@vitest/coverage-v8` | 3.2.7 | 5.0.1 | dois majors; a v5 tem peer `@types/node ^22 \|\| >=24` — subir junto com o `@types/node ^24` |
+| `jsdom` | 26.1.0 | ~~29.1.1~~ **30.1.1** (*25/09*) | a v30 exige Node `^22.22.2 \|\| ^24.15.0 \|\| >=26` — o CI em 24 atende; quem roda os testes localmente em 22 precisa de ≥ 22.22.2 |
 | `@testing-library/jest-dom` | 6.9.1 | 7.0.1 | |
 | `playwright` | 1.55.0 | 1.63.0 | **a versão do pacote tem que casar com a imagem do container** (`mcr.microsoft.com/playwright:v1.55.0-noble` em `scripts/snapshots-in-docker.sh`); subir os dois juntos e **regerar o baseline**, porque o Chromium novo muda antialiasing |
 | `pixelmatch` | 6.0.0 | 7.2.0 | |
-| `@types/node` | 20.17 | 26.x | alinhar com o Node do CI → **`^24`** (o CI passou para Node 24 na Etapa 3) |
+| `@types/node` | 20.17 | 26.6.2 | alinhar com o Node do CI → **`^24`** (o CI passou para Node 24 na Etapa 3) |
 | `actions/checkout`, `setup-node`, `upload-artifact` | v4 | v7 | ✅ *feito em 24/09/2026* (fora da Etapa 4): a v4 roda em Node 20, que o GitHub descontinuou e já força para 24. Breaking das v5–v7 conferidos: só runtime Node 24, ESM interno, cache automático do `setup-node` (usamos `cache: npm` explícito) e o fim do `NODE_AUTH_TOKEN` falso do `setup-node` v7 — o `npm ci` do `publish.yaml` com npm 11 funciona sem ele (testado), e o passo de publish define o token |
 
 Sugestão: um PR de ferramental dentro da **Etapa 4** (é o lote de "minors/patches seguros" — estes são majors, mas só de dev), com o baseline de snapshots regerado **num PR separado** do bump do Playwright para o diff ficar legível.
@@ -356,7 +357,7 @@ Não é regressão — o código não mudou; o smoke-app só não tinha sido bui
 
 ### 5.13 Achados da Etapa 2 (23/09/2026) — **não corrigidos**, candidatos à Etapa 4 ou a um patch
 
-- **a) `Table` guarda o nome da tabela em variáveis de módulo.** `Table.tsx:23-27` declara `let localTableName`, `localTableNameCache` e `filtersFuncData` no topo do arquivo e as reatribui a cada render. Com **duas `Table` na mesma página**, as duas passam a ler e gravar os filtros da última que renderizou. O `GenericTable` já faz certo (`const` dentro do componente). Correção de uma linha por variável, mas muda comportamento (conserta o compartilhamento) — precisa de teste com duas tabelas.
+- **a) `Table` guarda o nome da tabela em variáveis de módulo.** `Table.tsx:23-26` declara `let isExpandAll`, `localTableName`, `filtersFuncData` e `localTableNameCache` no topo do arquivo e as reatribui a cada render. Com **duas `Table` na mesma página**, as duas passam a ler e gravar os filtros da última que renderizou. O `GenericTable` já faz certo (`const` dentro do componente). Correção de uma linha por variável, mas muda comportamento (conserta o compartilhamento) — precisa de teste com duas tabelas.
 - **b) `GenericTable` tinha um `console.log` de depuração em produção:** `useEffect(() => console.log(filterContainer.current), [filterContainer.current])`. — ✅ **removido na Etapa 2**, junto com o `filterContainer`, um `useRef` que nunca era ligado a elemento nenhum (o log sempre imprimia `null`). Saiu também o `console.log(listClone)` do `onInputChange`, que imprimia a lista inteira a cada tecla na busca.
 - **e) Outros `console.log` de depuração na lib** (não removidos): `GenericFetchAutoComplete.tsx:58` (`'llll'`), `TabNavBar.tsx:153` (`pathname`), `table/utils.tsx:220` (`dates`). Os `console.log(err)` em `catch` de `FileUpload`, `DropFileUpload` e `Table` deveriam ser `console.error`. Ficam de fora os intencionais: `Stepper` (atrás da prop `debugLog`) e o logger do `KeycloakAuthProvider`. Candidatos a uma regra `no-console` (`warn`, permitindo `error`/`warn`) no ESLint.
 - **f) `npm run link` não funciona.** O script roda `npx tsc`, mas o `tsconfig.json` tem `noEmit: true` — não gera nada, e o `npm link` publica o `dist/` que estiver lá (de um build anterior, ou nenhum). Além disso, o link é um symlink: o app passa a resolver React/MUI pelo `node_modules` da lib (duas cópias). **Substituído na prática pelo `npm run pack:local`** (Etapa 2), que gera o `.tgz` idêntico ao do publish; o `link` fica para ser removido ou refeito na Etapa 3.
@@ -364,6 +365,28 @@ Não é regressão — o código não mudou; o smoke-app só não tinha sido bui
 - **h) MUI 5 não tem campo `exports`**, então os deep imports da lib falham no ESM nativo do Node e só resolvem via CJS (detalhes em D1). É o que segura o ESM-only até a Etapa 7.
 - **c) A documentação dizia que os dois providers de auth gravam o cookie `nextauth.token`.** Só o `OAuthProvider` grava; o `KeycloakAuthProvider` declara `cookieName` e nunca o usa. README e `CLAUDE.md` corrigidos para refletir o código — **se algum app lê esse cookie esperando o token do Keycloak, ele nunca existiu**.
 - **d) `scripts/snapshots-in-docker.sh` só buildava o Storybook se `storybook-static/` não existisse.** Com um build antigo na máquina, os snapshots comparavam o código de outra etapa e passavam. **Foi o que aconteceu no registro da Etapa 1**: o "83 stories, 0 diffs" comparou o Storybook da Etapa 0 e não verificou a troca do `Stack` (5.12). Na Etapa 2 o Storybook foi rebuildado e **o resultado cobre as duas etapas contra o baseline original: 0 diffs** — a troca do `Stack` está verificada, só que depois. O script agora sempre rebuilda (`SKIP_STORYBOOK_BUILD=1` pula). O CI nunca foi afetado: ele builda o Storybook antes.
+
+### 5.14 `@mui/lab` fixado em `5.0.0-alpha.127` puxa um MUI 5 aninhado em app com MUI 7 (achado em 25/09/2026) — **não corrigido**
+
+No lockfile do `conoc-frontend` (MUI 7.3.8, com a `0.2.0` instalada por `--legacy-peer-deps`): o app tem o próprio `@mui/lab` 7.0.1-beta.22, mas a lib traz a sua cópia em `node_modules/@ssplib/react-components/node_modules/@mui/lab` (5.0.0-alpha.127) **com `@mui/system` 5.18, `@mui/utils`, `@mui/private-theming` e `@mui/styled-engine` 5 aninhados**. O `LoadingButton` do `Stepper` roda sobre o `@mui/system` 5 enquanto o resto do app está no 7 — é exatamente a duplicação que a seção 3 existe para evitar (tema e cache do Emotion por cópia). Nos apps em MUI 5 é mais brando, mas também **não deduplica** (conferido em 25/09 instalando a `0.3.0` no `specto-frontend` e no `viva-flor-frontend`): como o app tem outro `@mui/lab` (alpha.177/alpha.170), o `alpha.127` fixado vai para `node_modules/@ssplib/react-components/node_modules/@mui/lab`, junto com um `@mui/base` alpha.126 — mas usa o `@mui/material`/`@mui/system` 5 do app, então tema e Emotion continuam únicos. É uma segunda cópia do `lab`/`base`, não do MUI.
+
+Não muda nada na linha `0.x` (que declara MUI 5 e não promete funcionar no 7), mas reforça: **o `conoc-frontend` não deve usar o `Stepper` enquanto estiver numa `0.x`**, e a remoção do `@mui/lab` na Etapa 7 é pré-requisito, não limpeza. Alternativa se a Etapa 7 atrasar: `@mui/lab` como peer opcional (`^5.0.0-alpha.127 || ^7.0.0-beta`), para cada app usar o seu — avaliar só se o `conoc` precisar do `Stepper` antes.
+
+### 5.15 Teste manual da `0.3.0` no `viva-flor-frontend` e no `specto-frontend` (25/09/2026) — sem regressão; avisos antigos **não corrigidos**
+
+`viva-flor-frontend` rodando em `next dev` com o tarball local (`file:../ssp-components/pack/ssplib-react-components-0.3.0.tgz`), navegando por home, `/editar/:id`, `/detalhes/:id` e acionamentos. **Nenhum erro visual.** O console mostrou avisos, e nenhum deles foi introduzido pelas Etapas 0–3:
+
+- **a) Vêm da lib, mas já existiam antes da linha `0.x`:** `Each child in a list should have a unique "key" prop` em
+  - `CustomMenu.tsx:36`: o `data.map` dos `MenuItem` não passa `key`. A Etapa 2 mexeu no arquivo só no tipo de `btProps` (5.8c); o `map` é anterior.
+  - `TableLoadingState.tsx:34` e `:50`: os dois `Array(...).map` do skeleton não passam `key`. O código não foi tocado nas Etapas 0–3.
+
+  Só aparecem em dev e não afetam a renderização. A correção é `key={i}` nos três `map`, o que dá um candidato a patch ou à Etapa 4.
+- **b) Vêm do próprio app, sem relação com a lib** (ficam registrados aqui só para não serem reinvestigados):
+  - Picker "uncontrolled → controlled" e Autocomplete "invalid value / controlled → uncontrolled" em `/editar/:id`. O formulário usa o `DatePicker`/`AutoComplete` do app (`components/form/`); da lib, só usa o `Button`. O valor começa `undefined` e é preenchido depois do fetch.
+  - `Grid direction` sem `container` (`components/acionamentos/location-modal/index.tsx:89`); `Grid xs/md` sem `item` (`pages/detalhes/[id].tsx:222,224`); `tipoArquivo`/`pessoaId` repassados ao DOM pelo `File` do app; `<p>` dentro de `<p>` no `Field` do app.
+  - `gestao/dominios` 404: é o módulo de gestão desligado no backend local (`GESTAO_HABILITADO`). O `unhandledRejection: AxiosError 400` na tela de detalhes é uma chamada da API sem tratamento de erro.
+
+**`specto-frontend`**: `next dev` com o mesmo tarball e a API apontada para hmg. O `specto-backend` local não subiu: o Prisma client não tinha sido gerado e o `nest start` parou com `'$connect' does not exist on type 'PrismaOcorrenciaService'` em `src/prisma/prisma.service.ts`, um problema do ambiente e não da lib. Foram percorridas `/termo`, `/` e `/buscaCPF/:cpf`, **sem erro visual e sem erro de runtime**. O console repetiu **os mesmos dois avisos de `key`** do item a (`CustomMenu` e `TableLoadingState`, esse dentro da `Table`), o que confirma que são da lib e não de um app específico. O único outro aviso é do app: o `next/image` do `logo.svg` com `height: 'auto'` só em uma dimensão (`pages/index.tsx:38`).
 
 ---
 
@@ -574,10 +597,23 @@ O Next 15 só teve install + build, não browser: fica coberto por estar entre d
 | `copom` | `^0.0.348` | 16.2.7 | 18 | ^5.18.0 | **^7.27.0** | **^11.0.5** | não — pickers 7, toastify 11 |
 | `conoc-frontend` | `^0.0.347` | ^16.1.6 | **^19.2.4** | **^7.3.8** | **^8.27.2** | **^11.0.5** | não — MUI 7, React 19, pickers 8, toastify 11 |
 
+> *Atualização de 25/09/2026 (seção 11):* versões **efetivamente instaladas** (lockfile) e Node de build: `specto-frontend` MUI 5.18.0, pickers 6.20.2, toastify 10.0.6, Node 24; `viva-flor-frontend` MUI 5.15.18, pickers 6.19.12, toastify 10.0.5, Node 24; `copom` MUI 5.18.0, **pickers 7.29.4**, **toastify 11.0.5**, Node 24; `conoc-frontend` MUI 7.3.8, pickers 8.27.2, toastify 11.0.5, React 19.2.4, **Node 20**. Os quatro declaram `@mui/lab` e todos estão em React 18.3.1, exceto o `conoc`. **O `conoc-frontend` tem no working tree, não commitado, o `package.json` apontando para `file:../ssp-components/pack/ssplib-react-components-0.2.0.tgz`** — resto do teste de 23/09; reverter antes de qualquer commit naquele repo.
+
 Consequências para o plano:
 - **`specto-frontend` e `viva-flor-frontend`** são os candidatos naturais a app piloto da linha `0.x` (e depois da Etapa 7).
 - **`conoc-frontend` já roda a lib (`0.0.347`) em cima de MUI 7 + React 19**, sem peer que avise. É evidência (não garantia) de que o código atual funciona no MUI 7 — e é o app que mais ganha com a Etapa 7. Até lá, só instala uma `0.x` com `--legacy-peer-deps`.
-- **`react-toastify` 11 já está em dois apps.** A faixa final da seção 3 prevê `^11.0.0`; vale avaliar abrir `^10 || ^11` antes da Etapa 7, do mesmo jeito que o `next` aqui (smoke com toastify 11 + `SspComponentsProvider`), para destravar o `copom` junto com o x-date-pickers.
+- **`react-toastify` 11 já está em dois apps.** A faixa final da seção 3 prevê `^11.0.0`; vale avaliar abrir `^10 || ^11` antes da Etapa 7, do mesmo jeito que o `next` aqui (smoke com toastify 11 + `SspComponentsProvider`), para destravar o `copom` junto com o x-date-pickers. *25/09:* proposta concreta na **Etapa 2.2** abaixo — o `x-date-pickers@7` aceita `@mui/material ^5.15.14 || ^6 || ^7`, então dá para abrir `^6 || ^7` ainda na linha MUI 5.
+
+### Etapa 2.2 — Peers `@mui/x-date-pickers` `^6 || ^7` e `react-toastify` `^10 || ^11` (**proposta de 25/09/2026, não decidida**) → `0.3.1`
+
+**Por que:** é o que falta para o `copom` instalar a linha `0.x` sem `--legacy-peer-deps` (ele tem pickers 7.29.4 e toastify 11.0.5, com MUI 5.18). Mesmo raciocínio da Etapa 2.1: amplia a faixa, não quebra ninguém. Não resolve o `conoc-frontend` (MUI 7 + pickers 8 + React 19), que depende da Etapa 7.
+
+- [ ] Registry (conferido em 25/09): `@mui/x-date-pickers@7.29.4` tem peer `@mui/material ^5.15.14 || ^6 || ^7`, `react ^17 || ^18 || ^19`, Emotion `^11.9.0`/`^11.8.1`. **Piso de MUI sobe para `^5.15.14` para quem usar pickers 7** — o range da lib pode continuar `^5.8.6` (o npm resolve o par).
+- [ ] Pickers 7: conferir no código os usos que a v7 removeu (props deprecadas da v6 em `DatePicker.tsx`, `GenericDatePicker.tsx`, `TimePicker.tsx`); um `SMOKE_PICKERS=7` no smoke-app (a criar, nos moldes do `SMOKE_NEXT`) + stories do `DatePicker`/`GenericDatePicker`/`TimePicker` renderizadas com pickers 7.
+- [ ] Toastify 11: a v11 injeta o próprio CSS e mudou a API do `ToastContainer`; o `SspComponentsProvider` renderiza o `ToastContainer` e a lib tem o fork vendorizado do CSS da v10 (`src/css/ReactToastify.css`). Testar no smoke com toastify 11 que o toast do `FormProvider` (submit inválido) aparece e não duplica estilo. Se o CSS vendorizado brigar com o da v11, este item vai inteiro para a Etapa 6.
+- [ ] CI: smoke com a combinação do `copom` (MUI 5.18 + pickers 7 + toastify 11 + Next 16).
+
+**Validação:** smoke verde nas combinações do piso (Etapa 2.1) e do `copom`; `npm install` do tarball no `copom` sem `ERESOLVE`.
 
 ### Etapa 3 — Build: `microbundle` → `tsdown` (D1) → `0.3.0`
 
@@ -651,7 +687,7 @@ Aviso para acompanhar: `ubuntu-latest` passa a ser Ubuntu 26 em 19/10/2026. Os s
 **Decisão pendente (não bloqueia a Etapa 4):** zerar o 🚭 exige `.mjs`, e o `.mjs` exige **tirar o Next 14 da peer** (`^15 || ^16`, e testar o 15 no browser). Nenhum app consumidor está no 14 (tabela da Etapa 2.1 — todos em 16), então seria breaking só no papel; mas é mudança de contrato e não ganha nada em runtime até a Etapa 7. Recomendação: **deixar para a Etapa 7**, quando o MUI com `exports` tira a causa (deep import CJS) e o ESM-only volta à mesa.
 
 ### Etapa 4 — Lote de minors/patches seguros
-- [ ] Tudo da seção 4.1, num PR só.
+- [ ] Tudo da seção 4.1, num PR só. *(25/09: `npm outdated` confere com a tabela; os presets do Babel ficam no 7.29.7, não no 8.)*
 - [ ] Ferramental de dev da seção 4.4, em PR próprio (majors, mas só de dev). Bump do Playwright + imagem do container + **baseline regerado** em PR separado.
 
 **Validação:** stories + snapshots idênticos.
@@ -659,7 +695,7 @@ Aviso para acompanhar: `ubuntu-latest` passa a ser Ubuntu 26 em 19/10/2026. Os s
 ### Etapa 5 — Storybook 9 → 10
 - [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.
 - [ ] Avaliar remover o `.babelrc.json` (+ `@babel/preset-*`): sem ele o `@storybook/nextjs` passa a usar SWC, mais rápido. Snapshots têm que ficar idênticos (a config atual mira `chrome: 100`).
-- [ ] Remover `@storybook/testing-library` (0.2.2, deprecado desde o Storybook 8 — o npm marca como `deprecated`; não é usado em nenhuma story) — usar `storybook/test`.
+- [ ] Remover `@storybook/testing-library` (0.2.2, deprecado desde o Storybook 8 — o npm marca como `deprecated`; não é usado em nenhuma story, reconferido em 25/09) — usar `storybook/test`.
 - [ ] `eslint-plugin-storybook` 9 → 10 junto.
 - [ ] Confirmar Node ≥ 20.16 no CI e no `engines` do `package.json`.
 
@@ -670,7 +706,7 @@ Aviso para acompanhar: `ubuntu-latest` passa a ser Ubuntu 26 em 19/10/2026. Os s
 - [ ] `jwt-decode` 3 → 4
 - [ ] `react-imask` 6 → 7
 - [ ] `react-toastify` 10 → 11 (decidir o destino do CSS vendorizado)
-- [ ] `react-dropzone` 14 → 20 (*`engines: node >= 22` — conferir o Node dos apps*)
+- [ ] `react-dropzone` 14 → 20 (*`engines: node >= 22` — em 25/09 o `conoc-frontend` builda em `node:20`; subir o Dockerfile dele para 22/24 antes, ou segurar esta lib*)
 - [ ] `keycloak-js` 25 → 26
 
 **Validação:** story dedicada por lib + app de fumaça. Para `keycloak-js` 25 → 26: suíte com MSW da Etapa 0 + **e2e contra o Keycloak de HMG** (job sob demanda). Teste manual só se o e2e apontar divergência.
@@ -687,7 +723,7 @@ Sub-etapas, cada uma com snapshots revisados:
 - [ ] **Ajustes de comportamento:** `Stepper` agora renderiza `<ol>` e `Step` `<li>` (revisar CSS do `Stepper`/`StepperBlock`); `Grid` não aceita mais `direction="column"` (usar `Stack`); `InputLabel` `size` `normal` → `medium`; deep imports com mais de um nível deixam de funcionar (revisar `@mui/material/Grid`, `@mui/icons-material/Save` etc.).
 - [ ] **Browsers mínimos sobem** para Chrome 117+, Firefox 121+, Safari 17+ — **sem impedimento** (decisão: o público dos sistemas usa browsers recentes). Registrar no `README.md`.
 - [ ] Abrir o peer para `"@mui/material": "^7.3.0 || ^9.0.0"` (piso do `x-date-pickers@9`) e `"@mui/x-date-pickers": "^8.0.0 || ^9.0.0"`.
-- [ ] Remover `@mui/lab` (`LoadingButton` → `<Button loading>`, 5.4).
+- [ ] Remover `@mui/lab` (`LoadingButton` → `<Button loading>`, 5.4). *25/09: urgência maior do que parecia — ver 5.14.*
 - [ ] **ESM em `.mjs` / ESM-only** (pendência da Etapa 3): com o MUI tendo `exports`, repetir o teste da Etapa 3 — `tsdown.config.mts` com `.mjs`/`.d.mts` para ESM, `npm run smoke` no piso da peer `next` — e, se passar, zerar o 🚭 node16-ESM do attw. Avaliar ESM-only junto.
 - [ ] **API pública:** o `Input` repassa `InputProps`/`InputLabelProps`/`FormHelperTextProps` do `TextFieldProps` (`Input.tsx:167-168,256-259`) — e o consumidor pode passá-los. O codemod migra o código da lib, **não o dos apps**. Decidir: aceitar os dois formatos e mapear para `slotProps` internamente (como com `xs`/`sm`/`md`), ou registrar como breaking no `CHANGELOG.md`.
 - [ ] Tipos públicos que dependem do Grid legado: `Input.tsx:45,52-54` (`GridProps['xs']`, `Omit<GridProps, 'item' | ...>`).
@@ -700,7 +736,7 @@ Sub-etapas, cada uma com snapshots revisados:
 ### Etapa 8 — React 19 / Next 16 (**planejada**) → `2.0.0`
 - [ ] `@types/react` 19, `@types/react-dom` 19.
 - [ ] `JSX.Element` → `React.JSX.Element` em 10 arquivos (Apêndice C).
-- [ ] Revisar os 2 `forwardRef` (`MaskInput.tsx:15`, `GenericMaskInput.tsx:7`).
+- [ ] Revisar os 2 `forwardRef` (`MaskInput.tsx:15`, `GenericMaskInput.tsx:6`).
 - [ ] `react-leaflet` 4 → 5. **Atenção:** a v5 tem peer `react ^19.0.0` **estrito** e a v4 tem `react ^18.0.0` estrito — não há versão que sirva aos dois (reconferido em 23/09). Como `dependency` direta, o bump torna React 19 **obrigatório** para todos os apps. Ver decisão D2 para a alternativa (peer opcional, o app escolhe a versão).
 - [ ] Next 16 (16.3.6 em 23/09): exige Node ≥ 20.9 e aceita React 18.2+ — **pode subir antes do React 19**, se for útil a algum app. *A peer já aceita o 16 desde a `0.2.1` (Etapa 2.1), validado no smoke-app; o que sobra aqui é subir o `next` das `devDependencies` (Storybook) e a avaliação do App Router abaixo.* Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
 - [ ] `cookies-next` foi removido na Etapa 2 (helper interno) — **não precisa voltar**. Só reavaliar se quisermos o helper deles de novo.
@@ -711,6 +747,8 @@ Sub-etapas, cada uma com snapshots revisados:
 
 ### Etapa 9 — TypeScript 7
 - [ ] O `latest` do npm já é `7.0.2` (port nativo em Go). Ficar em **5.9 até a Etapa 8 concluir** e então subir, com dois critérios objetivos de entrada: (a) o bundler da Etapa 3 e o Storybook em uso geram `.d.ts` corretos com TS 7 (*o `tsdown@0.23` já declara peer `typescript ^5 || ^6 || ^7`; o `tsup@8.5.1` declara `>=4.5.0` sem garantia*); (b) `typescript-eslint` suporta TS 7 na versão que estivermos usando. Se algum falhar, permanecer em 5.9 — é a única dependência do plano em que "mais nova" ainda não é claramente melhor.
+
+*25/09/2026:* o critério (b) **falha hoje** — o `typescript-eslint` 8.70.1 (24/09) declara peer `typescript >=4.8.4 <6.1.0`. Existe também o **TS 6.0** (6.0.3), a versão de transição anterior ao port em Go, e ele **está** dentro do range do `typescript-eslint`. Se valer um passo intermediário, 5.9 → 6.0 é viável já; o 7 espera o `typescript-eslint`.
 
 ---
 
@@ -802,6 +840,35 @@ Conferência de cada afirmação do plano contra o código (`grep` no `src/`), o
 - **O `Input` expõe `InputProps`/`InputLabelProps` na API pública** → a migração para `slotProps` na Etapa 7 pode ser breaking para os apps, não só interna.
 - **`check-package.sh` nunca rodava o `attw`** enquanto o `publint` tinha erro (`set -e`). Resolvido de tabela com a Etapa 1 (publint sem erros), mas vale saber se o publint voltar a falhar.
 - Da Etapa 1: 5.11 (`Table` quebra no SSR), 5.12 (`@mui/system` embutido no bundle) e a limitação do `file:../../dist` no smoke-app, que **não roda no CI**.
+
+---
+
+## 11. Revalidação de 25/09/2026 (após a Etapa 3)
+
+Conferência contra o código (`grep` no `src/`), o registry (`npm outdated`, `npm view`), os quatro apps consumidores (`package.json`, lockfile e `Dockerfile` nos repos locais) e o estado do branch/PR. As seções acima já estão corrigidas; aqui fica o que mudou.
+
+**Estado do branch:** `atualizacao-dependencias` sincronizado com `origin`, working tree limpo, topo `b8c029d`. PR #4 em rascunho, CI verde (run de 24/09), sem revisão. Nada publicado: o npm segue com `latest` = `0.0.349`. Nenhum app consumidor usa ainda a linha nova (fora o teste local não commitado no `conoc-frontend`, ver Etapa 2.1).
+
+**Confirmado sem mudança**
+- Apêndices A, B e C: 28 arquivos com `<Grid>` em `src/` + 3 stories; 8 arquivos com props legadas; 21 usos de `JSX.Element` em 10 arquivos; 2 `forwardRef`. 12 arquivos com `useTheme`/`useMediaQuery`, 5 importando `next/*`, `LoadingButton` em `Stepper.tsx:4,141,151`, `jwt_decode` em `OAuthProvider.tsx:1,62,115,117`, `DropFileUpload.tsx:70`, os três `console.log` da 5.13e.
+- Registry: MUI 9.4.0, x-date-pickers 9.14.0, `@mui/lab` sem estável (9.0.0-beta.9, peer `@mui/material ^9.4.0`), Storybook 10.6.0 (`@storybook/nextjs@10` com peer `next ^14.1 || ^15 || ^16`), `react-leaflet` 5.0.0, `keycloak-js` 26.2.4, `tsdown` 0.23.0 (sem release novo desde 03/09), `react-dropzone` 20.1.2 (`engines: node >= 22`).
+
+**Corrigido no texto**
+- 2.2.1: os quatro apps **declaram `@mui/lab`** (alpha.161 nos três em MUI 5, 7.0.1-beta.22 no `conoc`) — o `Stepper` não estava quebrado neles.
+- 4.1: `axios` instalado já é 1.17.0; `prettier` 3.9.9 entrou na lista.
+- 4.4: `jsdom` latest é **30.1.1** (exige Node ≥ 22.22.2 / 24.15); `@types/node` 26.6.2; `vitest@5` pede `@types/node ^22 || >=24`; `eslint@10` é aceito pelo `typescript-eslint`.
+- 5.13a: são **quatro** variáveis de módulo no `Table.tsx:23-26` (faltava `isExpandAll`).
+- Etapa 8: `forwardRef` do `GenericMaskInput` está na linha 6.
+
+**Novo**
+- **Babel 8** saiu (18/09). Não entra: os presets saem na Etapa 5 (4.1).
+- **TS 6.0.3** existe; **`typescript-eslint` ainda não aceita TS 7** (peer `<6.1.0`) — critério (b) da Etapa 9 falha hoje (Etapa 9).
+- **`conoc-frontend` builda em Node 20** → `react-dropzone@20` (Etapa 6) e qualquer ferramenta com `engines` ≥ 22 dão `EBADENGINE` nele.
+- **`@mui/lab` aninhado com `@mui/system` 5 no `conoc`** (5.14); nos apps em MUI 5 o `@mui/lab` da lib também fica aninhado (sem duplicar o MUI).
+- **`copom` pode ser destravado sem esperar a Etapa 7**, abrindo as peers de pickers (`^6 || ^7`) e toastify (`^10 || ^11`) — proposta de Etapa 2.2.
+- **`specto-frontend` e `copom` não declaram `react-hook-form`** (e o `copom` também não declara `dayjs`); recebiam os dois como `dependencies` da `0.0.x`. Na migração para a `0.x` o npm instala as peers sozinho, mas vale declará-las no `package.json` do app para fixar a versão.
+- **Teste manual da `0.3.0` no `viva-flor-frontend` e no `specto-frontend`**: sem erro visual nem regressão nos dois. Os únicos avisos que vêm da lib são `key` faltando em `CustomMenu` e `TableLoadingState`, iguais nos dois apps, e já existiam antes (5.15).
+- Continua valendo o aviso da Etapa 3: `ubuntu-latest` vira Ubuntu 26 em 19/10/2026 — conferir o primeiro run depois disso.
 
 ---
 
