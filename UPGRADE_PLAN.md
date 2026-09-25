@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito, verificado e commitado em 25/09/2026 como **`0.3.1`** (ver o registro e o achado 5.16). **Etapa 2.2** (peers pickers `^6 || ^7` e toastify `^10 || ^11`) feita em 25/09/2026 como **`0.3.2`**, o que destrava o `copom` (achados 5.17 e 5.18). **Próximo: o ferramental da 4.4.** **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito, verificado e commitado em 25/09/2026 como **`0.3.1`** (ver o registro e o achado 5.16). **Etapa 2.2** (peers pickers `^6 || ^7` e toastify `^10 || ^11`) feita em 25/09/2026 como **`0.3.2`**, o que destrava o `copom` (achados 5.17 e 5.18). **Etapa 4 concluída em 25/09/2026** com o ferramental da 4.4 (eslint 10, vitest 5, jsdom 30, Playwright 1.63; sem release). **Próxima: Etapa 5** (Storybook 10). Pendente fora das etapas: o baseline em MUI 5.12 (5.18). **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, e **em 25/09/2026, após a Etapa 3** (seção 11) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -738,7 +738,7 @@ Aviso para acompanhar: `ubuntu-latest` passa a ser Ubuntu 26 em 19/10/2026. Os s
 
 ### Etapa 4 — Lote de minors/patches seguros
 - [x] Tudo da seção 4.1, num PR só. *(25/09: `npm outdated` confere com a tabela; os presets do Babel ficam no 7.29.7, não no 8.)* — **feito em 25/09/2026**, registro abaixo.
-- [ ] Ferramental de dev da seção 4.4, em PR próprio (majors, mas só de dev). Bump do Playwright + imagem do container + **baseline regerado** em PR separado.
+- [x] Ferramental de dev da seção 4.4, em PR próprio (majors, mas só de dev). Bump do Playwright + imagem do container + **baseline regerado** em PR separado. — **feito em 25/09/2026**, registro abaixo.
 
 **Validação:** stories + snapshots idênticos.
 
@@ -767,6 +767,31 @@ Branch `atualizacao-dependencias`, sobre `2ffd47e`. Node 24.21.0. Commit `chore(
 | `npm audit` | `npm audit` / `--omit=dev` | **0 vulnerabilidades nas `dependencies`**. No total foi de 35 para 36, todas de dev (as high caíram de 15 para 8) |
 
 **Achado:** o `@types/react` 18.3 expôs um padrão de ref nos pickers que quebraria no React 19 (5.16). Os 7 erros de typecheck vieram daí, com um a mais do `react-imask` 6.6.3, que passou a tipar o `value` do `onAccept` como `unknown` (`GenericMaskInput.tsx:38`, resolvido com um `as string` sem efeito em runtime).
+
+#### Registro de execução — 25/09/2026 (4.4)
+
+Branch `atualizacao-dependencias`, sobre a `0.3.2`. Node 24.21.0. **Sem release:** só `devDependencies`, scripts e CI mudam, e nada disso chega ao pacote.
+
+**Parte 1: ferramental.** `eslint` 10.11.0 (+ `@eslint/js` 10.0.1 declarado: no eslint 10 ele não vem mais junto, e o `eslint.config.mjs` o importa), `eslint-config-prettier` 10.1.8, `eslint-plugin-react-hooks` 7.1.1, `globals` 17.12.0, `vitest` + `@vitest/coverage-v8` 5.0.2, `jsdom` 30.1.1, `@testing-library/jest-dom` 7.0.1 e `@types/node` ^24.13.6. O `eslint-plugin-storybook` fica no 9, porque a v10 exige Storybook 10 (vai na Etapa 5). O `engines.node` da raiz passa a `^22.22.2 || >=24.15.0`: é o piso do `jsdom` 30. Com o piso antigo (22.18), os testes não rodariam.
+
+- **`npm install` dá `ERESOLVE` com vitest 3 → 5** mesmo com as faixas certas (`vitest` e `coverage-v8` pedem um ao outro na versão exata, e o npm se prende à `coverage-v8` 3.2.7 instalada). Resolvido tirando a `coverage-v8`, instalando o resto e a adicionando de volta. Depois disso, um `npm ci` com `node_modules` apagado instala limpo (989 pacotes).
+- **Vitest 5: mock com arrow function não pode ser chamado com `new`** (mudança do vitest 4). Os 8 testes do `KeycloakAuthProvider` quebraram porque o provider faz `new Keycloak(...)` e o mock era `vi.fn(() => kc)`. Virou `vi.fn(function () { return kc })`.
+- **`react-hooks` 7 traz as regras do React Compiler como `error`** no `recommended`: 29 erros, sendo 16 `set-state-in-effect`, 6 `preserve-manual-memoization`, 4 `immutability` e 3 `globals`. Todas exigem mexer no corpo dos componentes e entraram como `warn`, pelo critério do config. A `globals` aponta as variáveis de módulo do `Table.tsx`, o bug do 5.13a.
+
+**Parte 2: Playwright.** `playwright` 1.55.0 → 1.63.0 (Chromium 153), a imagem `mcr.microsoft.com/playwright:v1.63.0-noble` no `snapshots-in-docker.sh` e no `ci.yaml`, e `pixelmatch` 6 → 7.2.0 (virou ESM, mesma API; o script já era `.mjs`).
+
+- **Baseline:** com o Chromium novo, a comparação contra o baseline antigo passou (0 acima da tolerância de 0,1%). No `--update`, os 84 PNGs mudaram em bytes, mas **79 são idênticos pixel a pixel** (mudou só a codificação) e foram mantidos. Só 5 foram regravados: os 4 da `TabNavBar` (43–118 px) e `base-table--sem-resultados` (2 px). O maior é 0,0115% da imagem. Assim o diff do commit mostra só o que o Chromium mudou.
+
+| Verificação | Resultado |
+|---|---|
+| Typecheck | verde |
+| Lint | 0 erros, 352 warnings (323 + os 29 do React Compiler) |
+| Formatação | verde |
+| Testes | 46 testes em 9 arquivos, verde (vitest 5, jsdom 30) |
+| `npm ci` limpo | verde |
+| Build, `check:package`, smoke | verdes |
+| Snapshots (Playwright 1.55, antes da parte 2) | 84 stories, 0 diffs |
+| Snapshots (Playwright 1.63, baseline novo) | 84 stories, 0 diffs, 0 erros de runtime |
 
 ### Etapa 5 — Storybook 9 → 10
 - [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.

@@ -95,7 +95,7 @@ jobs:
         run: |
           docker run --rm \
             -v "$PWD":/work -w /work --ipc=host \
-            mcr.microsoft.com/playwright:v1.55.0-noble \
+            mcr.microsoft.com/playwright:v1.63.0-noble \
             node scripts/visual-snapshots.mjs
 
       - name: Publicando os diffs visuais

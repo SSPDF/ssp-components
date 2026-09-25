@@ -37,8 +37,13 @@ const kc = {
     onAuthLogout: undefined as (() => void) | undefined,
 }
 
+// `function`, não arrow: o provider faz `new Keycloak(...)`, e desde o vitest 4 um mock com
+// implementação em arrow function não pode ser chamado com `new`. Retornar um objeto do
+// construtor faz o `new` devolver o `kc`.
 vi.mock('keycloak-js', () => ({
-    default: vi.fn(() => kc),
+    default: vi.fn(function () {
+        return kc
+    }),
 }))
 
 const TOKEN_PARSED = {

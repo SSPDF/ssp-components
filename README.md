@@ -123,7 +123,7 @@ Os tipos de props (`InputProps`, `InputType`, `CsvConfigProp`, `FilterValue`, `T
 ```bash
 npm run storybook      # ambiente de dev/preview (Storybook em :6006) — não há app host
 npm run api            # mock API (json-server em :7171) para componentes Fetch*
-npm run build          # build de produção (tsdown; exige Node ≥ 22.18) -> dist/
+npm run build          # build de produção (tsdown; exige Node ≥ 22.18; os testes, ≥ 22.22.2 ou ≥ 24.15) -> dist/
 
 npm run typecheck      # tsc --noEmit
 npm run lint           # eslint

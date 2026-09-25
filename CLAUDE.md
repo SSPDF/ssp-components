@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run storybook        # dev environment — Storybook on :6006 (primary way to run/preview components)
-npm run build            # production build via tsdown -> dist/ (one file per module: ESM .js + CJS .cjs + .d.ts/.d.cts). Needs Node ≥ 22.18. Runs prebuild (sync-version) first.
+npm run build            # production build via tsdown -> dist/ (one file per module: ESM .js + CJS .cjs + .d.ts/.d.cts). Needs Node ≥ 22.18 (the full dev suite needs ≥ 22.22.2 or ≥ 24.15, jsdom 30's floor — see `engines`). Runs prebuild (sync-version) first.
 npm run dev              # tsc --watch (type-check only; noEmit is on in tsconfig)
 npm run api              # json-server mock API on :7171, serving api-test.json (for Fetch* components in stories)
 npm run build-storybook  # static Storybook -> storybook-static/
@@ -54,9 +54,9 @@ Only `OAuthProvider` writes the JWT to the `nextauth.token` cookie (`cookieName`
 
 Version lives in **`lib-package.json`** (the package.json that actually gets published — copied to `dist/package.json`), not the root `package.json`. The `prebuild` hook runs `sync-version.cjs`, which copies `lib-package.json`'s version into the root `package.json`. **To release: bump the version in `lib-package.json`, then push a matching `v*` tag** (e.g. `v0.1.1`). `.github/workflows/publish.yaml` runs on that tag (or a manual `workflow_dispatch`), verifies the tag matches `lib-package.json`, refuses a version already on npm, builds, copies `lib-package.json`→`dist/package.json` and `README.md`/`CHANGELOG.md`→`dist/`, then `npm publish`es from `dist/` under the right dist-tag (a pre-release version goes to `next`, never `latest`). **Pushing to `main` no longer publishes** — that changed in Etapa 0 of the upgrade plan. **Semver since `0.1.0`** (the `0.0.x` line shipped everything, breaking changes included, as patches): while in `0.x`, a breaking change bumps the minor. Every release gets an entry in `CHANGELOG.md`. Release commits are `vX.Y.Z - <description>` (the old `vNNN - …` convention ended at `v0.0.349`); other commits use conventional-commit style (`feat:`, `fix:`, `chore:`…).
 
-## Dependency upgrade (Etapas 0–3 done, Etapa 4 in progress)
+## Dependency upgrade (Etapas 0–4 done, Etapa 5 next)
 
-Dependencies are several majors behind (MUI 5→9, Storybook 9→10). **`UPGRADE_PLAN.md` at the repo root is the agreed plan — read it before touching `package.json` or `lib-package.json`.** Etapa 0 (baseline + safety net), Etapa 1 (packaging → `0.1.0`), Etapa 2 (cleanup → `0.2.0`), Etapa 2.1 (`next` peer opened to 15/16 → `0.2.1`) and Etapa 3 (`microbundle` → `tsdown` → `0.3.0`) are done; see their "Registro de execução". Etapa 4 (safe minors/patches) is in progress: the 4.1 batch shipped as `0.3.1`; Etapa 2.2 (pickers `^6 || ^7`, toastify `^10 || ^11` peers) shipped as `0.3.2`; the 4.4 dev-tooling majors are next. All stages live on a **single branch, `atualizacao-dependencias`** (not merged into `main`, nothing published) — don't create one branch per stage. The build is **`tsdown` in `unbundle` mode, ESM + CJS** (decision D1); it needs Node ≥ 22.18 to build (24 LTS in CI) — a build-time requirement only. Things from these stages that affect everyday work here:
+Dependencies are several majors behind (MUI 5→9, Storybook 9→10). **`UPGRADE_PLAN.md` at the repo root is the agreed plan — read it before touching `package.json` or `lib-package.json`.** Etapa 0 (baseline + safety net), Etapa 1 (packaging → `0.1.0`), Etapa 2 (cleanup → `0.2.0`), Etapa 2.1 (`next` peer opened to 15/16 → `0.2.1`) and Etapa 3 (`microbundle` → `tsdown` → `0.3.0`) are done; see their "Registro de execução". Etapa 4 (safe minors/patches) is done: the 4.1 batch shipped as `0.3.1`, Etapa 2.2 (pickers `^6 || ^7`, toastify `^10 || ^11` peers) shipped as `0.3.2`, and the 4.4 dev-tooling majors (eslint 10, vitest 5, jsdom 30, Playwright 1.63) landed without a release. Etapa 5 (Storybook 10) is next. All stages live on a **single branch, `atualizacao-dependencias`** (not merged into `main`, nothing published) — don't create one branch per stage. The build is **`tsdown` in `unbundle` mode, ESM + CJS** (decision D1); it needs Node ≥ 22.18 to build (24 LTS in CI) — a build-time requirement only. Things from these stages that affect everyday work here:
 
 - **MUI, Emotion, `react-hook-form`, `dayjs` and `react-toastify` are peers** — the version that actually runs is the *consumer app's*. Any MUI major bump is a coordinated, breaking release. Peers live in `peerDependencies` **and** `devDependencies` of the root `package.json` (a package missing from both used to get **bundled into `dist/` silently** — how a copy of `@mui/system` ended up there before 0.1.0; `tsdown.config.mts` now fails the build on that via `deps.onlyBundle: []` / `deps.onlyImport`). The root `dependencies` must equal `lib-package.json`'s `dependencies`.
 - **Import MUI only from `@mui/material` / `@mui/icons-material` / `@mui/x-date-pickers`**, never `@mui/system` or other undeclared packages. `node scripts/check-externals.mjs` (part of `check:package`) checks every import in `dist/**` against `lib-package.json`.
@@ -85,13 +85,15 @@ Dependencies are several majors behind (MUI 5→9, Storybook 9→10). **`UPGRADE
 
 ```bash
 npm run typecheck    # tsc --noEmit
-npm run lint         # eslint 9 flat config (0 errors; warnings are tracked debt)
+npm run lint         # eslint 10 flat config (0 errors; warnings are tracked debt — incl. the React Compiler rules of react-hooks 7, downgraded to warn)
 npm run format:check # prettier, per .prettierrc
 npm run test         # vitest — auth providers, cookie helper, AutoComplete, masked GenericInput, picker validation, tables (incl. SSR in a node env)
 npm run snapshots    # visual snapshots of every story, inside a fixed Linux container (rebuilds Storybook first; SKIP_STORYBOOK_BUILD=1 to skip)
 npm run check:package # externals vs lib-package.json + 'use client' + publint + are-the-types-wrong over dist/
 npm run smoke         # packed dist/ installed in examples/smoke-app + next build (SMOKE_NEXT / SMOKE_PICKERS / SMOKE_TOASTIFY pick other majors)
 ```
+
+**Vitest 5: a `vi.fn` with an arrow-function implementation can't be called with `new`** — mock constructors with `vi.fn(function () { return obj })` (see `KeycloakAuthProvider.test.tsx`).
 
 **Snapshots must be generated inside the container** (`npm run snapshots:update`), never straight from macOS — fonts and antialiasing differ from CI and every PNG would show a diff. The baseline lives in `snapshots/baseline/` and is versioned.
 

@@ -6,7 +6,7 @@ import storybook from 'eslint-plugin-storybook'
 import prettier from 'eslint-config-prettier'
 
 /**
- * Flat config do ESLint 9 (Etapa 0 do UPGRADE_PLAN.md).
+ * Flat config do ESLint (criado com o 9 na Etapa 0 do UPGRADE_PLAN.md; no 10 desde a Etapa 4).
  *
  * Critério desta primeira passada: **nada que exija refatoração entra como `error`**.
  * O objetivo aqui é ter o lint rodando no CI sem travar as Etapas 1–8; as regras
@@ -67,6 +67,14 @@ export default tseslint.config(
             // comportamento — fica para depois da Etapa 0.
             'react-hooks/rules-of-hooks': 'warn',
             'react-hooks/exhaustive-deps': 'warn',
+            // Regras do React Compiler, que o `recommended` do eslint-plugin-react-hooks 7
+            // liga como `error` (Etapa 4, 25/09/2026). Cada ocorrência exige mexer no corpo
+            // do componente, então entram como warn pelo mesmo critério acima. A `globals`
+            // aponta as variáveis de módulo do `Table.tsx` (UPGRADE_PLAN.md 5.13a).
+            'react-hooks/set-state-in-effect': 'warn',
+            'react-hooks/preserve-manual-memoization': 'warn',
+            'react-hooks/immutability': 'warn',
+            'react-hooks/globals': 'warn',
         },
     },
     {

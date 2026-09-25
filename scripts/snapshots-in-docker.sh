@@ -13,7 +13,7 @@
 set -euo pipefail
 
 # Fixado por digest para o baseline não mudar quando a tag for republicada.
-IMAGE="mcr.microsoft.com/playwright:v1.55.0-noble"
+IMAGE="mcr.microsoft.com/playwright:v1.63.0-noble"
 
 cd "$(dirname "$0")/.."
 
