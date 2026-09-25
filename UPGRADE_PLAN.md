@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Próxima: Etapa 4.** **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
+> **Status:** Etapas 0, 1 e 2 concluídas e commitadas (23/09/2026) no branch único `atualizacao-dependencias` (ainda não mergeado na `main`, nada publicado). **Etapa 2.1** (peer `next` aberta para 15/16 → `0.2.1`) testada e documentada em 23/09/2026. **Etapa 3** (`microbundle` → `tsdown` → `0.3.0`) concluída e commitada em 24/09/2026 — ver o registro dela (dois bugs de interop achados e corrigidos; o 🚭 node16-ESM do attw fica para a Etapa 7). **O branch está no GitHub desde 24/09/2026, com o PR #4 em rascunho só para rodar o CI** (verde, nada publicado); a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela — nada de push direto na `main` até o merge. **Etapa 4 em andamento:** o lote da 4.1 foi feito e verificado e commitado em 25/09/2026 (ver o registro e o achado 5.16). **Próximo: o ferramental da 4.4.** **Revalidado em 25/09/2026** contra o registry, o código e os quatro apps consumidores — o que mudou está na **seção 11**. Documento de trabalho — marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, e **em 25/09/2026, após a Etapa 3** (seção 11) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -388,6 +388,15 @@ Não muda nada na linha `0.x` (que declara MUI 5 e não promete funcionar no 7),
 
 **`specto-frontend`**: `next dev` com o mesmo tarball e a API apontada para hmg. O `specto-backend` local não subiu: o Prisma client não tinha sido gerado e o `nest start` parou com `'$connect' does not exist on type 'PrismaOcorrenciaService'` em `src/prisma/prisma.service.ts`, um problema do ambiente e não da lib. Foram percorridas `/termo`, `/` e `/buscaCPF/:cpf`, **sem erro visual e sem erro de runtime**. O console repetiu **os mesmos dois avisos de `key`** do item a (`CustomMenu` e `TableLoadingState`, esse dentro da `Table`), o que confirma que são da lib e não de um app específico. O único outro aviso é do app: o `next/image` do `logo.svg` com `height: 'auto'` só em uma dimensão (`pages/index.tsx:38`).
 
+### 5.16 Os pickers registram a validação dentro do `inputRef` (achado na Etapa 4, 25/09/2026) — ✅ corrigido para o React 19, sem mudança de comportamento
+
+`DatePicker`, `GenericDatePicker` e `TimePicker` passavam ao picker do MUI `inputRef={(params) => <TextField {...params} {...context.register(name, { validate… })} />}`, no formato do antigo `renderInput` da v5. Só que `inputRef` é uma **ref de callback**: o React a chama com o `<input>` e descarta o retorno, então esse `TextField` nunca renderizou. O que funcionava, por efeito colateral, era o `register(name, { validate })`, avaliado nas props do JSX a cada chamada da ref. **É assim que o obrigatório e as datas mínima e máxima desses três componentes são validados.** O `FilterSection` tinha o mesmo formato, três vezes, mas sem `register`, e ali era código morto de verdade.
+
+- **Por que apareceu agora:** o `@types/react` 18.3 tipa o retorno de uma ref de callback como função de cleanup (antecipando o React 19). Um JSX retornado deixou de ser atribuível.
+- **Por que importa:** no **React 19** o retorno de uma ref de callback passa a ser tratado como cleanup. O `conoc-frontend` já roda a lib em React 19 (Etapa 2.1).
+- **Correção:** nos três pickers, o `inputRef` passa a só chamar o `register`, sem retornar nada. Com isso a validação continua registrada exatamente nos mesmos momentos. No `FilterSection`, o `inputRef` foi removido. O novo `src/components/form/date/pickers.test.tsx` submete cada picker obrigatório vazio e confere que o submit é bloqueado com a mensagem. Ele **passa no código da 0.3.0 e no novo, e falha quando o `register` é desligado**, o que foi conferido nos três casos.
+- **Para a Etapa 7:** o codemod do `x-date-pickers` v9 não sabe que a validação mora no `inputRef`. Ao migrar os pickers, manter o `register` (ou mover a validação para um lugar explícito, como o `rules`/`useController`) e rodar o `pickers.test.tsx`. O ideal é trocar esse efeito colateral por registro explícito, mas isso muda o momento do registro e por isso ficou fora de um lote "seguro".
+
 ---
 
 ## 6. Rede de segurança (Etapa 0) — obrigatória antes de qualquer bump
@@ -687,10 +696,36 @@ Aviso para acompanhar: `ubuntu-latest` passa a ser Ubuntu 26 em 19/10/2026. Os s
 **Decisão pendente (não bloqueia a Etapa 4):** zerar o 🚭 exige `.mjs`, e o `.mjs` exige **tirar o Next 14 da peer** (`^15 || ^16`, e testar o 15 no browser). Nenhum app consumidor está no 14 (tabela da Etapa 2.1 — todos em 16), então seria breaking só no papel; mas é mudança de contrato e não ganha nada em runtime até a Etapa 7. Recomendação: **deixar para a Etapa 7**, quando o MUI com `exports` tira a causa (deep import CJS) e o ESM-only volta à mesa.
 
 ### Etapa 4 — Lote de minors/patches seguros
-- [ ] Tudo da seção 4.1, num PR só. *(25/09: `npm outdated` confere com a tabela; os presets do Babel ficam no 7.29.7, não no 8.)*
+- [x] Tudo da seção 4.1, num PR só. *(25/09: `npm outdated` confere com a tabela; os presets do Babel ficam no 7.29.7, não no 8.)* — **feito em 25/09/2026**, registro abaixo.
 - [ ] Ferramental de dev da seção 4.4, em PR próprio (majors, mas só de dev). Bump do Playwright + imagem do container + **baseline regerado** em PR separado.
 
 **Validação:** stories + snapshots idênticos.
+
+#### Registro de execução — 25/09/2026 (4.1)
+
+Branch `atualizacao-dependencias`, sobre `2ffd47e`. Node 24.21.0. Commit `chore(deps): lote de patches e minors da Etapa 4 (4.1)`. A versão do `lib-package.json` continua `0.3.0`.
+
+**O que subiu:**
+- *`dependencies` (publicadas):* `axios` ^1.20.0, `jszip` ^3.10.2, `react-dropzone` ^14.4.1, `react-imask` ^6.6.3 e `write-excel-file` ^4.1.1, iguais no `package.json` raiz e no `lib-package.json`. São patches e minors dentro do major. Nenhum declara `engines` acima do Node 20 (`write-excel-file` pede ≥ 18), então o `conoc-frontend` continua atendido.
+- *`devDependencies`:* `@babel/preset-*` 7.29.7 (**não** o 8), `@tsconfig/recommended` 1.0.13, `@types/leaflet` 1.9.22, `@types/lodash.get`/`.hasin` 4.4.9/4.5.9 (também no `lib-package.json`), `@types/node` 20.19, `@types/react`/`-dom` 18.3.31/18.3.7, `typescript` 5.9.3, Emotion 11.14.0/11.14.1, `react`/`react-dom` 18.3.1, `react-hook-form` 7.88.0, `dayjs` 1.11.23, `react-toastify` 10.0.6, `prettier` 3.9.9, e **todos os pacotes do Storybook alinhados em 9.1.20** (os addons e o `react-webpack5` estavam fixados em 9.0.17).
+- **As peers não mudaram.** Os pacotes que também são peer (Emotion, React, `react-hook-form`, `dayjs`, toastify) subiram só como `devDependency`.
+- Ficaram de fora, porque não estão na 4.1: o MUI e o `x-date-pickers` das `devDependencies` (5.12.1 e 6.2.0, com os apps em 5.15–5.18 e pickers 6.19–6.20; subir dentro do 5/6 tornaria o Storybook mais parecido com os apps e pode entrar num lote seguinte), `tsdown`, `typescript-eslint`, `msw` e o ferramental da 4.4.
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| Instalação | `npm install` | sem `ERESOLVE`. Árvore de 1070 → 1023 pacotes |
+| Typecheck | `npm run typecheck` | **7 erros novos**, todos corrigidos (5.16). Verde depois da correção |
+| Lint | `npm run lint` | 0 erros, **323 warnings** (eram 329; saíram os seis `params: any` do 5.16) |
+| Formatação | `npm run format:check` | verde (o prettier 3.9.9 não reformatou nada) |
+| Testes | `npm run test` | **44 testes em 8 arquivos**, verde (+3: `pickers.test.tsx`, novo) |
+| Build | `npm run build` | verde |
+| API pública | `node scripts/check-public-api.mjs` | íntegra |
+| Pacote | `npm run check:package` | verde: externos batem, `'use client'` preservado, publint/attw como na 0.3.0 |
+| App de fumaça | `npm run smoke` / `SMOKE_NEXT=16 npm run smoke` | **verde nos dois**. O JS compartilhado no Next 14 ficou em 356 kB (era 357 kB) |
+| Snapshots | `npm run snapshots` (Storybook rebuildado) | 84 stories, **0 diffs**, 0 erros de runtime |
+| `npm audit` | `npm audit` / `--omit=dev` | **0 vulnerabilidades nas `dependencies`**. No total foi de 35 para 36, todas de dev (as high caíram de 15 para 8) |
+
+**Achado:** o `@types/react` 18.3 expôs um padrão de ref nos pickers que quebraria no React 19 (5.16). Os 7 erros de typecheck vieram daí, com um a mais do `react-imask` 6.6.3, que passou a tipar o `value` do `onAccept` como `unknown` (`GenericMaskInput.tsx:38`, resolvido com um `as string` sem efeito em runtime).
 
 ### Etapa 5 — Storybook 9 → 10
 - [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.

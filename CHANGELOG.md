@@ -2,6 +2,18 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## Não lançado
+
+**Atualização de patches e minors (Etapa 4 do `UPGRADE_PLAN.md`).** Nenhum componente muda de comportamento nem de visual (os 84 snapshots são idênticos), e as peers e a API pública são as mesmas.
+
+### O que o app precisa fazer
+
+Nada. As `dependencies` da lib sobem dentro do mesmo major: `axios` ^1.20.0, `jszip` ^3.10.2, `react-dropzone` ^14.4.1, `react-imask` ^6.6.3 e `write-excel-file` ^4.1.1. Nenhuma delas exige Node acima do 20.
+
+### Mudanças
+
+- **`DatePicker`, `GenericDatePicker` e `TimePicker` preparados para o React 19.** A validação deles (obrigatório, data mínima e máxima) era registrada numa ref de callback que retornava um `TextField` que nunca aparecia. No React 19, o retorno de uma ref é tratado como função de limpeza. A ref agora só registra a validação, que continua igual e passou a ter teste.
+
 ## 0.3.0
 
 **Troca do bundler (`microbundle` → `tsdown`) e novo layout do `dist/`.** Nenhum componente muda de comportamento nem de visual (os 84 snapshots das stories são idênticos), a API pública é a mesma (78 exports, 49 valores de runtime) e nenhuma peer mudou.

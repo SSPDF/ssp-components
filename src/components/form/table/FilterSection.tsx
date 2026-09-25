@@ -286,7 +286,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )
@@ -309,7 +308,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                             <DatePicker
                                 format='DD/MM/YYYY'
@@ -327,7 +325,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )
