@@ -486,7 +486,7 @@ O caso mais perigoso desta migração: **Grid v2 ignora `item`/`xs` silenciosame
 - [x] **Cobertura automatizada dos providers de auth** (decisão: preferência por teste automatizado em vez de validação manual no HMG). `KeycloakAuthProvider` (519 linhas) e `OAuthProvider` não têm story nem teste hoje. Plano:
     - `OAuthProvider`: usar o **bypass de localhost** já existente (`testIP`/`testToken`) para testar sem rede — login, `isAuth`/`userLoaded`, `hasRole`/`hasAnyRole`/`hasAllRoles`, gravação do cookie `nextauth.token`, avatar no `localStorage` e `logout`. Tokens de teste gerados no próprio teste (JWT não assinado), sem segredo no repo.
     - `KeycloakAuthProvider`: stub dos endpoints do Keycloak com **MSW** (`.well-known/openid-configuration`, `token`, `userinfo`, `logout`) + mock do módulo `keycloak-js` para cobrir `init`, refresh automático de token e expiração. Testa a nossa lógica sem depender do HMG.
-    - **E2E opcional contra o Keycloak de HMG**, em job separado e fora do caminho de PR (roda sob demanda/agendado, com credenciais em secrets). Serve de rede de segurança na Etapa 6 (`keycloak-js` 25 → 26), que é o único ponto em que o protocolo real importa.
+    - **E2E opcional contra o Keycloak de HMG**, em job separado e fora do caminho de PR (roda sob demanda/agendado, com credenciais em secrets). Serve de rede de segurança na Etapa 6 (`keycloak-js` 25 → 26), que é o único ponto em que o protocolo real importa. *26/09: feito na Etapa 6, rodando em todo push (`e2e-keycloak-hmg.yaml`), além do e2e contra um OIDC simulado no CI.*
 
 ---
 
@@ -908,7 +908,7 @@ Branch `atualizacao-dependencias`, sobre `f549659`. Node 24.21.0. **Sem release:
 - [x] `react-imask` 6 → 7
 - [x] `react-toastify` 10 → 11 nas `devDependencies` (decidir o destino do CSS vendorizado). *26/09: CSS vendorizado apagado; a v11 injeta o dela.* *25/09: a peer já aceita o 11 desde a `0.3.2`, e o CSS vendorizado só é usado pelos decorators das stories, não vai no pacote. Então este item virou só dev: Storybook e snapshots na v11.*
 - [x] `react-dropzone` 14 → 20 (*`engines: node >= 22` — em 25/09 o `conoc-frontend` builda em `node:20`; subir o Dockerfile dele para 22/24 antes, ou segurar esta lib*)
-- [x] `keycloak-js` 25 → 26 *(e2e contra o HMG preparado, aguardando client e usuário de teste; ver o registro)*
+- [x] `keycloak-js` 25 → 26 *(e2e contra o HMG verde desde 26/09; ver o registro)*
 
 **Validação:** story dedicada por lib + app de fumaça. Para `keycloak-js` 25 → 26: suíte com MSW da Etapa 0 + **e2e contra o Keycloak de HMG** (job sob demanda). Teste manual só se o e2e apontar divergência.
 
@@ -948,6 +948,9 @@ Resultados:
 - Roda em cerca de 1 min 30 s, e no CI entra antes do tarball de desenvolvimento.
 
 **E2E contra o Keycloak de HMG (`.github/workflows/e2e-keycloak-hmg.yaml`):** o mesmo script, com `E2E_KC_URL`, pega o que o simulador não pega (tema de login, configuração do realm, servidor real). Roda em todo push e sob demanda. Usa um client de teste (público, PKCE S256, redirect e post-logout `http://localhost:3100/*`, access token de 1 min para o teste ver a renovação) e um usuário de teste com uma única role desse client, criados no HMG só para isto. **Todos os dados ficam em secrets do repositório** (`E2E_KC_URL`, `E2E_KC_REALM`, `E2E_KC_CLIENT_ID`, `E2E_KC_ROLE`, `E2E_KC_USUARIO`, `E2E_KC_SENHA`), inclusive os não sigilosos, por decisão de não deixar nada disso público. Sem os secrets, o job só avisa. Reusar o client `-dev` de um app foi descartado, para não amarrar o teste da lib à configuração de outro sistema.
+
+- **Primeira execução (26/09, push do `e86cef0`): verde.** Os 6 passos passaram contra o servidor real: abre anônimo, login pela tela do HMG, role presente, reload autenticado pelo check-sso silencioso, token renovado sozinho em 60 s e logout encerrando a sessão. O HMG é acessível pelos runners do GitHub, e a tela de login do realm usa os campos padrão do Keycloak (`username`, `password`, `kc-login`), que o script preenche.
+- **Valores de secret curtos poluem o log.** O GitHub troca por `***` toda ocorrência do valor de um secret no log. Com a role chamada `E2E`, até os nomes dos passos saíam mascarados, e a role foi renomeada para um nome único. O realm (`ssp`) continua mascarando cada "ssp" do log (é o realm dos apps e não muda). Ao criar um secret novo para este job, prefira valores que não apareçam em outro texto.
 
 ### Etapa 7 — MUI 5 → 9 (a grande) → `1.0.0`
 Sub-etapas, cada uma com snapshots revisados:
@@ -1119,7 +1122,7 @@ Conferência contra o código (`grep` no `src/`), o registry (`npm outdated`, `n
 Conferido contra o repo, o registry (`npm outdated`, `npm view`), o GitHub (PR #4, CI) e os quatro apps consumidores. As seções acima já estão atualizadas; aqui fica o resumo consolidado.
 
 **Branch e publicação**
-- `atualizacao-dependencias` sincronizado com o `origin`. Os commits de 25/09 são `17b1d4a` (4.1), `61bccaf` (**`v0.3.1`**), `d3d0bbd` (**`v0.3.2`**), `919bcf9` (4.4) e `8ebb836` (MUI 5.18 + snapshots isolados). O PR #4 continua em rascunho, e o título ainda diz "Etapas 0 a 3 (até 0.3.0)".
+- `atualizacao-dependencias` sincronizado com o `origin`. Os commits de 25/09 são `17b1d4a` (4.1), `61bccaf` (**`v0.3.1`**), `d3d0bbd` (**`v0.3.2`**), `919bcf9` (4.4) e `8ebb836` (MUI 5.18 + snapshots isolados). O PR #4 continua em rascunho. *26/09: título e descrição atualizados para "Etapas 0 a 6 (até 0.4.0)".*
 - **Nada publicado:** o npm tem só `latest` = `0.0.349`. Para publicar: merge na `main` e uma tag `v0.3.2`. O `publish.yaml` novo só publica por tag, mas a `main` ainda tem o antigo até o merge.
 - O CI roda typecheck, lint, format, 46 testes, build, API pública, `check:package`, **três smokes** (piso; Next 16; Next 16 + pickers 7 + toastify 11), o tarball como artefato, build do Storybook e **snapshots de 84 stories isoladas** (Playwright 1.63).
 
@@ -1150,7 +1153,7 @@ Conferido contra o repo, o registry (`npm outdated`, `npm view`), o GitHub (PR #
 - `ubuntu-latest` vira Ubuntu 26 em 19/10/2026: conferir o primeiro CI depois disso. Os snapshots usam imagem fixa, mas os smokes rodam no runner.
 - Decisões em aberto: **D2** (`react-leaflet`, que hoje é **o único** bloqueio de React 19) e quando mergear e publicar a linha `0.x`.
 
-**Próximos passos, pela ordem do plano:** ~~Etapa 5 (Storybook 10, sem release)~~ ✅ feita em 26/09/2026 (registro na Etapa 5: 10.6.0, 0 diffs, sem `.babelrc.json`, `addon-vitest` não adotado), ~~Etapa 6 (um PR por lib de runtime)~~ ✅ feita em 26/09/2026 (`0.4.0`; pendente só o e2e contra o HMG, que depende de client e usuário de teste), Etapa 7 (MUI 9, `1.0.0`), Etapa 8 (React 19, `2.0.0`) e Etapa 9 (TS 7, bloqueada pelo `typescript-eslint`).
+**Próximos passos, pela ordem do plano:** ~~Etapa 5 (Storybook 10, sem release)~~ ✅ feita em 26/09/2026 (registro na Etapa 5: 10.6.0, 0 diffs, sem `.babelrc.json`, `addon-vitest` não adotado), ~~Etapa 6 (um PR por lib de runtime)~~ ✅ feita em 26/09/2026 (`0.4.0`, com e2e do Keycloak contra o simulado e contra o HMG, ambos verdes), Etapa 7 (MUI 9, `1.0.0`), Etapa 8 (React 19, `2.0.0`) e Etapa 9 (TS 7, bloqueada pelo `typescript-eslint`).
 
 ---
 
