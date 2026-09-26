@@ -21,6 +21,10 @@
 #   SMOKE_PICKERS=7 npm run smoke                                 # x-date-pickers ^6 || ^7
 #   SMOKE_TOASTIFY=11 npm run smoke                               # react-toastify ^10 || ^11
 #   SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke # combinação do copom
+#
+# SMOKE_E2E_KEYCLOAK=1 (usado por scripts/e2e-keycloak.sh) serve o app buildado em :3100 e
+# roda o e2e do KeycloakAuthProvider contra o Keycloak que aquele script sobe.
+# SMOKE_KEYCLOAK_JS=25.0.6 troca o keycloak-js instalado pela lib (para comparar versões).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -57,6 +61,11 @@ versoes="next $(npm pkg get dependencies.next), x-date-pickers $(npm pkg get dep
 echo "── instalando $tarball no smoke-app ($versoes) ──"
 npm install --no-save --no-audit --no-fund "$tmp/$tarball"
 
+if [ -n "${SMOKE_KEYCLOAK_JS:-}" ]; then
+    npm install --no-save --no-audit --no-fund "$tmp/$tarball" "keycloak-js@$SMOKE_KEYCLOAK_JS"
+fi
+echo "keycloak-js instalado: $(npm ls keycloak-js --all 2>/dev/null | grep -o 'keycloak-js@[0-9.]*' | sort -u | tr '\n' ' ')"
+
 echo
 echo "── uma cópia de cada peer? ──────────────────────────"
 # `npm ls` sai com erro se houver peer inválida ou duplicata não deduplicada
@@ -70,3 +79,13 @@ echo
 echo "── valor padrão do DatePicker na primeira montagem ──"
 # UPGRADE_PLAN.md 5.17 — detalhes no próprio script.
 node verificar-datepicker.cjs
+
+if [ -n "${SMOKE_E2E_KEYCLOAK:-}" ]; then
+    echo
+    echo "── e2e do KeycloakAuthProvider ──────────────────────"
+    npx next start -p 3100 > "$tmp/next-start.log" 2>&1 &
+    servidor=$!
+    trap 'kill $servidor 2>/dev/null || true; cp "$tmp/tsconfig.json" "$tmp/package.json" "$app/"; rm -rf "$tmp"; rm -f "$app/package-lock.json"' EXIT
+    for _ in $(seq 1 60); do curl -sf -o /dev/null "http://localhost:3100${SMOKE_BASE_PATH:-}/auth-keycloak" && break; sleep 1; done
+    node ../../scripts/e2e-keycloak.mjs
+fi

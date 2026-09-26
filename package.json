@@ -122,7 +122,8 @@
         "pack:local": "./scripts/pack-local.sh",
         "test": "vitest run",
         "test:watch": "vitest",
-        "interacoes": "node scripts/interacoes.mjs"
+        "interacoes": "node scripts/interacoes.mjs",
+        "e2e:keycloak": "./scripts/e2e-keycloak.sh"
     },
     "engines": {
         "node": "^22.22.2 || >=24.15.0"

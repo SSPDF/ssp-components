@@ -64,9 +64,20 @@ jobs:
       - name: App de fumaça na combinação do copom (pickers 7, toastify 11, Next 16)
         run: SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke
 
+      # O KeycloakAuthProvider é o login de todos os apps. Este passo roda o keycloak-js de
+      # verdade, no browser, contra o servidor OIDC simulado (scripts/lib/oidc-simulado.mjs, sem
+      # Docker): check-sso, login, roles, PKCE conferido pelo servidor, SSO silencioso no reload,
+      # refresh automático, refresh recusado, sessão encerrada fora do app e logout.
+      # O e2e contra o Keycloak de HMG fica em e2e-keycloak-hmg.yaml (precisa de credenciais).
+      - name: Chromium do Playwright (para o e2e do Keycloak)
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E do KeycloakAuthProvider (keycloak-js real, OIDC simulado)
+        run: SMOKE_NEXT=16 npm run e2e:keycloak
+
       # Versão de desenvolvimento sem npm: o mesmo .tgz que o publish geraria (pack:local
-      # repete os passos do publish.yaml). Só sobe se o check:package e os três smokes
-      # passaram. No app: baixar o artefato do run e `npm install ./<arquivo>.tgz`.
+      # repete os passos do publish.yaml). Só sobe se o check:package, os três smokes e o
+      # e2e do Keycloak passaram. No app: baixar o artefato do run e `npm install ./<arquivo>.tgz`.
       # O nome leva o SHA do topo do branch: num PR o `github.sha` é o commit de merge
       # temporário que o GitHub cria (e que ninguém acha no `git log`). O conteúdo é o
       # desse merge com a main — igual ao do topo enquanto o branch estiver atualizado.
