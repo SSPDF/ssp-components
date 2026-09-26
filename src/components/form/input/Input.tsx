@@ -63,7 +63,7 @@ const MASK_CONFIGS: Record<string, IMaskConfig> = {
     phone: {
         mask: [
             { mask: '(00) 0000-0000' }, // Fixo
-            { mask: '(00) 00000-0000' } // Celular (Genérico é melhor que forçar o 9 fixo na string)
+            { mask: '(00) 00000-0000' }, // Celular (Genérico é melhor que forçar o 9 fixo na string)
         ],
         dispatch: (appended: any, dynamicMasked: any) => {
             const number = (dynamicMasked.value + appended).replace(/\D/g, '')
@@ -83,7 +83,7 @@ const MASK_CONFIGS: Record<string, IMaskConfig> = {
             }
 
             return dynamicMasked.compiledMasks[0]
-        }
+        },
     },
     sei: { mask: '00000-00000000/0000-00' },
     cpf: { mask: '000.000.000-00' },
@@ -274,15 +274,7 @@ export function Input({
         // 'input' é tratado como 'text' para compatibilidade
         const htmlType = type === 'input' ? 'text' : type
 
-        return (
-            <TextField
-                {...formConfig}
-                type={htmlType}
-                value={formValue ?? defaultValue}
-                onChange={(e) => context.formSetValue(name, e.target.value)}
-                disabled={disabled}
-            />
-        )
+        return <TextField {...formConfig} type={htmlType} value={formValue ?? defaultValue} onChange={(e) => context.formSetValue(name, e.target.value)} disabled={disabled} />
     }
 
     return (

@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import React, { useEffect, useState } from 'react'
 import { MODAL } from '../../modal/Modal'
 import { FilterOperators, FilterValue } from './types'
@@ -88,7 +88,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                             idx={idx}
                             setDt={(valueData) => {
                                 setData((dt) => {
-                                    let arr = [...dt]
+                                    const arr = [...dt]
                                     arr[idx] = valueData
                                     return arr
                                 })
@@ -286,7 +286,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )
@@ -309,7 +308,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                             <DatePicker
                                 format='DD/MM/YYYY'
@@ -327,7 +325,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )

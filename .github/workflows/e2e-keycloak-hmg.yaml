@@ -1,0 +1,65 @@
+name: E2E Keycloak HMG
+
+# O mesmo e2e do KeycloakAuthProvider que o CI roda contra o OIDC simulado, mas contra o
+# Keycloak de HMG: pega o que um simulador não pega (tema de login, configuração do realm,
+# versão do servidor). Usa um client e um usuário de teste do HMG que só existem para isto.
+# Todos os dados vêm de secrets (Settings → Secrets and variables → Actions), inclusive os que
+# não são sigilosos, para nada disso ficar público (o repositório é público):
+#   E2E_KC_URL, E2E_KC_REALM, E2E_KC_CLIENT_ID, E2E_KC_ROLE, E2E_KC_USUARIO, E2E_KC_SENHA
+# O client aceita o redirect http://localhost:3100/* (e o post-logout), com PKCE S256, e tem o
+# access token de 1 min, para o teste ver a renovação automática.
+# Sem os secrets o job só avisa e passa. Roda em todo push e sob demanda.
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-keycloak-hmg-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-hmg:
+    name: E2E do KeycloakAuthProvider contra o HMG
+    runs-on: ubuntu-latest
+    env:
+      E2E_KC_URL: ${{ secrets.E2E_KC_URL }}
+      E2E_KC_REALM: ${{ secrets.E2E_KC_REALM }}
+      E2E_KC_CLIENT_ID: ${{ secrets.E2E_KC_CLIENT_ID }}
+      E2E_KC_ROLE: ${{ secrets.E2E_KC_ROLE }}
+      E2E_KC_USUARIO: ${{ secrets.E2E_KC_USUARIO }}
+      E2E_KC_SENHA: ${{ secrets.E2E_KC_SENHA }}
+      # O client de teste tem access token de 1 min: o e2e espera a renovação automática.
+      E2E_KC_ESPERAR_REFRESH: '1'
+    steps:
+      - name: Conferindo a configuração
+        id: config
+        run: |
+          if [ -z "$E2E_KC_URL" ] || [ -z "$E2E_KC_REALM" ] || [ -z "$E2E_KC_CLIENT_ID" ] || [ -z "$E2E_KC_USUARIO" ] || [ -z "$E2E_KC_SENHA" ]; then
+            echo "::notice title=E2E Keycloak HMG não configurado::Defina os secrets E2E_KC_URL, E2E_KC_REALM, E2E_KC_CLIENT_ID, E2E_KC_USUARIO e E2E_KC_SENHA (ver o topo de .github/workflows/e2e-keycloak-hmg.yaml)."
+            echo "pular=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.config.outputs.pular != '1'
+
+      - uses: actions/setup-node@v7
+        if: steps.config.outputs.pular != '1'
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalando dependências
+        if: steps.config.outputs.pular != '1'
+        run: npm ci
+
+      - name: Build da lib
+        if: steps.config.outputs.pular != '1'
+        run: npm run build
+
+      - name: Chromium do Playwright
+        if: steps.config.outputs.pular != '1'
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E contra o Keycloak de HMG
+        if: steps.config.outputs.pular != '1'
+        run: SMOKE_NEXT=16 npm run e2e:keycloak

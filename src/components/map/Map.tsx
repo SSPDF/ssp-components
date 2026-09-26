@@ -14,7 +14,7 @@ import { ReactElement } from 'react'
 
 export interface MapProps {
     firstCoords: any
-    // eslint-disable-next-line no-unused-vars
+
     onCoordsChange?: (coords: any) => void
     pulseMarkerList?: LatLngExpression[]
     popupContent?: ReactElement

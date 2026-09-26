@@ -12,51 +12,49 @@ interface TextMaskCustomProps {
     inputRef?: React.Ref<HTMLInputElement>
 }
 
-const TextMaskCustom = React.forwardRef<HTMLInputElement, TextMaskCustomProps>(
-    function TextMaskCustom({ imaskConfig, onMaskChange, name, ...restProps }, ref) {
-        const maskRef = useRef<any>(null)
-        const [value, setValue] = useState('')
-        const [mask, setMask] = useState<IMaskConfig['mask']>(imaskConfig.mask)
-        const context = useContext(FormContext)!
+const TextMaskCustom = React.forwardRef<HTMLInputElement, TextMaskCustomProps>(function TextMaskCustom({ imaskConfig, onMaskChange, name, ...restProps }, ref) {
+    const maskRef = useRef<any>(null)
+    const [value, setValue] = useState('')
+    const [mask, setMask] = useState<IMaskConfig['mask']>(imaskConfig.mask)
+    const context = useContext(FormContext)!
 
-        // Observa mudanças externas (ex: formReset)
-        const formValue = context.formWatch(name)
+    // Observa mudanças externas (ex: formReset)
+    const formValue = context.formWatch(name)
 
-        // Sincroniza quando o valor do form muda externamente
-        useEffect(() => {
-            if (formValue !== undefined && formValue !== value) {
-                setValue(formValue)
-            }
-        }, [formValue])
+    // Sincroniza quando o valor do form muda externamente
+    useEffect(() => {
+        if (formValue !== undefined && formValue !== value) {
+            setValue(formValue)
+        }
+    }, [formValue])
 
-        // Propaga o valor mascarado para o React Hook Form
-        useEffect(() => {
-            const maskedValue = maskRef.current?.maskRef?.value
-            if (maskedValue !== undefined) {
-                context.formSetValue(name, maskedValue)
-            }
-        }, [value, name])
+    // Propaga o valor mascarado para o React Hook Form
+    useEffect(() => {
+        const maskedValue = maskRef.current?.maskRef?.value
+        if (maskedValue !== undefined) {
+            context.formSetValue(name, maskedValue)
+        }
+    }, [value, name])
 
-        const MaskedInput = IMaskInput as any
+    const MaskedInput = IMaskInput as any
 
-        return (
-            <MaskedInput
-                {...restProps}
-                {...imaskConfig}
-                name={name}
-                mask={mask}
-                value={value}
-                ref={maskRef}
-                inputRef={ref}
-                onAccept={(newValue: string, maskInstance: any) => {
-                    setValue(newValue)
-                    maskInstance.updateValue()
-                    onMaskChange?.(newValue, setMask)
-                }}
-            />
-        )
-    }
-)
+    return (
+        <MaskedInput
+            {...restProps}
+            {...imaskConfig}
+            name={name}
+            mask={mask}
+            value={value}
+            ref={maskRef}
+            inputRef={ref}
+            onAccept={(newValue: string, maskInstance: any) => {
+                setValue(newValue)
+                maskInstance.updateValue()
+                onMaskChange?.(newValue, setMask)
+            }}
+        />
+    )
+})
 
 interface MaskInputProps {
     formConfig: { name: string } & Record<string, any>

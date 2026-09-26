@@ -4,8 +4,7 @@ import Delete from '@mui/icons-material/Delete'
 import DoneIcon from '@mui/icons-material/Done'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf'
-import { Box, Button, CircularProgress, Grid, InputLabel, Paper, TableContainer, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { Stack } from '@mui/system'
+import { Box, Button, CircularProgress, Grid, InputLabel, Paper, Stack, TableContainer, Typography, useMediaQuery, useTheme } from '@mui/material'
 import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
@@ -85,7 +84,7 @@ export default function FileUpload({
                         return true
                     })
                     .map((file, index) => {
-                        let id: number = Date.now() + index
+                        const id: number = Date.now() + index
 
                         // fetch API
 
@@ -137,7 +136,7 @@ export default function FileUpload({
                     }),
             ])
         },
-        [files, context]
+        [files, context],
     )
 
     const removeFile = (id: number, hideMsg?: boolean, fileId?: number) => {

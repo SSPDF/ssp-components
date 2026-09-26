@@ -1,8 +1,9 @@
-import { Grid, InputLabel, TextField, Typography } from '@mui/material'
+import { Grid, InputLabel, Typography } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
-import dayjs, { Dayjs } from 'dayjs'
+import { Dayjs } from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
@@ -37,8 +38,10 @@ export default function GenericDatePicker({
 
     const [value, setValue] = useState<Dayjs | undefined>(defaultValue !== undefined ? dayjs(defaultValue, 'DD/MM/YYYY') : undefined)
 
+    // Até a 0.3.2 fazia `setValue(undefined)`: a data digitada ou escolhida no calendário nunca
+    // chegava ao formulário (UPGRADE_PLAN.md 5.20).
     const handleChange = (newValue: Dayjs | null) => {
-        setValue(undefined)
+        setValue(newValue)
     }
 
     useEffect(() => {
@@ -77,32 +80,30 @@ export default function GenericDatePicker({
                                 },
                             },
                         }}
-                        inputRef={(params: any) => (
-                            <TextField
-                                size='small'
-                                {...params}
-                                {...context?.register(name!, {
-                                    validate: (v, f) => {
-                                        if (!hasIn(f, name)) {
-                                            return true
-                                        }
+                        // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
+                        // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o
+                        // retorno de uma ref vira função de cleanup (UPGRADE_PLAN.md 5.16).
+                        inputRef={() => {
+                            context?.register(name!, {
+                                validate: (v, f) => {
+                                    if (!hasIn(f, name)) {
+                                        return true
+                                    }
 
-                                        if (!v) v = ''
+                                    if (!v) v = ''
 
-                                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
-                                        if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
+                                    if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                                    if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
-                                        if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
-                                            return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
+                                    if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
+                                        return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
 
-                                        if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
-                                            return 'A data escolhida não é válida'
-                                    },
-                                    shouldUnregister: true,
-                                })}
-                                fullWidth
-                            />
-                        )}
+                                    if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
+                                        return 'A data escolhida não é válida'
+                                },
+                                shouldUnregister: true,
+                            })
+                        }}
                     />
                     <Typography sx={{ color: '#a51c30', fontSize: 14, paddingLeft: 1 }}>{get(context.formState.errors, name!)?.message as string}</Typography>
                 </LocalizationProvider>

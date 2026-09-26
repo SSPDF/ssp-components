@@ -1,6 +1,6 @@
 import get from 'lodash.get'
 import { CsvConfigProp, FilterValue, OrderBy } from './types'
-import dayjs from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import cloneDeep from 'lodash.clonedeep'
 import writeXlsxFile from 'write-excel-file/browser'
 
@@ -12,11 +12,11 @@ export const getCount = (countData: any[], itemsCount: number) => {
     return Math.ceil(count)
 }
 
-export function transformArrayObjectInString(o: Object): String {
-    let arrString = []
+export function transformArrayObjectInString(o: object): string {
+    const arrString = []
 
     if (typeof o === 'object' && !Array.isArray(o) && o !== null) {
-        for (let [key, value] of Object.entries(o)) {
+        for (const [key, value] of Object.entries(o)) {
             if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
                 arrString.push(key + ': ' + transformArrayObjectInString(value))
             } else {
@@ -88,7 +88,7 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
     filterData
         .filter((dt) => dt.value || (dt.operator === 'entre' && (dt.value || dt.value2)))
         .forEach((dt) => {
-            let filteredData: any[] = []
+            const filteredData: any[] = []
 
             switch (dt.type) {
                 case 'number':
@@ -203,8 +203,8 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
 
                                 if (dates.length <= 0) return
 
-                                var inicioDate = dates[0]
-                                var inicioValue = dayjs(inicioDate, 'DD/MM/YYYY')
+                                const inicioDate = dates[0]
+                                const inicioValue = dayjs(inicioDate, 'DD/MM/YYYY')
 
                                 if (inicioValue.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
                                     filteredData.push(cd)
@@ -219,8 +219,8 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
 
                                 console.log(dates)
 
-                                var fimDate = dates[dates.length - 1]
-                                var fimValue = dayjs(fimDate, 'DD/MM/YYYY')
+                                const fimDate = dates[dates.length - 1]
+                                const fimValue = dayjs(fimDate, 'DD/MM/YYYY')
 
                                 if (fimValue.isSame(dayjs(dt.value as string, 'DD/MM/YYYY'))) {
                                     filteredData.push(cd)

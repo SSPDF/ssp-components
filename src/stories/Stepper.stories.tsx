@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import Stepper from '../components/form/stepper/Stepper'
 import StepperBlock from '../components/form/stepper/StepperBlock'
 import StepperDecorator from '../decorators/StepperDecorator'
+import { expect, userEvent, within } from 'storybook/test'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Stepper/Stepper',
@@ -32,4 +33,22 @@ export const Base: Story = {
             </StepperBlock>
         </Stepper>
     ),
+}
+
+/** Avança e volta entre os passos; os botões habilitam conforme a posição. */
+export const Interacao: Story = {
+    tags: ['interacao'],
+    args: Base.args,
+    render: Base.render,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await expect(canvas.getByRole('button', { name: 'Voltar' })).toBeDisabled()
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Próximo' }))
+        await expect(await canvas.findByRole('heading', { name: 'Step 2' })).toBeVisible()
+        await expect(canvas.getByText('2 / 2')).toBeVisible()
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Voltar' }))
+        await expect(await canvas.findByRole('heading', { name: 'Step 1' })).toBeVisible()
+    },
 }

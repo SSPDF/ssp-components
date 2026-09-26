@@ -46,4 +46,6 @@ Todos pela raiz: `import type { InputProps, InputType, CsvConfigProp, FilterValu
 
 ## Requisitos de ambiente
 
-React 18, Next.js 14 (Pages Router — auth usa `next/router`). Peers MUI: `@mui/material`, `@emotion/react`, `@emotion/styled`, `@mui/icons-material`, `@mui/x-date-pickers`, `@mui/lab`.
+React 18, Next.js 14, 15 ou 16 (Pages Router — auth usa `next/router`). Peers (declaradas em `lib-package.json` desde a 0.1.0): `react`, `react-dom`, `next`, `@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers`, `@emotion/react`, `@emotion/styled`, `react-hook-form`, `dayjs`, `react-toastify`. `@mui/lab` é dependência da lib, não peer. Faixas no `README.md`.
+
+Desde a `0.4.0`: **Node ≥ 22** (o `react-dropzone` 20 exige) e o `KeycloakAuthProvider` só funciona em **HTTPS ou `localhost`** (o `keycloak-js` 26 usa a Web Crypto). O app precisa servir `public/silent-check-sso.html` (conteúdo no `README.md`), e o `basePath` do provider tem que ser o do `next.config.js`.

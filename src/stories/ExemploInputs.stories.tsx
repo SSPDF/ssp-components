@@ -1,8 +1,8 @@
 import { Button, Grid } from '@mui/material'
-import { Source } from '@storybook/addon-docs/blocks'
+import CodeSample from './CodeSample'
 import { Meta, StoryObj } from '@storybook/nextjs'
 import { useState } from 'react'
-import 'react-toastify/ReactToastify.min.css'
+import 'react-toastify/ReactToastify.css'
 import Input from '../components/form/input/Input'
 import FormProvider from '../components/providers/FormProvider'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
@@ -42,41 +42,41 @@ function Teste() {
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='nome' type='input' title='Nome' required />`} />
+                        <CodeSample code={`<Input name='nome' type='input' title='Nome' required />`} />
                     </Grid>
                     <Input name='celular' type='phone' title='Celular' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='celular' type='phone' title='Celular' />`} />
+                        <CodeSample code={`<Input name='celular' type='phone' title='Celular' />`} />
                     </Grid>
 
                     <Input name='cpf' type='cpf' title='CPF' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='cpf' type='cpf' title='CPF' />`} />
+                        <CodeSample code={`<Input name='cpf' type='cpf' title='CPF' />`} />
                     </Grid>
 
                     <Input name='cep' type='cep' title='CEP' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='cep' type='cep' title='CEP' />`} />
+                        <CodeSample code={`<Input name='cep' type='cep' title='CEP' />`} />
                     </Grid>
 
                     <Input name='cnpj' type='cnpj' title='CNPJ' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='cnpj' type='cnpj' title='CNPJ' />`} />
+                        <CodeSample code={`<Input name='cnpj' type='cnpj' title='CNPJ' />`} />
                     </Grid>
 
                     <Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />`} />
+                        <CodeSample code={`<Input name='cpf_cnpj' type='cpf_cnpj' title='CPF ou CNPJ' />`} />
                     </Grid>
 
                     <Input name='email' type='email' title='Email' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='email' type='email' title='Email' />`} />
+                        <CodeSample code={`<Input name='email' type='email' title='Email' />`} />
                     </Grid>
 
                     <Input name='password' type='password' title='Password' />
                     <Grid item xs={12}>
-                        <Source code={`<Input name='password' type='password' title='Password' />`} />
+                        <CodeSample code={`<Input name='password' type='password' title='Password' />`} />
                     </Grid>
 
                     {/* Botão de enviar sempre do tipo submit */}

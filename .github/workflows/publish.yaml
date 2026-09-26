@@ -1,39 +1,91 @@
-on: push
 name: Publicar components para npm
-env:
-  PUBLISH_TOKEN:  ${{ secrets.token }}
+
+# Portão de release (UPGRADE_PLAN.md 2.4). Antes da Etapa 0 este workflow rodava
+# em `on: push` e tentava publicar a cada merge na main — a única coisa que evitava
+# publicação acidental era o npm recusar uma versão já existente.
+#
+# Agora a publicação é um ato explícito: ou uma tag `v*`, ou um disparo manual.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: 'dist-tag do npm (latest | next | legacy-v0)'
+        required: true
+        default: next
+        type: choice
+        options: [next, latest, legacy-v0]
+
 jobs:
   publish:
-    if: ${{ github.ref == 'refs/heads/main' }}
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - name: Copiando projeto
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
-      - name: Settando node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v7
         with:
-          node-version: 16
+          node-version: 24
+          cache: npm
           registry-url: https://registry.npmjs.org
-      
-      - name: Instalando modulos
-        run: npm install
 
-      - name: Buildando typescript
+      - name: Instalando dependências
+        run: npm ci
+
+      # Numa tag, a versão do lib-package.json tem que ser a da tag. Sem isso dá
+      # para marcar v1.2.3 e publicar sem querer o conteúdo de outra versão.
+      - name: Conferindo que a tag bate com a versão
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VER="$(node -p "require('./lib-package.json').version")"
+          if [ "$TAG" != "$VER" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME não bate com lib-package.json ($VER)."
+            exit 1
+          fi
+
+      - name: Conferindo que a versão ainda não existe no npm
+        run: |
+          VER="$(node -p "require('./lib-package.json').version")"
+          if npm view "@ssplib/react-components@$VER" version >/dev/null 2>&1; then
+            echo "::error::A versão $VER já está publicada no npm."
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
         run: npm run build
-      
-      - name: Criando package json
-        run: cp lib-package.json dist/package.json
-      
-      - name: Criando readme
-        run: cp README.md dist/README.md
 
-      - name: Copiando AGENTS.md
-        run: cp AGENTS.md dist/AGENTS.md
+      - name: Conferindo a API pública do dist
+        run: node scripts/check-public-api.mjs
+
+      - name: Montando o pacote
+        run: |
+          cp lib-package.json dist/package.json
+          cp README.md dist/README.md
+          cp CHANGELOG.md dist/CHANGELOG.md
+          cp AGENTS.md dist/AGENTS.md
+
+      # Sem --tag explícita o npm escreve em `latest`, que é exatamente o que NÃO
+      # queremos numa RC. Numa tag `v*` com pré-release (1.0.0-rc.1), vai para `next`.
+      - name: Escolhendo a dist-tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.dist_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            VER="$(node -p "require('./lib-package.json').version")"
+            case "$VER" in
+              *-*) echo "value=next" >> "$GITHUB_OUTPUT" ;;
+              *)   echo "value=latest" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
 
       - name: Publicando
-        run: npm publish --access public
+        run: npm publish --access public --tag "${{ steps.tag.outputs.value }}"
         working-directory: dist
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

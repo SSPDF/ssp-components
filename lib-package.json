@@ -1,51 +1,81 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.0.349",
+    "version": "0.4.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
-    "main": "index.cjs.js",
-    "module": "index.esm.js",
-    "types": "index.d.ts",
+    "main": "./index.cjs",
+    "module": "./index.js",
+    "types": "./index.d.cts",
     "exports": {
         ".": {
-            "import": "./index.esm.js",
-            "require": "./index.cjs.js",
-            "types": "./index.d.ts"
+            "import": {
+                "types": "./index.d.ts",
+                "default": "./index.js"
+            },
+            "require": {
+                "types": "./index.d.cts",
+                "default": "./index.cjs"
+            }
         },
         "./types/auth": {
-            "types": "./types/auth.d.ts"
+            "import": {
+                "types": "./types/auth.d.ts",
+                "default": "./types/auth.js"
+            },
+            "require": {
+                "types": "./types/auth.d.cts",
+                "default": "./types/auth.cjs"
+            }
         },
         "./types/form": {
-            "types": "./types/form.d.ts"
+            "import": {
+                "types": "./types/form.d.ts",
+                "default": "./types/form.js"
+            },
+            "require": {
+                "types": "./types/form.d.cts",
+                "default": "./types/form.cjs"
+            }
         }
     },
+    "engines": {
+        "node": ">=22"
+    },
+    "peerDependencies": {
+        "@emotion/react": "^11.9.0",
+        "@emotion/styled": "^11.8.1",
+        "@mui/icons-material": "^5.0.0",
+        "@mui/material": "^5.8.6",
+        "@mui/x-date-pickers": "^6.0.0 || ^7.0.0",
+        "dayjs": "^1.11.0",
+        "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "react-hook-form": "^7.43.0",
+        "react-toastify": "^10.0.0 || ^11.0.0"
+    },
     "dependencies": {
-        "cookies-next": "^4.2.1",
-        "tinycolor2": "^1.6.0",
-        "lodash.get": "^4.4.2",
-        "jwt-decode": "^3.1.2",
-        "react-hook-form": "^7.43.9",
-        "react-imask": "^6.6.0",
-        "react-query": "^3.39.3",
-        "dayjs": "^1.11.7",
-        "lodash.clonedeep": "^4.5.0",
-        "lodash.hasin": "^4.5.2",
-        "react-google-recaptcha": "^2.1.0",
-        "jszip": "^3.10.1",
-        "keycloak-js": "^25.0.1",
-        "react-toastify": "^10.0.4",
-        "axios": "^1.17.0",
-        "react-dropzone": "^14.3.8",
+        "@mui/lab": "5.0.0-alpha.127",
+        "axios": "^1.20.0",
+        "jszip": "^3.10.2",
+        "jwt-decode": "^4.0.0",
+        "keycloak-js": "^26.2.4",
         "leaflet": "^1.9.4",
         "leaflet-defaulticon-compatibility": "^0.1.2",
+        "lodash.clonedeep": "^4.5.0",
+        "lodash.get": "^4.4.2",
+        "lodash.hasin": "^4.5.2",
+        "react-dropzone": "^20.1.2",
+        "react-imask": "^7.6.1",
         "react-leaflet": "^4.2.1",
-        "write-excel-file": "^4.0.7"
+        "tinycolor2": "^1.6.0",
+        "write-excel-file": "^4.1.1"
     },
     "devDependencies": {
         "@types/lodash.clonedeep": "^4.5.9",
-        "@types/lodash.get": "^4.4.7",
-        "@types/lodash.hasin": "^4.5.7",
+        "@types/lodash.get": "^4.4.9",
+        "@types/lodash.hasin": "^4.5.9",
         "prop-types": "15.8.1"
     },
     "repository": {

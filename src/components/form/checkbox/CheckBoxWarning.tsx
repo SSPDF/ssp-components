@@ -28,7 +28,7 @@ export default function CheckBoxWarning({
         (e: React.SyntheticEvent<Element, Event>) => {
             context?.formSetValue(name!, !context?.formGetValues(name))
         },
-        [context, name]
+        [context, name],
     )
 
     return (
@@ -64,11 +64,7 @@ export default function CheckBoxWarning({
                         },
                     }}
                 />
-                <Typography
-                    variant='body2'
-                    color={isSelected ? 'primary.main' : 'text.primary'}
-                    fontWeight={isSelected ? 600 : 400}
-                >
+                <Typography variant='body2' color={isSelected ? 'primary.main' : 'text.primary'} fontWeight={isSelected ? 600 : 400}>
                     {title}
                 </Typography>
                 <input type='checkbox' {...context?.formRegister(name!)} style={{ display: 'none' }} />

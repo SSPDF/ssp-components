@@ -1,8 +1,7 @@
 import { Autocomplete, Grid, TextField } from '@mui/material'
 import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
-import React, { SyntheticEvent, useCallback, useContext, useState } from 'react'
-import { useQuery } from 'react-query'
+import React, { SyntheticEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 
@@ -36,13 +35,7 @@ export default function AutoComplete({
     const { user } = useContext(AuthContext)
     const [options, setOptions] = useState([])
 
-    const { isLoading, data, error } = useQuery(`autocomplete-${name!}`, () =>
-        fetch(url, {
-            headers: {
-                Authorization: `Bearer ${user ? user.token : ''}`,
-            },
-        }).then((x) => x.json().then((list) => setOptions(getData(list))))
-    )
+    const token = user ? user.token : ''
 
     // transformar isso em um component ou utils
     const getData = useCallback((dt: any) => {
@@ -50,12 +43,32 @@ export default function AutoComplete({
         if (typeof dt === 'object') return get(dt, dataPath)
     }, [])
 
+    // Antes era um `useQuery` do react-query v3, o que obrigava o app a montar um
+    // `QueryClientProvider` (UPGRADE_PLAN.md 5.2). Busca ao montar e quando a url ou o token mudam.
+    useEffect(() => {
+        const controller = new AbortController()
+
+        fetch(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            signal: controller.signal,
+        })
+            .then((x) => x.json())
+            .then((list) => setOptions(getData(list) ?? []))
+            .catch((e) => {
+                if (e?.name !== 'AbortError') console.error(`[AutoComplete] erro ao buscar opções de "${name}"`, e)
+            })
+
+        return () => controller.abort()
+    }, [url, token])
+
     const onSelect = useCallback(
         (e: SyntheticEvent<Element, Event>, value: Option | null) => {
             context?.formSetValue(name!, value ? value.id : '')
             context?.formTrigger(name!)
         },
-        [context, name]
+        [context, name],
     )
 
     return (

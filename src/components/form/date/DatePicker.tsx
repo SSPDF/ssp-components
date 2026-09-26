@@ -1,8 +1,9 @@
-import { Grid, InputLabel, TextField, Typography, Box } from '@mui/material'
+import { Grid, InputLabel, Typography, Box } from '@mui/material'
 import { ErrorOutline } from '@mui/icons-material'
 import { LocalizationProvider, DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs, { Dayjs } from 'dayjs'
+import { Dayjs } from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
@@ -95,32 +96,30 @@ export default function DatePicker({
                                 },
                             },
                         }}
-                        inputRef={(params: any) => (
-                            <TextField
-                                size='small'
-                                {...params}
-                                {...context?.formRegister(name!, {
-                                    validate: (v, f) => {
-                                        if (!hasIn(f, name)) {
-                                            return true
-                                        }
+                        // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
+                        // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o
+                        // retorno de uma ref vira função de cleanup (UPGRADE_PLAN.md 5.16).
+                        inputRef={() => {
+                            context?.formRegister(name!, {
+                                validate: (v, f) => {
+                                    if (!hasIn(f, name)) {
+                                        return true
+                                    }
 
-                                        if (!v) v = ''
+                                    if (!v) v = ''
 
-                                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
-                                        if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
+                                    if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                                    if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
-                                        if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
-                                            return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
+                                    if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
+                                        return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
 
-                                        if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
-                                            return 'A data escolhida não é válida'
-                                    },
-                                    shouldUnregister: true,
-                                })}
-                                fullWidth
-                            />
-                        )}
+                                    if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
+                                        return 'A data escolhida não é válida'
+                                },
+                                shouldUnregister: true,
+                            })
+                        }}
                     />
                     {get(context.errors, name!) && (
                         <Box

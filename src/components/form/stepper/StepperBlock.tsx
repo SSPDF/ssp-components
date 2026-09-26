@@ -20,7 +20,7 @@ function childrenTree(component: ReactElement, prefix: number, idx: number): Rea
     let newChildren: ReactElement | ReactElement[]
 
     if (Array.isArray(children)) {
-        let c: ReactElement[] = []
+        const c: ReactElement[] = []
 
         children.forEach((x, cIdx: number) => {
             c.push(childrenTree(x, prefix, idx + (cIdx + 1)))

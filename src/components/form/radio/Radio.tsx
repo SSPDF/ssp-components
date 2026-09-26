@@ -46,11 +46,7 @@ export function Radio({
                 render={({ field, fieldState: { error } }) => (
                     <FormControl error={!!error} disabled={disabled} fullWidth>
                         {title && (
-                            <FormLabel
-                                required={required}
-                                error={!!error}
-                                sx={{ mb: 1, fontWeight: 500, fontSize: '0.875rem' }}
-                            >
+                            <FormLabel required={required} error={!!error} sx={{ mb: 1, fontWeight: 500, fontSize: '0.875rem' }}>
                                 {title}
                             </FormLabel>
                         )}
@@ -60,10 +56,7 @@ export function Radio({
                                 return (
                                     <Box
                                         key={index}
-                                        onClick={() =>
-                                            !disabled &&
-                                            field.onChange(isSelected && !required ? '' : option.value)
-                                        }
+                                        onClick={() => !disabled && field.onChange(isSelected && !required ? '' : option.value)}
                                         sx={{
                                             border: '1px solid',
                                             borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
@@ -78,8 +71,7 @@ export function Radio({
                                             opacity: disabled ? 0.6 : 1,
                                             '&:hover': {
                                                 borderColor: !disabled && !isSelected ? theme.palette.grey[400] : undefined,
-                                                backgroundColor:
-                                                    !disabled && !isSelected ? theme.palette.grey[50] : undefined,
+                                                backgroundColor: !disabled && !isSelected ? theme.palette.grey[50] : undefined,
                                             },
                                         }}
                                     >
@@ -108,11 +100,7 @@ export function Radio({
                                                 />
                                             )}
                                         </Box>
-                                        <Typography
-                                            variant='body2'
-                                            color={isSelected ? 'primary.main' : 'text.primary'}
-                                            fontWeight={isSelected ? 600 : 400}
-                                        >
+                                        <Typography variant='body2' color={isSelected ? 'primary.main' : 'text.primary'} fontWeight={isSelected ? 600 : 400}>
                                             {option.label}
                                         </Typography>
                                     </Box>

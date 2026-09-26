@@ -2,7 +2,7 @@ import { Grid, Stack, Typography } from '@mui/material'
 import React from 'react'
 
 export function FieldLabel({ title, xs = 12, tag, md, lg, paddingBottom = 3 }: { title: string; tag?: string; xs?: number; md?: number; lg?: number; paddingBottom?: number }) {
-    let color = tag && tag === 'Não' ? '#FECACA' : tag === 'Sim' ? '#BBF7D0' : '#E2E8F0'
+    const color = tag && tag === 'Não' ? '#FECACA' : tag === 'Sim' ? '#BBF7D0' : '#E2E8F0'
 
     return (
         <Grid paddingBottom={paddingBottom} item {...{ xs, md, lg }} paddingRight={2}>

@@ -15,7 +15,6 @@ const TOKEN_REFRESH_INTERVAL = 60 * 1000
 /** Tempo mínimo de validade do token antes de renovar (em segundos) */
 const MIN_TOKEN_VALIDITY = 30
 
-
 interface KeycloakAuthProviderProps {
     /** URL do servidor Keycloak */
     url: string
@@ -82,7 +81,7 @@ export function KeycloakAuthProvider({
                 console.log(`[KeycloakAuth] ${message}`, ...args)
             }
         },
-        [enableDebugLogs]
+        [enableDebugLogs],
     )
 
     const logError = useCallback(
@@ -91,7 +90,7 @@ export function KeycloakAuthProvider({
                 console.error(`[KeycloakAuth] ${message}`, ...args)
             }
         },
-        [enableDebugLogs]
+        [enableDebugLogs],
     )
 
     /**
@@ -116,7 +115,7 @@ export function KeycloakAuthProvider({
                 roles,
             }
         },
-        [resource_name]
+        [resource_name],
     )
 
     /**
@@ -222,8 +221,7 @@ export function KeycloakAuthProvider({
             .init({
                 onLoad: 'check-sso',
                 pkceMethod: 'S256',
-                silentCheckSsoRedirectUri:
-                    typeof window !== 'undefined' ? `${window.location.origin}${basePath}/silent-check-sso.html` : undefined,
+                silentCheckSsoRedirectUri: typeof window !== 'undefined' ? `${window.location.origin}${basePath}/silent-check-sso.html` : undefined,
                 checkLoginIframe: true,
                 checkLoginIframeInterval: 30,
             })
@@ -346,15 +344,15 @@ export function KeycloakAuthProvider({
                     options?.onError?.(loginError)
                 })
         },
-        [redirectUri, log, logError]
+        [redirectUri, log, logError],
     )
 
     /**
      * Inicia o fluxo de logout
-     * 
+     *
      * IMPORTANTE: Com IdP externos (como Gov.BR), o logout é um processo multi-hop:
      * App → Keycloak → IdP → Keycloak → App
-     * 
+     *
      * O `keycloak.logout()` redireciona o navegador, então o código após ele
      * NÃO é executado. Por isso marcamos o logout como pendente e limpamos
      * o estado quando o usuário volta à aplicação.
@@ -399,9 +397,7 @@ export function KeycloakAuthProvider({
             if (type === 'govbr' && keycloak.token) {
                 try {
                     // Constrói a URL de logout manualmente para incluir initiating_idp
-                    const logoutUrl = new URL(
-                        `${keycloak.authServerUrl}/realms/${keycloak.realm}/protocol/openid-connect/logout`
-                    )
+                    const logoutUrl = new URL(`${keycloak.authServerUrl}/realms/${keycloak.realm}/protocol/openid-connect/logout`)
 
                     // Adiciona parâmetros necessários para logout federado
                     logoutUrl.searchParams.set('client_id', keycloak.clientId || clientId)
@@ -437,7 +433,7 @@ export function KeycloakAuthProvider({
                 logError('Erro no logout', error)
             }
         },
-        [log, logError, clearTokenRefresh, type, clientId]
+        [log, logError, clearTokenRefresh, type, clientId],
     )
 
     /**
@@ -461,7 +457,7 @@ export function KeycloakAuthProvider({
             setUser(externalUser)
             log('Dados de usuário externo salvos', { username: externalUser.preferred_username })
         },
-        [log]
+        [log],
     )
 
     /**
@@ -471,7 +467,7 @@ export function KeycloakAuthProvider({
         (role: string): boolean => {
             return user?.roles?.includes(role) ?? false
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -482,7 +478,7 @@ export function KeycloakAuthProvider({
             if (!user?.roles || roles.length === 0) return false
             return roles.every((role) => user.roles.includes(role))
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -493,7 +489,7 @@ export function KeycloakAuthProvider({
             if (!user?.roles || roles.length === 0) return false
             return roles.some((role) => user.roles.includes(role))
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     // Valor memoizado do contexto para evitar re-renders desnecessários
@@ -512,7 +508,7 @@ export function KeycloakAuthProvider({
             hasAnyRole,
             accessToken: user?.token,
         }),
-        [user, userLoaded, login, logout, saveUserData, type, refreshToken, hasRole, hasAllRoles, hasAnyRole]
+        [user, userLoaded, login, logout, saveUserData, type, refreshToken, hasRole, hasAllRoles, hasAnyRole],
     )
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

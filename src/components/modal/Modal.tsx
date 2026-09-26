@@ -2,7 +2,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useEffect, useState } from 'react'
 
-export let MODAL: {
+export const MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
     reparent: (child: JSX.Element, id: string | number) => JSX.Element
     openReparented: (id: string | number) => void
@@ -74,7 +74,7 @@ export function CustomModalProvider() {
                 <Modal open={open} onClose={handleClose}>
                     <Box
                         sx={{
-                            position: 'absolute' as 'absolute',
+                            position: 'absolute' as const,
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',

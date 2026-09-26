@@ -1,7 +1,6 @@
 import { TextField } from '@mui/material'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { IMaskInput } from 'react-imask'
-import { FormContext } from '../../../context/form'
 import { useFormContext } from 'react-hook-form'
 
 const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(props: any, ref: any) {
@@ -36,7 +35,7 @@ const TextMaskCustom = React.forwardRef<HTMLElement>(function TextMaskCustom(pro
             inputRef={ref}
             onChange={(e) => {}}
             onAccept={(value, mask) => {
-                setMyValue(value)
+                setMyValue(value as string)
                 mask.updateValue()
 
                 if (!onMask) return
@@ -55,7 +54,10 @@ export default function GenericMaskInput(props: {
     watchValue?: string
     onMask?: (value: string, setMask: React.Dispatch<React.SetStateAction<string>>) => void
 }) {
-    const context = useContext(FormContext)!
+    // Contexto nativo do react-hook-form, como o `TextMaskCustom` acima e o resto da família
+    // `Generic*`. Até a 0.1.x lia o `FormContext` customizado, que não existe sob o
+    // `GenericFormProvider`: digitar quebrava no `onInput` (UPGRADE_PLAN.md 5.8b).
+    const context = useFormContext()
     const [maskValue, setMaskValue] = useState('')
 
     return (
@@ -66,7 +68,7 @@ export default function GenericMaskInput(props: {
                     const name = (props.formConfig as any).name as string
                     const value = (e.target as any).value
 
-                    context.formSetValue(name, value)
+                    context.setValue(name, value)
                 }}
                 InputProps={{
                     inputComponent: TextMaskCustom as any,

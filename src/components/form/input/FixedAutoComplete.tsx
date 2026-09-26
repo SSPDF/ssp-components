@@ -13,7 +13,7 @@ export function FixedAutoComplete({
     required = false,
     list,
     defaultValue,
-    onChange = () => { },
+    onChange = () => {},
     xs = 12,
     sm,
     watchValue,
@@ -23,9 +23,9 @@ export function FixedAutoComplete({
     name: string
     title: string
     watchValue?: { id: number | string; label: string }
-    list: Object[]
+    list: object[]
     customLoadingText?: string
-    defaultValue?: Object
+    defaultValue?: object
     required?: boolean
     onChange?: (id: number | undefined) => void
     shouldRefetch?: boolean
@@ -90,7 +90,7 @@ export function FixedAutoComplete({
                 renderInput={(params) => {
                     const formError = get(context?.errors, name!)
                     const hasError = !!formError
-                    let errorMessage: React.ReactNode = (formError?.message as string)
+                    let errorMessage: React.ReactNode = formError?.message as string
 
                     if (hasError) {
                         errorMessage = (

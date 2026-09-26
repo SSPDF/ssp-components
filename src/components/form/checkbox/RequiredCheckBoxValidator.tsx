@@ -45,7 +45,6 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                             if (nameValue) {
                                 canContinue = true
                             }
-
                         })
 
                         if (!canContinue) return customText

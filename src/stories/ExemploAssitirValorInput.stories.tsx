@@ -1,8 +1,8 @@
 import { Button, Grid } from '@mui/material'
-import { Source } from '@storybook/addon-docs/blocks'
+import CodeSample from './CodeSample'
 import { Meta, StoryObj } from '@storybook/nextjs'
 import { useContext, useState } from 'react'
-import 'react-toastify/ReactToastify.min.css'
+import 'react-toastify/ReactToastify.css'
 import Input from '../components/form/input/Input'
 import MultInput from '../components/form/input/MultInput'
 import FormProvider from '../components/providers/FormProvider'
@@ -45,7 +45,7 @@ function Teste() {
                     <Input name='nome' type='input' title='Nome' required />
                     <MensagemInput />
                     <Grid item xs={12}>
-                        <Source
+                        <CodeSample
                             code={`
 <Input name='nome' type='input' title='Nome' required />
 

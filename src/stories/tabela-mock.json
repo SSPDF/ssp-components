@@ -1,0 +1,215 @@
+{
+  "body": {
+    "data": [
+      {
+        "dtTableDates": "04/07/2024 - 10:00 às 12:00",
+        "dtTableArr": [
+          {
+            "dtInicio": "04/07/2024",
+            "hrInicio": "10:00",
+            "hrTermino": "12:00"
+          }
+        ],
+        "protocoloProcessosei": "6156 - 00050-00013378/2024-72",
+        "noEvento": "Ato da operação Valoriza Regulação",
+        "noTableRa": "PLANO PILOTO",
+        "dsEnderecoLocal": "Estacionamento do Anexo III da Câmara dos Deputados",
+        "dtTableInicio": "04/07/2024",
+        "hrTableInicio": "10:00",
+        "hrTableTermino": "12:00",
+        "nuPublicoMaximo": 50,
+        "stAcaoTransito": "PMDFdf",
+        "dsTableNaturezas": "atoPublico",
+        "stTableStatus": "APROVADO",
+        "nuProcessoFormatadoSei": "00050-00013378/2024-72",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "A",
+        "coSeqEventoExterno": 6156,
+        "noResponsavelRealizacaoEvento": "Fabio Gonçalves Rosa",
+        "nuTelefoneResponsavelRealizacaoEvento": ""
+      },
+      {
+        "dtTableDates": "03/08/2024 - 18:00 às 23:30",
+        "dtTableArr": [
+          {
+            "dtInicio": "03/08/2024",
+            "hrInicio": "18:00",
+            "hrTermino": "23:30"
+          }
+        ],
+        "protocoloProcessosei": "6155 - 00050-00013384/2024-20",
+        "noEvento": "VOLTA DO MUNDO BAMBAS – VMB7",
+        "noTableRa": "PLANO PILOTO",
+        "dsEnderecoLocal": "AABB BRASÍLIA – GINÁSIO 1 (COBERTO) - Setor de Clubes Esportivos Sul, Trecho 2, Conjunto 17 20",
+        "dtTableInicio": "03/08/2024",
+        "hrTableInicio": "18:00",
+        "hrTableTermino": "23:30",
+        "nuPublicoMaximo": 1000,
+        "stAcaoTransito": "DETRAN-DF-df",
+        "dsTableNaturezas": "cultural - esportivo: []",
+        "stTableStatus": "APROVADO",
+        "nuProcessoFormatadoSei": "00050-00013384/2024-20",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "A",
+        "coSeqEventoExterno": 6155,
+        "noResponsavelRealizacaoEvento": "ASSOCIAÇÃO CAPOEIRISTAS DO REI",
+        "nuTelefoneResponsavelRealizacaoEvento": ""
+      },
+      {
+        "dtTableDates": "02/08/2024 - 09:00 às 20:00 | 03/08/2024 - 09:00 às 20:00 | ",
+        "dtTableArr": [
+          {
+            "dtInicio": "02/08/2024",
+            "hrInicio": "09:00",
+            "hrTermino": "20:00"
+          },
+          {
+            "dtInicio": "03/08/2024",
+            "hrInicio": "09:00",
+            "hrTermino": "20:00"
+          }
+        ],
+        "protocoloProcessosei": "6154 - 00050-00013381/2024-96",
+        "noEvento": "FECOMÉRCIO MAIS PERTO DE TODOS GAMA",
+        "noTableRa": "GAMA",
+        "dsEnderecoLocal": "Região Administrativa do Gama na área pública denominada Praça 1, da Região Central do Gama, Brasília - DF, 72405-015",
+        "dtTableInicio": "02/08/2024",
+        "hrTableInicio": "09:00",
+        "hrTableTermino": "20:00",
+        "nuPublicoMaximo": 1000,
+        "stAcaoTransito": "DETRAN-DF-df",
+        "dsTableNaturezas": "cultural - social",
+        "stTableStatus": "APROVADO",
+        "nuProcessoFormatadoSei": "00050-00013381/2024-96",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "A",
+        "coSeqEventoExterno": 6154,
+        "noResponsavelRealizacaoEvento": "PAULA FRANCINETE ALVES",
+        "nuTelefoneResponsavelRealizacaoEvento": "61981818130"
+      },
+      {
+        "dtTableDates": "20/07/2024 - 14:00 às 23:59 | 27/07/2024 - 14:00 às 23:59 | ",
+        "dtTableArr": [
+          {
+            "dtInicio": "20/07/2024",
+            "hrInicio": "14:00",
+            "hrTermino": "23:59"
+          },
+          {
+            "dtInicio": "27/07/2024",
+            "hrInicio": "14:00",
+            "hrTermino": "23:59"
+          }
+        ],
+        "protocoloProcessosei": "6153 - 00050-00013380/2024-41",
+        "noEvento": "Festa Julina",
+        "noTableRa": "GUARÁ",
+        "dsEnderecoLocal": "rua 15 lote 02 polo de modas guara II",
+        "dtTableInicio": "20/07/2024",
+        "hrTableInicio": "14:00",
+        "hrTableTermino": "23:59",
+        "nuPublicoMaximo": 100,
+        "stAcaoTransito": "",
+        "dsTableNaturezas": "cultural - festaJunina",
+        "stTableStatus": "REPROVADO",
+        "nuProcessoFormatadoSei": "00050-00013380/2024-41",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "FP",
+        "coSeqEventoExterno": 6153,
+        "noResponsavelRealizacaoEvento": "ERALDO DE SOUSA TEIXEIRA",
+        "nuTelefoneResponsavelRealizacaoEvento": "61998835599"
+      },
+      {
+        "dtTableDates": "24/08/2024 - 17:00 às 00:00",
+        "dtTableArr": [
+          {
+            "dtInicio": "24/08/2024",
+            "hrInicio": "17:00",
+            "hrTermino": "00:00"
+          }
+        ],
+        "protocoloProcessosei": "6152 - 00050-00013379/2024-17",
+        "noEvento": "Marilônio - a FESTA ",
+        "noTableRa": "PLANO PILOTO",
+        "dsEnderecoLocal": "Praça do Cruzeiro - Eixo Monumental",
+        "dtTableInicio": "24/08/2024",
+        "hrTableInicio": "17:00",
+        "hrTableTermino": "00:00",
+        "nuPublicoMaximo": 200,
+        "stAcaoTransito": "Sem ação",
+        "dsTableNaturezas": "cultural",
+        "stTableStatus": "REPROVADO",
+        "nuProcessoFormatadoSei": "00050-00013379/2024-17",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "R",
+        "coSeqEventoExterno": 6152,
+        "noResponsavelRealizacaoEvento": "MARIANA SARMANHO DE ALBUQUERQUE",
+        "nuTelefoneResponsavelRealizacaoEvento": "61992126625"
+      },
+      {
+        "dtTableDates": "13/07/2024 - 13:00 às 19:00",
+        "dtTableArr": [
+          {
+            "dtInicio": "13/07/2024",
+            "hrInicio": "13:00",
+            "hrTermino": "19:00"
+          }
+        ],
+        "protocoloProcessosei": "6151 - 00050-00013372/2024-03",
+        "noEvento": "BRASILIENSE X GAMA ",
+        "noTableRa": "TAGUATINGA",
+        "dsEnderecoLocal": "ESTADIO ELMO SEREJO FARIAS ( SEREJÃO)",
+        "dtTableInicio": "13/07/2024",
+        "hrTableInicio": "13:00",
+        "hrTableTermino": "19:00",
+        "nuPublicoMaximo": 500,
+        "stAcaoTransito": "PMDFdf",
+        "dsTableNaturezas": "esportivo: [futebol]",
+        "stTableStatus": "APROVADO",
+        "nuProcessoFormatadoSei": "00050-00013372/2024-03",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "A",
+        "coSeqEventoExterno": 6151,
+        "noResponsavelRealizacaoEvento": "FEDERAÇÃO DE FUTEBOL DO DF",
+        "nuTelefoneResponsavelRealizacaoEvento": ""
+      },
+      {
+        "dtTableDates": "16/08/2024 - 18:00 às 00:00 | 17/08/2024 - 18:00 às 00:00 | 18/08/2024 - 18:00 às 00:00",
+        "dtTableArr": [
+          {
+            "dtInicio": "16/08/2024",
+            "hrInicio": "18:00",
+            "hrTermino": "00:00"
+          },
+          {
+            "dtInicio": "17/08/2024",
+            "hrInicio": "18:00",
+            "hrTermino": "00:00"
+          },
+          {
+            "dtInicio": "18/08/2024",
+            "hrInicio": "18:00",
+            "hrTermino": "00:00"
+          }
+        ],
+        "protocoloProcessosei": "6150 - 00050-00013370/2024-14",
+        "noEvento": "FESTA AGOSTINA ",
+        "noTableRa": "PLANO PILOTO",
+        "dsEnderecoLocal": "SGAN 604 MODULO D, S/N - L2 NORTE",
+        "dtTableInicio": "16/08/2024",
+        "hrTableInicio": "18:00",
+        "hrTableTermino": "00:00",
+        "nuPublicoMaximo": 500,
+        "stAcaoTransito": "",
+        "dsTableNaturezas": "religioso - social",
+        "stTableStatus": "APROVADO",
+        "nuProcessoFormatadoSei": "00050-00013370/2024-14",
+        "dtCadastro": "02/07/2024",
+        "stEventoExterno": "A",
+        "coSeqEventoExterno": 6150,
+        "noResponsavelRealizacaoEvento": "Pe. Ricardo Ferreira de Carvalho",
+        "nuTelefoneResponsavelRealizacaoEvento": "(61) 3327-1082"
+      }
+    ]
+  }
+}

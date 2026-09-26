@@ -1,0 +1,11 @@
+node_modules
+dist
+storybook-static
+snapshots
+package-lock.json
+examples/*/node_modules
+examples/*/.next
+
+# Documentação fica fora: com printWidth 200 o Prettier reflui a prosa e
+# desmonta as tabelas do UPGRADE_PLAN.md.
+*.md

@@ -11,7 +11,6 @@ import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { LoginOptions, LogoutOptions } from '../../types/auth'
 
-
 function verificarRota(route: string, path: string): boolean {
     if (route === path) {
         return true
@@ -99,7 +98,7 @@ export default function TabNavBar({
                 setLoading(false)
             }
         },
-        [router]
+        [router],
     )
 
     function changeRoute(e: React.MouseEvent, path: string) {
@@ -147,7 +146,7 @@ export default function TabNavBar({
                                                 backgroundColor: isActive ? color : 'rgba(0,0,0,0.05)',
                                                 cursor: 'pointer',
                                                 userSelect: 'none',
-                                                filter: isActive ? 'brightness(1.1)' : 'none'
+                                                filter: isActive ? 'brightness(1.1)' : 'none',
                                             },
                                         }}
                                         onClick={(e) => {
@@ -156,7 +155,9 @@ export default function TabNavBar({
                                         }}
                                     >
                                         <Stack justifyContent='center'>
-                                            <Typography fontWeight={isActive ? 600 : 500} whiteSpace='nowrap'>{x.name}</Typography>
+                                            <Typography fontWeight={isActive ? 600 : 500} whiteSpace='nowrap'>
+                                                {x.name}
+                                            </Typography>
                                         </Stack>
                                     </Box>
                                 )
@@ -283,7 +284,7 @@ export default function TabNavBar({
                     </Stack>
                 </AppBar>
                 {loading && <LinearProgress />}
-            </Box >
+            </Box>
             <Box paddingBottom={paddingBottom} />
         </>
     )

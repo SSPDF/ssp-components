@@ -14,6 +14,7 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useStat
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils//CustomMenu'
+import { useIsClient } from '../../utils/useIsClient'
 import { FilterValue, OrderBy, TableProps } from './types'
 import { TableLoadingState } from './TableLoadingState'
 import { removePunctuationAndAccents, getCount, filtrarDados, ordenarDados, downloadCSVFile, downloadCSVAll } from './utils'
@@ -72,19 +73,29 @@ export function Table({
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
     const startData = useRef<any[]>(data)
-    const orderAsc = useRef(localStorage.getItem(`order-${id}`) === 'true' || false)
+    const orderAsc = useRef(false)
     const lg = useMediaQuery(theme.breakpoints.up(2000))
+    // `localStorage` só existe no browser: nada de lê-lo durante o render (quebra o SSR — UPGRADE_PLAN.md 5.11)
+    const isClient = useIsClient()
 
     localTableName = `tableFilter_${id}`
     localTableNameCache = `tableFilterCache_${id}`
     filtersFuncData = filtersFunc ?? {}
 
-    if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+    // Estes dois efeitos precisam vir antes dos demais: os de baixo já contam com a
+    // ordenação restaurada e com o filtro salvo descartado se as colunas mudaram.
+    useEffect(() => {
+        orderAsc.current = localStorage.getItem(`order-${id}`) === 'true'
+    }, [id])
 
-    if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
-        localStorage.setItem(localTableNameCache, JSON.stringify(filters))
-        localStorage.removeItem(localTableName)
-    }
+    useEffect(() => {
+        if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+
+        if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
+            localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+            localStorage.removeItem(localTableName)
+        }
+    })
 
     useEffect(() => {
         setError(null)
@@ -111,7 +122,7 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            let value = dataPath ? get(j, dataPath) : j
+                            const value = dataPath ? get(j, dataPath) : j
 
                             if (!value || !Array.isArray(value)) {
                                 setData({ body: { data: [] } })
@@ -166,7 +177,7 @@ export function Table({
     useEffect(() => {
         if (isLoading || error || !getData(data)) return
 
-        let value = getData(data)
+        const value = getData(data)
 
         setList(value)
         setListClone(value)
@@ -291,7 +302,7 @@ export function Table({
     useEffect(() => {
         const start = currentPage * itemsCount
         const newList = list.slice(start, start + itemsCount)
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
@@ -303,7 +314,7 @@ export function Table({
     }, [list, itemsCount, currentPage])
 
     function expandAll() {
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         for (let i = 0; i < itemCount; i++) {
             obj[i] = !isExpandAll
@@ -469,7 +480,7 @@ export function Table({
                     </Stack>
                 </Stack>
 
-                {localStorage.getItem(localTableName) && (
+                {isClient && localStorage.getItem(localTableName) && (
                     <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
                         {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
                             .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2)))
@@ -541,9 +552,9 @@ export function Table({
                                             key={c.keyName + index}
                                             item
                                             xs={12}
-                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
+                                            md={lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1)}
                                             {...({
-                                                size: { xs: 12, md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1) },
+                                                size: { xs: 12, md: lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1) },
                                             } as any)}
                                             sx={{
                                                 overflow: 'hidden',
@@ -639,17 +650,19 @@ export function Table({
                                 justifyContent='flex-end'
                                 spacing={1}
                             >
-                                {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]).filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length > 0 && (
-                                    <Button
-                                        startIcon={<FileDownloadIcon />}
-                                        variant='contained'
-                                        size='small'
-                                        onClick={(e) => handleCSVDownload(list)}
-                                        sx={{ backgroundColor: '#a5a5a5', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
-                                    >
-                                        Baixar Filtrados
-                                    </Button>
-                                )}
+                                {isClient &&
+                                    (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]).filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length >
+                                        0 && (
+                                        <Button
+                                            startIcon={<FileDownloadIcon />}
+                                            variant='contained'
+                                            size='small'
+                                            onClick={(e) => handleCSVDownload(list)}
+                                            sx={{ backgroundColor: '#a5a5a5', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
+                                        >
+                                            Baixar Filtrados
+                                        </Button>
+                                    )}
                                 <Button
                                     startIcon={<FileDownloadIcon />}
                                     variant='contained'

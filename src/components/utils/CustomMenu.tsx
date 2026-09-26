@@ -1,10 +1,11 @@
-import { ButtonProps, Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 import React from 'react'
-import Bt from './Bt'
+import Bt, { CustomButton } from './Bt'
 
 interface MenuProps {
     data: { name: string; onClick?: () => void }[]
-    btProps?: ButtonProps
+    // Repassado para o `Bt`: aceita as props do `Button` do MUI e também `customColor`/`customFontColor`
+    btProps?: CustomButton
     children?: React.ReactNode
 }
 
