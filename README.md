@@ -34,6 +34,11 @@ O `@mui/lab` **não** precisa ser instalado pelo app: ele é dependência da lib
 
 > O `npm install` avisa quando uma peer está faltando ou fora da faixa. Não ignore o aviso — é exatamente o cenário em que os componentes quebram em runtime sem erro de compilação.
 
+### Requisitos do app (desde a `0.4.0`)
+
+- **Node ≥ 22** para instalar e buildar. O `react-dropzone` 20 declara `engines: node >= 22` (com Node 20 o npm avisa `EBADENGINE`, e falha com `engine-strict`). Quem carrega a lib via CommonJS (`require`), como o Jest, precisa de Node ≥ 22.12, porque o `keycloak-js` 26 só é publicado em ESM.
+- **Contexto seguro (HTTPS ou `localhost`)** para o `KeycloakAuthProvider`. O `keycloak-js` 26 usa a Web Crypto do browser (`crypto.randomUUID`, `crypto.subtle`), que não existe numa página servida em HTTP puro fora do `localhost`: o login falha com `Web Crypto API is not available`. Acessar o app por IP ou por `http://` na rede interna deixa de funcionar.
+
 ### SSR
 
 Os componentes renderizam no servidor (Next.js Pages Router). `Table` e `GenericTable` restauram os filtros e a ordenação salvos no `localStorage` logo depois da montagem — até a `0.1.x` elas liam o `localStorage` durante o render e precisavam de `next/dynamic` com `ssr: false`, o que pode ser removido.
@@ -100,6 +105,21 @@ Dois providers alimentam o mesmo `AuthContext` (formato `AuthReturnData`): `user
 - **`KeycloakAuthProvider`** — Keycloak/Active Directory (`type: 'ad'`), com refresh automático de token e init de SSO.
 - **`OAuthProvider`** — OIDC gov.br (`type: 'govbr'`). Em `localhost` (ou um `testIP`), faz bypass do fluxo real e loga com um `testToken`.
 
+O `KeycloakAuthProvider` faz o check-sso silencioso num iframe que carrega `${basePath}/silent-check-sso.html`. O app precisa servir esse arquivo (em `public/`, que o Next serve embaixo do `basePath`), com este conteúdo:
+
+```html
+<!doctype html>
+<html>
+    <body>
+        <script>
+            parent.postMessage(location.href, location.origin)
+        </script>
+    </body>
+</html>
+```
+
+Passe o mesmo `basePath` do `next.config.js` ao provider: ele monta o endereço desse arquivo e o redirect do logout.
+
 O `OAuthProvider` guarda o JWT no cookie `nextauth.token` (exportado como `AUTH_COOKIE_NAME`). O `KeycloakAuthProvider` **não** grava esse cookie — o token fica com o `keycloak-js` e é exposto por `accessToken`.
 
 ```tsx
@@ -129,7 +149,9 @@ npm run typecheck      # tsc --noEmit
 npm run lint           # eslint
 npm run format:check   # prettier
 npm run test           # vitest (providers de auth)
-npm run snapshots      # snapshots visuais de todas as stories, dentro de container Linux
+npm run snapshots      # snapshots visuais de todas as stories + as stories de interação (play functions), dentro de container Linux
+npm run interacoes     # só as stories de interação, contra o `npm run storybook` aberto (rápido)
+npm run e2e:keycloak   # login de verdade com o keycloak-js no browser, contra um servidor OIDC simulado (ou o HMG, com E2E_KC_*)
 npm run check:package  # externos do bundle x lib-package.json, publint e are-the-types-wrong sobre o dist/
 npm run smoke          # instala o dist/ empacotado no examples/smoke-app e roda o next build (SSR)
 npm run pack:local     # gera pack/*.tgz idêntico ao que seria publicado, para testar num app real

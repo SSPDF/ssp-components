@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { FieldValues } from 'react-hook-form'
 import { FormProvider } from '../'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
-import '../css/ReactToastify.css'
 
 export default function StepperDecorator(Story: any, el: any) {
     const [formData, setFormData] = useState<FieldValues>()

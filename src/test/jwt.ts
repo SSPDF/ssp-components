@@ -1,7 +1,7 @@
 /**
  * Monta um JWT **não assinado** para uso nos testes.
  *
- * Os providers só fazem `jwt_decode` (decodifica, não verifica assinatura), então
+ * Os providers só fazem `jwtDecode` (decodifica, não verifica assinatura), então
  * um token com assinatura falsa é suficiente — e evita ter qualquer segredo ou
  * token real de homologação versionado no repo.
  */

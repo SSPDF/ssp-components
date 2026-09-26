@@ -152,3 +152,24 @@ export const InteracaoEmail: Story = {
         await expect(await dadosEnviados(canvasElement)).toEqual({ email: 'fulano@ssp.df.gov.br' })
     },
 }
+
+/**
+ * Edição: os dados chegam da "API" sem máscara (`formReset`) e aparecem mascarados nos campos.
+ * Editar um campo e enviar mantém os outros como vieram.
+ */
+export const InteracaoEdicao: Story = {
+    tags: ['interacao'],
+    render: EdicaoComRequisicao.render,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const cpf = await canvas.findByDisplayValue('123.456.789-01', {}, { timeout: 5000 })
+        await expect(canvas.getByDisplayValue('71090-395')).toBeVisible()
+        await expect(canvas.getByDisplayValue('João da Silva')).toBeVisible()
+
+        await userEvent.clear(cpf)
+        await userEvent.type(cpf, '98765432100')
+        await expect(cpf).toHaveValue('987.654.321-00')
+        await enviar(canvasElement)
+        await expect(await dadosEnviados(canvasElement)).toEqual({ nome: 'João da Silva', cep: '71090-395', cpf: '987.654.321-00' })
+    },
+}

@@ -2,6 +2,28 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 0.4.0
+
+**Majors das dependências de runtime (Etapa 6 do `UPGRADE_PLAN.md`).** A API pública e as peers não mudaram, e os componentes se comportam igual (conferido pelos snapshots, pelas stories de interação e por um e2e de login com o `keycloak-js` de verdade). Sobe o minor porque dois requisitos do app mudam.
+
+| Dependência | Antes | Agora |
+|---|---|---|
+| `keycloak-js` | `^25.0.1` | `^26.2.4` (a versão casada com o servidor Keycloak 26 da SSP) |
+| `react-dropzone` | `^14.4.1` | `^20.1.2` |
+| `react-imask` | `^6.6.3` | `^7.6.1` |
+| `jwt-decode` | `^3.1.2` | `^4.0.0` |
+
+### O que o app precisa fazer
+
+- **Node ≥ 22** para instalar e buildar. O `react-dropzone` 20 exige (`EBADENGINE` no Node 20). Os apps em `node:24` (specto, viva-flor, copom) já atendem. O `conoc-frontend` builda em `node:20`, mas ele ainda não usa a linha `0.x`.
+- **Servir o app em HTTPS (ou `localhost`).** O `keycloak-js` 26 usa a Web Crypto do browser, que não existe em HTTP puro fora do `localhost`: lá o login falha com `Web Crypto API is not available`. Produção e HMG já são HTTPS. O que quebra é acessar por IP ou `http://` na rede interna.
+- **Quem carrega a lib via `require`** (Jest, scripts Node) precisa de Node ≥ 22.12: o `keycloak-js` 26 só é publicado em ESM. Next.js não é afetado.
+- Quem passa `dropZoneOptions` ao `DropFileUpload`: com `maxFiles`, o `react-dropzone` 19+ aceita os arquivos até o limite em vez de rejeitar o lote inteiro, e o `isDragReject` só vale durante o arrasto.
+
+### Documentação
+
+- O README passa a dizer o que o `KeycloakAuthProvider` sempre exigiu e não estava escrito: o app precisa servir `public/silent-check-sso.html` (conteúdo no README), e o `basePath` do provider tem que ser o mesmo do `next.config.js`.
+
 ## 0.3.3
 
 Só uma correção, sem mudança de peers, de `dependencies` nem de API pública.

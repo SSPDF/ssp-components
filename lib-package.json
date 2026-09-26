@@ -1,6 +1,6 @@
 {
     "name": "@ssplib/react-components",
-    "version": "0.3.3",
+    "version": "0.4.0",
     "description": "SSP React Components",
     "author": "Pedro Henrique <sr.hudrick@gmail.com>",
     "license": "MIT",
@@ -39,6 +39,9 @@
             }
         }
     },
+    "engines": {
+        "node": ">=22"
+    },
     "peerDependencies": {
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
@@ -56,15 +59,15 @@
         "@mui/lab": "5.0.0-alpha.127",
         "axios": "^1.20.0",
         "jszip": "^3.10.2",
-        "jwt-decode": "^3.1.2",
-        "keycloak-js": "^25.0.1",
+        "jwt-decode": "^4.0.0",
+        "keycloak-js": "^26.2.4",
         "leaflet": "^1.9.4",
         "leaflet-defaulticon-compatibility": "^0.1.2",
         "lodash.clonedeep": "^4.5.0",
         "lodash.get": "^4.4.2",
         "lodash.hasin": "^4.5.2",
-        "react-dropzone": "^14.4.1",
-        "react-imask": "^6.6.3",
+        "react-dropzone": "^20.1.2",
+        "react-imask": "^7.6.1",
         "react-leaflet": "^4.2.1",
         "tinycolor2": "^1.6.0",
         "write-excel-file": "^4.1.1"

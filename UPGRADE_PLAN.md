@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status (26/09/2026):** **Etapas 0 a 5 concluídas**, mais as Etapas 2.1 e 2.2, todas commitadas no branch único `atualizacao-dependencias`: versões `0.1.0` → `0.2.0` → `0.2.1` → `0.3.0` → `0.3.1` → `0.3.2` → **`0.3.3`**. O branch está no GitHub com o **PR #4 em rascunho**, usado só para rodar o CI (verde). **Nada foi publicado**: o npm segue com `latest` = `0.0.349`, e a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela, então nada de push direto na `main` até o merge. Hoje foram feitos a 4.1 (`0.3.1`), a 2.2 (`0.3.2`, que destrava o `copom`), o ferramental da 4.4 (sem release) e o MUI 5.18 nas `devDependencies`, com os achados **5.16, 5.17 e 5.18**. Em 26/09 foi feita a **Etapa 5** (Storybook 10, sem release; achado **5.19**), e as **stories de interação** acharam o bug do `GenericDatePicker`, corrigido na **`0.3.3`** (5.20), além dos achados 5.21. **Próxima: Etapa 6** (libs de runtime, um PR por lib). O estado consolidado, com o que está pendente, está na **seção 12**. Documento de trabalho: marque os checkboxes conforme as etapas forem concluídas.
+> **Status (26/09/2026):** **Etapas 0 a 6 concluídas**, mais as Etapas 2.1 e 2.2, todas commitadas no branch único `atualizacao-dependencias`: versões `0.1.0` → `0.2.0` → `0.2.1` → `0.3.0` → `0.3.1` → `0.3.2` → `0.3.3` → **`0.4.0`**. O branch está no GitHub com o **PR #4 em rascunho**, usado só para rodar o CI (verde). **Nada foi publicado**: o npm segue com `latest` = `0.0.349`, e a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela, então nada de push direto na `main` até o merge. Hoje foram feitos a 4.1 (`0.3.1`), a 2.2 (`0.3.2`, que destrava o `copom`), o ferramental da 4.4 (sem release) e o MUI 5.18 nas `devDependencies`, com os achados **5.16, 5.17 e 5.18**. Em 26/09 foi feita a **Etapa 5** (Storybook 10, sem release; achado **5.19**), e as **stories de interação** acharam o bug do `GenericDatePicker`, corrigido na **`0.3.3`** (5.20), além dos achados 5.21. Também em 26/09, a **Etapa 6** (majors de runtime → **`0.4.0`**, achados **5.22** e **5.23**), com um e2e de login com o `keycloak-js` real no CI. **Próxima: Etapa 7** (MUI 9). O estado consolidado, com o que está pendente, está na **seção 12**. Documento de trabalho: marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, **em 25/09/2026, após a Etapa 3** (seção 11) e **de novo em 25/09/2026, após a Etapa 4** (seção 12) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -445,6 +445,16 @@ O `handleChange` fazia `setValue(undefined)` em vez de `setValue(newValue)`. O c
 - **d) `FileUpload` percorre a `FileList` com `Object.keys`.** Funciona com a `FileList` do browser, mas quebra com qualquer objeto parecido (como a do `userEvent.upload`). `Array.from(files)` resolveria. Os testes usam uma `FileList` real.
 - **e) `DatePicker` sem `maxDt` mostra "A data tem que ser depois de 16/04/2023 e antes de undefined".** A mensagem monta o `maxDt` mesmo quando ele não existe (e o `GenericDatePicker` também).
 - **f) O exemplo `MaskInput/MascaraDinamicaTelefone` nunca trocava para celular.** A máscara de fixo enchia no 10º dígito, e o IMask rejeitava o 11º antes do `onMaskChange` ver. Corrigido na story (a máscara de fixo aceita um dígito a mais). O componente não mudou.
+
+### 5.22 `keycloak-js` 26: só ESM e exige contexto seguro (achado na Etapa 6, 26/09/2026) — documentado na `0.4.0`
+
+- **Só ESM.** O pacote passou a ter `"type": "module"` e nenhuma condição `require`. O `dist/*.cjs` da lib faz `require('keycloak-js')` ao carregar o barrel, então o consumo via CommonJS (Jest, scripts Node) depende do `require()` de ESM do Node (≥ 20.19 ou ≥ 22.12). O `verificar-datepicker.cjs` do smoke carrega a lib por `require` num processo novo e passou no Node 24. O Next (14 e 16) não é afetado. O pacote também não exporta mais `./package.json`.
+- **Contexto seguro.** A 26 usa `crypto.randomUUID` e `crypto.subtle` sem alternativa (a 25 caía para `Math.random` e tinha SHA-256 próprio). Em HTTP puro fora do `localhost`, o login lança `Web Crypto API is not available`. Os quatro apps são servidos em HTTPS (produção e HMG, conferido nas configs), e o desenvolvimento em `localhost` conta como seguro. O que quebra é acesso por IP ou `http://` na rede interna. Está no README e no CHANGELOG.
+- A API que a lib expõe (`KeycloakLoginOptions`, `KeycloakLogoutOptions`, `KeycloakTokenParsed`) não mudou. O config ficou mais estrito (`url` obrigatório), e o `init` perdeu o `acrValues`, que a lib não usa.
+
+### 5.23 O `KeycloakAuthProvider` exige um `silent-check-sso.html` que o README não mencionava (26/09/2026) — ✅ documentado
+
+O provider faz o check-sso silencioso carregando `${basePath}/silent-check-sso.html` num iframe. Os quatro apps servem o arquivo em `public/` (e todos usam `basePath`: `/specto`, `/spp`, `/hefesto`, `/conat`), mas um app novo não teria como saber. O README agora traz o conteúdo do arquivo e explica que o `basePath` do provider tem que ser o do `next.config.js`. O e2e roda com `basePath` pelo mesmo motivo.
 
 ---
 
@@ -893,14 +903,51 @@ Branch `atualizacao-dependencias`, sobre `f549659`. Node 24.21.0. **Sem release:
 
 **`@storybook/addon-vitest`: não adotado.** O `10.6.0` tem peer `vitest ^3 || ^4` e `@vitest/browser-playwright ^4`, e o repo está no vitest 5 desde a 4.4. Além disso, ele só roda com framework baseado em Vite, então seria preciso trocar `@storybook/nextjs` (webpack) por `@storybook/nextjs-vite`, que é outro builder e pede outra rodada de snapshots. O que o addon daria, uma falha quando uma story quebra no render, o `visual-snapshots.mjs` já dá, porque falha em `pageerror`. Reavaliar quando o addon aceitar o vitest 5, ou se o Storybook migrar para Vite por outro motivo.
 
-### Etapa 6 — Libs de runtime de risco médio (um PR por lib, nesta ordem)
-- [ ] `jwt-decode` 3 → 4
-- [ ] `react-imask` 6 → 7
-- [ ] `react-toastify` 10 → 11 nas `devDependencies` (decidir o destino do CSS vendorizado). *25/09: a peer já aceita o 11 desde a `0.3.2`, e o CSS vendorizado só é usado pelos decorators das stories, não vai no pacote. Então este item virou só dev: Storybook e snapshots na v11.*
-- [ ] `react-dropzone` 14 → 20 (*`engines: node >= 22` — em 25/09 o `conoc-frontend` builda em `node:20`; subir o Dockerfile dele para 22/24 antes, ou segurar esta lib*)
-- [ ] `keycloak-js` 25 → 26
+### Etapa 6 — Libs de runtime de risco médio (um PR por lib, nesta ordem) — ✅ concluída em 26/09/2026 → `0.4.0`
+- [x] `jwt-decode` 3 → 4
+- [x] `react-imask` 6 → 7
+- [x] `react-toastify` 10 → 11 nas `devDependencies` (decidir o destino do CSS vendorizado). *26/09: CSS vendorizado apagado; a v11 injeta o dela.* *25/09: a peer já aceita o 11 desde a `0.3.2`, e o CSS vendorizado só é usado pelos decorators das stories, não vai no pacote. Então este item virou só dev: Storybook e snapshots na v11.*
+- [x] `react-dropzone` 14 → 20 (*`engines: node >= 22` — em 25/09 o `conoc-frontend` builda em `node:20`; subir o Dockerfile dele para 22/24 antes, ou segurar esta lib*)
+- [x] `keycloak-js` 25 → 26 *(e2e contra o HMG preparado, aguardando client e usuário de teste; ver o registro)*
 
 **Validação:** story dedicada por lib + app de fumaça. Para `keycloak-js` 25 → 26: suíte com MSW da Etapa 0 + **e2e contra o Keycloak de HMG** (job sob demanda). Teste manual só se o e2e apontar divergência.
+
+#### Registro de execução — 26/09/2026
+
+Branch `atualizacao-dependencias`, sobre a `0.3.3`. Node 24.21.0. Lançado como **`0.4.0`** (minor: o app passa a precisar de Node ≥ 22 e de contexto seguro; ver o CHANGELOG). A API pública e as peers não mudaram.
+
+| Lib | O que mudou no código | Como foi validada |
+|---|---|---|
+| `jwt-decode` 3 → 4 | `import { jwtDecode }` (era default) no `OAuthProvider` | typecheck + os 14 testes dos providers |
+| `react-imask` 6 → 7 | nada (a API do `IMaskInput` que a lib usa é a mesma) | stories de interação das máscaras (CPF, CEP, telefone com troca fixo/celular, `onMaskChange`) + a nova `Input/InteracaoEdicao`: dados crus da API via `formReset` aparecem mascarados, e a edição envia certo |
+| `react-toastify` 10 → 11 (dev) | sai o `src/css/ReactToastify.css` (704 linhas, CSS da v10) e o import dele nos 3 decorators; a v11 injeta o próprio CSS | toast conferido na tela; snapshots idênticos; a interação do `DatePicker` confere o toast |
+| `react-dropzone` 14 → 20 | nada (a lib não usa `isDragReject`, `accept` nem `maxFiles`; o `DropzoneOptions` público segue compatível) | nova story `DropFileUpload/InteracaoMultiplos` (o `viva-flor` usa `multiple`): 2 arquivos pelo seletor + 1 arrastado (evento `drop`), ids da API no `onSubmit` |
+| `keycloak-js` 25 → 26 | nada no provider (os tipos que a lib expõe, `KeycloakLoginOptions`/`LogoutOptions`/`TokenParsed`, não mudaram; o `acrValues` que saiu do `init` não era usado) | **e2e novo** com o `keycloak-js` real no browser (abaixo), idêntico na 25 e na 26 |
+
+- **`npm install` sem `ERESOLVE`** nesta etapa (as libs são `dependencies`, sem peers entre si). O Storybook dev precisa ser reiniciado depois de trocar o toastify: o cache do webpack aponta para o arquivo da v10.
+- **Verificações:** typecheck, lint (0 erros, 351 warnings), formatação, 46 testes, build, API pública, `check:package`, os três smokes, **84 snapshots sem diferença** e **27 stories de interação** (eram 25; +`InteracaoEdicao`, +`InteracaoMultiplos`).
+
+**E2E do `KeycloakAuthProvider` (`npm run e2e:keycloak`, no CI).** O teste do provider mocka o módulo `keycloak-js`, então não pegaria nada de um upgrade dele. Subir um Keycloak em Docker foi descartado (pesa ~1 GB de memória). No lugar, `scripts/lib/oidc-simulado.mjs` é um servidor OIDC com os endpoints que o `keycloak-js` usa, estrito onde um upgrade quebraria em silêncio: confere o PKCE S256, o `redirect_uri`, o `client_id` e o `id_token_hint` do logout, e devolve o `nonce`. O `scripts/e2e-keycloak.mjs` builda o smoke-app com o tarball da lib, com `basePath` como todos os apps, e faz 12 passos no browser:
+
+1. abre anônimo (check-sso sem sessão);
+2. login pela tela do servidor;
+3. nome e roles: `hasRole`, `hasAnyRole` e `hasAllRoles` certos;
+4. PKCE conferido pelo servidor;
+5. reload continua autenticado pelo check-sso silencioso (`silent-check-sso.html` embaixo do `basePath`);
+6. token renovado sozinho (o simulador dá 20 s de vida ao token);
+7. refresh token recusado: o app volta a anônimo, sem travar;
+8. sessão encerrada fora do app: o iframe de status detecta;
+9. login de novo;
+10. logout volta ao `basePath` e encerra a sessão no servidor;
+11. `type='govbr'`: logout federado (`initiating_idp`, `id_token_hint`);
+12. nenhum pedido fora do protocolo.
+
+Resultados:
+- **Passa igual com o `keycloak-js` 25.0.6 e 26.2.4** (`SMOKE_KEYCLOAK_JS=25.0.6`), então o comportamento que os apps usam não mudou.
+- **Falha quando deve:** com o client configurado para outra origem, o teste para no login e mostra a recusa exata ("Invalid parameter: redirect_uri").
+- Roda em cerca de 1 min 30 s, e no CI entra antes do tarball de desenvolvimento.
+
+**E2E contra o Keycloak de HMG (`.github/workflows/e2e-keycloak-hmg.yaml`):** o mesmo script, com `E2E_KC_URL`, pega o que o simulador não pega (tema de login, configuração do realm, servidor real). Roda em todo push e sob demanda. Usa um client de teste (público, PKCE S256, redirect e post-logout `http://localhost:3100/*`, access token de 1 min para o teste ver a renovação) e um usuário de teste com uma única role desse client, criados no HMG só para isto. **Todos os dados ficam em secrets do repositório** (`E2E_KC_URL`, `E2E_KC_REALM`, `E2E_KC_CLIENT_ID`, `E2E_KC_ROLE`, `E2E_KC_USUARIO`, `E2E_KC_SENHA`), inclusive os não sigilosos, por decisão de não deixar nada disso público. Sem os secrets, o job só avisa. Reusar o client `-dev` de um app foi descartado, para não amarrar o teste da lib à configuração de outro sistema.
 
 ### Etapa 7 — MUI 5 → 9 (a grande) → `1.0.0`
 Sub-etapas, cada uma com snapshots revisados:
@@ -1103,7 +1150,7 @@ Conferido contra o repo, o registry (`npm outdated`, `npm view`), o GitHub (PR #
 - `ubuntu-latest` vira Ubuntu 26 em 19/10/2026: conferir o primeiro CI depois disso. Os snapshots usam imagem fixa, mas os smokes rodam no runner.
 - Decisões em aberto: **D2** (`react-leaflet`, que hoje é **o único** bloqueio de React 19) e quando mergear e publicar a linha `0.x`.
 
-**Próximos passos, pela ordem do plano:** ~~Etapa 5 (Storybook 10, sem release)~~ ✅ feita em 26/09/2026 (registro na Etapa 5: 10.6.0, 0 diffs, sem `.babelrc.json`, `addon-vitest` não adotado), Etapa 6 (um PR por lib de runtime), Etapa 7 (MUI 9, `1.0.0`), Etapa 8 (React 19, `2.0.0`) e Etapa 9 (TS 7, bloqueada pelo `typescript-eslint`).
+**Próximos passos, pela ordem do plano:** ~~Etapa 5 (Storybook 10, sem release)~~ ✅ feita em 26/09/2026 (registro na Etapa 5: 10.6.0, 0 diffs, sem `.babelrc.json`, `addon-vitest` não adotado), ~~Etapa 6 (um PR por lib de runtime)~~ ✅ feita em 26/09/2026 (`0.4.0`; pendente só o e2e contra o HMG, que depende de client e usuário de teste), Etapa 7 (MUI 9, `1.0.0`), Etapa 8 (React 19, `2.0.0`) e Etapa 9 (TS 7, bloqueada pelo `typescript-eslint`).
 
 ---
 

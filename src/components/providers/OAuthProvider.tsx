@@ -1,4 +1,4 @@
-import jwt_decode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { AuthContext } from '../../context/auth'
@@ -59,7 +59,7 @@ export function OAuthProvider({
                 logout()
                 return
             } else {
-                const userData: AuthClaims = jwt_decode(token)
+                const userData: AuthClaims = jwtDecode(token)
                 const img = localStorage.getItem(userImgName) as string
 
                 setUser({
@@ -112,9 +112,9 @@ export function OAuthProvider({
             const token = authData.ssp_token
 
             setCookie(cookieName, token)
-            const userData: AuthSspToken = jwt_decode(token)
+            const userData: AuthSspToken = jwtDecode(token)
 
-            const idToken: AuthClaims = jwt_decode(authData.id_token)
+            const idToken: AuthClaims = jwtDecode(authData.id_token)
 
             // pegando foto de usuario
             await fetch(idToken.picture, {
