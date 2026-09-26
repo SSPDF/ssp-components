@@ -91,7 +91,8 @@ jobs:
 
       # A MESMA imagem do scripts/snapshots-in-docker.sh. Se divergirem, o baseline
       # gerado localmente não bate com o do CI e todo PR vira um diff de 77 imagens.
-      - name: Snapshots visuais
+      # O mesmo passo roda as `play` functions das stories com a tag `interacao`.
+      - name: Snapshots visuais e stories de interação
         run: |
           docker run --rm \
             -v "$PWD":/work -w /work --ipc=host \

@@ -2,6 +2,8 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import { Button, Stack, Typography } from '@mui/material'
 import { MODAL } from '../components/modal/Modal'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { pagina } from './interacao'
 
 /**
  * `MODAL` é um singleton exposto pelo portal que o `SspComponentsProvider` monta.
@@ -65,4 +67,18 @@ export const Reparented: Story = {
             </Button>
         </Stack>
     ),
+}
+
+/** `MODAL.open()` mostra o conteúdo no portal; Esc fecha. */
+export const Interacao: Story = {
+    tags: ['interacao'],
+    render: Base.render,
+    play: async ({ canvasElement }) => {
+        await userEvent.click(within(canvasElement).getByRole('button', { name: 'Abrir modal' }))
+        const conteudo = await pagina(canvasElement).findByText('Conteúdo aberto via MODAL.open().')
+        await expect(conteudo).toBeVisible()
+
+        await userEvent.keyboard('{Escape}')
+        await waitFor(() => expect(pagina(canvasElement).queryByText('Conteúdo aberto via MODAL.open().')).toBeNull())
+    },
 }

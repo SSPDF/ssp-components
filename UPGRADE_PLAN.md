@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status (25/09/2026):** **Etapas 0 a 4 concluídas**, mais as Etapas 2.1 e 2.2, todas commitadas no branch único `atualizacao-dependencias`: versões `0.1.0` → `0.2.0` → `0.2.1` → `0.3.0` → `0.3.1` → **`0.3.2`**. O branch está no GitHub com o **PR #4 em rascunho**, usado só para rodar o CI (verde). **Nada foi publicado**: o npm segue com `latest` = `0.0.349`, e a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela, então nada de push direto na `main` até o merge. Hoje foram feitos a 4.1 (`0.3.1`), a 2.2 (`0.3.2`, que destrava o `copom`), o ferramental da 4.4 (sem release) e o MUI 5.18 nas `devDependencies`, com os achados **5.16, 5.17 e 5.18**. **Próxima: Etapa 5** (Storybook 10). O estado consolidado, com o que está pendente, está na **seção 12**. Documento de trabalho: marque os checkboxes conforme as etapas forem concluídas.
+> **Status (26/09/2026):** **Etapas 0 a 5 concluídas**, mais as Etapas 2.1 e 2.2, todas commitadas no branch único `atualizacao-dependencias`: versões `0.1.0` → `0.2.0` → `0.2.1` → `0.3.0` → `0.3.1` → `0.3.2` → **`0.3.3`**. O branch está no GitHub com o **PR #4 em rascunho**, usado só para rodar o CI (verde). **Nada foi publicado**: o npm segue com `latest` = `0.0.349`, e a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela, então nada de push direto na `main` até o merge. Hoje foram feitos a 4.1 (`0.3.1`), a 2.2 (`0.3.2`, que destrava o `copom`), o ferramental da 4.4 (sem release) e o MUI 5.18 nas `devDependencies`, com os achados **5.16, 5.17 e 5.18**. Em 26/09 foi feita a **Etapa 5** (Storybook 10, sem release; achado **5.19**), e as **stories de interação** acharam o bug do `GenericDatePicker`, corrigido na **`0.3.3`** (5.20), além dos achados 5.21. **Próxima: Etapa 6** (libs de runtime, um PR por lib). O estado consolidado, com o que está pendente, está na **seção 12**. Documento de trabalho: marque os checkboxes conforme as etapas forem concluídas.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, **em 25/09/2026, após a Etapa 3** (seção 11) e **de novo em 25/09/2026, após a Etapa 4** (seção 12) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7). **D2 em aberto** — como a linha `1.x` atende React 18 *e* 19 (nenhuma versão do `react-leaflet` aceita os dois); não bloqueia nada até a Etapa 7. Detalhes na seção 9.
@@ -185,7 +185,7 @@ Levantado com `npm outdated` + consulta de `peerDependencies` no registry em 21/
 
 | Pacote | Atual | Alvo |
 |---|---|---|
-| `@babel/preset-env` / `-react` / `-typescript` | 7.27–7.28 | 7.29.7 — *25/09*: **Babel 8 saiu** (8.0.x, peer `@babel/core ^8`, Node `^22.18 \|\| >=24.11`). **Não** subir para o 8: os presets só existem por causa do `.babelrc.json` do Storybook e devem sair na Etapa 5 |
+| `@babel/preset-env` / `-react` / `-typescript` | 7.27–7.28 | 7.29.7 — *25/09*: **Babel 8 saiu** (8.0.x, peer `@babel/core ^8`, Node `^22.18 \|\| >=24.11`). **Não** subir para o 8: os presets só existem por causa do `.babelrc.json` do Storybook e devem sair na Etapa 5 — ✅ *26/09: saíram na Etapa 5 (5.19)* |
 | `@tsconfig/recommended` | 1.0.2 | 1.0.13 |
 | `@types/node` | 20.17 | 20.19 (Node 22: avaliar `^22`) |
 | `@types/react` / `@types/react-dom` | 18.0.37 / 18.3.0 | 18.3.31 / 18.3.7 |
@@ -248,7 +248,7 @@ A Etapa 0 instalou as ferramentas nas versões compatíveis com o resto da árvo
 | `@types/node` | 20.17 | 26.6.2 | alinhar com o Node do CI → **`^24`** (o CI passou para Node 24 na Etapa 3) |
 | `actions/checkout`, `setup-node`, `upload-artifact` | v4 | v7 | ✅ *feito em 24/09/2026* (fora da Etapa 4): a v4 roda em Node 20, que o GitHub descontinuou e já força para 24. Breaking das v5–v7 conferidos: só runtime Node 24, ESM interno, cache automático do `setup-node` (usamos `cache: npm` explícito) e o fim do `NODE_AUTH_TOKEN` falso do `setup-node` v7 — o `npm ci` do `publish.yaml` com npm 11 funciona sem ele (testado), e o passo de publish define o token |
 
-*25/09/2026, instalado:* `eslint` 10.11.0 (+ `@eslint/js` 10.0.1), `eslint-config-prettier` 10.1.8, `eslint-plugin-react-hooks` 7.1.1, `globals` 17.12.0, `vitest`/`@vitest/coverage-v8` 5.0.2, `jsdom` 30.1.1, `@testing-library/jest-dom` 7.0.1, `@types/node` ^24.13.6, `playwright` 1.63.0 (imagem `v1.63.0-noble`) e `pixelmatch` 7.2.0. O `eslint-plugin-storybook` fica no 9 até a Etapa 5, porque a v10 exige Storybook 10. Detalhes no registro da 4.4.
+*25/09/2026, instalado:* `eslint` 10.11.0 (+ `@eslint/js` 10.0.1), `eslint-config-prettier` 10.1.8, `eslint-plugin-react-hooks` 7.1.1, `globals` 17.12.0, `vitest`/`@vitest/coverage-v8` 5.0.2, `jsdom` 30.1.1, `@testing-library/jest-dom` 7.0.1, `@types/node` ^24.13.6, `playwright` 1.63.0 (imagem `v1.63.0-noble`) e `pixelmatch` 7.2.0. O `eslint-plugin-storybook` fica no 9 até a Etapa 5, porque a v10 exige Storybook 10 (*26/09: subiu para o 10.6.0 na Etapa 5*). Detalhes no registro da 4.4.
 
 Sugestão: um PR de ferramental dentro da **Etapa 4** (é o lote de "minors/patches seguros" — estes são majors, mas só de dev), com o baseline de snapshots regerado **num PR separado** do bump do Playwright para o diff ficar legível.
 
@@ -359,14 +359,14 @@ Não é regressão — o código não mudou; o smoke-app só não tinha sido bui
 
 ### 5.13 Achados da Etapa 2 (23/09/2026) — em parte corrigidos; **a** e **e** continuam abertos
 
-*Status em 25/09/2026, após a Etapa 4:* **a** aberto. Desde o `react-hooks` 7 é apontado pela regra `react-hooks/globals` (`Table.tsx:81-83`, como warning). **e** aberto, nas linhas atuais `GenericFetchAutoComplete.tsx:58`, `TabNavBar.tsx:153` e `table/utils.tsx:220`, mais os `console.log(err)` em `FileUpload.tsx:171`, `DropFileUpload.tsx:137,202` e `Table.tsx:144`. **f** ✅ (o script `link` saiu na Etapa 3). **g** continua para a Etapa 5. **b**, **c** e **d** já estavam resolvidos.
+*Status em 25/09/2026, após a Etapa 4:* **a** aberto. Desde o `react-hooks` 7 é apontado pela regra `react-hooks/globals` (`Table.tsx:81-83`, como warning). **e** aberto, nas linhas atuais `GenericFetchAutoComplete.tsx:58`, `TabNavBar.tsx:153` e `table/utils.tsx:220`, mais os `console.log(err)` em `FileUpload.tsx:171`, `DropFileUpload.tsx:137,202` e `Table.tsx:144`. **f** ✅ (o script `link` saiu na Etapa 3). **g** ✅ (26/09, Etapa 5; o diagnóstico estava errado, ver 5.19). **b**, **c** e **d** já estavam resolvidos.
 
 
 - **a) `Table` guarda o nome da tabela em variáveis de módulo.** `Table.tsx:23-26` declara `let isExpandAll`, `localTableName`, `filtersFuncData` e `localTableNameCache` no topo do arquivo e as reatribui a cada render. Com **duas `Table` na mesma página**, as duas passam a ler e gravar os filtros da última que renderizou. O `GenericTable` já faz certo (`const` dentro do componente). Correção de uma linha por variável, mas muda comportamento (conserta o compartilhamento) — precisa de teste com duas tabelas.
 - **b) `GenericTable` tinha um `console.log` de depuração em produção:** `useEffect(() => console.log(filterContainer.current), [filterContainer.current])`. — ✅ **removido na Etapa 2**, junto com o `filterContainer`, um `useRef` que nunca era ligado a elemento nenhum (o log sempre imprimia `null`). Saiu também o `console.log(listClone)` do `onInputChange`, que imprimia a lista inteira a cada tecla na busca.
 - **e) Outros `console.log` de depuração na lib** (não removidos): `GenericFetchAutoComplete.tsx:58` (`'llll'`), `TabNavBar.tsx:153` (`pathname`), `table/utils.tsx:220` (`dates`). Os `console.log(err)` em `catch` de `FileUpload`, `DropFileUpload` e `Table` deveriam ser `console.error`. Ficam de fora os intencionais: `Stepper` (atrás da prop `debugLog`) e o logger do `KeycloakAuthProvider`. Candidatos a uma regra `no-console` (`warn`, permitindo `error`/`warn`) no ESLint.
 - **f) `npm run link` não funciona.** O script roda `npx tsc`, mas o `tsconfig.json` tem `noEmit: true` — não gera nada, e o `npm link` publica o `dist/` que estiver lá (de um build anterior, ou nenhum). Além disso, o link é um symlink: o app passa a resolver React/MUI pelo `node_modules` da lib (duas cópias). **Substituído na prática pelo `npm run pack:local`** (Etapa 2), que gera o `.tgz` idêntico ao do publish; o `link` fica para ser removido ou refeito na Etapa 3.
-- **g) `.babelrc.json` é lido pelo Storybook, não só pelo microbundle.** A presença do arquivo faz o `@storybook/nextjs` compilar com Babel em vez de SWC. Remover o microbundle (Etapa 3) **não** libera a remoção dos `@babel/preset-*` — isso fica para a Etapa 5.
+- **g) `.babelrc.json` é lido pelo Storybook, não só pelo microbundle.** A presença do arquivo faz o `@storybook/nextjs` compilar com Babel em vez de SWC. Remover o microbundle (Etapa 3) **não** libera a remoção dos `@babel/preset-*` — isso fica para a Etapa 5. *26/09: **errado**, o Storybook nunca leu esse arquivo (5.19). Removido na Etapa 5.*
 - **h) MUI 5 não tem campo `exports`**, então os deep imports da lib falham no ESM nativo do Node e só resolvem via CJS (detalhes em D1). É o que segura o ESM-only até a Etapa 7.
 - **c) A documentação dizia que os dois providers de auth gravam o cookie `nextauth.token`.** Só o `OAuthProvider` grava; o `KeycloakAuthProvider` declara `cookieName` e nunca o usa. README e `CLAUDE.md` corrigidos para refletir o código — **se algum app lê esse cookie esperando o token do Keycloak, ele nunca existiu**.
 - **d) `scripts/snapshots-in-docker.sh` só buildava o Storybook se `storybook-static/` não existisse.** Com um build antigo na máquina, os snapshots comparavam o código de outra etapa e passavam. **Foi o que aconteceu no registro da Etapa 1**: o "83 stories, 0 diffs" comparou o Storybook da Etapa 0 e não verificou a troca do `Stack` (5.12). Na Etapa 2 o Storybook foi rebuildado e **o resultado cobre as duas etapas contra o baseline original: 0 diffs** — a troca do `Stack` está verificada, só que depois. O script agora sempre rebuilda (`SKIP_STORYBOOK_BUILD=1` pula). O CI nunca foi afetado: ele builda o Storybook antes.
@@ -427,6 +427,25 @@ Ou seja, **o MUI 5.12 → 5.18 não muda nada visual** na lib. Não investiguei 
 
 **Correção (registro da atualização do MUI, na Etapa 4):** a captura passou a abrir **um contexto de browser novo por story** (localStorage, cookies e cache zerados), e o baseline foi regerado com o MUI 5.18. Mudaram 13 PNGs: os 8 acima e 5 que já diferiam abaixo da tolerância (`Table` com erro da API e sem permissão, `TimePicker`, `Modal` reparented e `StepperBlock`, de 4 a 5.962 px). Uma segunda captura completa saiu igual nas 84 stories, então a captura é determinista.
 
+### 5.19 O `.babelrc.json` nunca foi lido pelo Storybook (achado na Etapa 5, 26/09/2026) — ✅ removido
+
+O 5.13g dizia que o `.babelrc.json` fazia o `@storybook/nextjs` compilar com Babel. **Não fazia.** O preset decide o compilador assim: `useSWC = next >= 14 && (forceSwcTransforms || !hasBabelConfig)`. E o `hasBabelConfig` só procura **`.babelrc` e `babel.config.js`** na raiz, não `.babelrc.json`. Conferido no código do `@storybook/nextjs` 9.1.20 e do 10.6.0, que fazem a mesma checagem, e no log do build (`Using SWC as compiler`, também no `debug-storybook.log` antigo). O arquivo sobrou do microbundle e não tinha efeito desde a Etapa 3.
+
+Ou seja, o Storybook sempre compilou com SWC. Removê-lo, junto com os `@babel/preset-*`, não muda nada, e os snapshots saíram idênticos.
+
+### 5.20 `GenericDatePicker` descartava a data escolhida (achado pelas stories de interação, 26/09/2026) — ✅ corrigido na `0.3.3`
+
+O `handleChange` fazia `setValue(undefined)` em vez de `setValue(newValue)`. O campo mostrava a data digitada ou escolhida no calendário, mas o formulário nunca a recebia: o envio continuava barrado com "Este campo é obrigatório" (ou, sem `required`, ia sem a data). Só o `defaultValue` chegava ao formulário. O bug existe desde a criação do componente (v263, janeiro de 2025). Nenhum app do workspace usa o `GenericDatePicker`, e o `pickers.test.tsx` só testava o envio vazio. Corrigido com uma linha, igual ao `DatePicker` clássico, e coberto pela story `Date/GenericDatePicker/Interacao`, que falha com o código antigo (conferido). Muda o comportamento publicado, por isso saiu como patch: **`0.3.3`**.
+
+### 5.21 Outros achados das stories de interação (26/09/2026) — abertos, nenhum bloqueia
+
+- **a) `Radio` não é acessível.** As opções são `Box` clicáveis, sem `role="radio"`, sem `input` e sem navegação por teclado. Leitor de tela não as anuncia, e os testes precisam clicar no texto.
+- **b) Campos sem nome acessível.** A busca e o campo "Valor" do filtro das tabelas só têm `placeholder`, e o `InputLabel` do `Input`/`FetchAutoComplete` não está ligado ao campo (`htmlFor`). Os testes acham os campos pelo placeholder ou pelo papel.
+- **c) `Input type='email'`: a mensagem da lib nunca aparece.** O `<form>` do `FormProvider` não tem `noValidate`, então a validação nativa do browser barra o envio antes, com a mensagem do browser. A de formato da lib ("O e-mail inserido não é válido") é inalcançável. Decidir se o `FormProvider` passa a usar `noValidate` (muda o que o usuário vê) ou se fica assim.
+- **d) `FileUpload` percorre a `FileList` com `Object.keys`.** Funciona com a `FileList` do browser, mas quebra com qualquer objeto parecido (como a do `userEvent.upload`). `Array.from(files)` resolveria. Os testes usam uma `FileList` real.
+- **e) `DatePicker` sem `maxDt` mostra "A data tem que ser depois de 16/04/2023 e antes de undefined".** A mensagem monta o `maxDt` mesmo quando ele não existe (e o `GenericDatePicker` também).
+- **f) O exemplo `MaskInput/MascaraDinamicaTelefone` nunca trocava para celular.** A máscara de fixo enchia no 10º dígito, e o IMask rejeitava o 11º antes do `onMaskChange` ver. Corrigido na story (a máscara de fixo aceita um dígito a mais). O componente não mudou.
+
 ---
 
 ## 6. Rede de segurança (Etapa 0) — obrigatória antes de qualquer bump
@@ -449,7 +468,7 @@ O caso mais perigoso desta migração: **Grid v2 ignora `item`/`xs` silenciosame
 - [x] **CI para Node 22** (`.github/workflows/publish.yaml` está em Node 16) + `npm ci` em vez de `npm install`.
 - [x] **Workflow de PR** (hoje só existe workflow de publish em push na `main`): typecheck + lint + build + `build-storybook` + testes + snapshots.
 - [x] **Portão de release** (2.4): parar de publicar em todo push na `main`. Opções: publicar só em tag `v*` (`on: push: tags: ['v*']`), ou manter o push na `main` mas com um passo que compara a versão do `lib-package.json` com a do npm (`npm view ... version`) e sai sem publicar se forem iguais. Adicionar também `workflow_dispatch` para republicar manualmente.
-- [~] **`@storybook/addon-vitest` + Playwright:** cada story vira teste de render em browser real (falha em erro de console/render). É a única verificação automatizada viável sem app host. *(Parcial: o script de snapshots já falha em `pageerror`. Reavaliar na Etapa 5 — o addon é da linha Storybook 10.)*
+- [~] **`@storybook/addon-vitest` + Playwright:** cada story vira teste de render em browser real (falha em erro de console/render). É a única verificação automatizada viável sem app host. *(Parcial: o script de snapshots já falha em `pageerror`. Reavaliar na Etapa 5 — o addon é da linha Storybook 10.)* *26/09: reavaliado e não adotado, porque o addon exige vitest 3 ou 4 e framework Vite (registro da Etapa 5). A falha em `pageerror` dos snapshots continua sendo a verificação de render.* *26/09, depois: a parte "teste de interação em browser real" foi feita sem o addon, com `play` functions (registro da Etapa 5, "Stories de interação").*
 - [x] **Escrever as 12 stories que faltam** (lista em 2.3), priorizando `GenericDatePicker`, `GenericMaskInput`, `MaskInput` e `GenericMultInput` — são os que a Etapa 7 mexe mais. As 34 stories atuais cobrem 30 dos 46 exports; o alvo é **todo export visual com pelo menos uma story**.
 - [x] **Snapshots visuais** das stories via **Playwright, com os PNGs versionados no repo** (decisão 7). É o que pega a quebra silenciosa de Grid e de `slotProps`. Os snapshots são gerados e comparados **dentro de um container Linux fixo** (mesma imagem no CI e localmente, via `docker run`), senão o diff vira ruído de fonte/antialiasing do macOS.
 - [x] **App de fumaça em `examples/smoke-app`** (decisão 8) — *ressalva de 23/09: o `file:../../dist` não valida o contrato de dependências e o app **não roda no CI**; ver seção 10*. Um Next 14 mínimo consumindo a lib via `npm run link`, com uma página usando `FormProvider` + `Input` + `Table`/`GenericTable` + `DatePicker` + `Map` + auth. Único jeito de validar o cenário real "MUI vem do app". Precisa ficar fora do `include` do `tsconfig` da lib, fora do `build-storybook` e fora do pacote publicado.
@@ -817,16 +836,62 @@ Fora da lista original da Etapa 4, proposto no 5.18. `@mui/material` e `@mui/ico
 - Snapshots: os 8 diffs esperados apareceram, e a investigação mostrou que **não eram do MUI** (5.18). A captura passou a isolar cada story, e o baseline foi regerado (13 PNGs).
 
 ### Etapa 5 — Storybook 9 → 10
-- [ ] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio.
-- [ ] Avaliar remover o `.babelrc.json` (+ `@babel/preset-*`): sem ele o `@storybook/nextjs` passa a usar SWC, mais rápido. Snapshots têm que ficar idênticos (a config atual mira `chrome: 100`).
-- [ ] Remover `@storybook/testing-library` (0.2.2, deprecado desde o Storybook 8 — o npm marca como `deprecated`; não é usado em nenhuma story, reconferido em 25/09) — usar `storybook/test`.
-- [ ] `eslint-plugin-storybook` 9 → 10 junto.
-- [ ] Confirmar Node ≥ 20.16 no CI e no `engines` do `package.json`. *25/09/2026: o `storybook@10.6.0` não declara `engines`, e o CI já está em Node 24 com `engines` `^22.22.2 || >=24.15.0` (Etapa 4), então não há ajuste a fazer.*
-- [ ] *(25/09/2026)* Rodar `npm run snapshots` com o Storybook 10. A captura isola cada story (5.18), então um diff aqui é mudança real de render. O `@storybook/nextjs@10.6.0` tem peer `next ^14.1 || ^15 || ^16`, `react ^16.8 … ^19` e `webpack ^5`, sem bloqueio.
-- [ ] *(25/09/2026)* Reavaliar o `@storybook/addon-vitest` (item parcial da seção 6), que é da linha 10.
+- [x] `npx storybook@latest upgrade` (alvo: 10.6.0 em 23/09); converter `.storybook/main.ts` e `preview.ts` para ESM-only. `@storybook/nextjs@10` aceita `next ^14.1 || ^15 || ^16` — sem bloqueio. *26/09: bump manual para 10.6.0 (sem o CLI de upgrade); o `main.ts`/`preview.ts` já eram ESM, sem mudança.*
+- [x] Avaliar remover o `.babelrc.json` (+ `@babel/preset-*`): sem ele o `@storybook/nextjs` passa a usar SWC, mais rápido. Snapshots têm que ficar idênticos (a config atual mira `chrome: 100`). *26/09: removidos. O arquivo **nunca foi lido** (5.19).*
+- [x] Remover `@storybook/testing-library` (0.2.2, deprecado desde o Storybook 8 — o npm marca como `deprecated`; não é usado em nenhuma story, reconferido em 25/09) — usar `storybook/test`.
+- [x] `eslint-plugin-storybook` 9 → 10 junto.
+- [x] Confirmar Node ≥ 20.16 no CI e no `engines` do `package.json`. *25/09/2026: o `storybook@10.6.0` não declara `engines`, e o CI já está em Node 24 com `engines` `^22.22.2 || >=24.15.0` (Etapa 4), então não há ajuste a fazer.*
+- [x] *(25/09/2026)* Rodar `npm run snapshots` com o Storybook 10. A captura isola cada story (5.18), então um diff aqui é mudança real de render. O `@storybook/nextjs@10.6.0` tem peer `next ^14.1 || ^15 || ^16`, `react ^16.8 … ^19` e `webpack ^5`, sem bloqueio. *26/09: 84 stories, 0 diffs.*
+- [x] *(25/09/2026)* Reavaliar o `@storybook/addon-vitest` (item parcial da seção 6), que é da linha 10. *26/09: **não adotado**, porque exige vitest 3 ou 4 e um framework Vite. Detalhes no registro.*
 
 **Impacto:** nenhum (dev only).
 **Validação:** `build-storybook` + suíte vitest verdes.
+
+#### Registro de execução — 26/09/2026
+
+Branch `atualizacao-dependencias`, sobre `f549659`. Node 24.21.0. **Sem release:** só `devDependencies` mudam, e nada disso chega ao pacote.
+
+**O que mudou:**
+- `storybook`, `@storybook/nextjs`, `@storybook/addon-docs`, `@storybook/addon-links` e `@storybook/react-webpack5` 9.1.20 → **10.6.0**, e `eslint-plugin-storybook` 9.1.20 → **10.6.0**. Todos com `^`: os addons eram fixados em versão exata, e foi assim que ficaram presos no 9.0.17 enquanto o resto ia para o 9.1 (registro da 4.1). Com a mesma faixa em todos, o npm mantém uma cópia só do `storybook`.
+- Saíram `@storybook/testing-library` (deprecado e sem uso), o `.babelrc.json` e os `@babel/preset-env`/`-react`/`-typescript` declarados. Os presets continuam na árvore, na mesma versão, como dependência do próprio `@storybook/nextjs`.
+- `.storybook/main.ts` e `preview.ts` não mudaram: já eram ESM (sem `require`/`__dirname`) e importam os tipos de `@storybook/nextjs`, que continuam lá. Nenhuma story importa de outro pacote do Storybook, e não há `.mdx`.
+- **`npm install` dá `ERESOLVE`** com as faixas novas no `package.json`, igual ao vitest na 4.4: o npm se prende ao `storybook` 9 instalado. Resolvido desinstalando os pacotes do Storybook e instalando de novo. Fora do Storybook, só mudaram transitivos de dev (webpack 5.111, `react-docgen` 8, `@babel/core` 7.29…); nenhuma `dependency` publicada.
+
+| Verificação | Resultado |
+|---|---|
+| `build-storybook` | verde, 84 stories + 45 páginas de docs. Compila com SWC |
+| Typecheck | verde |
+| Lint | 0 erros, 352 warnings (iguais aos da 4.4; o `flat/recommended` do plugin 10 não trouxe regra nova) |
+| Formatação | verde |
+| Testes | 46 testes em 9 arquivos, verde |
+| Build, API pública, `check:package` | verdes (o `dist/` não depende do Storybook) |
+| Snapshots | 84 stories, **0 diffs**, 0 erros de runtime |
+| `npm audit` | 32 → **8** vulnerabilidades, todas de dev (1 critical: o `next` 14 das `devDependencies`, que já estava lá). `--omit=dev`: 0 |
+
+**`npm run api` não funcionava (achado depois da etapa, 26/09).** O script roda `json-server`, mas o pacote não estava declarado, e já faltava no `7e017da`, a base desta análise (antes ele estava nas `dependencies`, `^0.17.3`). Só funcionava com o `json-server` instalado globalmente. Voltou como `devDependency`, **`json-server ^0.17.4`**, a última estável. A `1.0.0-beta` mudou o CLI e o script usa `--watch`. Conferido: responde em `:7171` (`/autocomplete`, `/table`, `/table2`) com CORS liberado para o `:6006`, e o `npm audit` continua em 8. Nenhuma story depende dele hoje: as de `Table` usam dados estáticos desde a Etapa 0, e o `fetch` para a API ficou em comentário e no `Teste.tsx`.
+
+**As quatro stories de autocomplete quebravam ao abrir o campo (achado depois da etapa, 26/09).** Nunca receberam dados: `FetchAutoComplete` e `GenericFetchAutoComplete` com `url: ''` (buscavam o HTML do Storybook e falhavam no `JSON.parse`; a Generic com erro não tratado), `AutoComplete` sem `url` (404) e `FixedAutoComplete` sem `list` (`Cannot read properties of undefined (reading 'filter')`, que derrubava a story). Já era assim no `7e017da`, e as mudanças nos componentes desde então são só de formatação. Os snapshots não pegavam porque capturam a story sem abrir o campo. Agora as quatro usam `public/mock-api/autocomplete.json`, uma cópia da chave `autocomplete` do `api-test.json`, servida pelo próprio Storybook. Assim funcionam sem o `npm run api` e no CI. Conferido no Chrome, clicando e digitando: 6 opções e nenhum erro nas quatro. O baseline dessas quatro foi regravado (0,55% da imagem, o título "Conseg" que elas passaram a ter).
+
+**Stories de interação (26/09, pedido depois da etapa).** Os snapshots só olhavam o estado inicial, e foi assim que os autocompletes quebrados passaram. Agora 25 stories com a tag `interacao` usam o componente como uma pessoa usaria, com `play` functions (`storybook/test`, que já vem no Storybook 10), e verificam o resultado:
+
+| Componente | O que a `play` verifica |
+|---|---|
+| `AutoComplete`, `FetchAutoComplete`, `GenericFetchAutoComplete`, `FixedAutoComplete` | obrigatório barra o envio; abre, filtra pela digitação, escolhe; o `id` chega ao `onSubmit` |
+| `Input` (CPF, telefone, e-mail), `GenericInput` (CPF) | máscara na digitação, obrigatório, tamanho mínimo, troca fixo/celular, e-mail inválido barrado; valor mascarado enviado |
+| `MaskInput` (CPF, telefone), `GenericMaskInput` (CEP) | máscara do `react-imask` e troca de máscara por `onMaskChange`, inclusive voltando com backspace |
+| `DatePicker`, `GenericDatePicker`, `TimePicker` | obrigatório (com o toast do `FormProvider`), data mínima, digitação por seção, escolha no calendário |
+| `CheckBox`, `Switch`, `Radio`, `MultInput`, `GenericMultInput` | marcar/desmarcar, opção escolhida, limite mínimo de caracteres |
+| `Table` | busca, filtro pelo popover (e "Limpar"), ordenação pelo menu |
+| `GenericTable` | paginação server-side: nova "chamada à API" e faixa de registros certa |
+| `FileUpload`, `DropFileUpload` | seleção de arquivo, POST simulado no `beforeEach`, arquivo acima do limite recusado, `filesUid` no `onSubmit` |
+| `Stepper`, `MODAL` | avançar/voltar; abrir no portal e fechar com Esc |
+
+- **Onde rodam:** em `npm run snapshots` (container e CI). O runner espera a fase `finished` do render e falha se a `play` lançar erro. As stories de interação não geram PNG, porque o estado final tem toasts com tempo de vida. Localmente, `npm run interacoes` roda só elas contra o `npm run storybook`, em segundos. No Storybook, o painel "Interactions" mostra cada passo.
+- **Confiabilidade:** três rodadas completas no container (relógio congelado), todas verdes, cerca de 2 min cada. O mecanismo foi conferido nos dois sentidos: uma expectativa errada de propósito falha com a mensagem certa, e a story do `GenericDatePicker` falha com o bug do 5.20.
+- **Achados:** o bug do `GenericDatePicker` (5.20, corrigido) e seis pontos menores (5.21).
+- **Os autocompletes** passaram a usar `public/mock-api/autocomplete.json` (ver acima), e os decorators de formulário marcam o que o `onSubmit` recebeu (`data-testid='dados-enviados'` e `'arquivos-enviados'`). Isso só aparece depois do envio, e os PNGs das stories `Base` não mudaram.
+
+**`@storybook/addon-vitest`: não adotado.** O `10.6.0` tem peer `vitest ^3 || ^4` e `@vitest/browser-playwright ^4`, e o repo está no vitest 5 desde a 4.4. Além disso, ele só roda com framework baseado em Vite, então seria preciso trocar `@storybook/nextjs` (webpack) por `@storybook/nextjs-vite`, que é outro builder e pede outra rodada de snapshots. O que o addon daria, uma falha quando uma story quebra no render, o `visual-snapshots.mjs` já dá, porque falha em `pageerror`. Reavaliar quando o addon aceitar o vitest 5, ou se o Storybook migrar para Vite por outro motivo.
 
 ### Etapa 6 — Libs de runtime de risco médio (um PR por lib, nesta ordem)
 - [ ] `jwt-decode` 3 → 4
@@ -991,7 +1056,7 @@ Conferência contra o código (`grep` no `src/`), o registry (`npm outdated`, `n
 - Etapa 8: `forwardRef` do `GenericMaskInput` está na linha 6.
 
 **Novo**
-- **Babel 8** saiu (18/09). Não entra: os presets saem na Etapa 5 (4.1).
+- **Babel 8** saiu (18/09). Não entra: os presets saem na Etapa 5 (4.1). *26/09: saíram.*
 - **TS 6.0.3** existe; **`typescript-eslint` ainda não aceita TS 7** (peer `<6.1.0`) — critério (b) da Etapa 9 falha hoje (Etapa 9).
 - **`conoc-frontend` builda em Node 20** → `react-dropzone@20` (Etapa 6) e qualquer ferramenta com `engines` ≥ 22 dão `EBADENGINE` nele.
 - **`@mui/lab` aninhado com `@mui/system` 5 no `conoc`** (5.14); nos apps em MUI 5 o `@mui/lab` da lib também fica aninhado (sem duplicar o MUI).
@@ -1034,11 +1099,11 @@ Conferido contra o repo, o registry (`npm outdated`, `npm view`), o GitHub (PR #
 - 5.15a (`key` faltando em `CustomMenu` e `TableLoadingState`): aberto, candidato a um patch `0.3.3`.
 - 5.14 (`@mui/lab` aninhado): só a Etapa 7 resolve. Até lá, o `conoc` não deve usar o `Stepper`.
 - `react-dropzone` 20 (Etapa 6) exige Node ≥ 22, e o `conoc-frontend` builda em `node:20`.
-- 352 warnings de lint (323 antigos + 29 regras do React Compiler do `react-hooks` 7, rebaixadas a `warn`).
+- 352 warnings de lint (323 antigos + 29 regras do React Compiler do `react-hooks` 7, rebaixadas a `warn`). Não mudou com o `eslint-plugin-storybook` 10 (Etapa 5).
 - `ubuntu-latest` vira Ubuntu 26 em 19/10/2026: conferir o primeiro CI depois disso. Os snapshots usam imagem fixa, mas os smokes rodam no runner.
 - Decisões em aberto: **D2** (`react-leaflet`, que hoje é **o único** bloqueio de React 19) e quando mergear e publicar a linha `0.x`.
 
-**Próximos passos, pela ordem do plano:** Etapa 5 (Storybook 10, sem release), Etapa 6 (um PR por lib de runtime), Etapa 7 (MUI 9, `1.0.0`), Etapa 8 (React 19, `2.0.0`) e Etapa 9 (TS 7, bloqueada pelo `typescript-eslint`).
+**Próximos passos, pela ordem do plano:** ~~Etapa 5 (Storybook 10, sem release)~~ ✅ feita em 26/09/2026 (registro na Etapa 5: 10.6.0, 0 diffs, sem `.babelrc.json`, `addon-vitest` não adotado), Etapa 6 (um PR por lib de runtime), Etapa 7 (MUI 9, `1.0.0`), Etapa 8 (React 19, `2.0.0`) e Etapa 9 (TS 7, bloqueada pelo `typescript-eslint`).
 
 ---
 

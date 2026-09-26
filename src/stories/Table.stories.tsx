@@ -3,6 +3,8 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import Table from '../components/form/table/Table'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import tabelaMock from './tabela-mock.json'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { ordemNaTela, pagina } from './interacao'
 
 /**
  * `Table` com `fetchFunc` — o uso principal do componente.
@@ -128,5 +130,39 @@ export const SemPermissao: Story = {
     args: {
         ...base,
         fetchFunc: respostaJson({ statusCode: 403 }),
+    },
+}
+
+const EVENTOS = ['VOLTA DO MUNDO BAMBAS – VMB7', 'Marilônio - a FESTA', 'Festa Julina', 'FESTA AGOSTINA', 'FECOMÉRCIO MAIS PERTO DE TODOS GAMA', 'BRASILIENSE X GAMA']
+
+/** Busca pelo texto, filtro pelo popover e ordenação pelo menu, sobre os 7 registros do mock. */
+export const Interacao: Story = {
+    tags: ['interacao'],
+    args: ComFiltros.args,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await expect(await canvas.findByText('Exibindo 1-7 de 7')).toBeVisible()
+
+        const busca = canvas.getByPlaceholderText('Pesquisar Evento')
+        await userEvent.type(busca, 'festa')
+        await expect(await canvas.findByText('Exibindo 1-3 de 3')).toBeVisible()
+        await expect(canvas.queryByText('BRASILIENSE X GAMA')).toBeNull()
+        await userEvent.clear(busca)
+        await expect(await canvas.findByText('Exibindo 1-7 de 7')).toBeVisible()
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Filtrar' }))
+        const filtro = pagina(canvasElement)
+        await userEvent.type(await filtro.findByPlaceholderText('Valor'), 'gama')
+        const botoesFiltrar = filtro.getAllByRole('button', { name: 'Filtrar' })
+        await userEvent.click(botoesFiltrar[botoesFiltrar.length - 1])
+        await expect(await canvas.findByText('Exibindo 1-2 de 2')).toBeVisible()
+        await userEvent.click(canvas.getByRole('button', { name: 'Filtrar' }))
+        await userEvent.click(await filtro.findByRole('button', { name: 'Limpar' }))
+        await userEvent.keyboard('{Escape}')
+        await expect(await canvas.findByText('Exibindo 1-7 de 7')).toBeVisible()
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Ordenar' }))
+        await userEvent.click(await filtro.findByRole('menuitem', { name: 'Evento' }))
+        await waitFor(() => expect(ordemNaTela(canvasElement, EVENTOS)).toEqual([...EVENTOS].sort((a, b) => a.localeCompare(b, 'pt-BR'))))
     },
 }

@@ -18,7 +18,7 @@ export default function GenericFormBaseDecorator(Story: any, el: any) {
                 <Stack spacing={2}>
                     <Story />
                     <Button type='submit'>Enviar</Button>
-                    {!!formData && <Typography>{JSON.stringify(formData)}</Typography>}
+                    {!!formData && <Typography data-testid='dados-enviados'>{JSON.stringify(formData)}</Typography>}
                 </Stack>
             </GenericFormProvider>
         </SspComponentsProvider>

@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/nextjs'
 import GenericMultInput from '../components/form/input/GenericMultInput'
 import GenericFormBaseDecorator from '../decorators/GenericFormBaseDecorator'
+import { expect, userEvent, within } from 'storybook/test'
+import { dadosEnviados, enviar, esperarErroDeValidacao } from './interacao'
 
 const meta: Meta<typeof GenericMultInput> = {
     title: 'Input/GenericMultInput',
@@ -44,5 +46,21 @@ export const MeiaLargura: Story = {
         name: 'genericMultInputMeia',
         title: 'Metade da largura (xs=6)',
         xs: 6,
+    },
+}
+
+/** Limite mínimo barra o envio; texto dentro dos limites é enviado. */
+export const Interacao: Story = {
+    tags: ['interacao'],
+    args: ComLimites.args,
+    play: async ({ canvasElement }) => {
+        const campo = within(canvasElement).getByRole('textbox')
+        await userEvent.type(campo, 'curto')
+        await enviar(canvasElement)
+        await esperarErroDeValidacao(canvasElement, /mínimo/i)
+
+        await userEvent.type(campo, ' demais, agora vai')
+        await enviar(canvasElement)
+        await expect(await dadosEnviados(canvasElement)).toEqual({ genericMultInputLimites: 'curto demais, agora vai' })
     },
 }

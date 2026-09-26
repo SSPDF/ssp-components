@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { GenericTable } from '../components/form/table/GenericTable'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import React from 'react'
+import { expect, userEvent, within } from 'storybook/test'
 
 interface FakeDataProps {
     id: string
@@ -288,5 +289,23 @@ export const PaginacaoServerSide: Story = {
         ...Base.args,
         id: 'generic-table-server-side',
         itemCount: PAGE_SIZE,
+    },
+}
+
+/** Trocar de página chama a "API" de novo e mostra a faixa certa de registros. */
+export const Interacao: Story = {
+    tags: ['interacao'],
+    render: PaginacaoServerSide.render,
+    args: PaginacaoServerSide.args,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await expect(await canvas.findByText('Exibindo 1-10 de 47')).toBeVisible()
+
+        await userEvent.click(within(canvas.getByRole('navigation', { name: 'pagination navigation' })).getByRole('button', { name: '2' }))
+        await expect(await canvas.findByText('Exibindo 11-20 de 47')).toBeVisible()
+        await expect(canvas.getByText('Página 2')).toBeVisible()
+
+        await userEvent.click(within(canvas.getByRole('navigation', { name: 'pagination navigation' })).getByRole('button', { name: '5' }))
+        await expect(await canvas.findByText('Exibindo 41-47 de 47')).toBeVisible()
     },
 }

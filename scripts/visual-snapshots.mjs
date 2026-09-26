@@ -1,5 +1,8 @@
 /**
- * Captura um PNG por story a partir do Storybook estático e compara com o baseline.
+ * Captura um PNG por story a partir do Storybook estático e compara com o baseline, e roda as
+ * `play` functions: as stories com a tag `interacao` usam o componente (clicam, digitam, enviam o
+ * formulário) e verificam o resultado. Elas não geram PNG (o estado final tem toasts com tempo de
+ * vida e animações); o que conta é a `play` passar. Ver src/stories/interacao.ts.
  *
  * NÃO rode direto na sua máquina: os PNGs precisam nascer sempre no mesmo ambiente,
  * senão a diferença de fontes/antialiasing entre macOS e o CI gera diff em todas as
@@ -16,6 +19,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { PNG } from 'pngjs'
 import pixelmatch from 'pixelmatch'
+import { instalarEscuta, esperarStory, resumirErro } from './lib/storybook-play.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const staticDir = path.join(root, 'storybook-static')
@@ -79,10 +83,9 @@ async function main() {
     const { server, port } = await serve(staticDir)
     const base = `http://127.0.0.1:${port}`
     const index = JSON.parse(await fs.readFile(path.join(staticDir, 'index.json'), 'utf8'))
-    const ids = Object.values(index.entries)
-        .filter((e) => e.type === 'story')
-        .map((e) => e.id)
-        .sort()
+    const stories = Object.values(index.entries).filter((e) => e.type === 'story')
+    const ids = stories.map((e) => e.id).sort()
+    const interacao = new Set(stories.filter((e) => e.tags?.includes('interacao')).map((e) => e.id))
 
     await fs.mkdir(baselineDir, { recursive: true })
     await fs.rm(diffDir, { recursive: true, force: true })
@@ -91,6 +94,7 @@ async function main() {
 
     const failures = []
     const renderErrors = []
+    const playFailures = []
     let written = 0
 
     for (const id of ids) {
@@ -101,8 +105,17 @@ async function main() {
         const page = await context.newPage()
         await page.clock.setFixedTime(HORA_FIXA)
         const errors = []
-        page.on('pageerror', (e) => errors.push(String(e)))
+        page.on('pageerror', (e) => errors.push(resumirErro(e)))
+        await instalarEscuta(page)
         await page.goto(`${base}/iframe.html?id=${id}&viewMode=story`, { waitUntil: 'networkidle' })
+        const resultado = await esperarStory(page)
+        if (resultado.status !== 'success') playFailures.push({ id, errors: resultado.erros.length ? resultado.erros : [`status ${resultado.status}`] })
+
+        if (interacao.has(id)) {
+            if (errors.length) renderErrors.push({ id, errors })
+            await context.close()
+            continue
+        }
         await page.addStyleTag({
             content: `*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }`,
         })
@@ -140,7 +153,7 @@ async function main() {
     await browser.close()
     server.close()
 
-    console.log(`\n${ids.length} stories capturadas.`)
+    console.log(`\n${ids.length - interacao.size} stories capturadas, ${interacao.size} de interação.`)
     if (written) console.log(`${written} PNG(s) gravados em snapshots/baseline/.`)
 
     if (renderErrors.length) {
@@ -148,13 +161,18 @@ async function main() {
         for (const { id, errors } of renderErrors) console.error(`  ✗ ${id}\n      ${errors.join('\n      ')}`)
     }
 
+    if (playFailures.length) {
+        console.error(`\n${playFailures.length} story(ies) com falha na play function:`)
+        for (const { id, errors } of playFailures) console.error(`  ✗ ${id}\n      ${errors.join('\n').replace(/\n/g, '\n      ')}`)
+    }
+
     if (failures.length) {
         console.error(`\n${failures.length} story(ies) com diferença visual (diffs em snapshots/__diff__/):`)
         for (const { id, reason } of failures) console.error(`  ✗ ${id} — ${reason}`)
     }
 
-    if (renderErrors.length || failures.length) process.exit(1)
-    console.log('Nenhuma diferença visual e nenhum erro de runtime.')
+    if (renderErrors.length || playFailures.length || failures.length) process.exit(1)
+    console.log('Nenhuma diferença visual, nenhum erro de runtime e todas as interações passaram.')
 }
 
 main().catch((e) => {

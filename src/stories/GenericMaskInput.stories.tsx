@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/nextjs'
 import GenericMaskInput from '../components/form/input/GenericMaskInput'
 import GenericFormBaseDecorator from '../decorators/GenericFormBaseDecorator'
+import { expect, userEvent, within } from 'storybook/test'
+import { dadosEnviados, enviar } from './interacao'
 
 /**
  * `GenericMaskInput` é o input mascarado usado internamente pelo `GenericInput`, e
@@ -48,5 +50,18 @@ export const ComValorObservado: Story = {
         formConfig: { name: 'genericMaskInputWatch', label: 'CEP preenchido via watchValue', size: 'small', fullWidth: true },
         maskProps: { mask: '00000-000' },
         watchValue: '70070120',
+    },
+}
+
+/** Máscara na digitação e valor mascarado no formulário, no contexto nativo do react-hook-form. */
+export const InteracaoCep: Story = {
+    tags: ['interacao'],
+    args: Cep.args,
+    play: async ({ canvasElement }) => {
+        const campo = within(canvasElement).getByRole('textbox')
+        await userEvent.type(campo, '70070120')
+        await expect(campo).toHaveValue('70070-120')
+        await enviar(canvasElement)
+        await expect(await dadosEnviados(canvasElement)).toEqual({ genericMaskInputCep: '70070-120' })
     },
 }

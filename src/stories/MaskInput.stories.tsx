@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/nextjs'
 import MaskInput from '../components/form/input/MaskInput'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
+import { expect, userEvent, within } from 'storybook/test'
+import { dadosEnviados, enviar } from './interacao'
 
 const meta: Meta<typeof MaskInput> = {
     title: 'Input/MaskInput',
@@ -42,16 +44,50 @@ export const Desabilitado: Story = {
 }
 
 /**
- * `onMaskChange` troca a máscara conforme o usuário digita — é o mecanismo que o
- * `Input` usa para alternar entre telefone fixo (10 dígitos) e celular (11).
+ * `onMaskChange` troca a máscara conforme o usuário digita: telefone fixo (10 dígitos) ou
+ * celular (11). A máscara de fixo aceita um dígito a mais (`(00) 0000-00000`): se ela
+ * enchesse no 10º, o IMask rejeitaria o 11º antes do `onMaskChange` ver, e a troca nunca
+ * aconteceria. (O `Input` faz a mesma troca com o `dispatch` do IMask.)
  */
 export const MascaraDinamicaTelefone: Story = {
     args: {
         formConfig: { name: 'maskInputTelefone', label: 'Telefone (fixo ou celular)', size: 'small', fullWidth: true },
-        imaskConfig: { mask: '(00) 0000-0000' },
+        imaskConfig: { mask: '(00) 0000-00000' },
         onMaskChange: (value, setMask) => {
             const digits = value.replace(/\D/g, '')
-            setMask(digits.length > 10 ? '(00) 00000-0000' : '(00) 0000-0000')
+            setMask(digits.length > 10 ? '(00) 00000-0000' : '(00) 0000-00000')
         },
+    },
+}
+
+/** A máscara do react-imask é aplicada na digitação, e o valor mascarado chega ao formulário. */
+export const InteracaoCpf: Story = {
+    tags: ['interacao'],
+    args: Cpf.args,
+    play: async ({ canvasElement }) => {
+        const campo = within(canvasElement).getByRole('textbox')
+        await userEvent.type(campo, '12345678909999')
+        await expect(campo).toHaveValue('123.456.789-09')
+        await enviar(canvasElement)
+        await expect(await dadosEnviados(canvasElement)).toEqual({ maskInputCpf: '123.456.789-09' })
+    },
+}
+
+/** `onMaskChange` troca a máscara de fixo para celular no 11º dígito. */
+export const InteracaoTelefone: Story = {
+    tags: ['interacao'],
+    args: MascaraDinamicaTelefone.args,
+    play: async ({ canvasElement }) => {
+        const campo = within(canvasElement).getByRole('textbox')
+        await userEvent.type(campo, '6133334444')
+        await expect(campo).toHaveValue('(61) 3333-4444')
+        await userEvent.type(campo, '5')
+        await expect(campo).toHaveValue('(61) 33334-4445')
+        await enviar(canvasElement)
+        await expect(await dadosEnviados(canvasElement)).toEqual({ maskInputTelefone: '(61) 33334-4445' })
+
+        await userEvent.click(campo)
+        await userEvent.keyboard('{End}{Backspace}')
+        await expect(campo).toHaveValue('(61) 3333-4444')
     },
 }
