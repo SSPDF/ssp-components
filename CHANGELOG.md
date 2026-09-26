@@ -2,6 +2,18 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 0.3.3
+
+Só uma correção, sem mudança de peers, de `dependencies` nem de API pública.
+
+### O que o app precisa fazer
+
+Nada, além de trocar a versão. Quem contornava o bug lendo a data por fora do formulário pode tirar o contorno.
+
+### Correção
+
+- **`GenericDatePicker` não enviava a data escolhida.** O campo mostrava a data digitada ou escolhida no calendário, mas o formulário nunca a recebia: com `required`, o envio ficava barrado em "Este campo é obrigatório"; sem `required`, ia sem a data. Só o `defaultValue` funcionava. Agora a data chega ao formulário no formato `DD/MM/AAAA`, como no `DatePicker`.
+
 ## 0.3.2
 
 **As peers passam a aceitar `@mui/x-date-pickers` 7 e `react-toastify` 11:** `^6.0.0 || ^7.0.0` e `^10.0.0 || ^11.0.0`. Com isso, um app em MUI 5 com pickers 7 e toastify 11 (como o `copom`) instala a linha `0.x` sem `--legacy-peer-deps`. As outras peers não mudaram: MUI 5, React 18 e Next 14–16.

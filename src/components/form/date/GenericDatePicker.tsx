@@ -38,8 +38,10 @@ export default function GenericDatePicker({
 
     const [value, setValue] = useState<Dayjs | undefined>(defaultValue !== undefined ? dayjs(defaultValue, 'DD/MM/YYYY') : undefined)
 
+    // Até a 0.3.2 fazia `setValue(undefined)`: a data digitada ou escolhida no calendário nunca
+    // chegava ao formulário (UPGRADE_PLAN.md 5.20).
     const handleChange = (newValue: Dayjs | null) => {
-        setValue(undefined)
+        setValue(newValue)
     }
 
     useEffect(() => {
