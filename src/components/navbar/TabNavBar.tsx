@@ -117,31 +117,71 @@ export default function TabNavBar({
 
     return (
         <>
-            <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
+            <Box
+                sx={{
+                    position: pos,
+                    width: '100%',
+                    zIndex: 100,
+                }}
+            >
                 <AppBar position='relative' elevation={0} sx={{ color: theme.palette.getContrastText(customBgColor), paddingX: { xs: 1, [breakpoint]: 4 }, bgcolor: customBgColor }}>
-                    <Stack direction='row' justifyContent='space-between' bgcolor={customBgColor}>
-                        <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', [breakpoint]: 'flex' }, width: '100%' }}>
+                    <Stack
+                        direction='row'
+                        sx={{
+                            justifyContent: 'space-between',
+                            bgcolor: customBgColor,
+                        }}
+                    >
+                        <Stack
+                            direction='row'
+                            spacing={2}
+                            sx={{
+                                alignItems: 'center',
+                                marginRight: 2,
+                                display: { xs: 'none', [breakpoint]: 'flex' },
+                                width: '100%',
+                            }}
+                        >
                             <Link href='/'>{next ? <Image src={img} alt={title} width={40} height={40} /> : <img src={img} height={35} />}</Link>
                             <Box>
-                                <Typography variant='subtitle1' fontWeight={600}>
+                                <Typography
+                                    variant='subtitle1'
+                                    sx={{
+                                        fontWeight: 600,
+                                    }}
+                                >
                                     {title}
                                 </Typography>
                             </Box>
                         </Stack>
-                        <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2} sx={{ display: { xs: 'none', [breakpoint]: 'flex' } }}>
+                        <Stack
+                            direction='row'
+                            spacing={2}
+                            sx={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                display: { xs: 'none', [breakpoint]: 'flex' },
+                            }}
+                        >
                             {links.map((x, index) => {
                                 const isActive = next ? verificarRota(router?.pathname ?? '', x.path) : verificarRota(route, x.path)
 
                                 return (
                                     <Box
                                         key={JSON.stringify({ x, index })}
-                                        paddingX={3}
-                                        paddingY={0.8}
-                                        borderRadius={50}
-                                        bgcolor={isActive ? color : 'transparent'}
-                                        color={isActive ? '#fff' : 'inherit'}
+                                        onClick={(e) => {
+                                            next && console.log('pathname:', router?.pathname, ':=', x.path)
+                                            changeRoute(e, x.path)
+                                        }}
                                         sx={{
+                                            paddingX: 3,
+                                            paddingY: 0.8,
+                                            borderRadius: 50,
+                                            bgcolor: isActive ? color : 'transparent',
+                                            color: isActive ? '#fff' : 'inherit',
                                             transition: 'all 0.2s ease-in-out',
+
                                             ':hover': {
                                                 backgroundColor: isActive ? color : 'rgba(0,0,0,0.05)',
                                                 cursor: 'pointer',
@@ -149,13 +189,18 @@ export default function TabNavBar({
                                                 filter: isActive ? 'brightness(1.1)' : 'none',
                                             },
                                         }}
-                                        onClick={(e) => {
-                                            next && console.log('pathname:', router?.pathname, ':=', x.path)
-                                            changeRoute(e, x.path)
-                                        }}
                                     >
-                                        <Stack justifyContent='center'>
-                                            <Typography fontWeight={isActive ? 600 : 500} whiteSpace='nowrap'>
+                                        <Stack
+                                            sx={{
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: isActive ? 600 : 500,
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
                                                 {x.name}
                                             </Typography>
                                         </Stack>
@@ -180,7 +225,13 @@ export default function TabNavBar({
                                     <Menu open={menuOpen} onClose={closeMenu} anchorEl={anchor}>
                                         {links.map((x, index) => (
                                             <MenuItem key={JSON.stringify({ x, index })} onClick={(e) => onMenuItemClick(e, x.path)}>
-                                                <Typography textTransform='capitalize'>{x.name}</Typography>
+                                                <Typography
+                                                    sx={{
+                                                        textTransform: 'capitalize',
+                                                    }}
+                                                >
+                                                    {x.name}
+                                                </Typography>
                                             </MenuItem>
                                         ))}
                                     </Menu>
@@ -189,7 +240,15 @@ export default function TabNavBar({
                         </Box>
 
                         {/* Desktop */}
-                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { [breakpoint]: '100%' } }} paddingY={1}>
+                        <Stack
+                            direction='row'
+                            sx={{
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
+                                paddingY: 1,
+                                width: { [breakpoint]: '100%' },
+                            }}
+                        >
                             <Stack direction='row' spacing={2}>
                                 <Box>{el}</Box>
 
@@ -243,14 +302,34 @@ export default function TabNavBar({
                                                 >
                                                     <Stack direction='row' spacing={1}>
                                                         <LogoutOutlinedIcon sx={{ fill: '#545454' }} />
-                                                        <Typography textTransform='capitalize'>{logoutMsg}</Typography>
+                                                        <Typography
+                                                            sx={{
+                                                                textTransform: 'capitalize',
+                                                            }}
+                                                        >
+                                                            {logoutMsg}
+                                                        </Typography>
                                                     </Stack>
                                                 </MenuItem>
                                             </Menu>
                                         </Box>
-                                        <Stack direction='row' spacing={0.4} alignItems='center' onClick={(e) => setAvatarAnchor(e.currentTarget as any)} sx={{ userSelect: 'none' }}>
+                                        <Stack
+                                            direction='row'
+                                            spacing={0.4}
+                                            onClick={(e) => setAvatarAnchor(e.currentTarget as any)}
+                                            sx={{
+                                                alignItems: 'center',
+                                                userSelect: 'none',
+                                            }}
+                                        >
                                             <Typography>Olá,</Typography>
-                                            <Typography fontWeight={600}>{user.given_name}</Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {user.given_name}
+                                            </Typography>
                                             <KeyboardArrowDownIcon />
                                         </Stack>
                                     </Stack>
@@ -262,7 +341,13 @@ export default function TabNavBar({
                                         onClick={() => login(loginOptions)}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
-                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 15,
+                                                padding: 0.4,
+                                            }}
+                                        >
                                             Entrar com o gov.br
                                         </Typography>
                                     </Button>
@@ -274,7 +359,13 @@ export default function TabNavBar({
                                         onClick={() => login(loginOptions)}
                                         sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
                                     >
-                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 15,
+                                                padding: 0.4,
+                                            }}
+                                        >
                                             Entrar
                                         </Typography>
                                     </Button>
@@ -285,7 +376,11 @@ export default function TabNavBar({
                 </AppBar>
                 {loading && <LinearProgress />}
             </Box>
-            <Box paddingBottom={paddingBottom} />
+            <Box
+                sx={{
+                    paddingBottom: paddingBottom,
+                }}
+            />
         </>
     )
 }

@@ -54,15 +54,15 @@ jobs:
       - name: App de fumaça (tarball + next build)
         run: npm run smoke
 
-      # A peer `next` é `^14 || ^15 || ^16`: o passo acima testa o piso (14, o do
-      # package.json do smoke-app) e este o topo, que é o que os apps usam.
+      # O passo acima testa o piso das peers (o package.json do smoke-app: Next 14, MUI 7.3,
+      # x-date-pickers 8, react-toastify 10). Este testa o Next 16, que é o que os apps usam.
       - name: App de fumaça com Next 16
         run: SMOKE_NEXT=16 npm run smoke
 
-      # O topo das outras faixas abertas na 0.3.2 (`x-date-pickers ^6 || ^7`, `react-toastify
-      # ^10 || ^11`), na combinação que o copom usa: MUI 5.18 + pickers 7 + toastify 11 + Next 16.
-      - name: App de fumaça na combinação do copom (pickers 7, toastify 11, Next 16)
-        run: SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke
+      # O topo de todas as faixas: Next 16 + MUI 9 + x-date-pickers 9 + react-toastify 11
+      # (peers `@mui/material ^7.3 || ^9`, `x-date-pickers ^8 || ^9` desde a 1.0.0).
+      - name: App de fumaça no topo das faixas (Next 16, MUI 9, pickers 9, toastify 11)
+        run: SMOKE_NEXT=16 SMOKE_MUI=9 SMOKE_PICKERS=9 SMOKE_TOASTIFY=11 npm run smoke
 
       # O KeycloakAuthProvider é o login de todos os apps. Este passo roda o keycloak-js de
       # verdade, no browser, contra o servidor OIDC simulado (scripts/lib/oidc-simulado.mjs, sem

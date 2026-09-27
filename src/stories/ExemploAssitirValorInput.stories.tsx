@@ -44,7 +44,7 @@ function Teste() {
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
                     <MensagemInput />
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <CodeSample
                             code={`
 <Input name='nome' type='input' title='Nome' required />

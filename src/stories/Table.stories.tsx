@@ -166,3 +166,60 @@ export const Interacao: Story = {
         await waitFor(() => expect(ordemNaTela(canvasElement, EVENTOS)).toEqual([...EVENTOS].sort((a, b) => a.localeCompare(b, 'pt-BR'))))
     },
 }
+
+/**
+ * Duas `Table` na mesma página, com `id`s diferentes: o filtro de uma não vaza para a outra.
+ * Até a 0.4.0 o nome da chave do filtro era uma variável de módulo, e as duas tabelas liam e
+ * gravavam os filtros da última que renderizou (UPGRADE_PLAN.md 5.13a).
+ */
+export const InteracaoDuasTabelas: Story = {
+    tags: ['interacao'],
+    render: (args) => (
+        <>
+            <div data-testid='tabela-a'>
+                <Table {...args} id='tabela-a' tableName='Tabela A' />
+            </div>
+            <div data-testid='tabela-b'>
+                <Table {...args} id='tabela-b' tableName='Tabela B' />
+            </div>
+        </>
+    ),
+    args: ComFiltros.args,
+    play: async ({ canvasElement }) => {
+        const a = within(within(canvasElement).getByTestId('tabela-a'))
+        const b = within(within(canvasElement).getByTestId('tabela-b'))
+        await expect(await a.findByText('Exibindo 1-7 de 7')).toBeVisible()
+        await expect(await b.findByText('Exibindo 1-7 de 7')).toBeVisible()
+
+        await userEvent.click(a.getByRole('button', { name: 'Filtrar' }))
+        const filtro = pagina(canvasElement)
+        await userEvent.type(await filtro.findByPlaceholderText('Valor'), 'gama')
+        const botoes = filtro.getAllByRole('button', { name: 'Filtrar' })
+        await userEvent.click(botoes[botoes.length - 1])
+
+        await expect(await a.findByText('Exibindo 1-2 de 2')).toBeVisible()
+        await expect(b.getByText('Exibindo 1-7 de 7')).toBeVisible()
+        await waitFor(() => expect(localStorage.getItem('tableFilter_tabela-b')).toBeNull())
+    },
+}
+
+/**
+ * `customTableStyle` com estilos soltos, como o `viva-flor-frontend` passa (`border`, `borderRadius`).
+ * Eram system props do `Box`, que o MUI 9 removeu; a lib agora os leva para o `sx`, com a mesma
+ * precedência do MUI 5: a borda do app vale, e o `borderRadius` da lib vence o do app.
+ */
+export const InteracaoEstiloDoApp: Story = {
+    tags: ['interacao'],
+    args: {
+        ...Base.args,
+        customTableStyle: { border: '1px solid #E2E8F0', borderRadius: 3, 'data-testid': 'caixa-da-tabela' },
+    },
+    play: async ({ canvasElement }) => {
+        const caixa = await within(canvasElement).findByTestId('caixa-da-tabela')
+        const css = getComputedStyle(caixa)
+        await expect(css.borderTopWidth).toBe('1px')
+        await expect(css.borderTopStyle).toBe('solid')
+        await expect(css.borderTopColor).toBe('rgb(226, 232, 240)')
+        await expect(css.borderTopLeftRadius).toBe('24px')
+    },
+}

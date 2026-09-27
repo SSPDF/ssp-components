@@ -22,12 +22,26 @@ export const Base: Story = {
     render: (args) => (
         <Stepper {...args}>
             <StepperBlock title='Step 1'>
-                <Stack spacing={2} alignItems={'center'} width={'100%'} py={8}>
+                <Stack
+                    spacing={2}
+                    sx={{
+                        alignItems: 'center',
+                        width: '100%',
+                        py: 8,
+                    }}
+                >
                     <Typography variant='body1'>This is content for Step 1</Typography>
                 </Stack>
             </StepperBlock>
             <StepperBlock title='Step 2'>
-                <Stack spacing={2} alignItems={'center'} width={'100%'} py={8}>
+                <Stack
+                    spacing={2}
+                    sx={{
+                        alignItems: 'center',
+                        width: '100%',
+                        py: 8,
+                    }}
+                >
                     <Typography variant='body1'>This is content for Step 2</Typography>
                 </Stack>
             </StepperBlock>

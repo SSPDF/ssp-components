@@ -9,7 +9,7 @@ import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 
 interface FileState {
     id: number
@@ -189,7 +189,7 @@ export default function FileUpload({
     }, [])
 
     return (
-        <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
+        <Grid size={{ xs, sm, md }} sx={{ width: '100%' }}>
             <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                 {title}
             </InputLabel>
@@ -264,19 +264,38 @@ export default function FileUpload({
                         )}
                     </Box>
                 </Box>
-                <Typography fontWeight={600} paddingY={1} color='black'>
+                <Typography
+                    color='black'
+                    sx={{
+                        fontWeight: 600,
+                        paddingY: 1,
+                    }}
+                >
                     Você selecionou {files.length} arquivo{files.length > 1 && 's'}
                 </Typography>
                 {files.length > 0 && (
                     <TableContainer component={Paper}>
                         <Stack direction='column'>
                             {files.map((x) => (
-                                <Stack key={x.name} direction='row' justifyContent='space-between' padding={0.5}>
+                                <Stack
+                                    key={x.name}
+                                    direction='row'
+                                    sx={{
+                                        justifyContent: 'space-between',
+                                        padding: 0.5,
+                                    }}
+                                >
                                     <Box>
                                         <Stack direction='row' spacing={2}>
                                             {filesLoaded.includes(x.id) ? <DoneIcon sx={{ fill: '#06d6a0' }} /> : <CircularProgress size={22} sx={{ color: 'black' }} />}
                                             <PictureAsPdf color='error' />
-                                            <Typography fontWeight={600}>{x.name}</Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {x.name}
+                                            </Typography>
                                         </Stack>
                                     </Box>
                                     <Box>
@@ -311,8 +330,15 @@ export default function FileUpload({
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             {errorMsg}
                         </Typography>
                     </Box>
@@ -331,8 +357,15 @@ export default function FileUpload({
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             * O campo de arquivo é obrigatório
                         </Typography>
                     </Box>

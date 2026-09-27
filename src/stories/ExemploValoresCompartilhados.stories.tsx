@@ -42,7 +42,7 @@ function Teste() {
                 {/* Esse grid é opcional para dar espaçamento */}
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <CodeSample
                             code={`
 <Input name='nome' type='input' title='Nome' required />
@@ -57,7 +57,7 @@ function NomeComponent() {
 
     // Usando formWatch para assistir um valor do form (FUNCIONA APENAS PARA MOSTRAR)
     return (
-        <Grid item xs={12}>
+        <Grid size={12}>
             <h3>Nome: {context.formWatch('nome')}</h3>
         </Grid>
     )
@@ -82,7 +82,7 @@ function NomeComponent() {
     const context = useContext(FormContext)!
 
     return (
-        <Grid item xs={12}>
+        <Grid size={12}>
             <h3>Nome: {context.formWatch('nome')}</h3>
         </Grid>
     )

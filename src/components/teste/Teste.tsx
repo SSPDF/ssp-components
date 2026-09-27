@@ -142,8 +142,24 @@ function getStatus(content: string) {
     }
 
     return (
-        <Stack color='white' fontWeight={600} direction='row' justifyContent='start'>
-            <Box bgcolor={color} width='128px' borderRadius='14px' paddingX={1.2} paddingY={0.6} textAlign='center'>
+        <Stack
+            direction='row'
+            sx={{
+                color: 'white',
+                fontWeight: 600,
+                justifyContent: 'start',
+            }}
+        >
+            <Box
+                sx={{
+                    bgcolor: color,
+                    width: '128px',
+                    borderRadius: '14px',
+                    paddingX: 1.2,
+                    paddingY: 0.6,
+                    textAlign: 'center',
+                }}
+            >
                 {name}
             </Box>
         </Stack>
@@ -202,7 +218,7 @@ const CustomTabPanel = React.memo(function Custom(props: TabPanelProps) {
     const { children, value, index, ...other } = props
 
     return (
-        <Box role='tabpanel' display={value !== index ? 'none' : ''} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+        <Box role='tabpanel' id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other} sx={{ display: value !== index ? 'none' : '' }}>
             {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
         </Box>
     )
@@ -240,7 +256,11 @@ export default function Teste() {
     // return <Exemplo required />
 
     return (
-        <Box bgcolor='#F9F9F9'>
+        <Box
+            sx={{
+                bgcolor: '#F9F9F9',
+            }}
+        >
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'

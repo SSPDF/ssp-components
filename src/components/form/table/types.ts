@@ -1,4 +1,4 @@
-import { BoxProps } from '@mui/material'
+import { BoxComEstilosSoltos } from '../../utils/propsDeEstilo'
 import { ReactNode } from 'react'
 
 export interface ColumnData {
@@ -78,7 +78,8 @@ export interface TableProps {
     customMarginMobile?: number
 
     /** Estilo customizado da tabela */
-    customTableStyle?: BoxProps
+    /** Props do Box da tabela. Estilos soltos (`border`, `borderRadius`…) continuam valendo: vão para o `sx`. */
+    customTableStyle?: BoxComEstilosSoltos
 
     /** Mensagem de erro personalizada */
     customErrorMsg?: string | ReactNode
@@ -166,7 +167,8 @@ export interface TableProps2 {
     csvUpper?: boolean
 
     /** Estilo customizado da tabela */
-    customTableStyle?: BoxProps
+    /** Props do Box da tabela. Estilos soltos (`border`, `borderRadius`…) continuam valendo: vão para o `sx`. */
+    customTableStyle?: BoxComEstilosSoltos
 
     /** Caminho múltiplo dentro dos dados */
     multipleDataPath?: string

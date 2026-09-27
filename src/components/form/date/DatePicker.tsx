@@ -1,5 +1,5 @@
 import { Grid, InputLabel, Typography, Box } from '@mui/material'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 import { LocalizationProvider, DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Dayjs } from 'dayjs'
@@ -57,7 +57,7 @@ export default function DatePicker({
 
     return (
         <>
-            <Grid item {...{ xs, sm, md }}>
+            <Grid size={{ xs, sm, md }}>
                 {title && <InputLabel required={required}>{title}</InputLabel>}
                 <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
@@ -71,7 +71,8 @@ export default function DatePicker({
                             outline: get(context.errors, name!) ? '1px solid transparent' : '',
                             backgroundColor: 'white',
                             width: '100%',
-                            '& .MuiOutlinedInput-root': {
+                            // x-date-pickers 8+: as classes do campo são as do PickersOutlinedInput, não as do OutlinedInput.
+                            '& .MuiPickersOutlinedInput-root': {
                                 borderRadius: '8px',
                                 transition: 'all 0.2s',
                                 '& fieldset': {
@@ -84,17 +85,15 @@ export default function DatePicker({
                                     borderColor: 'primary.main',
                                     borderWidth: '2px',
                                 },
-                                '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                                '&.Mui-error .MuiPickersOutlinedInput-notchedOutline': {
                                     borderColor: 'error.main',
                                     borderWidth: '2px',
                                 },
                             },
-                            div: {
-                                input: {
-                                    paddingX: 2,
-                                    paddingY: 1.05,
-                                },
-                            },
+                            // x-date-pickers 8+: o campo é um grupo de seções, não mais um <input>. Mesmo padding de antes
+                            // (8,4 px vertical e 16 px à esquerda), para o picker ter a altura dos outros campos.
+                            '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                            '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                         }}
                         // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
                         // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o
@@ -135,8 +134,15 @@ export default function DatePicker({
                                 gap: 1,
                             }}
                         >
-                            <ErrorOutline fontSize='small' />
-                            <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                            <ErrorOutlineOutlined fontSize='small' />
+                            <Typography
+                                variant='caption'
+                                sx={{
+                                    color: 'inherit',
+                                    fontWeight: 600,
+                                    fontSize: 14,
+                                }}
+                            >
                                 {get(context.errors, name!)?.message as string}
                             </Typography>
                         </Box>

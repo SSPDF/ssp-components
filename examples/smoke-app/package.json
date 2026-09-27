@@ -11,9 +11,9 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^5.16.7",
-        "@mui/material": "^5.16.7",
-        "@mui/x-date-pickers": "^6.20.2",
+        "@mui/icons-material": "^7.3.0",
+        "@mui/material": "^7.3.0",
+        "@mui/x-date-pickers": "^8.0.0",
         "@ssplib/react-components": "file:../../dist",
         "dayjs": "^1.11.11",
         "next": "^14.2.35",

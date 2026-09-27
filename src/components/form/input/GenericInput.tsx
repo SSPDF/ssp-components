@@ -226,7 +226,7 @@ export function Input({
     }
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             {props.title && (
                 <InputLabel
                     htmlFor='campo'

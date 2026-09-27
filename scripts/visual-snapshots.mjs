@@ -9,7 +9,7 @@
  * imagens. Use `npm run snapshots` (ou `npm run snapshots:update`), que executam
  * este script dentro do container Linux fixo — ver scripts/snapshots-in-docker.sh.
  *
- * Uso: node scripts/visual-snapshots.mjs [--update]
+ * Uso: node scripts/visual-snapshots.mjs [--update]   (SNAPSHOTS_DETALHE=1 lista diferenças abaixo da tolerância)
  */
 import { chromium } from 'playwright'
 import http from 'node:http'
@@ -117,7 +117,9 @@ async function main() {
             continue
         }
         await page.addStyleTag({
-            content: `*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }`,
+            // O toast tem tempo de vida (some em 5 s): nas stories que enviam o formulário no `play`
+            // (ex.: "Estados de erro"), a captura sairia com ou sem ele conforme o tempo.
+            content: `*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; } .Toastify { display: none !important; }`,
         })
         await page.waitForTimeout(150)
 
@@ -142,6 +144,13 @@ async function main() {
         const diff = new PNG({ width: expected.width, height: expected.height })
         const changed = pixelmatch(expected.data, actual.data, diff.data, expected.width, expected.height, { threshold: 0.1 })
         const ratio = changed / (expected.width * expected.height)
+        // SNAPSHOTS_DETALHE=1: lista também o que ficou abaixo da tolerância (útil ao revisar uma migração).
+        if (process.env.SNAPSHOTS_DETALHE && changed > 0) {
+            console.log(`  ${id}: ${changed} px (${(ratio * 100).toFixed(4)}%)`)
+            await fs.mkdir(diffDir, { recursive: true })
+            await fs.writeFile(path.join(diffDir, `${id}.diff.png`), PNG.sync.write(diff))
+            await fs.writeFile(path.join(diffDir, `${id}.atual.png`), shot)
+        }
         if (ratio > MAX_DIFF_RATIO) {
             await fs.mkdir(diffDir, { recursive: true })
             await fs.writeFile(path.join(diffDir, `${id}.diff.png`), PNG.sync.write(diff))

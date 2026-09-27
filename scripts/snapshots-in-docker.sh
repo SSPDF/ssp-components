@@ -25,6 +25,7 @@ if [ "${SKIP_STORYBOOK_BUILD:-}" != "1" ]; then
 fi
 
 exec docker run --rm -t \
+    -e SNAPSHOTS_DETALHE \
     -v "$PWD":/work \
     -w /work \
     --ipc=host \

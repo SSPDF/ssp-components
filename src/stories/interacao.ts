@@ -40,9 +40,21 @@ export async function escolherNoAutocomplete(canvasElement: HTMLElement, opcao: 
     await waitFor(() => expect(campo).toHaveValue(opcao))
 }
 
-/** Digita uma data (ou hora) num campo do x-date-pickers, que tem uma seção por parte (dia, mês, ano). */
-export async function digitarNoPicker(campo: HTMLElement, digitos: string) {
-    await userEvent.click(campo)
+/**
+ * Campo de um picker do x-date-pickers (8+). Não é mais um `<input>` de texto: é um grupo com uma
+ * seção por parte da data (dia, mês, ano; `role="spinbutton"`) e um `<input>` escondido com o valor
+ * formatado, que é o que os testes conferem.
+ */
+export function campoDoPicker(canvasElement: HTMLElement, indice = 0) {
+    const grupos = within(canvasElement).getAllByRole('group')
+    const grupo = grupos[indice]
+    const raiz = grupo.closest('.MuiPickersInputBase-root') as HTMLElement
+    return { primeiraSecao: within(grupo).getAllByRole('spinbutton')[0], valor: raiz.querySelector('input') as HTMLInputElement }
+}
+
+/** Digita uma data (ou hora) no picker: foca a primeira seção, limpa todas e digita os números em sequência. */
+export async function digitarNoPicker(canvasElement: HTMLElement, digitos: string, indice = 0) {
+    await userEvent.click(campoDoPicker(canvasElement, indice).primeiraSecao)
     await userEvent.keyboard('{Control>}a{/Control}{Backspace}')
     await userEvent.keyboard(digitos)
 }

@@ -11,20 +11,41 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
     return (
         <Stack
             sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
                 height: '100%',
                 width: '100%',
             }}
-            justifyContent='center'
-            alignItems='center'
         >
-            <Box width='100%'>
-                <Stack direction='row' justifyContent='center' alignItems='center' justifyItems='center' spacing={2} marginY={4}>
+            <Box
+                sx={{
+                    width: '100%',
+                }}
+            >
+                <Stack
+                    direction='row'
+                    spacing={2}
+                    sx={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        marginY: 4,
+                    }}
+                >
                     <PendingRounded
                         sx={{
                             fill: '#5e5e5e',
                         }}
                     />
-                    <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color='#5e5e5e'>
+                    <Typography
+                        sx={{
+                            fontWeight: 600,
+                            fontSize: 20,
+                            textTransform: 'capitalize',
+                            textAlign: 'center',
+                            color: '#5e5e5e',
+                        }}
+                    >
                         Carregando {tableName}
                     </Typography>
                 </Stack>
@@ -41,9 +62,11 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                                 xs: 3,
                                 md: 1,
                             }}
-                            justifyContent='space-between'
-                            paddingY={8}
-                            borderBottom='1px solid #cacaca'
+                            sx={{
+                                justifyContent: 'space-between',
+                                paddingY: 8,
+                                borderBottom: '1px solid #cacaca',
+                            }}
                         >
                             {Array(7)
                                 .fill(0)

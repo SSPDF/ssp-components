@@ -3,7 +3,7 @@ import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 
 export default function MultInput({
     name,
@@ -44,14 +44,14 @@ export default function MultInput({
     if (error) {
         helperText = (
             <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <ErrorOutline fontSize='small' />
+                <ErrorOutlineOutlined fontSize='small' />
                 {helperText}
             </Box>
         )
     }
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             {title && (
                 <InputLabel
                     required={required}
@@ -84,19 +84,6 @@ export default function MultInput({
 
                 error={error}
                 helperText={helperText}
-                FormHelperTextProps={{
-                    sx: {
-                        backgroundColor: error ? '#FFEBEE' : 'transparent',
-                        borderRadius: '8px',
-                        padding: error ? '8px 12px' : 0,
-                        marginBottom: error ? '4px' : 0,
-                        marginTop: error ? '8px' : 0,
-                        border: error ? '1px solid #FFCDD2' : 'none',
-                        color: 'error.main',
-                        marginLeft: 0,
-                        marginRight: 0,
-                    },
-                }}
                 sx={{
                     bgcolor: 'white',
                     '& .MuiOutlinedInput-root': {
@@ -117,6 +104,21 @@ export default function MultInput({
                     },
                 }}
                 placeholder={customPlaceholder ? customPlaceholder : title}
+                slotProps={{
+                    formHelperText: {
+                        sx: {
+                            backgroundColor: error ? '#FFEBEE' : 'transparent',
+                            borderRadius: '8px',
+                            padding: error ? '8px 12px' : 0,
+                            marginBottom: error ? '4px' : 0,
+                            marginTop: error ? '8px' : 0,
+                            border: error ? '1px solid #FFCDD2' : 'none',
+                            color: 'error.main',
+                            marginLeft: 0,
+                            marginRight: 0,
+                        },
+                    },
+                }}
             />
         </Grid>
     )

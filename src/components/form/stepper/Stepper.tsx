@@ -1,7 +1,6 @@
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import SaveIcon from '@mui/icons-material/Save'
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, MobileStepper, Stack, useMediaQuery, useTheme } from '@mui/material'
 import React, { FormEvent, ReactElement, useContext, useRef, useState } from 'react'
 import { FieldValues } from 'react-hook-form'
@@ -104,7 +103,12 @@ export function Stepper({
     return (
         <Box>
             {test && (
-                <Stack direction='row' justifyContent='end'>
+                <Stack
+                    direction='row'
+                    sx={{
+                        justifyContent: 'end',
+                    }}
+                >
                     <Button variant='contained' color='error' onClick={preencher}>
                         EXCLUIR BANCO PRODUÇÃO
                     </Button>
@@ -138,7 +142,7 @@ export function Stepper({
                             </Button>
                         ) : (
                             <Box>
-                                <LoadingButton
+                                <Button
                                     variant='contained'
                                     type='submit'
                                     loading={context.submiting}
@@ -148,7 +152,7 @@ export function Stepper({
                                     sx={{ textTransform: 'none', backgroundColor: '#22C55E', '&:hover': { backgroundColor: '#48cf7a' } }}
                                 >
                                     <span>Salvar</span>
-                                </LoadingButton>
+                                </Button>
                             </Box>
                         )
                     }

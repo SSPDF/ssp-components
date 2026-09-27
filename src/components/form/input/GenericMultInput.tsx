@@ -37,7 +37,7 @@ export default function MultInput({
     }, [watchValue])
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             {title && (
                 <InputLabel
                     required={required}

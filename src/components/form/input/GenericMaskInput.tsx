@@ -70,12 +70,17 @@ export default function GenericMaskInput(props: {
 
                     context.setValue(name, value)
                 }}
-                InputProps={{
-                    inputComponent: TextMaskCustom as any,
-                    inputProps: { maskProps: props.maskProps, onMask: props.onMask, maskValue, setMaskValue, watchValue: props.watchValue },
-                }}
                 disabled={props.disabled}
                 fullWidth
+                // Mescla com os slots do formConfig (um `slotProps` só aqui apagaria os de lá).
+                slotProps={{
+                    ...(props.formConfig as any).slotProps,
+                    input: {
+                        ...(props.formConfig as any).slotProps?.input,
+                        inputComponent: TextMaskCustom as any,
+                        inputProps: { maskProps: props.maskProps, onMask: props.onMask, maskValue, setMaskValue, watchValue: props.watchValue },
+                    },
+                }}
             />
         </>
     )

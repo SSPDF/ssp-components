@@ -72,7 +72,7 @@ export default function AutoComplete({
     )
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             {title && <InputLabel required={required}>{title}</InputLabel>}
             <input
                 type='text'

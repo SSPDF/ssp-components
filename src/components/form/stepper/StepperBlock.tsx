@@ -64,20 +64,34 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
 
     return (
         <Box>
-            <Grid item xs={12}>
-                <Stack direction='row' justifyContent='space-between'>
+            <Grid size={12}>
+                <Stack
+                    direction='row'
+                    sx={{
+                        justifyContent: 'space-between',
+                    }}
+                >
                     <Stack direction='row' spacing={2}>
                         <Box sx={{ marginTop: 0.6 }}>
-                            <Stack sx={{ backgroundColor: '#E6F8EB', borderRadius: '100%', height: '35px', width: '35px' }} justifyContent='center' alignItems='center'>
+                            <Stack
+                                sx={{
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: '#E6F8EB',
+                                    borderRadius: '100%',
+                                    height: '35px',
+                                    width: '35px',
+                                }}
+                            >
                                 <ContentPasteOutlinedIcon sx={{ height: '18px', fill: '#01BA35' }} />
                             </Stack>
                         </Box>
                         <Typography
                             variant='h6'
-                            fontWeight={600}
-                            fontSize={28}
-                            fontFamily='Inter'
                             sx={{
+                                fontWeight: 600,
+                                fontSize: 28,
+                                fontFamily: 'Inter',
                                 color: '#1E293B',
                                 paddingBottom: 4,
                             }}
@@ -96,8 +110,20 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
                         {cloneChildren}
                     </Grid>
                 ) : !context.formWatch(switchName) ? (
-                    <Stack justifyContent='center' alignItems='center'>
-                        <Typography fontFamily='Inter' fontSize={22} paddingY={8} textAlign='center'>
+                    <Stack
+                        sx={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontFamily: 'Inter',
+                                fontSize: 22,
+                                paddingY: 8,
+                                textAlign: 'center',
+                            }}
+                        >
                             {optionalMessage ? (
                                 optionalMessage
                             ) : (

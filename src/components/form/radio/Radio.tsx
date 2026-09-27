@@ -2,7 +2,7 @@ import { Box, FormControl, FormHelperText, FormLabel, Grid, Typography, useTheme
 import React, { useContext, useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 
 export function Radio({
     name,
@@ -37,7 +37,7 @@ export function Radio({
     }, [watchValue, name, context])
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Controller
                 name={name}
                 control={context.formControl}
@@ -50,7 +50,14 @@ export function Radio({
                                 {title}
                             </FormLabel>
                         )}
-                        <Box display='flex' flexDirection={row ? 'row' : 'column'} gap={1} flexWrap='wrap'>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: row ? 'row' : 'column',
+                                gap: 1,
+                                flexWrap: 'wrap',
+                            }}
+                        >
                             {options.map((option, index) => {
                                 const isSelected = field.value === option.value
                                 return (
@@ -100,7 +107,14 @@ export function Radio({
                                                 />
                                             )}
                                         </Box>
-                                        <Typography variant='body2' color={isSelected ? 'primary.main' : 'text.primary'} fontWeight={isSelected ? 600 : 400}>
+                                        <Typography
+                                            variant='body2'
+                                            // MUI 9: o color do Typography só aceita nomes da paleta ('primary.main' e 'text.primary' viravam CSS inválido)
+                                            color={isSelected ? 'primary' : 'textPrimary'}
+                                            sx={{
+                                                fontWeight: isSelected ? 600 : 400,
+                                            }}
+                                        >
                                             {option.label}
                                         </Typography>
                                     </Box>
@@ -123,7 +137,7 @@ export function Radio({
                                     marginRight: 0,
                                 }}
                             >
-                                <ErrorOutline fontSize='small' />
+                                <ErrorOutlineOutlined fontSize='small' />
                                 {error.message}
                             </FormHelperText>
                         )}

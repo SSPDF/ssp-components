@@ -61,7 +61,13 @@ export const EdicaoComRequisicao: Story = {
 
         if (loading) {
             return (
-                <Box display='flex' alignItems='center' gap={2}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                    }}
+                >
                     <CircularProgress size={20} />
                     <Typography>Carregando dados...</Typography>
                 </Box>
@@ -69,7 +75,13 @@ export const EdicaoComRequisicao: Story = {
         }
 
         return (
-            <Box display='flex' flexDirection='column' gap={2}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                }}
+            >
                 <Input type='input' name='nome' title='Nome' required />
                 <Input type='cep' name='cep' title='CEP' required />
                 <Input type='cpf' name='cpf' title='CPF' required />
@@ -87,7 +99,13 @@ function InputComWatchValue() {
 
 export const ComWatchValue: Story = {
     render: () => (
-        <Box display='flex' flexDirection='column' gap={2}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+            }}
+        >
             <Input type='input' name='nome' title='Nome' required />
             <InputComWatchValue />
         </Box>

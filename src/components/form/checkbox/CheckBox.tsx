@@ -38,7 +38,7 @@ export default function CheckBox({
     )
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Box
                 onClick={(e: any) => onClick(e)}
                 sx={{
@@ -72,7 +72,14 @@ export default function CheckBox({
                     }}
                 />
                 {typeof title === 'string' ? (
-                    <Typography variant='body2' color={isSelected ? 'primary.main' : 'text.primary'} fontWeight={isSelected ? 600 : 400}>
+                    <Typography
+                        variant='body2'
+                        // MUI 9: o color do Typography só aceita nomes da paleta ('primary.main' e 'text.primary' viravam CSS inválido)
+                        color={isSelected ? 'primary' : 'textPrimary'}
+                        sx={{
+                            fontWeight: isSelected ? 600 : 400,
+                        }}
+                    >
                         {title}
                     </Typography>
                 ) : (

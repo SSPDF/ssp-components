@@ -1,6 +1,6 @@
 # @ssplib/react-components
 
-Biblioteca de componentes React (baseada em MUI v5) para projetos internos da SSP-DF. Inclui campos de formulário com máscara/validação, providers de autenticação (Keycloak/AD e gov.br), tabela com filtros e exportação, mapa (Leaflet), modal e navbars.
+Biblioteca de componentes React (baseada em MUI 7.3+/9) para projetos internos da SSP-DF. Inclui campos de formulário com máscara/validação, providers de autenticação (Keycloak/AD e gov.br), tabela com filtros e exportação, mapa (Leaflet), modal e navbars.
 
 > Projeto interno em desenvolvimento contínuo. Textos e validações em pt-BR.
 
@@ -12,6 +12,8 @@ npm install @ssplib/react-components \
   react-hook-form dayjs react-toastify
 ```
 
+**Para agentes de IA no app:** o pacote traz um `AGENTS.md` (como usar a lib) e um `llms.txt` (índice da documentação da lib e do MUI nas versões suportadas), na raiz de `node_modules/@ssplib/react-components/`.
+
 ### Contrato de peer dependencies
 
 A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as importa do app. Por isso elas são `peerDependencies` e o app precisa tê-las instaladas — uma cópia só na árvore, a do app.
@@ -20,9 +22,9 @@ A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as 
 |---|---|
 | `react`, `react-dom` | `^18.0.0` |
 | `next` | `^14.0.0 \|\| ^15.0.0 \|\| ^16.0.0` (Pages Router — os componentes de auth e navbar usam `next/router`) |
-| `@mui/material` | `^5.8.6` |
-| `@mui/icons-material` | `^5.0.0` |
-| `@mui/x-date-pickers` | `^6.0.0 \|\| ^7.0.0` (a v7 exige `@mui/material ^5.15.14`) |
+| `@mui/material` | `^7.3.0 \|\| ^9.0.0` |
+| `@mui/icons-material` | `^7.3.0 \|\| ^9.0.0` (o mesmo major do `@mui/material`) |
+| `@mui/x-date-pickers` | `^8.0.0 \|\| ^9.0.0` (a v9 exige `@mui/material ^7.3.0 \|\| ^9.0.0`; a v8 não aceita o MUI 9) |
 | `@emotion/react` / `@emotion/styled` | `^11.9.0` / `^11.8.1` |
 | `react-hook-form` | `^7.43.0` |
 | `dayjs` | `^1.11.0` |
@@ -30,7 +32,15 @@ A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as 
 
 Por que peer e não dependência própria: com duas cópias de `@mui/material` o `ThemeProvider` do app não alcança os componentes da lib (eles caem no tema default), duas cópias do Emotion geram briga de estilos e mismatch de hidratação no SSR, e os tipos do MUI na API pública (`InputProps`, `SxProps<Theme>`) deixam de ser compatíveis. Com duas cópias de `react-hook-form` ou `react-toastify`, o contexto do formulário e o `toast()` do app deixam de enxergar os da lib.
 
-O `@mui/lab` **não** precisa ser instalado pelo app: ele é dependência da lib (usado só pelo `Stepper`) e vem junto.
+Desde a `1.0.0` a lib não usa mais o `@mui/lab` (o `Stepper` usa o `Button` com `loading`).
+
+### Layout: os campos dimensionam dentro de um `<Grid container>`
+
+As props `xs`/`sm`/`md` dos campos (`<Input md={6} />`) viram o `size` do Grid v2 do MUI. No Grid v2 a largura de um item é calculada pelo **container pai**: envolva os campos num `<Grid container>` do `@mui/material` (MUI 7+), como os apps já fazem. Fora de um container, ou dentro de um `GridLegacy`, o campo ocupa a largura toda. `xs={true}` vira `'grow'`.
+
+### Browsers
+
+O MUI 7+ exige Chrome 117+, Firefox 121+ e Safari 17+.
 
 > O `npm install` avisa quando uma peer está faltando ou fora da faixa. Não ignore o aviso — é exatamente o cenário em que os componentes quebram em runtime sem erro de compilação.
 
@@ -92,7 +102,7 @@ Wrapper de nível de aplicação. Monte **uma vez** na raiz. Ele provê o portal
 
 `cpf` · `cnpj` · `cpf_cnpj` (alterna dinamicamente) · `phone` (fixo/celular dinâmico) · `cep` · `sei` · `rg` · `email` · `number` (máscara via `numberMask`) · `input` (texto) · além dos tipos nativos de HTML (`password`, `tel`, `url`…).
 
-Props úteis: `name` (obrigatório), `title` (label acima do campo), `required`, `customValidate`, `watchValue` (sincroniza o campo com um valor externo), `inputMinLength`/`inputMaxLength`, layout via `xs`/`sm`/`md`. O tipo público `InputProps` estende `TextFieldProps` do MUI.
+Props úteis: `name` (obrigatório), `title` (label acima do campo), `required`, `customValidate`, `watchValue` (sincroniza o campo com um valor externo), `inputMinLength`/`inputMaxLength`, layout via `xs`/`sm`/`md`. O tipo público `InputProps` estende `TextFieldProps` do MUI. As props que o MUI 9 tirou do `TextField` (`InputProps`, `inputProps`, `InputLabelProps`, `FormHelperTextProps`, `SelectProps`) continuam aceitas no `Input` (marcadas como `@deprecated`) e são levadas para o `slotProps` equivalente; prefira `slotProps`.
 
 ## Tabela e exportação
 

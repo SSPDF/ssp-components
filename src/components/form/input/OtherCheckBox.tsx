@@ -22,7 +22,7 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
     }
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Box
                 onClick={handleBoxClick}
                 sx={{
@@ -78,7 +78,13 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                             }}
                         />
                     ) : (
-                        <Typography color='text.primary'>Outro</Typography>
+                        <Typography
+                            sx={{
+                                color: 'text.primary',
+                            }}
+                        >
+                            Outro
+                        </Typography>
                     )}
                 </Box>
             </Box>

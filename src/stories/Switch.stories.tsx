@@ -25,7 +25,8 @@ export const Interacao: Story = {
     tags: ['interacao'],
     args: Base.args,
     play: async ({ canvasElement }) => {
-        const chave = within(canvasElement).getByRole('checkbox')
+        // MUI 7+: o Switch tem role="switch" (antes era checkbox).
+        const chave = within(canvasElement).getByRole('switch')
         await userEvent.click(chave)
         await expect(chave).toBeChecked()
         await enviar(canvasElement)

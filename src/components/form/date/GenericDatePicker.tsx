@@ -59,7 +59,7 @@ export default function GenericDatePicker({
 
     return (
         <>
-            <Grid item {...{ xs, sm, md }}>
+            <Grid size={{ xs, sm, md }}>
                 {title && <InputLabel required={required}>{title}</InputLabel>}
                 <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
@@ -73,12 +73,10 @@ export default function GenericDatePicker({
                             outline: get(context.formState.errors, name!) ? '1px solid #a51c30' : '',
                             backgroundColor: 'white',
                             width: '100%',
-                            div: {
-                                input: {
-                                    paddingX: 2,
-                                    paddingY: 1.05,
-                                },
-                            },
+                            // x-date-pickers 8+: o campo é um grupo de seções, não mais um <input>. Mesmo padding de antes
+                            // (8,4 px vertical e 16 px à esquerda), para o picker ter a altura dos outros campos.
+                            '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                            '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                         }}
                         // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
                         // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o

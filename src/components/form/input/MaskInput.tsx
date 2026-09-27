@@ -70,11 +70,18 @@ export default function MaskInput({ formConfig, disabled, imaskConfig, onMaskCha
             {...formConfig}
             disabled={disabled}
             fullWidth
-            InputProps={{
-                inputComponent: TextMaskCustom as any,
-                inputProps: {
-                    imaskConfig,
-                    onMaskChange,
+            // Mescla com os slots que vieram do formConfig (texto de ajuda, adornos do app): um
+            // `slotProps` só aqui apagaria os de lá.
+            slotProps={{
+                ...formConfig.slotProps,
+                input: {
+                    ...formConfig.slotProps?.input,
+                    inputComponent: TextMaskCustom as any,
+                    inputProps: {
+                        ...formConfig.slotProps?.input?.inputProps,
+                        imaskConfig,
+                        onMaskChange,
+                    },
                 },
             }}
         />

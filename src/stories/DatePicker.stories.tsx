@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import DatePicker from '../components/form/date/DatePicker'
 import { expect, userEvent, within } from 'storybook/test'
-import { dadosEnviados, digitarNoPicker, enviar, esperarErroDeValidacao, pagina } from './interacao'
+import { campoDoPicker, dadosEnviados, digitarNoPicker, enviar, esperarErroDeValidacao, pagina } from './interacao'
 
 const meta: Meta<typeof DatePicker> = {
     title: 'Date/DatePicker',
@@ -30,17 +30,17 @@ export const Interacao: Story = {
     tags: ['interacao'],
     args: Base.args,
     play: async ({ canvasElement }) => {
-        const campo = within(canvasElement).getByRole('textbox')
+        const { valor: campo } = campoDoPicker(canvasElement)
         await enviar(canvasElement)
         await esperarErroDeValidacao(canvasElement)
         await expect(await pagina(canvasElement).findByText(/Formulário incompleto/)).toBeInTheDocument()
 
-        await digitarNoPicker(campo, '01012020')
+        await digitarNoPicker(canvasElement, '01012020')
         await expect(campo).toHaveValue('01/01/2020')
         await enviar(canvasElement)
         await esperarErroDeValidacao(canvasElement, /A data tem que ser depois de 16\/04\/2023/)
 
-        await digitarNoPicker(campo, '15032024')
+        await digitarNoPicker(canvasElement, '15032024')
         await expect(campo).toHaveValue('15/03/2024')
         await enviar(canvasElement)
         await expect(await dadosEnviados(canvasElement)).toEqual({ teste: '15/03/2024' })

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import GenericDatePicker from '../components/form/date/GenericDatePicker'
 import GenericFormBaseDecorator from '../decorators/GenericFormBaseDecorator'
 import { expect, within } from 'storybook/test'
-import { dadosEnviados, digitarNoPicker, enviar, esperarErroDeValidacao } from './interacao'
+import { campoDoPicker, dadosEnviados, digitarNoPicker, enviar, esperarErroDeValidacao } from './interacao'
 
 const meta: Meta<typeof GenericDatePicker> = {
     title: 'Date/GenericDatePicker',
@@ -54,15 +54,15 @@ export const Interacao: Story = {
     tags: ['interacao'],
     args: ComIntervalo.args,
     play: async ({ canvasElement }) => {
-        const campo = within(canvasElement).getByRole('textbox')
+        const { valor: campo } = campoDoPicker(canvasElement)
         await enviar(canvasElement)
         await esperarErroDeValidacao(canvasElement)
 
-        await digitarNoPicker(campo, '31122019')
+        await digitarNoPicker(canvasElement, '31122019')
         await enviar(canvasElement)
         await esperarErroDeValidacao(canvasElement, /A data tem que ser depois de 01\/01\/2020/)
 
-        await digitarNoPicker(campo, '10102025')
+        await digitarNoPicker(canvasElement, '10102025')
         await enviar(canvasElement)
         await expect(await dadosEnviados(canvasElement)).toEqual({ genericDatePickerIntervalo: '10/10/2025' })
     },

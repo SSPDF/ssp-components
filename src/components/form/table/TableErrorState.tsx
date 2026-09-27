@@ -9,11 +9,30 @@ interface TableErrorStateProps {
 
 export function TableErrorState({ customErrorMsg, error }: TableErrorStateProps) {
     return (
-        <Box bgcolor='#fff2c8' color='#3e3129' padding={2} marginX={2} borderRadius={4}>
-            <Typography fontSize={24} textAlign='center' fontFamily='Inter'>
+        <Box
+            sx={{
+                bgcolor: '#fff2c8',
+                color: '#3e3129',
+                padding: 2,
+                marginX: 2,
+                borderRadius: 4,
+            }}
+        >
+            <Typography
+                sx={{
+                    fontSize: 24,
+                    textAlign: 'center',
+                    fontFamily: 'Inter',
+                }}
+            >
                 {error.status === 403 && 'Acesso negado'}
                 {error.status === 500 && (
-                    <Box fontWeight={500} textAlign='center'>
+                    <Box
+                        sx={{
+                            fontWeight: 500,
+                            textAlign: 'center',
+                        }}
+                    >
                         <ReportProblemRounded
                             sx={{
                                 transform: 'scale(2)',

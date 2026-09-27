@@ -19,6 +19,7 @@ cp lib-package.json dist/package.json
 cp README.md dist/README.md
 cp CHANGELOG.md dist/CHANGELOG.md
 cp AGENTS.md dist/AGENTS.md
+cp llms.txt dist/llms.txt
 
 mkdir -p pack
 tarball="$(cd dist && npm pack --silent --pack-destination ../pack)"

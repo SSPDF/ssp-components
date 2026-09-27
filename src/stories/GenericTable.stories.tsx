@@ -251,20 +251,45 @@ export const PaginacaoServerSide: Story = {
                         border: '1px solid #bae6fd',
                     }}
                 >
-                    <Typography variant='subtitle2' fontWeight={700} color='#0369a1' gutterBottom>
+                    <Typography
+                        variant='subtitle2'
+                        gutterBottom
+                        sx={{
+                            fontWeight: 700,
+                            color: '#0369a1',
+                        }}
+                    >
                         Chamadas à API (prova de paginação server-side)
                     </Typography>
-                    <Typography variant='body2' color='text.secondary' sx={{ mb: 1 }}>
+                    <Typography
+                        variant='body2'
+                        sx={{
+                            color: 'text.secondary',
+                            mb: 1,
+                        }}
+                    >
                         Cada troca de página dispara uma nova requisição. Registros abaixo:
                     </Typography>
                     {apiCalls.length === 0 ? (
-                        <Typography variant='body2' color='text.secondary'>
+                        <Typography
+                            variant='body2'
+                            sx={{
+                                color: 'text.secondary',
+                            }}
+                        >
                             Nenhuma chamada ainda.
                         </Typography>
                     ) : (
                         <Stack direction='column' component='ul' sx={{ m: 0, pl: 2.5, listStyle: 'disc' }} spacing={0.5}>
                             {apiCalls.map((call, i) => (
-                                <Typography key={i} component='li' variant='body2' display='block'>
+                                <Typography
+                                    key={i}
+                                    component='li'
+                                    variant='body2'
+                                    sx={{
+                                        display: 'block',
+                                    }}
+                                >
                                     <strong>Página {call.page}</strong> às {call.at}
                                 </Typography>
                             ))}

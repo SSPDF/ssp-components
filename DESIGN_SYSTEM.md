@@ -12,7 +12,7 @@
 - **Primary**: Inherited from Theme (`theme.palette.primary.main`).
 - **Border**: `#E0E0E0` (Default), Primary (Active/Selected/Focus).
 - **Background**: `white` (Default), `#F9FAFB` (Hover/Alt), `${primary}10` (Selected).
-- **Text**: `text.primary` (Default), `primary.main` (Active).
+- **Text**: `text.primary` (Default), `primary.main` (Active). Theme paths like these only work inside `sx`; the `color` prop of `Typography` accepts palette names only since MUI 9 (`color='textPrimary'` / `color='primary'`), and a path there silently falls back to black.
 - **Error**: `d32f2f` (Standard Error).
 
 ### Shapes

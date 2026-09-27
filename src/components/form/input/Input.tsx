@@ -1,9 +1,9 @@
-import { Grid, GridProps, InputLabel, InputLabelProps, TextField, TextFieldProps, Box, SxProps, Theme } from '@mui/material'
+import { Box, FormHelperTextProps, Grid, GridProps, InputLabel, InputLabelProps, OutlinedInputProps, SelectProps, SxProps, TextField, TextFieldProps, Theme } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect, useMemo } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 
 // Tipos nativos do HTML input
 type HTMLInputType = React.InputHTMLAttributes<HTMLInputElement>['type']
@@ -41,21 +41,52 @@ interface InputOwnProps {
     customValidate?: (value: string, form: Record<string, any>) => string | undefined
     /** Valor observado externamente: quando informado, o campo é sincronizado com esse valor (ex.: watchValue={context.formWatch('outroCampo')}) */
     watchValue?: string
-    /** Props do Grid container */
-    gridProps?: Omit<GridProps, 'item' | 'xs' | 'sm' | 'md'>
+    /** Props do Grid que envolve o campo (o tamanho vem de `xs`/`sm`/`md`) */
+    gridProps?: Omit<GridProps, 'size'>
     /** Props do InputLabel */
     labelProps?: Omit<InputLabelProps, 'required'>
 }
 
+/**
+ * Largura do campo por breakpoint, no formato do Grid antigo do MUI (`item xs sm md`): número de
+ * colunas, `'auto'`, ou `true` para ocupar o espaço que sobrar. Desde a 1.0.0 viram o `size` do
+ * Grid v2, que só tem efeito dentro de um `<Grid container>` (UPGRADE_PLAN.md, Etapa 7).
+ */
+type LarguraGrid = number | 'auto' | boolean
+
 // Props de layout do Grid
 interface GridLayoutProps {
-    xs?: GridProps['xs']
-    sm?: GridProps['sm']
-    md?: GridProps['md']
+    xs?: LarguraGrid
+    sm?: LarguraGrid
+    md?: LarguraGrid
 }
 
+// `true` era "crescer" no Grid antigo; no v2 é 'grow'. `false` não define tamanho.
+const paraGridV2 = (v?: LarguraGrid) => (v === true ? 'grow' : v === false ? undefined : v)
+
+/**
+ * Props do `TextField` que o MUI 9 removeu em favor de `slotProps`. O `Input` continua aceitando
+ * (os apps que as usavam não quebram ao subir o MUI) e as leva para o slot equivalente. Quando o
+ * app passa as duas formas, a de `slotProps` vence.
+ */
+interface PropsLegadasDoTextField {
+    /** @deprecated Use `slotProps.input`. */
+    InputProps?: Partial<OutlinedInputProps>
+    /** @deprecated Use `slotProps.htmlInput`. */
+    inputProps?: OutlinedInputProps['inputProps']
+    /** @deprecated Use `slotProps.inputLabel`. */
+    InputLabelProps?: Partial<InputLabelProps>
+    /** @deprecated Use `slotProps.formHelperText`. */
+    FormHelperTextProps?: Partial<FormHelperTextProps>
+    /** @deprecated Use `slotProps.select`. */
+    SelectProps?: Partial<SelectProps>
+}
+
+// Um slot pode ser um objeto ou uma função (ownerState) => props; função não dá para mesclar e vence.
+const juntarSlot = (legado?: object, atual?: unknown) => (typeof atual === 'function' ? atual : legado || atual ? { ...legado, ...(atual as object) } : undefined)
+
 // Props completas: nossas props + TextField props (exceto as controladas) + Grid layout
-export type InputProps = InputOwnProps & GridLayoutProps & Omit<TextFieldProps, OmittedTextFieldProps | keyof InputOwnProps>
+export type InputProps = InputOwnProps & GridLayoutProps & PropsLegadasDoTextField & Omit<TextFieldProps, OmittedTextFieldProps | keyof InputOwnProps>
 
 // Configurações de máscara por tipo
 const MASK_CONFIGS: Record<string, IMaskConfig> = {
@@ -119,7 +150,7 @@ const baseTextFieldSx: SxProps<Theme> = {
     },
 }
 
-const getHelperTextProps = (hasError: boolean): TextFieldProps['FormHelperTextProps'] => ({
+const getHelperTextProps = (hasError: boolean): Partial<FormHelperTextProps> => ({
     sx: {
         backgroundColor: hasError ? '#FFEBEE' : 'transparent',
         borderRadius: '8px',
@@ -164,8 +195,12 @@ export function Input({
     // Props do TextField repassadas
     disabled = false,
     sx,
-    InputProps: inputPropsFromUser,
-    InputLabelProps: inputLabelPropsFromUser,
+    InputProps: legadoInput,
+    inputProps: legadoHtmlInput,
+    InputLabelProps: legadoInputLabel,
+    FormHelperTextProps: legadoFormHelperText,
+    SelectProps: legadoSelect,
+    slotProps: slotPropsDoUsuario,
     ...textFieldProps
 }: InputProps) {
     const context = useContext(FormContext)!
@@ -236,7 +271,7 @@ export function Input({
 
     const helperText = hasError ? (
         <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ErrorOutline fontSize='small' />
+            <ErrorOutlineOutlined fontSize='small' />
             {errorData?.message as string}
         </Box>
     ) : undefined
@@ -253,13 +288,18 @@ export function Input({
             size: 'small' as const,
             variant: 'outlined' as const,
             placeholder: customPlaceholder ?? title,
-            FormHelperTextProps: getHelperTextProps(hasError),
             sx: mergedSx,
-            InputProps: inputPropsFromUser,
-            InputLabelProps: inputLabelPropsFromUser,
             ...textFieldProps,
+            slotProps: {
+                ...slotPropsDoUsuario,
+                input: juntarSlot(legadoInput, slotPropsDoUsuario?.input),
+                htmlInput: juntarSlot(legadoHtmlInput, slotPropsDoUsuario?.htmlInput),
+                inputLabel: juntarSlot(legadoInputLabel, slotPropsDoUsuario?.inputLabel),
+                select: juntarSlot(legadoSelect, slotPropsDoUsuario?.select),
+                formHelperText: juntarSlot({ ...getHelperTextProps(hasError), ...legadoFormHelperText }, slotPropsDoUsuario?.formHelperText),
+            },
         }),
-        [name, hasError, helperText, customPlaceholder, title, mergedSx, inputPropsFromUser, inputLabelPropsFromUser, textFieldProps],
+        [name, hasError, helperText, customPlaceholder, title, mergedSx, legadoInput, legadoHtmlInput, legadoInputLabel, legadoFormHelperText, legadoSelect, slotPropsDoUsuario, textFieldProps],
     )
 
     const renderInput = () => {
@@ -278,7 +318,7 @@ export function Input({
     }
 
     return (
-        <Grid item xs={xs} sm={sm} md={md} {...gridProps}>
+        <Grid size={{ xs: paraGridV2(xs), sm: paraGridV2(sm), md: paraGridV2(md) }} {...gridProps}>
             {title && (
                 <InputLabel required={required} sx={labelProps?.sx ? [baseLabelSx, labelProps.sx].flat() : baseLabelSx} {...labelProps}>
                     {title}

@@ -27,6 +27,12 @@ echo "── 'use client' ──────────────────
 node scripts/check-use-client.mjs
 
 echo
+echo "── llms.txt (guia para agentes, vai no pacote) ──────"
+# Versões do MUI linkadas x peers e x o que está instalado; versão do @mui/mcp x .mcp.json.
+# `node scripts/check-llms.mjs --rede` confere também que os links respondem (fora do CI).
+node scripts/check-llms.mjs
+
+echo
 echo "── interop do CJS ───────────────────────────────────"
 # `__toESM(x, 1)` é o interop em "modo Node", que o rolldown usa quando o package.json
 # raiz tem "type": "module": ignora o `__esModule` e faz `import Grid from
@@ -45,8 +51,9 @@ npx --yes publint@latest ./dist
 echo
 echo "── are-the-types-wrong ──────────────────────────────"
 # `unexpected-module-syntax` é o 🚭 node16-ESM conhecido: o ESM sai em `.js` sem "type"
-# de propósito, porque `.mjs` quebra o SSR do Next 14 com MUI 5 (UPGRADE_PLAN.md, registro
-# da Etapa 3; volta na Etapa 7). Sem ignorá-lo o attw sai com erro em todo build — já
+# de propósito, porque `.mjs` quebra o SSR do Next 14: com MUI 5 (Etapa 3) e, desde a Etapa 7
+# (MUI 7+/9), pelos imports default de `next/image`/`next/link`, CommonJS no Next 14 (o .mjs
+# os recebe como objeto do módulo; React #130). Volta a ser avaliado quando o Next 14 sair da peer. Sem ignorá-lo o attw sai com erro em todo build — já
 # saía na 0.2.1 — e o CI parava aqui, antes do smoke e dos snapshots. As outras regras
 # continuam bloqueando.
 npx --yes @arethetypeswrong/cli@latest --pack ./dist --ignore-rules unexpected-module-syntax

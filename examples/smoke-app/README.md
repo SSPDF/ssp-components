@@ -55,17 +55,18 @@ O `npm run smoke` (na raiz) faz tudo isso sozinho — e é o que roda no CI.
 
 ### Outras versões das peers
 
-O `package.json` do smoke-app fica no piso das peers (Next 14, `x-date-pickers` 6,
-`react-toastify` 10). O CI roda o smoke três vezes: no piso, com o Next 16 e na
-combinação do `copom`:
+O `package.json` do smoke-app fica no piso das peers (Next 14, MUI 7.3, `x-date-pickers` 8,
+`react-toastify` 10). O CI roda o smoke três vezes: no piso, com o Next 16 e no topo de todas
+as faixas:
 
 ```bash
 # na raiz do repo, depois de `npm run build`
-SMOKE_NEXT=16 npm run smoke                                    # next ^14 || ^15 || ^16
-SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke  # x-date-pickers ^6 || ^7, react-toastify ^10 || ^11
+SMOKE_NEXT=16 npm run smoke                                                  # next ^14 || ^15 || ^16
+SMOKE_MUI=9 SMOKE_PICKERS=9 npm run smoke                                    # MUI ^7.3 || ^9 (o 9 exige pickers 9)
+SMOKE_NEXT=16 SMOKE_MUI=9 SMOKE_PICKERS=9 SMOKE_TOASTIFY=11 npm run smoke    # o topo, como no CI
 ```
 
-`SMOKE_NEXT`, `SMOKE_PICKERS` e `SMOKE_TOASTIFY` trocam a faixa no `package.json` só durante a execução; o
+`SMOKE_NEXT`, `SMOKE_MUI`, `SMOKE_PICKERS` e `SMOKE_TOASTIFY` trocam a faixa no `package.json` só durante a execução; o
 script devolve o `package.json` e o `tsconfig.json` (que o `next build` reescreve)
 ao estado original no fim. O `node_modules` fica com o Next testado — o próximo
 `npm run smoke` reinstala conforme o `package.json`.

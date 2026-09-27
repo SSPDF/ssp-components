@@ -68,6 +68,7 @@ jobs:
           cp README.md dist/README.md
           cp CHANGELOG.md dist/CHANGELOG.md
           cp AGENTS.md dist/AGENTS.md
+          cp llms.txt dist/llms.txt
 
       # Sem --tag explícita o npm escreve em `latest`, que é exatamente o que NÃO
       # queremos numa RC. Numa tag `v*` com pré-release (1.0.0-rc.1), vai para `next`.

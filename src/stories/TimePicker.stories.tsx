@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/nextjs'
 import TimePicker from '../components/form/date/TimePicker'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import { expect, within } from 'storybook/test'
-import { dadosEnviados, digitarNoPicker, enviar, esperarErroDeValidacao } from './interacao'
+import { campoDoPicker, dadosEnviados, digitarNoPicker, enviar, esperarErroDeValidacao } from './interacao'
 
 const meta: Meta<typeof TimePicker> = {
     title: 'Date/TimePicker',
@@ -26,11 +26,11 @@ export const Interacao: Story = {
     tags: ['interacao'],
     args: Base.args,
     play: async ({ canvasElement }) => {
-        const campo = within(canvasElement).getByRole('textbox')
+        const { valor: campo } = campoDoPicker(canvasElement)
         await enviar(canvasElement)
         await esperarErroDeValidacao(canvasElement)
 
-        await digitarNoPicker(campo, '1430')
+        await digitarNoPicker(canvasElement, '1430')
         await expect(campo).toHaveValue('14:30')
         await enviar(canvasElement)
         await expect(await dadosEnviados(canvasElement)).toEqual({ teste: '14:30' })

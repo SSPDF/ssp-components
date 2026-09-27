@@ -28,9 +28,11 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
 
     return (
         <Box
-            width={{
-                xs: 'inherit',
-                md: 850,
+            sx={{
+                width: {
+                    xs: 'inherit',
+                    md: 850,
+                },
             }}
         >
             <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
@@ -46,7 +48,12 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                 ))}
             </Menu>
 
-            <Stack direction='row' justifyContent='space-between'>
+            <Stack
+                direction='row'
+                sx={{
+                    justifyContent: 'space-between',
+                }}
+            >
                 {/* <Button
                     variant='contained'
                     onClick={handleClick}
@@ -58,7 +65,12 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                 >
                     Adicionar Regra
                 </Button> */}
-                <Typography fontWeight={700} fontSize={18}>
+                <Typography
+                    sx={{
+                        fontWeight: 700,
+                        fontSize: 18,
+                    }}
+                >
                     Filtrar
                 </Typography>
                 <Button
@@ -75,7 +87,11 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                 </Button>
             </Stack>
 
-            <Box marginBottom={1}>
+            <Box
+                sx={{
+                    marginBottom: 1,
+                }}
+            >
                 <Alert severity='warning'>Preencha apenas os campos que deseja filtrar.</Alert>
             </Box>
 
@@ -97,7 +113,13 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                     ))}
                 </Box>
             </Stack>
-            <Stack direction='row' justifyContent='flex-end' marginTop={1}>
+            <Stack
+                direction='row'
+                sx={{
+                    justifyContent: 'flex-end',
+                    marginTop: 1,
+                }}
+            >
                 <Button
                     variant='contained'
                     color='success'
@@ -128,9 +150,26 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
     }, [data])
 
     return (
-        <Stack direction='row' alignItems='end' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
+        <Stack
+            direction='row'
+            spacing={1}
+            sx={{
+                alignItems: 'end',
+                width: '100%',
+                bgcolor: idx % 2 === 0 ? '#ededed' : 'inherit',
+                padding: 0.5,
+                borderRadius: 2,
+            }}
+        >
             {!isSmall && (
-                <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
+                <Typography
+                    sx={{
+                        width: '100%',
+                        alignContent: 'center',
+                        fontWeight: 600,
+                        color: '#323232',
+                    }}
+                >
                     {filterValue.label}
                 </Typography>
             )}
@@ -221,7 +260,11 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                     case 'contem':
                     case 'igual':
                         return (
-                            <Box width='100%'>
+                            <Box
+                                sx={{
+                                    width: '100%',
+                                }}
+                            >
                                 <Autocomplete
                                     options={filterValue.useList}
                                     onChange={(_e, value) => {

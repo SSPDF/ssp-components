@@ -54,18 +54,41 @@ export function CustomModalProvider() {
                     open={open}
                     onClose={handleClose}
                     onOpen={() => {}}
-                    PaperProps={{
-                        sx: {
-                            bgcolor: 'transparent',
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                bgcolor: 'transparent',
+                            },
                         },
                     }}
                 >
-                    <Stack direction='row' onClick={handleClose} maxHeight='8vh' height='8vh' justifyContent='center' alignItems='center'>
-                        <Typography fontWeight={600} color='white'>
+                    <Stack
+                        direction='row'
+                        onClick={handleClose}
+                        sx={{
+                            maxHeight: '8vh',
+                            height: '8vh',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography
+                            color='white'
+                            sx={{
+                                fontWeight: 600,
+                            }}
+                        >
                             Clique fora para fechar
                         </Typography>
                     </Stack>
-                    <Box p={2} maxHeight='92vh' bgcolor='white' overflow='auto'>
+                    <Box
+                        sx={{
+                            p: 2,
+                            maxHeight: '92vh',
+                            bgcolor: 'white',
+                            overflow: 'auto',
+                        }}
+                    >
                         {content}
                         {idRef[currentId]}
                     </Box>
@@ -86,13 +109,14 @@ export function CustomModalProvider() {
                     >
                         <Box
                             onClick={handleClose}
-                            width='fit-content'
-                            height='fit-content'
-                            position='absolute'
-                            right={0}
-                            top={0}
-                            margin={0.6}
                             sx={{
+                                width: 'fit-content',
+                                height: 'fit-content',
+                                position: 'absolute',
+                                right: 0,
+                                top: 0,
+                                margin: 0.6,
+
                                 ':hover': {
                                     transform: 'scale(1.03)',
                                     transition: 'all 500ms',
@@ -106,7 +130,17 @@ export function CustomModalProvider() {
                                 }}
                             />
                         </Box>
-                        <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray' bgcolor='#F9F9F9' borderRadius={2}>
+                        <Box
+                            sx={{
+                                overflow: 'auto',
+                                maxHeight: '90vh',
+                                p: 2,
+                                marginTop: 4,
+                                borderTop: 'solid 1px gray',
+                                bgcolor: '#F9F9F9',
+                                borderRadius: 2,
+                            }}
+                        >
                             {content}
                             {idRef[currentId]}
                         </Box>

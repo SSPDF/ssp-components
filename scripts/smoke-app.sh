@@ -14,13 +14,14 @@
 # Roda depois de `npm run build`.
 #
 # Por padrão usa as versões do package.json do smoke-app, que são o piso das peers
-# (Next 14, x-date-pickers 6, react-toastify 10). Para testar outro major da faixa
-# declarada:
+# (Next 14, MUI 7.3, x-date-pickers 8, react-toastify 10). Para testar outro major da
+# faixa declarada:
 #
 #   SMOKE_NEXT=16 npm run smoke                                   # next ^14 || ^15 || ^16
-#   SMOKE_PICKERS=7 npm run smoke                                 # x-date-pickers ^6 || ^7
+#   SMOKE_PICKERS=9 npm run smoke                                 # x-date-pickers ^8 || ^9
 #   SMOKE_TOASTIFY=11 npm run smoke                               # react-toastify ^10 || ^11
-#   SMOKE_NEXT=16 SMOKE_PICKERS=7 SMOKE_TOASTIFY=11 npm run smoke # combinação do copom
+#   SMOKE_MUI=9 SMOKE_PICKERS=9 npm run smoke                     # MUI ^7.3 || ^9 (o 9 exige pickers 9)
+#   SMOKE_NEXT=16 SMOKE_MUI=9 SMOKE_PICKERS=9 SMOKE_TOASTIFY=11 npm run smoke # o topo de todas as faixas
 #
 # SMOKE_E2E_KEYCLOAK=1 (usado por scripts/e2e-keycloak.sh) serve o app buildado em :3100 e
 # roda o e2e do KeycloakAuthProvider contra o Keycloak que aquele script sobe.
@@ -51,14 +52,20 @@ cd "$app"
 if [ -n "${SMOKE_NEXT:-}" ]; then
     npm pkg set "dependencies.next=^$SMOKE_NEXT"
 fi
+if [ -n "${SMOKE_MUI:-}" ]; then
+    npm pkg set "dependencies.@mui/material=^$SMOKE_MUI" "dependencies.@mui/icons-material=^$SMOKE_MUI"
+fi
 if [ -n "${SMOKE_PICKERS:-}" ]; then
     npm pkg set "dependencies.@mui/x-date-pickers=^$SMOKE_PICKERS"
 fi
 if [ -n "${SMOKE_TOASTIFY:-}" ]; then
     npm pkg set "dependencies.react-toastify=^$SMOKE_TOASTIFY"
 fi
-versoes="next $(npm pkg get dependencies.next), x-date-pickers $(npm pkg get dependencies.@mui/x-date-pickers), react-toastify $(npm pkg get dependencies.react-toastify)"
+versoes="next $(npm pkg get dependencies.next), mui $(npm pkg get dependencies.@mui/material), x-date-pickers $(npm pkg get dependencies.@mui/x-date-pickers), react-toastify $(npm pkg get dependencies.react-toastify)"
 echo "── instalando $tarball no smoke-app ($versoes) ──"
+# Uma cópia da lib de um run anterior (outra versão, outras peers) faria o npm tentar respeitar as
+# peers antigas e falhar com ERESOLVE. O CI roda vários smokes seguidos no mesmo workspace.
+rm -rf node_modules/@ssplib
 npm install --no-save --no-audit --no-fund "$tmp/$tarball"
 
 if [ -n "${SMOKE_KEYCLOAK_JS:-}" ]; then

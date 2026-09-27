@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { FormContext } from '../../../context/form'
 import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
-import { ElevatorSharp, ErrorOutline } from '@mui/icons-material'
+import { ElevatorSharp, ErrorOutlineOutlined } from '@mui/icons-material'
 
 function getChildrenNames(children: JSX.Element[]): string[] {
     let arr: string[] = []
@@ -56,7 +56,7 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
             />
             {props.children}
             {get(context.errors, props.name) && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <Box
                         sx={{
                             backgroundColor: '#FFEBEE',
@@ -70,8 +70,15 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             {get(context.errors, props.name)?.message as string}
                         </Typography>
                     </Box>

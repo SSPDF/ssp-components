@@ -29,8 +29,10 @@ export default function CustomMenu({ data = [], ...props }: MenuProps) {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
+                slotProps={{
+                    list: {
+                        'aria-labelledby': 'basic-button',
+                    },
                 }}
             >
                 {data.map((x) => (
