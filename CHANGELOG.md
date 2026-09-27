@@ -2,6 +2,55 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 1.0.0-rc.1
+
+**MUI 7.3+/9 (Etapa 7 do `UPGRADE_PLAN.md`).** Primeiro major da lib, e breaking coordenado: o app precisa estar no MUI 7.3 ou 9. Candidato a release: publicar na dist-tag `next`, validar num app piloto e só então promover a `1.0.0` para `latest`.
+
+| Peer | Antes (`0.x`) | Agora |
+|---|---|---|
+| `@mui/material` | `^5.8.6` | `^7.3.0 \|\| ^9.0.0` |
+| `@mui/icons-material` | `^5.0.0` | `^7.3.0 \|\| ^9.0.0` (mesmo major do `@mui/material`) |
+| `@mui/x-date-pickers` | `^6.0.0 \|\| ^7.0.0` | `^8.0.0 \|\| ^9.0.0` (o MUI 9 exige o 9) |
+
+React (`^18`), Next (`^14 || ^15 || ^16`), Emotion, `react-hook-form`, `dayjs` e `react-toastify` não mudaram. A lib não depende mais do `@mui/lab`.
+
+### O que o app precisa fazer
+
+- **Subir o MUI para 7.3+ ou 9 e o `x-date-pickers` para 8 ou 9**, com os codemods do MUI no código do app (`npx @mui/codemod@latest v6.0.0/all`, `v7.0.0/grid-props`, `deprecations/all`, `v9.0.0/system-props`; `npx @mui/x-codemod@latest v9.0.0/pickers/preset-safe`).
+- **Manter os campos da lib dentro de um `<Grid container>` do `@mui/material`.** O `xs`/`sm`/`md` dos campos (`<Input md={6} />`) vira o `size` do Grid v2, que só tem efeito dentro de um container v2. Os apps já envolvem os campos assim (ex.: o `SectionWrapper` do viva-flor). **Não troque esses containers por `GridLegacy`**, como o codemod do MUI 7 às vezes sugere para preservar layout: dentro de um `GridLegacy`, os campos da lib ocupam a largura toda.
+- **Testes do app que procuram o `<input>` dos pickers:** no x-date-pickers 8+, o campo de `DatePicker`, `GenericDatePicker` e `TimePicker` é um grupo de seções (`role="spinbutton"`: dia, mês, ano) com um input escondido que guarda o valor. O visual e o valor enviado são os mesmos.
+- **Testes que procuram o `Switch` como `checkbox`:** no MUI 7+ ele tem `role="switch"`.
+- Browsers mínimos do MUI 7+: Chrome 117, Firefox 121, Safari 17.
+
+### O que a migração do specto e do viva-flor ensinou (27/09)
+
+Os dois apps foram migrados para o MUI 9 com esta rc, e buildam e abrem sem erro. Pontos que os codemods não resolvem sozinhos:
+
+- **O codemod `v9.0.0/system-props` descarta os spreads JSX do mesmo elemento.** `<Grid item bgcolor="white" {...props}>` vira `<Grid sx={{ bgcolor: 'white' }}>`, sem o `{...props}` e sem erro. No viva-flor, os componentes `Field` e `File` da tela de detalhes perderam o `md` que vinha pelo spread: todos os campos ficariam com largura total. Depois de rodar os codemods, procure componentes que espalhavam props num `Grid`/`Box`/`Stack` e confira se o spread continua lá.
+- **Componentes do app com `interface Props extends GridProps` que usam `xs`/`md`**: o `GridProps` do MUI 7+ não tem mais essas props (viraram `size`). Declare-as nas props do componente e converta para `size={{ xs, sm, md, lg }}`.
+- **Ícones `*Outline` removidos no `@mui/icons-material` 9**: use `*OutlineOutlined` (`ErrorOutline` → `ErrorOutlineOutlined`, `DeleteOutline` → `DeleteOutlineOutlined`, com desenho idêntico). A sugestão do TypeScript (`ErrorOutlined`) é outro ícone (preenchido).
+- **`<Grid direction="column">`** não existe mais no MUI 9: use `<Stack>`.
+- **`Typography color='text.primary'`** (caminho no tema) vira preto em silêncio no MUI 9. Use nomes da paleta (`'textPrimary'`, `'primary'`) ou o `sx`.
+- **`@mui/x-charts` 6 → 9**: `highlightScope: { faded, highlighted }` → `{ fade, highlight }`, e na legenda `itemMarkWidth`/`itemMarkHeight`/`labelStyle`/`padding` saíram (vão para o `sx` da legenda, com a classe `.MuiChartsLegend-mark`).
+- **`LoadingButton` do `@mui/lab`** → `Button` do `@mui/material` com `loading`/`loadingPosition` (o codemod `lab-removed-components` não converteu).
+- `PaperProps`/`inputProps` que o codemod `deprecations/all` deixou passar: `slotProps.paper` / `slotProps.htmlInput`.
+
+### Mudanças que não exigem nada do app
+
+- `Input`: `InputProps`, `inputProps`, `InputLabelProps`, `FormHelperTextProps` e `SelectProps`, que o MUI 9 tirou do `TextField`, continuam aceitas (agora `@deprecated`) e vão para o `slotProps` equivalente. Se o app passar as duas formas, vale a de `slotProps`.
+- `Table`/`GenericTable`: `customTableStyle` com estilos soltos (`border`, `borderRadius`…, as system props que o MUI 9 removeu do `Box`) continua funcionando, com a mesma precedência de antes.
+- `Map`: a prop `style` agora é tipada como `sx` (`SxProps`). Medidas como `{ minWidth, height }` continuam iguais.
+- `Stepper`: o botão de enviar usa o `Button` do MUI com `loading` (era o `LoadingButton` do `@mui/lab`). Mesmo visual.
+
+### Documentação
+
+- **O pacote traz um `llms.txt`**: índice para agentes de IA com o `AGENTS.md`, o README, o CHANGELOG e a documentação do MUI **nas versões que a lib suporta** (Material UI 7.3 e 9, x-date-pickers 8 e 9, e os guias de migração). O `AGENTS.md` passa a orientar o agente do app a consultar essa documentação, ou o MCP oficial do MUI, em vez da memória.
+
+### Correções
+
+- **Duas `Table` na mesma página compartilhavam os filtros.** Os nomes das chaves no `localStorage` e o estado de "expandir tudo" eram variáveis de módulo: a tabela que renderizava por último mandava nas duas. Agora cada tabela usa o próprio `id`, como o `GenericTable` já fazia.
+- O conteúdo do `StepperBlock` fica centralizado de verdade: o Grid antigo transbordava 8 px e deslocava o conteúdo 4 px para a direita.
+
 ## 0.4.0
 
 **Majors das dependências de runtime (Etapa 6 do `UPGRADE_PLAN.md`).** A API pública e as peers não mudaram, e os componentes se comportam igual (conferido pelos snapshots, pelas stories de interação e por um e2e de login com o `keycloak-js` de verdade). Sobe o minor porque dois requisitos do app mudam.
