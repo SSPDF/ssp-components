@@ -2,6 +2,12 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## Não publicado
+
+### Correções
+
+- `CustomMenu` (o menu "Ordenar" da `Table`) e `TableLoadingState` (o skeleton da `Table` carregando) passam `key` nos itens das listas. Tiram o aviso `Each child in a list should have a unique "key" prop` do console em dev. Os dois já existiam antes da linha `0.x`; nada muda na tela.
+
 ## 1.0.0-rc.1
 
 **MUI 7.3+/9 (Etapa 7 do `UPGRADE_PLAN.md`).** Primeiro major da lib, e breaking coordenado: o app precisa estar no MUI 7.3 ou 9. Candidato a release: publicar na dist-tag `next`, validar num app piloto e só então promover a `1.0.0` para `latest`.
@@ -31,7 +37,7 @@ Os dois apps foram migrados para o MUI 9 com esta rc, e buildam e abrem sem erro
 - **Ícones `*Outline` removidos no `@mui/icons-material` 9**: use `*OutlineOutlined` (`ErrorOutline` → `ErrorOutlineOutlined`, `DeleteOutline` → `DeleteOutlineOutlined`, com desenho idêntico). A sugestão do TypeScript (`ErrorOutlined`) é outro ícone (preenchido).
 - **`<Grid direction="column">`** não existe mais no MUI 9: use `<Stack>`.
 - **`Typography color='text.primary'`** (caminho no tema) vira preto em silêncio no MUI 9. Use nomes da paleta (`'textPrimary'`, `'primary'`) ou o `sx`.
-- **`@mui/x-charts` 6 → 9**: `highlightScope: { faded, highlighted }` → `{ fade, highlight }`, e na legenda `itemMarkWidth`/`itemMarkHeight`/`labelStyle`/`padding` saíram (vão para o `sx` da legenda, com a classe `.MuiChartsLegend-mark`).
+- **`@mui/x-charts` 6 → 9**: `highlightScope: { faded, highlighted }` → `{ fade, highlight }`, e na legenda `itemMarkWidth`/`itemMarkHeight`/`labelStyle`/`padding` saíram (vão para o `sx` da legenda, com a classe `.MuiChartsLegend-mark`). Em dev, o x-charts 9 pode repetir no console `An input selector returned a different result when passed same arguments` (do `reselect` do store interno dos gráficos). É só aviso de desempenho: não aparece em produção nem muda o gráfico.
 - **`LoadingButton` do `@mui/lab`** → `Button` do `@mui/material` com `loading`/`loadingPosition` (o codemod `lab-removed-components` não converteu).
 - `PaperProps`/`inputProps` que o codemod `deprecations/all` deixou passar: `slotProps.paper` / `slotProps.htmlInput`.
 

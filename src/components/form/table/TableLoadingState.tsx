@@ -52,8 +52,9 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                 <LinearProgress color='inherit' />
                 {Array(10)
                     .fill('')
-                    .map((x) => (
+                    .map((_, i) => (
                         <Stack
+                            key={i}
                             direction={{
                                 xs: 'column',
                                 md: 'row',
@@ -70,8 +71,8 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                         >
                             {Array(7)
                                 .fill(0)
-                                .map((y) => (
-                                    <Box>
+                                .map((_, j) => (
+                                    <Box key={j}>
                                         <Skeleton width={60} />
                                         <Skeleton width={120} />
                                     </Box>

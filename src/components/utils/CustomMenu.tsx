@@ -35,8 +35,9 @@ export default function CustomMenu({ data = [], ...props }: MenuProps) {
                     },
                 }}
             >
-                {data.map((x) => (
+                {data.map((x, i) => (
                     <MenuItem
+                        key={`${x.name}-${i}`}
                         onClick={() => {
                             x.onClick && x.onClick()
                             handleClose()

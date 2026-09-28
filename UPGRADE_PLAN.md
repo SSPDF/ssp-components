@@ -379,7 +379,7 @@ No lockfile do `conoc-frontend` (MUI 7.3.8, com a `0.2.0` instalada por `--legac
 
 Não muda nada na linha `0.x` (que declara MUI 5 e não promete funcionar no 7), mas reforça: **o `conoc-frontend` não deve usar o `Stepper` enquanto estiver numa `0.x`**, e a remoção do `@mui/lab` na Etapa 7 é pré-requisito, não limpeza. Alternativa se a Etapa 7 atrasar: `@mui/lab` como peer opcional (`^5.0.0-alpha.127 || ^7.0.0-beta`), para cada app usar o seu — avaliar só se o `conoc` precisar do `Stepper` antes.
 
-### 5.15 Teste manual da `0.3.0` no `viva-flor-frontend` e no `specto-frontend` (25/09/2026) — sem regressão; avisos antigos **não corrigidos**
+### 5.15 Teste manual da `0.3.0` no `viva-flor-frontend` e no `specto-frontend` (25/09/2026) — sem regressão; avisos antigos ✅ corrigidos em 28/09/2026 (ver 5.24)
 
 `viva-flor-frontend` rodando em `next dev` com o tarball local (`file:../ssp-components/pack/ssplib-react-components-0.3.0.tgz`), navegando por home, `/editar/:id`, `/detalhes/:id` e acionamentos. **Nenhum erro visual.** O console mostrou avisos, e nenhum deles foi introduzido pelas Etapas 0–3:
 
@@ -387,7 +387,7 @@ Não muda nada na linha `0.x` (que declara MUI 5 e não promete funcionar no 7),
   - `CustomMenu.tsx:36`: o `data.map` dos `MenuItem` não passa `key`. A Etapa 2 mexeu no arquivo só no tipo de `btProps` (5.8c); o `map` é anterior.
   - `TableLoadingState.tsx:34` e `:50`: os dois `Array(...).map` do skeleton não passam `key`. O código não foi tocado nas Etapas 0–3.
 
-  Só aparecem em dev e não afetam a renderização. A correção é `key={i}` nos três `map`, o que dá um candidato a patch ou à Etapa 4. *25/09/2026: a Etapa 4 terminou sem corrigir. Continuam em `CustomMenu.tsx:36` e `TableLoadingState.tsx:34,50`, e são bons candidatos a um patch `0.3.3`.*
+  Só aparecem em dev e não afetam a renderização. A correção é `key={i}` nos três `map`, o que dá um candidato a patch ou à Etapa 4. *25/09/2026: a Etapa 4 terminou sem corrigir. Continuam em `CustomMenu.tsx:36` e `TableLoadingState.tsx:34,50`, e são bons candidatos a um patch `0.3.3`.* *28/09/2026: ✅ corrigidos no `atualizacao-dependencias` (entram na próxima rc; ver 5.24).*
 - **b) Vêm do próprio app, sem relação com a lib** (ficam registrados aqui só para não serem reinvestigados):
   - Picker "uncontrolled → controlled" e Autocomplete "invalid value / controlled → uncontrolled" em `/editar/:id`. O formulário usa o `DatePicker`/`AutoComplete` do app (`components/form/`); da lib, só usa o `Button`. O valor começa `undefined` e é preenchido depois do fetch.
   - `Grid direction` sem `container` (`components/acionamentos/location-modal/index.tsx:89`); `Grid xs/md` sem `item` (`pages/detalhes/[id].tsx:222,224`); `tipoArquivo`/`pessoaId` repassados ao DOM pelo `File` do app; `<p>` dentro de `<p>` no `Field` do app.
@@ -455,6 +455,21 @@ O `handleChange` fazia `setValue(undefined)` em vez de `setValue(newValue)`. O c
 ### 5.23 O `KeycloakAuthProvider` exige um `silent-check-sso.html` que o README não mencionava (26/09/2026) — ✅ documentado
 
 O provider faz o check-sso silencioso carregando `${basePath}/silent-check-sso.html` num iframe. Os quatro apps servem o arquivo em `public/` (e todos usam `basePath`: `/specto`, `/spp`, `/hefesto`, `/conat`), mas um app novo não teria como saber. O README agora traz o conteúdo do arquivo e explica que o `basePath` do provider tem que ser o do `next.config.js`. O e2e roda com `basePath` pelo mesmo motivo.
+
+### 5.24 Teste manual da `1.0.0-rc.1` no `specto-frontend` e no `viva-flor-frontend` (28/09/2026) — sem regressão; avisos corrigidos
+
+Os dois apps rodaram em `next dev` com a migração para o MUI 9 de 27/09 e o tarball local da rc. O specto usou a API de hmg, e o viva-flor usou a `viva-flor-api` local (`develop`, banco e Keycloak de hmg). O console do browser foi acompanhado pelo terminal do Next 16, que repassa os avisos como `[browser]`. **Nenhum erro visual nem de runtime nos dois.** O usuário percorreu as telas e confirmou.
+
+- **a) Vêm da lib, e já existiam antes da linha `0.x`** (os mesmos do 5.15a): `key` faltando no `CustomMenu` (o menu "Ordenar" de toda `Table` com `orderBy`) e nos dois `map` do `TableLoadingState`. ✅ **Corrigidos** (`key` com o índice; no `CustomMenu`, `nome-índice`, porque dois itens podem ter o mesmo nome). Entram na próxima rc (CHANGELOG, "Não publicado").
+- **b) Vêm dos apps, sem relação com a lib**. Nos três primeiros, a `CustomModalProvider`/`SspComponentsProvider` aparece na stack só porque renderiza o conteúdo que o app passa ao `ssp.MODAL.open`. ✅ Corrigidos na `develop` dos apps, no código original (MUI 5):
+  - specto `pages/buscaCPF/[id].tsx` (`showPhotos`): `spacing` num `Grid item`, fragment sem `key` no `map` e `Typography` envolvendo `Stack` + `Typography` (`<p>` dentro de `<p>`).
+  - specto `pages/index.tsx`: o `next/image` do `logo.svg` declarava 300×70 com `height: 'auto'`, mas o SVG é 302×64, então só a altura mudava. Agora declara 302×64. Commit `88499ba`.
+  - viva-flor `components/EnderecoCombo.tsx`: `ufs?.find(...)` devolvia `undefined` quando a lista chegava sem a opção, e o `Autocomplete` passava de controlado para não controlado (3 avisos, um por campo, no cadastro). Agora cai para `?? null`.
+  - viva-flor `components/detalhes/field.tsx`: "Não informado" era `Typography` dentro de `Typography`, e passa a usar `component="span"`. Commit `99be6ee`.
+- **c) Vem da migração do app, não da lib:** o `@mui/x-charts` 9 (o viva-flor tinha o 6) avisa em dev `An input selector returned a different result when passed same arguments` na tela de relatórios. O aviso vem do `reselect` do store interno dos gráficos, e a lib não usa `x-charts`. Registrado no CHANGELOG da `1.0.0-rc.1`. Não afeta a tela.
+- **d) Ambiente, sem relação com a lib:** o front do viva-flor chama `GET /gestao/dominios` e recebe 404, porque o módulo de gestão não está na `develop` da API (só no `feat/gestao-ciclo-vida`). O front trata o erro e mostra "Funcionalidade indisponível".
+- **Pegadinha do teste com tarball:** o `pack:local` regrava o `.tgz` com o mesmo nome. O app que já instalou a versão anterior fica com o build antigo em silêncio. Confira o `integrity` do lock contra o `.tgz` (`openssl dgst -sha512 -binary <tgz> | base64`) ou reinstale depois de cada `pack:local`.
+- **Destino dos working trees (decisão 2 da seção 13):** os dois apps **voltaram para a `develop`** (MUI 5, lib `0.0.x` publicada). A migração para o MUI 9 ficou guardada em `git stash` em cada app (`stash@{0}`, "migração MUI 9 + @ssplib 1.0.0-rc.1 (teste local 27-28/09/2026)") para servir de base à migração do piloto. Ela foi feita sobre a `develop` de 27/09, e o viva-flor recebeu 20 commits desde então, então o `stash pop` pode dar conflito.
 
 ---
 
@@ -1242,20 +1257,20 @@ Conferido contra o repo, o registry (`npm view`), o GitHub (PR #4, CI) e os quat
 
 | App | Lib commitada | MUI commitado | `0.4.0`? | `1.0.0-rc.1`? | Working tree |
 |---|---|---|---|---|---|
-| `specto-frontend` | `^0.0.348` | 5 | sim | depois de migrar o app para MUI 7.3+/9 (**piloto recomendado**) | **14 arquivos**: migração local para MUI 9 + a rc (teste de 27/09, build verde). Aproveitar como a migração do piloto ou reverter |
-| `viva-flor-frontend` | `^0.0.349` | 5 | sim | depois de migrar (inclui `x-charts` 6 → 9) | **65 arquivos**: idem (build verde) |
+| `specto-frontend` | `^0.0.348` | 5 | sim | depois de migrar o app para MUI 7.3+/9 (**piloto recomendado**) | **14 arquivos**: migração local para MUI 9 + a rc (teste de 27/09, build verde). *28/09: revertido, com a migração guardada em `git stash` (5.24)* |
+| `viva-flor-frontend` | `^0.0.349` | 5 | sim | depois de migrar (inclui `x-charts` 6 → 9) | **65 arquivos**: idem (build verde). *28/09: idem* |
 | `copom` | `^0.0.348` | 5.18 (pickers 7.29) | sim | depois de migrar | limpo |
 | `conoc-frontend` | `^0.0.347` | 7.3 (pickers 8, **React 19**, **Node 20**) | não (MUI 7) | depois de subir MUI e pickers para 9 e o Node para 22 (a partir da rc.2, que traz o React 19) | 3 arquivos (restos de testes antigos com tarball) |
 
 **Achados abertos** (nenhum bloqueia a publicação)
-- 5.13e (`console.log`s de depuração) e 5.15a (`key` faltando em `CustomMenu` e `TableLoadingState`).
+- 5.13e (`console.log`s de depuração). ~~5.15a (`key` faltando em `CustomMenu` e `TableLoadingState`)~~ ✅ corrigido em 28/09 (5.24).
 - 5.21: `Radio` sem acessibilidade (a), campos sem nome acessível (b), mensagem de e-mail inalcançável (c), `FileUpload` com `Object.keys` na `FileList` (d), "…e antes de undefined" no `DatePicker` (e).
 - 351 warnings de lint (as regras do React Compiler, rebaixadas a `warn`, entre elas).
 - `ubuntu-latest` vira Ubuntu 26 em 19/10/2026: conferir o primeiro CI depois disso.
 
 **Decisões em aberto**
 1. Publicar a `0.4.0` e a `1.0.0-rc.1` (seção 8).
-2. O app piloto da `1.x` (recomendado: specto) e o destino dos working trees do specto e do viva-flor.
+2. O app piloto da `1.x` (recomendado: specto). ~~O destino dos working trees do specto e do viva-flor~~: *28/09: revertidos para a `develop`, com a migração guardada em `git stash` (5.24).*
 3. ~~D2~~ ✅ decidida em 27/09: só as versões atuais (seção 9). A próxima rc estreita as peers e traz o React 19.
 
 **Próximos passos:** `1.0.0-rc.2` com a stack atual inteira (peers só no major atual, React 19, Next 16, `react-leaflet` 5, ESM em `.mjs`; decisão de 27/09) → publicar a `0.4.0` em `latest` e a rc em `next` (seção 8) → piloto em homologação → `1.0.0` em `latest` → migração dos outros apps → Etapa 9 (TS 7, esperando o `typescript-eslint`).
