@@ -62,4 +62,4 @@ jobs:
 
       - name: E2E contra o Keycloak de HMG
         if: steps.config.outputs.pular != '1'
-        run: SMOKE_NEXT=16 npm run e2e:keycloak
+        run: npm run e2e:keycloak

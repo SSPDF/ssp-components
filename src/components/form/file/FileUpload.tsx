@@ -65,7 +65,8 @@ export default function FileUpload({
     const onFile = useCallback(
         (e: FormEvent) => {
             const newFiles = (e.target as HTMLInputElement).files!
-            const filesTo = Object.keys(newFiles).map((key: number | string) => newFiles[key as number])
+            // Array.from, e não Object.keys: funciona com qualquer FileList, não só a do browser (UPGRADE_PLAN.md 5.21d).
+            const filesTo = Array.from(newFiles)
 
             setFiles([
                 ...files,
@@ -168,7 +169,7 @@ export default function FileUpload({
                         removeFile(id, true, fileIds[id])
                     }
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => console.error(err))
         }
     }
 

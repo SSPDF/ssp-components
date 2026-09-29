@@ -13,15 +13,14 @@
 #
 # Roda depois de `npm run build`.
 #
-# Por padrão usa as versões do package.json do smoke-app, que são o piso das peers
-# (Next 14, MUI 7.3, x-date-pickers 8, react-toastify 10). Para testar outro major da
-# faixa declarada:
+# Usa as versões do package.json do smoke-app, que são a stack atual das peers (Next 16,
+# React 19, MUI 9, x-date-pickers 9, react-toastify 11). Desde a 1.0.0-rc.2 cada peer tem um
+# major só, então não há mais piso e topo para testar. As variáveis abaixo servem para
+# experimentar o próximo major de uma peer antes de adotá-lo:
 #
-#   SMOKE_NEXT=16 npm run smoke                                   # next ^14 || ^15 || ^16
-#   SMOKE_PICKERS=9 npm run smoke                                 # x-date-pickers ^8 || ^9
-#   SMOKE_TOASTIFY=11 npm run smoke                               # react-toastify ^10 || ^11
-#   SMOKE_MUI=9 SMOKE_PICKERS=9 npm run smoke                     # MUI ^7.3 || ^9 (o 9 exige pickers 9)
-#   SMOKE_NEXT=16 SMOKE_MUI=9 SMOKE_PICKERS=9 SMOKE_TOASTIFY=11 npm run smoke # o topo de todas as faixas
+#   SMOKE_NEXT=17 npm run smoke
+#   SMOKE_MUI=10 SMOKE_PICKERS=10 npm run smoke                   # o MUI e os pickers andam juntos
+#   SMOKE_TOASTIFY=12 npm run smoke
 #
 # SMOKE_E2E_KEYCLOAK=1 (usado por scripts/e2e-keycloak.sh) serve o app buildado em :3100 e
 # roda o e2e do KeycloakAuthProvider contra o Keycloak que aquele script sobe.
@@ -29,14 +28,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [ ! -f dist/index.d.ts ]; then
+if [ ! -f dist/index.d.mts ]; then
     echo "dist/ não existe ou está incompleto. Rode \`npm run build\` antes."
     exit 1
 fi
 
 tmp="$(mktemp -d)"
-# O `next build` reescreve o tsconfig.json (o 16 troca `jsx` para `react-jsx`) e o
-# SMOKE_NEXT altera o package.json: guarda os originais e os devolve no fim, para
+# O `next build` pode reescrever o tsconfig.json e os SMOKE_* alteram o package.json: guarda os originais e os devolve no fim, para
 # não sujar o working tree.
 # Caminho absoluto: o trap roda depois do `cd examples/smoke-app`.
 app="$PWD/examples/smoke-app"

@@ -14,7 +14,7 @@ export default function CheckBox({
     disabled = false,
 }: {
     name: string
-    title: string | JSX.Element
+    title: string | React.JSX.Element
     defaultValue?: boolean
     onChange?: (e: React.SyntheticEvent<Element, Event>) => void
     xs?: number

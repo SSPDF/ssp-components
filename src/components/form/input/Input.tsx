@@ -1,6 +1,6 @@
-import { Box, FormHelperTextProps, Grid, GridProps, InputLabel, InputLabelProps, OutlinedInputProps, SelectProps, SxProps, TextField, TextFieldProps, Theme } from '@mui/material'
+import { Box, FormHelperTextProps, Grid, GridProps, InputLabel, InputLabelProps, SxProps, TextField, TextFieldProps, Theme } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useId } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
@@ -64,29 +64,11 @@ interface GridLayoutProps {
 // `true` era "crescer" no Grid antigo; no v2 é 'grow'. `false` não define tamanho.
 const paraGridV2 = (v?: LarguraGrid) => (v === true ? 'grow' : v === false ? undefined : v)
 
-/**
- * Props do `TextField` que o MUI 9 removeu em favor de `slotProps`. O `Input` continua aceitando
- * (os apps que as usavam não quebram ao subir o MUI) e as leva para o slot equivalente. Quando o
- * app passa as duas formas, a de `slotProps` vence.
- */
-interface PropsLegadasDoTextField {
-    /** @deprecated Use `slotProps.input`. */
-    InputProps?: Partial<OutlinedInputProps>
-    /** @deprecated Use `slotProps.htmlInput`. */
-    inputProps?: OutlinedInputProps['inputProps']
-    /** @deprecated Use `slotProps.inputLabel`. */
-    InputLabelProps?: Partial<InputLabelProps>
-    /** @deprecated Use `slotProps.formHelperText`. */
-    FormHelperTextProps?: Partial<FormHelperTextProps>
-    /** @deprecated Use `slotProps.select`. */
-    SelectProps?: Partial<SelectProps>
-}
-
 // Um slot pode ser um objeto ou uma função (ownerState) => props; função não dá para mesclar e vence.
-const juntarSlot = (legado?: object, atual?: unknown) => (typeof atual === 'function' ? atual : legado || atual ? { ...legado, ...(atual as object) } : undefined)
+const juntarSlot = (base?: object, atual?: unknown) => (typeof atual === 'function' ? atual : base || atual ? { ...base, ...(atual as object) } : undefined)
 
 // Props completas: nossas props + TextField props (exceto as controladas) + Grid layout
-export type InputProps = InputOwnProps & GridLayoutProps & PropsLegadasDoTextField & Omit<TextFieldProps, OmittedTextFieldProps | keyof InputOwnProps>
+export type InputProps = InputOwnProps & GridLayoutProps & Omit<TextFieldProps, OmittedTextFieldProps | keyof InputOwnProps>
 
 // Configurações de máscara por tipo
 const MASK_CONFIGS: Record<string, IMaskConfig> = {
@@ -195,14 +177,11 @@ export function Input({
     // Props do TextField repassadas
     disabled = false,
     sx,
-    InputProps: legadoInput,
-    inputProps: legadoHtmlInput,
-    InputLabelProps: legadoInputLabel,
-    FormHelperTextProps: legadoFormHelperText,
-    SelectProps: legadoSelect,
     slotProps: slotPropsDoUsuario,
     ...textFieldProps
 }: InputProps) {
+    // Liga o rótulo ao campo: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const idGerado = useId()
     const context = useContext(FormContext)!
 
     useEffect(() => {
@@ -282,6 +261,7 @@ export function Input({
     const formConfig = useMemo(
         () => ({
             ...context.formRegister(name, { validate }),
+            id: idGerado,
             error: hasError,
             helperText,
             fullWidth: true,
@@ -292,15 +272,13 @@ export function Input({
             ...textFieldProps,
             slotProps: {
                 ...slotPropsDoUsuario,
-                input: juntarSlot(legadoInput, slotPropsDoUsuario?.input),
-                htmlInput: juntarSlot(legadoHtmlInput, slotPropsDoUsuario?.htmlInput),
-                inputLabel: juntarSlot(legadoInputLabel, slotPropsDoUsuario?.inputLabel),
-                select: juntarSlot(legadoSelect, slotPropsDoUsuario?.select),
-                formHelperText: juntarSlot({ ...getHelperTextProps(hasError), ...legadoFormHelperText }, slotPropsDoUsuario?.formHelperText),
+                formHelperText: juntarSlot(getHelperTextProps(hasError), slotPropsDoUsuario?.formHelperText),
             },
         }),
-        [name, hasError, helperText, customPlaceholder, title, mergedSx, legadoInput, legadoHtmlInput, legadoInputLabel, legadoFormHelperText, legadoSelect, slotPropsDoUsuario, textFieldProps],
+        [name, idGerado, hasError, helperText, customPlaceholder, title, mergedSx, slotPropsDoUsuario, textFieldProps],
     )
+
+    const campoId = (textFieldProps as { id?: string }).id ?? idGerado
 
     const renderInput = () => {
         // Tipos com máscara customizada
@@ -314,13 +292,22 @@ export function Input({
         // 'input' é tratado como 'text' para compatibilidade
         const htmlType = type === 'input' ? 'text' : type
 
+        // E-mail vai como texto, com teclado de e-mail: com `type='email'` a validação nativa do browser
+        // barrava o envio antes da lib, e a mensagem dela nunca aparecia (UPGRADE_PLAN.md 5.21c). Não se
+        // usa `noValidate` no <form> porque os apps têm campos próprios com `required` nativo.
+        if (type === 'email') {
+            const htmlInput = formConfig.slotProps.htmlInput
+            const slotProps = { ...formConfig.slotProps, htmlInput: typeof htmlInput === 'function' ? htmlInput : { inputMode: 'email' as const, autoComplete: 'email', ...htmlInput } }
+            return <TextField {...formConfig} slotProps={slotProps} type='text' value={formValue ?? defaultValue} onChange={(e) => context.formSetValue(name, e.target.value)} disabled={disabled} />
+        }
+
         return <TextField {...formConfig} type={htmlType} value={formValue ?? defaultValue} onChange={(e) => context.formSetValue(name, e.target.value)} disabled={disabled} />
     }
 
     return (
         <Grid size={{ xs: paraGridV2(xs), sm: paraGridV2(sm), md: paraGridV2(md) }} {...gridProps}>
             {title && (
-                <InputLabel required={required} sx={labelProps?.sx ? [baseLabelSx, labelProps.sx].flat() : baseLabelSx} {...labelProps}>
+                <InputLabel required={required} htmlFor={campoId} sx={labelProps?.sx ? [baseLabelSx, labelProps.sx].flat() : baseLabelSx} {...labelProps}>
                     {title}
                 </InputLabel>
             )}

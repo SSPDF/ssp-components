@@ -1,6 +1,6 @@
 /**
  * Confere que todo módulo de `src/` que começa com a diretiva `'use client'` continua
- * começando com ela no `dist/`, nas duas saídas (`.js` = ESM, `.cjs` = CJS).
+ * começando com ela no `dist/`, nas duas saídas (`.mjs` = ESM, `.cjs` = CJS).
  *
  * Existe porque o microbundle a descartava (tudo virava um arquivo só) e o rolldown avisa
  * `MODULE_LEVEL_DIRECTIVE` mesmo no modo `unbundle`, em que ela é preservada — o aviso é
@@ -36,7 +36,7 @@ if (!clientes.length) {
 const erros = []
 for (const f of clientes) {
     const base = path.relative(src, f).replace(/\.tsx?$/, '')
-    for (const ext of ['.js', '.cjs']) {
+    for (const ext of ['.mjs', '.cjs']) {
         const saida = path.join(dist, base + ext)
         if (!fs.existsSync(saida)) erros.push(`dist/${base}${ext} não existe`)
         else if (!diretiva.test(fs.readFileSync(saida, 'utf8'))) erros.push(`dist/${base}${ext} perdeu o 'use client'`)

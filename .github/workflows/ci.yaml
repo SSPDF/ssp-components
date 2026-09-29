@@ -50,19 +50,10 @@ jobs:
 
       # Instala o dist/ empacotado no examples/smoke-app, como um app instalaria, e
       # roda o `next build` (que faz SSR da página). É o único passo que exercita o
-      # cenário real "o MUI vem do app".
+      # cenário real "o MUI vem do app". Desde a 1.0.0-rc.2 cada peer tem um major só
+      # (Next 16, React 19, MUI 9, pickers 9, toastify 11), então é um smoke só.
       - name: App de fumaça (tarball + next build)
         run: npm run smoke
-
-      # O passo acima testa o piso das peers (o package.json do smoke-app: Next 14, MUI 7.3,
-      # x-date-pickers 8, react-toastify 10). Este testa o Next 16, que é o que os apps usam.
-      - name: App de fumaça com Next 16
-        run: SMOKE_NEXT=16 npm run smoke
-
-      # O topo de todas as faixas: Next 16 + MUI 9 + x-date-pickers 9 + react-toastify 11
-      # (peers `@mui/material ^7.3 || ^9`, `x-date-pickers ^8 || ^9` desde a 1.0.0).
-      - name: App de fumaça no topo das faixas (Next 16, MUI 9, pickers 9, toastify 11)
-        run: SMOKE_NEXT=16 SMOKE_MUI=9 SMOKE_PICKERS=9 SMOKE_TOASTIFY=11 npm run smoke
 
       # O KeycloakAuthProvider é o login de todos os apps. Este passo roda o keycloak-js de
       # verdade, no browser, contra o servidor OIDC simulado (scripts/lib/oidc-simulado.mjs, sem
@@ -73,10 +64,10 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: E2E do KeycloakAuthProvider (keycloak-js real, OIDC simulado)
-        run: SMOKE_NEXT=16 npm run e2e:keycloak
+        run: npm run e2e:keycloak
 
       # Versão de desenvolvimento sem npm: o mesmo .tgz que o publish geraria (pack:local
-      # repete os passos do publish.yaml). Só sobe se o check:package, os três smokes e o
+      # repete os passos do publish.yaml). Só sobe se o check:package, o smoke e o
       # e2e do Keycloak passaram. No app: baixar o artefato do run e `npm install ./<arquivo>.tgz`.
       # O nome leva o SHA do topo do branch: num PR o `github.sha` é o commit de merge
       # temporário que o GitHub cria (e que ninguém acha no `git log`). O conteúdo é o

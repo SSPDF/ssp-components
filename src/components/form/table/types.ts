@@ -1,5 +1,5 @@
 import { BoxComEstilosSoltos } from '../../utils/propsDeEstilo'
-import { ReactNode } from 'react'
+import { ReactNode, type JSX } from 'react'
 
 export interface ColumnData {
     title: string

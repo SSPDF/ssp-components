@@ -22,7 +22,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
 const lib = JSON.parse(fs.readFileSync(path.join(root, 'lib-package.json'), 'utf8'))
 
-if (!fs.existsSync(path.join(dist, 'index.d.ts'))) {
+if (!fs.existsSync(path.join(dist, 'index.d.mts'))) {
     console.error('dist/ não existe. Rode `npm run build` antes.')
     process.exit(1)
 }

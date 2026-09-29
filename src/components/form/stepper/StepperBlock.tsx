@@ -5,10 +5,13 @@ import React, { ReactElement, useContext } from 'react'
 import Switch from '../switch/Switch'
 import { FormContext } from '../../../context/form'
 
-function childrenTree(component: ReactElement, prefix: number, idx: number): ReactElement {
+// No React 19 o `props` de um `ReactElement` sem parâmetro é `unknown` (era `any`).
+type CampoDoBloco = ReactElement<{ children?: unknown; name?: string }>
+
+function childrenTree(component: CampoDoBloco, prefix: number, idx: number): ReactElement {
     if (!component.props) return component
 
-    const children = component.props.children as ReactElement | ReactElement[]
+    const children = component.props.children as CampoDoBloco | CampoDoBloco[]
 
     if (!children)
         return React.cloneElement(component, {
@@ -45,9 +48,9 @@ function childrenTree(component: ReactElement, prefix: number, idx: number): Rea
 interface StepperBlockProps {
     title: string
     prefix?: number
-    children: JSX.Element | JSX.Element[]
+    children: React.JSX.Element | React.JSX.Element[]
     optional?: boolean
-    optionalMessage?: string | JSX.Element
+    optionalMessage?: string | React.JSX.Element
     overrideSwitchNo?: string
     overrideSwitchYes?: string
     defaultChecked?: boolean

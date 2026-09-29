@@ -1,25 +1,30 @@
 # @ssplib/react-components
 
-> Componentes React da SSP-DF sobre o MUI 7.3+/9: campos de formulário com máscara e validação, autenticação (Keycloak/AD e gov.br), tabelas com filtro, ordenação e exportação, mapa (Leaflet), modal e navbars. Tudo é exportado pela raiz do pacote. Existem dois sistemas de formulário incompatíveis (`FormProvider` e `GenericFormProvider`): leia o `AGENTS.md` antes de usar qualquer campo.
+> Componentes React da SSP-DF sobre o MUI 9 e o React 19: campos de formulário com máscara e validação, autenticação (Keycloak/AD e gov.br), tabelas com filtro, ordenação e exportação, mapa (Leaflet), modal e navbars. Tudo é exportado pela raiz do pacote. Existem dois sistemas de formulário incompatíveis (`FormProvider` e `GenericFormProvider`): leia o `AGENTS.md` antes de usar qualquer campo.
 
 Não leia o código bundlado em `node_modules` para entender a API: os arquivos abaixo cobrem o uso, e o CHANGELOG diz o que muda de uma versão para outra.
 
 ## Documentação da lib
 
 - [AGENTS.md](AGENTS.md): guia para agentes. Os dois sistemas de formulário, inputs com máscara, autenticação, tabela e exportação, tipos, requisitos do app
-- [README.md](README.md): instalação, faixas das peers, requisitos do app (Node 22, HTTPS para o Keycloak), layout com `<Grid container>`, `silent-check-sso.html`
-- [CHANGELOG.md](CHANGELOG.md): o que muda em cada versão e o que o app precisa fazer. Na `1.0.0-rc.1`, a migração do app para o MUI 9, incluindo o que os codemods do MUI não resolvem
+- [README.md](README.md): instalação, peers, requisitos do app (Node 22, HTTPS para o Keycloak), layout com `<Grid container>`, `silent-check-sso.html`
+- [CHANGELOG.md](CHANGELOG.md): o que muda em cada versão e o que o app precisa fazer. Da `1.0.0-rc.1` à `1.0.0-rc.3`, a migração do app para o MUI 9, o React 19 e o Next 16, incluindo o que os codemods não resolvem e como achar os campos da lib nos testes
 
 ## MUI nas versões que a lib suporta
 
-A lib aceita `@mui/material` `^7.3.0 || ^9.0.0` e `@mui/x-date-pickers` `^8.0.0 || ^9.0.0`. Use a documentação da versão instalada no app.
+A lib aceita só o major atual: `@mui/material` `^9.0.0` e `@mui/x-date-pickers` `^9.0.0`.
 
 - [Material UI 9.4.0](https://llms.mui.com/material-ui/9.4.0/llms.txt): índice da documentação
-- [Material UI 7.3.11](https://llms.mui.com/material-ui/7.3.11/llms.txt): índice da documentação
 - [MUI X Date Pickers 9.14.0](https://llms.mui.com/x-date-pickers/9.14.0/llms.txt): índice da documentação
-- [MUI X Date Pickers 8.29.3](https://llms.mui.com/x-date-pickers/8.29.3/llms.txt): índice da documentação
 - [Migração para o Material UI 7](https://llms.mui.com/material-ui/9.4.0/migration/upgrade-to-v7.md): Grid v2, remoção do `GridLegacy` e dos deep imports
 - [Migração para o Material UI 9](https://llms.mui.com/material-ui/9.4.0/migration/upgrade-to-v9.md): remoção das system props, `slotProps` e ícones `*Outline`
+
+## React e Next
+
+Peers `react` `^19.0.0` e `next` `^16.0.0`.
+
+- [Guia de atualização para o React 19](https://react.dev/blog/2024/04/25/react-19-upgrade-guide): `JSX` global, `ref` como prop, refs de callback com cleanup, `propTypes`/`defaultProps` removidos
+- [Guia de atualização para o Next 16](https://nextjs.org/docs/app/guides/upgrading/version-16): Node 20.9+, APIs assíncronas, Turbopack por padrão
 
 ## Opcional
 

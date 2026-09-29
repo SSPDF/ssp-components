@@ -2,7 +2,57 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
-## Não publicado
+## 1.0.0-rc.3
+
+**Pendências da lib fechadas antes da `1.0.0`.** As peers são as mesmas da `rc.2` (React 19, Next 16, MUI 9, pickers 9, toastify 11). A ideia é que os apps migrem uma vez só, direto para a API final.
+
+### O que o app precisa fazer
+
+- **`Input`: as props do `TextField` que o MUI 9 removeu não são mais aceitas** (`InputProps`, `inputProps`, `InputLabelProps`, `FormHelperTextProps`, `SelectProps`, `@deprecated` desde a `rc.1`). Use o `slotProps` equivalente: `slotProps.input`, `.htmlInput`, `.inputLabel`, `.formHelperText`, `.select`. O TypeScript aponta cada uso. Em 29/09 nenhum dos quatro apps passava essas props a um componente da lib.
+- **Testes do app que acham campos da lib pelo placeholder ou pelo texto** podem (e devem) passar a usar o papel e o nome, que agora existem:
+  - `Input`, `AutoComplete`, `FetchAutoComplete`, `GenericFetchAutoComplete`, `FixedAutoComplete`: `getByRole('textbox' | 'combobox', { name: '<title>' })`.
+  - `DatePicker`, `GenericDatePicker`, `TimePicker`: `getByRole('group', { name: '<title>' })`.
+  - Busca das tabelas: `getByRole('textbox', { name: 'Pesquisar <tableName>' })`. Campos do filtro: `Valor do filtro <label>` (no filtro de data com "entre", `… (início)` e `… (fim)`).
+  - `Radio`: `getByRole('radiogroup', { name: '<title>' })` e `getByRole('radio', { name: '<label>' })`, com `aria-checked`.
+- **`Input type='email'`** agora renderiza `<input type='text' inputmode='email'>`. Teste que procurava `input[type=email]` precisa mudar.
+
+### Mudanças que não exigem nada do app
+
+- **`Radio` acessível:** padrão ARIA de grupo de rádios. O leitor de tela anuncia o grupo pelo título e cada opção como rádio. Tab entra no grupo (na opção marcada), as setas movem a seleção e Espaço/Enter marca (ou desmarca, se não for obrigatório, como o clique). Contorno de foco só com o teclado. Visual igual.
+- **Rótulos ligados aos campos** (`htmlFor`/`aria-labelledby`) em `Input`, autocompletes e pickers. O `Input` respeita um `id` passado pelo app.
+- **`Input type='email'`: a mensagem da lib aparece** ("O e-mail inserido não é válido"). Antes a validação nativa do browser barrava o envio antes e mostrava a mensagem dela. O teclado do celular continua o de e-mail. O `<form>` do `FormProvider` continua sem `noValidate`: o `required` nativo de campos do próprio app (como o `PlacaInput` do copom) segue valendo.
+- **`DatePicker`/`GenericDatePicker`: mensagem de intervalo.** Com só `minDt` dizia "A data tem que ser depois de 16/04/2023 e antes de undefined", e passar do `maxDt` dizia "A data escolhida não é válida". Agora: "A data tem que ser a partir de …", "… até …" ou "… estar entre … e …".
+- **Filtro de data das tabelas:** o campo voltou a ter a altura dos outros campos do filtro (o estilo mirava um seletor que não existe mais nos pickers 8+).
+- `GenericInput`: "O e-mail inserido não é valido" ganhou o acento.
+- **Sem `console.log` de depuração** (`GenericFetchAutoComplete`, `TabNavBar`, filtro de datas da `Table`). Os erros de upload e de exportação vão para `console.error`. Continuam só os logs que o app liga: `debugLog` do `Stepper` e `enableDebugLogs` do `KeycloakAuthProvider`.
+- `FileUpload` percorre a `FileList` com `Array.from` (antes, `Object.keys`, que só funcionava com a `FileList` do browser).
+
+## 1.0.0-rc.2
+
+**Stack atual inteira: React 19, Next 16, MUI 9 (Etapa 8 do `UPGRADE_PLAN.md`, incorporada à `1.0.0`).** A partir desta versão a lib declara **só o major atual** de cada peer, sem faixa que cubra dois majors: atualizar a lib é atualizar a stack do app de uma vez. Candidato a release, como a `rc.1`: vai para a dist-tag `next`.
+
+| Peer | `1.0.0-rc.1` | `1.0.0-rc.2` |
+|---|---|---|
+| `react` / `react-dom` | `^18.0.0` | `^19.0.0` |
+| `next` | `^14.0.0 \|\| ^15.0.0 \|\| ^16.0.0` | `^16.0.0` |
+| `@mui/material` / `@mui/icons-material` | `^7.3.0 \|\| ^9.0.0` | `^9.0.0` |
+| `@mui/x-date-pickers` | `^8.0.0 \|\| ^9.0.0` | `^9.0.0` |
+| `react-toastify` | `^10.0.0 \|\| ^11.0.0` | `^11.0.0` |
+
+Emotion, `react-hook-form` e `dayjs` não mudaram. A dependência `react-leaflet` sobe de 4 para **5** (que só aceita React 19; era ela que prendia a lib no React 18).
+
+### O que o app precisa fazer
+
+- **Tudo o que a `1.0.0-rc.1` pede** (MUI 9, pickers 9, codemods do MUI, campos dentro de `<Grid container>`): ver a seção dela abaixo.
+- **Subir o React e o React DOM para 19**, com `@types/react` / `@types/react-dom` 19. Guia oficial: <https://react.dev/blog/2024/04/25/react-19-upgrade-guide>. O que costuma aparecer no código dos apps: o namespace `JSX` global saiu dos tipos (`JSX.Element` → `React.JSX.Element`, ou `import type { JSX } from 'react'`); `ReactElement` sem parâmetro tem `props: unknown` (era `any`); `useRef()` exige valor inicial; `propTypes` e `defaultProps` de componentes de função deixam de valer; um ref de callback não pode retornar nada que não seja uma função de cleanup.
+- **Subir o Next para 16** (Node ≥ 20.9; a lib já pede Node ≥ 22). O Pages Router continua suportado e é o que a lib usa (`next/router`).
+- **Subir o `react-toastify` para 11.**
+- Quem tem `react-leaflet` no próprio app: subir para 5.
+
+### Mudanças que não exigem nada do app
+
+- **O ESM sai em `.mjs`** (e os tipos em `.d.mts`); o CJS continua em `.cjs`. Com o Next 14 fora da peer, o motivo de manter o ESM em `.js` acabou (no Next 14, `import Image from 'next/image'` dentro de um `.mjs` quebrava o SSR). Os tipos passam a resolver certo em todos os modos do TypeScript (`node10`, `node16` a partir de CJS e de ESM, `bundler`), inclusive os subcaminhos `@ssplib/react-components/types/auth` e `/types/form`. O pacote declara `"type": "commonjs"`. Nenhum import muda.
+- Os tipos públicos que usavam o `JSX` global (`Modal`, `NavBar`, `TabNavBar`, `StepperBlock`, `CheckBox`…) passam a usar o `React.JSX` do React 19. Mesmo formato.
 
 ### Correções
 

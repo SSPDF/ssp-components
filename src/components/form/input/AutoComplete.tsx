@@ -1,7 +1,7 @@
 import { Autocomplete, Grid, TextField } from '@mui/material'
 import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
-import React, { SyntheticEvent, useCallback, useContext, useEffect, useState } from 'react'
+import React, { SyntheticEvent, useCallback, useContext, useEffect, useState, useId } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 
@@ -31,6 +31,8 @@ export default function AutoComplete({
     sm?: number
     md?: number
 }) {
+    // Liga o rótulo ao campo: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const campoId = useId()
     const context = useContext(FormContext)
     const { user } = useContext(AuthContext)
     const [options, setOptions] = useState([])
@@ -73,7 +75,11 @@ export default function AutoComplete({
 
     return (
         <Grid size={{ xs, sm, md }}>
-            {title && <InputLabel required={required}>{title}</InputLabel>}
+            {title && (
+                <InputLabel required={required} htmlFor={campoId}>
+                    {title}
+                </InputLabel>
+            )}
             <input
                 type='text'
                 {...context?.formRegister(name!, {
@@ -84,6 +90,7 @@ export default function AutoComplete({
                 hidden
             />
             <Autocomplete
+                id={campoId}
                 options={options}
                 isOptionEqualToValue={(option: any, value: any) => option.id === value.id}
                 onChange={onSelect}

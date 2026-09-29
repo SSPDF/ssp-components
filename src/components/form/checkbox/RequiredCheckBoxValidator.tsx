@@ -4,7 +4,7 @@ import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
 import { ElevatorSharp, ErrorOutlineOutlined } from '@mui/icons-material'
 
-function getChildrenNames(children: JSX.Element[]): string[] {
+function getChildrenNames(children: React.JSX.Element[]): string[] {
     let arr: string[] = []
 
     children.forEach((x) => {
@@ -25,7 +25,7 @@ function getChildrenNames(children: JSX.Element[]): string[] {
     return arr
 }
 
-export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: JSX.Element | JSX.Element[]; customText?: string }) {
+export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: React.JSX.Element | React.JSX.Element[]; customText?: string }) {
     const context = useContext(FormContext)!
 
     return (

@@ -1,6 +1,6 @@
 import { Autocomplete, Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useId } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { useFormContext } from 'react-hook-form'
 
@@ -37,6 +37,8 @@ export default function GenericFetchAutoComplete({
     md?: number
     disabled?: boolean
 }) {
+    // Liga o rótulo ao campo: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const campoId = useId()
     const context = useFormContext()
 
     const [loading, setLoading] = useState(true)
@@ -55,7 +57,6 @@ export default function GenericFetchAutoComplete({
                 },
             }).then((res) => {
                 if (res.ok) {
-                    console.log('llll')
                     res.json().then((j) => {
                         const value = get(j, route, j).filter((x: any) => x.id === defaultValue)
                         if (value.length > 0) {
@@ -130,7 +131,11 @@ export default function GenericFetchAutoComplete({
 
     return (
         <Grid size={{ xs, sm, md }}>
-            {title && <InputLabel required={required}>{title}</InputLabel>}
+            {title && (
+                <InputLabel required={required} htmlFor={campoId}>
+                    {title}
+                </InputLabel>
+            )}
             <input
                 type='text'
                 {...context?.register(name!, {
@@ -141,6 +146,7 @@ export default function GenericFetchAutoComplete({
                 hidden
             />
             <Autocomplete
+                id={campoId}
                 value={value}
                 loading={loading}
                 loadingText={loadingText}

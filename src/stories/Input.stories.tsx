@@ -151,19 +151,19 @@ export const InteracaoTelefone: Story = {
 }
 
 /**
- * E-mail: formato inválido barra o envio. Quem barra é a validação nativa do browser
- * (`<input type='email'>` num `<form>` sem `noValidate`), antes da validação da lib: a
- * mensagem da lib não aparece, e o browser mostra a dele.
+ * E-mail: formato inválido barra o envio com a mensagem da lib. Até a `1.0.0-rc.2` o campo era
+ * `type='email'`, e a validação nativa do browser barrava antes: a mensagem da lib nunca aparecia
+ * (UPGRADE_PLAN.md 5.21c). Agora é texto com `inputMode='email'` (o teclado do celular é o mesmo).
  */
 export const InteracaoEmail: Story = {
     tags: ['interacao'],
     args: { name: 'email', title: 'E-mail', type: 'email', required: true },
     play: async ({ canvasElement }) => {
-        const campo = within(canvasElement).getByRole('textbox') as HTMLInputElement
+        const campo = within(canvasElement).getByRole('textbox', { name: 'E-mail' }) as HTMLInputElement
+        await expect(campo).toHaveAttribute('inputmode', 'email')
         await userEvent.type(campo, 'fulano@')
         await enviar(canvasElement)
-        await expect(campo.validity.valid).toBe(false)
-        await expect(within(canvasElement).queryByTestId('dados-enviados')).toBeNull()
+        await esperarErroDeValidacao(canvasElement, 'O e-mail inserido não é válido')
 
         await userEvent.type(campo, 'ssp.df.gov.br')
         await enviar(canvasElement)

@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { CustomModalProvider } from '../modal/Modal'
 
 //components principal da aplicação
-export function SspComponentsProvider(props: { children: JSX.Element | JSX.Element[] }) {
+export function SspComponentsProvider(props: { children: React.JSX.Element | React.JSX.Element[] }) {
     return (
         <>
             <CustomModalProvider />

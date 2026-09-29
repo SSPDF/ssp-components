@@ -12,7 +12,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [ ! -f dist/index.d.ts ]; then
+if [ ! -f dist/index.d.mts ]; then
     echo "dist/ não existe ou está incompleto. Rode \`npm run build\` antes."
     exit 1
 fi
@@ -50,10 +50,7 @@ npx --yes publint@latest ./dist
 
 echo
 echo "── are-the-types-wrong ──────────────────────────────"
-# `unexpected-module-syntax` é o 🚭 node16-ESM conhecido: o ESM sai em `.js` sem "type"
-# de propósito, porque `.mjs` quebra o SSR do Next 14: com MUI 5 (Etapa 3) e, desde a Etapa 7
-# (MUI 7+/9), pelos imports default de `next/image`/`next/link`, CommonJS no Next 14 (o .mjs
-# os recebe como objeto do módulo; React #130). Volta a ser avaliado quando o Next 14 sair da peer. Sem ignorá-lo o attw sai com erro em todo build — já
-# saía na 0.2.1 — e o CI parava aqui, antes do smoke e dos snapshots. As outras regras
-# continuam bloqueando.
-npx --yes @arethetypeswrong/cli@latest --pack ./dist --ignore-rules unexpected-module-syntax
+# Sem nenhuma regra ignorada desde a 1.0.0-rc.2: o ESM sai em `.mjs`/`.d.mts` e o `typesVersions`
+# do lib-package.json cobre os subcaminhos no node10. Até a rc.1 o ESM saía em `.js` sem "type"
+# (o `.mjs` quebrava o SSR do Next 14, que saiu da peer) e o attw acusava `unexpected-module-syntax`.
+npx --yes @arethetypeswrong/cli@latest --pack ./dist

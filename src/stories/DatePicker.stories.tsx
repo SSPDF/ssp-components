@@ -38,7 +38,8 @@ export const Interacao: Story = {
         await digitarNoPicker(canvasElement, '01012020')
         await expect(campo).toHaveValue('01/01/2020')
         await enviar(canvasElement)
-        await esperarErroDeValidacao(canvasElement, /A data tem que ser depois de 16\/04\/2023/)
+        // Só com `minDt`, a mensagem não cita o máximo (era "…e antes de undefined", UPGRADE_PLAN.md 5.21e).
+        await esperarErroDeValidacao(canvasElement, /^A data tem que ser a partir de 16\/04\/2023$/)
 
         await digitarNoPicker(canvasElement, '15032024')
         await expect(campo).toHaveValue('15/03/2024')

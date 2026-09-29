@@ -6,7 +6,7 @@ import { Dayjs } from 'dayjs'
 import dayjs from '../../utils/dayjs'
 import get from 'lodash.get'
 import 'dayjs/locale/pt-br'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useId } from 'react'
 import { FormContext } from '../../../context/form'
 import hasIn from 'lodash.hasin'
 
@@ -27,6 +27,8 @@ export default function TimePicker({
     sm?: number
     md?: number
 }) {
+    // Liga o rótulo ao grupo de seções do picker: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const rotuloId = useId()
     const context = useContext(FormContext)!
     const [value, setValue] = useState<Dayjs | null>(defaultValue ? dayjs(defaultValue, 'HH:mm') : null)
 
@@ -46,9 +48,14 @@ export default function TimePicker({
 
     return (
         <Grid size={{ xs, sm, md }}>
-            {title && <InputLabel required={required}>{title}</InputLabel>}
+            {title && (
+                <InputLabel required={required} id={rotuloId}>
+                    {title}
+                </InputLabel>
+            )}
             <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                 <MUITimePicker
+                    slotProps={{ textField: { slotProps: { input: { 'aria-labelledby': title ? rotuloId : undefined } } } }}
                     value={value}
                     ampm={false}
                     onChange={handleChange}

@@ -7,8 +7,9 @@ import dayjs from '../../utils/dayjs'
 import 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useId } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { mensagemDeIntervalo } from './mensagemDeIntervalo'
 
 export default function GenericDatePicker({
     name,
@@ -34,6 +35,8 @@ export default function GenericDatePicker({
     sm?: number
     md?: number
 }) {
+    // Liga o rótulo ao grupo de seções do picker: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const rotuloId = useId()
     const context = useFormContext()
 
     const [value, setValue] = useState<Dayjs | undefined>(defaultValue !== undefined ? dayjs(defaultValue, 'DD/MM/YYYY') : undefined)
@@ -60,9 +63,14 @@ export default function GenericDatePicker({
     return (
         <>
             <Grid size={{ xs, sm, md }}>
-                {title && <InputLabel required={required}>{title}</InputLabel>}
+                {title && (
+                    <InputLabel required={required} id={rotuloId}>
+                        {title}
+                    </InputLabel>
+                )}
                 <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
+                        slotProps={{ textField: { slotProps: { input: { 'aria-labelledby': title ? rotuloId : undefined } } } }}
                         minDate={dayjs(minDt, 'DD/MM/YYYY')}
                         maxDate={dayjs(maxDt, 'DD/MM/YYYY')}
                         format='DD/MM/YYYY'
@@ -94,10 +102,10 @@ export default function GenericDatePicker({
                                     if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
                                     if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
-                                        return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
+                                        return mensagemDeIntervalo(minDt, maxDt)
 
                                     if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
-                                        return 'A data escolhida não é válida'
+                                        return mensagemDeIntervalo(minDt, maxDt)
                                 },
                                 shouldUnregister: true,
                             })

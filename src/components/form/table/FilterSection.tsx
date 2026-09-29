@@ -218,6 +218,11 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
 }
 
 function FilterField({ filterValue, operator, onChange }: { filterValue: FilterValue; operator: FilterOperators; onChange: (value: string | any[], type?: 'value' | 'value2') => void }) {
+    // Os campos do filtro só tinham placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const nome = `Valor do filtro ${filterValue.label}`
+    // x-date-pickers 8+: o campo é um grupo de seções, sem <input> visível; o nome vai no grupo.
+    const nomeDoPicker = (sufixo = '') => ({ textField: { slotProps: { input: { 'aria-label': nome + sufixo } } } })
+
     switch (filterValue.type) {
         case 'number':
             return (
@@ -225,6 +230,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                     type='number'
                     size='small'
                     placeholder='Valor'
+                    slotProps={{ htmlInput: { 'aria-label': nome } }}
                     defaultValue={filterValue.value}
                     onChange={(e) => {
                         onChange(e.target.value)
@@ -242,7 +248,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         return (
                             <Autocomplete
                                 multiple
-                                id='tags-standard'
                                 onChange={(_e, value) => {
                                     if (value.length <= 0) {
                                         onChange('')
@@ -253,7 +258,16 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                 }}
                                 options={filterValue.useList}
                                 defaultValue={Array.isArray(filterValue.value) ? filterValue.value : []}
-                                renderInput={(params) => <TextField {...params} variant='standard' placeholder='Escolha os valores' fullWidth />}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant='standard'
+                                        placeholder='Escolha os valores'
+                                        fullWidth
+                                        // MUI 9: o Autocomplete manda as props do input em params.slotProps; mesclar, não trocar.
+                                        slotProps={{ ...params.slotProps, htmlInput: { ...params.slotProps.htmlInput, 'aria-label': nome } }}
+                                    />
+                                )}
                                 fullWidth
                             />
                         )
@@ -278,6 +292,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                             size='small'
                                             placeholder='Escolha um valor'
                                             fullWidth
+                                            slotProps={{ ...params.slotProps, htmlInput: { ...params.slotProps.htmlInput, 'aria-label': nome } }}
                                             sx={{
                                                 bgcolor: 'white',
                                             }}
@@ -294,6 +309,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                 <TextField
                     size='small'
                     placeholder='Valor'
+                    slotProps={{ htmlInput: { 'aria-label': nome } }}
                     defaultValue={filterValue.value}
                     onChange={(e) => {
                         onChange(e.target.value)
@@ -319,13 +335,11 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
                                 }}
                                 defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
+                                slotProps={nomeDoPicker()}
                                 sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
+                                    // x-date-pickers 8+: o seletor antigo (div input) não acha mais nada; mesmas medidas do DatePicker da lib.
+                                    '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                                    '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
@@ -341,13 +355,11 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
                                 }}
                                 defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
+                                slotProps={nomeDoPicker(' (início)')}
                                 sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
+                                    // x-date-pickers 8+: o seletor antigo (div input) não acha mais nada; mesmas medidas do DatePicker da lib.
+                                    '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                                    '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}
@@ -358,13 +370,11 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '', 'value2')
                                 }}
                                 defaultValue={filterValue.value2 ? dayjs(filterValue.value2 as string, 'DD/MM/YYYY') : undefined}
+                                slotProps={nomeDoPicker(' (fim)')}
                                 sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
+                                    // x-date-pickers 8+: o seletor antigo (div input) não acha mais nada; mesmas medidas do DatePicker da lib.
+                                    '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                                    '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
                                     bgcolor: 'white',
                                 }}

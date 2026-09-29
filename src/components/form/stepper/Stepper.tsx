@@ -54,6 +54,7 @@ export function Stepper({
     const maxSteps = length
 
     const handleNext = async () => {
+        // eslint-disable-next-line no-console -- log pedido pelo app, atrás da prop `debugLog`
         if (debugLog) console.log(context.formGetValues())
 
         // console.log('valores conferidos', getKeys(context.formGetValues(), activeStep), context.formGetValues(getKeys(context.formGetValues(), activeStep)))

@@ -1,6 +1,6 @@
 # @ssplib/react-components
 
-Biblioteca de componentes React (baseada em MUI 7.3+/9) para projetos internos da SSP-DF. Inclui campos de formulário com máscara/validação, providers de autenticação (Keycloak/AD e gov.br), tabela com filtros e exportação, mapa (Leaflet), modal e navbars.
+Biblioteca de componentes React (baseada em MUI 9 e React 19) para projetos internos da SSP-DF. Inclui campos de formulário com máscara/validação, providers de autenticação (Keycloak/AD e gov.br), tabela com filtros e exportação, mapa (Leaflet), modal e navbars.
 
 > Projeto interno em desenvolvimento contínuo. Textos e validações em pt-BR.
 
@@ -18,17 +18,19 @@ npm install @ssplib/react-components \
 
 A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as importa do app. Por isso elas são `peerDependencies` e o app precisa tê-las instaladas — uma cópia só na árvore, a do app.
 
+Desde a `1.0.0-rc.2` a lib declara **só o major atual** de cada peer: atualizar a lib é atualizar a stack do app inteira de uma vez (React 19, Next 16, MUI 9, pickers 9, toastify 11). Quem ainda está no MUI 5 + React 18 fica na linha `0.x` (`0.4.0`).
+
 | Pacote | Versão |
 |---|---|
-| `react`, `react-dom` | `^18.0.0` |
-| `next` | `^14.0.0 \|\| ^15.0.0 \|\| ^16.0.0` (Pages Router — os componentes de auth e navbar usam `next/router`) |
-| `@mui/material` | `^7.3.0 \|\| ^9.0.0` |
-| `@mui/icons-material` | `^7.3.0 \|\| ^9.0.0` (o mesmo major do `@mui/material`) |
-| `@mui/x-date-pickers` | `^8.0.0 \|\| ^9.0.0` (a v9 exige `@mui/material ^7.3.0 \|\| ^9.0.0`; a v8 não aceita o MUI 9) |
+| `react`, `react-dom` | `^19.0.0` |
+| `next` | `^16.0.0` (Pages Router — os componentes de auth e navbar usam `next/router`) |
+| `@mui/material` | `^9.0.0` |
+| `@mui/icons-material` | `^9.0.0` (o mesmo major do `@mui/material`) |
+| `@mui/x-date-pickers` | `^9.0.0` |
 | `@emotion/react` / `@emotion/styled` | `^11.9.0` / `^11.8.1` |
 | `react-hook-form` | `^7.43.0` |
 | `dayjs` | `^1.11.0` |
-| `react-toastify` | `^10.0.0 \|\| ^11.0.0` |
+| `react-toastify` | `^11.0.0` |
 
 Por que peer e não dependência própria: com duas cópias de `@mui/material` o `ThemeProvider` do app não alcança os componentes da lib (eles caem no tema default), duas cópias do Emotion geram briga de estilos e mismatch de hidratação no SSR, e os tipos do MUI na API pública (`InputProps`, `SxProps<Theme>`) deixam de ser compatíveis. Com duas cópias de `react-hook-form` ou `react-toastify`, o contexto do formulário e o `toast()` do app deixam de enxergar os da lib.
 
@@ -40,7 +42,7 @@ As props `xs`/`sm`/`md` dos campos (`<Input md={6} />`) viram o `size` do Grid v
 
 ### Browsers
 
-O MUI 7+ exige Chrome 117+, Firefox 121+ e Safari 17+.
+O MUI 9 exige Chrome 117+, Firefox 121+ e Safari 17+.
 
 > O `npm install` avisa quando uma peer está faltando ou fora da faixa. Não ignore o aviso — é exatamente o cenário em que os componentes quebram em runtime sem erro de compilação.
 
@@ -102,7 +104,9 @@ Wrapper de nível de aplicação. Monte **uma vez** na raiz. Ele provê o portal
 
 `cpf` · `cnpj` · `cpf_cnpj` (alterna dinamicamente) · `phone` (fixo/celular dinâmico) · `cep` · `sei` · `rg` · `email` · `number` (máscara via `numberMask`) · `input` (texto) · além dos tipos nativos de HTML (`password`, `tel`, `url`…).
 
-Props úteis: `name` (obrigatório), `title` (label acima do campo), `required`, `customValidate`, `watchValue` (sincroniza o campo com um valor externo), `inputMinLength`/`inputMaxLength`, layout via `xs`/`sm`/`md`. O tipo público `InputProps` estende `TextFieldProps` do MUI. As props que o MUI 9 tirou do `TextField` (`InputProps`, `inputProps`, `InputLabelProps`, `FormHelperTextProps`, `SelectProps`) continuam aceitas no `Input` (marcadas como `@deprecated`) e são levadas para o `slotProps` equivalente; prefira `slotProps`.
+Props úteis: `name` (obrigatório), `title` (label acima do campo), `required`, `customValidate`, `watchValue` (sincroniza o campo com um valor externo), `inputMinLength`/`inputMaxLength`, layout via `xs`/`sm`/`md`. O tipo público `InputProps` estende `TextFieldProps` do MUI 9: para configurar partes do campo, use `slotProps` (`input`, `htmlInput`, `inputLabel`, `formHelperText`, `select`). As props antigas (`InputProps`, `inputProps`, `InputLabelProps`, `FormHelperTextProps`, `SelectProps`) deixaram de ser aceitas na `1.0.0-rc.3`.
+
+O `title` é o nome acessível do campo (o rótulo é ligado ao campo). Nos testes do app, ache os campos da lib com `getByRole('textbox' | 'combobox', { name: title })`, `getByRole('group', { name: title })` nos pickers e `getByRole('radiogroup' | 'radio', { name })` no `Radio`. O `type='email'` renderiza um campo de texto com `inputMode='email'`, para a validação e a mensagem serem as da lib, não as do browser.
 
 ## Tabela e exportação
 
@@ -158,11 +162,11 @@ npm run build          # build de produção (tsdown; exige Node ≥ 22.18; os t
 npm run typecheck      # tsc --noEmit
 npm run lint           # eslint
 npm run format:check   # prettier
-npm run test           # vitest (providers de auth)
+npm run test           # vitest (providers de auth, cookie, campos com máscara, validação dos pickers, tabelas com SSR)
 npm run snapshots      # snapshots visuais de todas as stories + as stories de interação (play functions), dentro de container Linux
 npm run interacoes     # só as stories de interação, contra o `npm run storybook` aberto (rápido)
 npm run e2e:keycloak   # login de verdade com o keycloak-js no browser, contra um servidor OIDC simulado (ou o HMG, com E2E_KC_*)
-npm run check:package  # externos do bundle x lib-package.json, publint e are-the-types-wrong sobre o dist/
+npm run check:package  # externos do bundle x lib-package.json, 'use client', llms.txt, publint e are-the-types-wrong sobre o dist/
 npm run smoke          # instala o dist/ empacotado no examples/smoke-app e roda o next build (SSR)
 npm run pack:local     # gera pack/*.tgz idêntico ao que seria publicado, para testar num app real
 ```

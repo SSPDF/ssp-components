@@ -60,7 +60,12 @@ export const Interacao: Story = {
 
         await digitarNoPicker(canvasElement, '31122019')
         await enviar(canvasElement)
-        await esperarErroDeValidacao(canvasElement, /A data tem que ser depois de 01\/01\/2020/)
+        await esperarErroDeValidacao(canvasElement, /^A data tem que estar entre 01\/01\/2020 e 31\/12\/2030$/)
+
+        // Depois do máximo, a mesma mensagem (era "A data escolhida não é válida").
+        await digitarNoPicker(canvasElement, '01012031')
+        await enviar(canvasElement)
+        await esperarErroDeValidacao(canvasElement, /^A data tem que estar entre 01\/01\/2020 e 31\/12\/2030$/)
 
         await digitarNoPicker(canvasElement, '10102025')
         await enviar(canvasElement)

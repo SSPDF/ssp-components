@@ -216,9 +216,6 @@ export function filtrarDados({ filterData, startData, filtersFuncData = {}, loca
                                 const dates: string[] = (filtersFuncData[dt.customFunc!](get(cd, dt.keyName, '')) ?? []).filter((d) => d !== undefined && d !== '')
 
                                 if (dates.length <= 0) return
-
-                                console.log(dates)
-
                                 const fimDate = dates[dates.length - 1]
                                 const fimValue = dayjs(fimDate, 'DD/MM/YYYY')
 

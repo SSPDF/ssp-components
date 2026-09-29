@@ -28,6 +28,10 @@
 - Container: Flex row/column.
 - Option: Box with border, formatted as a card.
 - Interaction: Color change and border highlight on selection.
+- Accessibility: ARIA radiogroup pattern (`role="radiogroup"` named by the title, `role="radio"` + `aria-checked` per option). Keyboard: Tab enters the group at the checked option, arrows move the selection, Space/Enter checks. Focus outline (2px primary, 2px offset) only on `:focus-visible`, so mouse users see no change.
+
+### Labels
+- Every field's label is wired to it (`htmlFor` + `useId`; `aria-labelledby` on the pickers' section group), so screen readers and tests find the field by its title. A new field component must do the same.
 
 ### Inputs (TextFields, Selects)
 - **Structure**: Label separates from the input container.

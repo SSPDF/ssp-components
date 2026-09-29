@@ -1,6 +1,6 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 
 export const MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void

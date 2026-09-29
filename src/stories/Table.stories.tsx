@@ -143,7 +143,7 @@ export const Interacao: Story = {
         const canvas = within(canvasElement)
         await expect(await canvas.findByText('Exibindo 1-7 de 7')).toBeVisible()
 
-        const busca = canvas.getByPlaceholderText('Pesquisar Evento')
+        const busca = canvas.getByRole('textbox', { name: 'Pesquisar Evento' })
         await userEvent.type(busca, 'festa')
         await expect(await canvas.findByText('Exibindo 1-3 de 3')).toBeVisible()
         await expect(canvas.queryByText('BRASILIENSE X GAMA')).toBeNull()
@@ -152,7 +152,7 @@ export const Interacao: Story = {
 
         await userEvent.click(canvas.getByRole('button', { name: 'Filtrar' }))
         const filtro = pagina(canvasElement)
-        await userEvent.type(await filtro.findByPlaceholderText('Valor'), 'gama')
+        await userEvent.type(await filtro.findByRole('textbox', { name: /^Valor do filtro / }), 'gama')
         const botoesFiltrar = filtro.getAllByRole('button', { name: 'Filtrar' })
         await userEvent.click(botoesFiltrar[botoesFiltrar.length - 1])
         await expect(await canvas.findByText('Exibindo 1-2 de 2')).toBeVisible()
@@ -193,7 +193,7 @@ export const InteracaoDuasTabelas: Story = {
 
         await userEvent.click(a.getByRole('button', { name: 'Filtrar' }))
         const filtro = pagina(canvasElement)
-        await userEvent.type(await filtro.findByPlaceholderText('Valor'), 'gama')
+        await userEvent.type(await filtro.findByRole('textbox', { name: /^Valor do filtro / }), 'gama')
         const botoes = filtro.getAllByRole('button', { name: 'Filtrar' })
         await userEvent.click(botoes[botoes.length - 1])
 

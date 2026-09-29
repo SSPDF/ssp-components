@@ -662,6 +662,8 @@ export function GenericTable({
                             fullWidth
                             placeholder={`Pesquisar ${tableName}`}
                             slotProps={{
+                                // Só havia placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
+                                htmlInput: { 'aria-label': `Pesquisar ${tableName}` },
                                 input: {
                                     startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
                                     sx: {

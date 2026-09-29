@@ -3,7 +3,7 @@ import { FormContext } from '../../../context/form'
 import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
 
-function getChildrenNames(children: JSX.Element[]): string[] {
+function getChildrenNames(children: React.JSX.Element[]): string[] {
     let arr: string[] = []
 
     children.forEach((x) => {
@@ -29,9 +29,9 @@ export default function RequiredCheckBoxAdditional({
     ...props
 }: {
     name: string
-    children: JSX.Element
+    children: React.JSX.Element
     customText?: string
-    content: JSX.Element | JSX.Element[]
+    content: React.JSX.Element | React.JSX.Element[]
     nameList: string[]
 }) {
     const [firstTime, setFirstTime] = useState(false)

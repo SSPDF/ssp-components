@@ -2,7 +2,7 @@
     "name": "smoke-app",
     "private": true,
     "version": "0.0.0",
-    "description": "App Next mínimo (14 por padrão; SMOKE_NEXT=16 para o 16) que consome @ssplib/react-components para validar o cenário real: o MUI vem do app, não da lib.",
+    "description": "App Next mínimo, na stack atual das peers (Next 16, React 19, MUI 9), que consome @ssplib/react-components para validar o cenário real: o MUI vem do app, não da lib.",
     "scripts": {
         "dev": "next dev -p 3100",
         "build": "next build",
@@ -11,20 +11,20 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^7.3.0",
-        "@mui/material": "^7.3.0",
-        "@mui/x-date-pickers": "^8.0.0",
+        "@mui/icons-material": "^9.4.0",
+        "@mui/material": "^9.4.0",
+        "@mui/x-date-pickers": "^9.14.0",
         "@ssplib/react-components": "file:../../dist",
         "dayjs": "^1.11.11",
-        "next": "^14.2.35",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
+        "next": "^16.3.7",
+        "react": "^19.3.0",
+        "react-dom": "^19.3.0",
         "react-hook-form": "^7.43.9",
-        "react-toastify": "^10.0.4"
+        "react-toastify": "^11.1.0"
     },
     "devDependencies": {
-        "@types/node": "^20.19.0",
-        "@types/react": "^18.3.12",
+        "@types/node": "^24.13.6",
+        "@types/react": "^19.3.0",
         "typescript": "^5.9.3"
     }
 }

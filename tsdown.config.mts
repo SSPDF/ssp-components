@@ -21,8 +21,10 @@ export default defineConfig({
     format: ['esm', 'cjs'],
     // O package.json da raiz tem "type": "module", e o tsdown escolhe a extensão por ele. O publicado
     // (lib-package.json) não tem "type", então as extensões são fixadas: .mjs/.d.mts para ESM,
-    // .js/.d.ts para CJS.
-    outExtensions: ({ format }) => (format === 'es' ? { js: '.js', dts: '.d.ts' } : { js: '.cjs', dts: '.d.cts' }),
+    // .cjs/.d.cts para CJS. O ESM em .mjs só passou a valer na 1.0.0-rc.2, com o Next 14 fora da
+    // peer: no Next 14, `import Image from 'next/image'` (CommonJS lá) dentro de um .mjs virava o
+    // objeto do módulo e quebrava o SSR (UPGRADE_PLAN.md, registro da Etapa 7).
+    outExtensions: ({ format }) => (format === 'es' ? { js: '.mjs', dts: '.d.mts' } : { js: '.cjs', dts: '.d.cts' }),
     dts: true,
     platform: 'neutral',
     // Sem isto o tsdown usaria o engines.node da raiz (requisito de build, não de runtime).

@@ -79,7 +79,7 @@ export function Input({
                     //
                     else if (type === 'email') {
                         if (value.length > 50) return 'Limite máximo de 50 caracteres'
-                        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(v) && props.required) return 'O e-mail inserido não é valido'
+                        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(v) && props.required) return 'O e-mail inserido não é válido'
                     }
                     //
                     else if (type === 'cpf_cnpj') {

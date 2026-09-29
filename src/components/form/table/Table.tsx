@@ -141,7 +141,7 @@ export function Table({
                                             orderAsc: orderAsc.current,
                                         })
                                     } catch (err) {
-                                        console.log(err)
+                                        console.error(err)
                                     }
                                 } else if (orderBy.length > 0) {
                                     // se não tiver salvo uma ordenação, ordena pelo primeiro da lista
@@ -408,6 +408,8 @@ export function Table({
                             fullWidth
                             placeholder={`Pesquisar ${tableName}`}
                             slotProps={{
+                                // Só havia placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
+                                htmlInput: { 'aria-label': `Pesquisar ${tableName}` },
                                 input: {
                                     startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
                                     sx: {

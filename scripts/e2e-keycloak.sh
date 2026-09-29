@@ -7,7 +7,6 @@
 # sem Docker: é o modo do CI. Com E2E_KC_URL, roda contra um Keycloak real (o de HMG):
 #
 #   npm run e2e:keycloak                              # simulado
-#   SMOKE_NEXT=16 npm run e2e:keycloak                # as mesmas variáveis do smoke
 #   SMOKE_KEYCLOAK_JS=25.0.6 npm run e2e:keycloak     # outra versão do keycloak-js, para comparar
 #   E2E_KC_URL=<url do Keycloak> E2E_KC_REALM=<realm> \
 #     E2E_KC_CLIENT_ID=<client com redirect http://localhost:3100/*> E2E_KC_USUARIO=... E2E_KC_SENHA=... \

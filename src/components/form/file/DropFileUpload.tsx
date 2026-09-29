@@ -134,7 +134,7 @@ export default function DropFileUpload({
                             }
                         })
                         .catch((err) => {
-                            console.log(err)
+                            console.error(err)
                             setProgress(-1)
                             removeFile(id)
                         })
@@ -199,7 +199,7 @@ export default function DropFileUpload({
                         removeFile(id, true, fileIds[id])
                     }
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => console.error(err))
         }
     }
 

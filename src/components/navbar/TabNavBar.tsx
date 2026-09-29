@@ -48,9 +48,9 @@ export default function TabNavBar({
     color?: string
     route?: string
     paddingBottom?: number
-    menuItems: JSX.Element | JSX.Element[]
+    menuItems: React.JSX.Element | React.JSX.Element[]
     next?: boolean
-    el?: JSX.Element
+    el?: React.JSX.Element
     logoutMsg?: string
     /** @deprecated Use logoutOptions.onBeforeLogout instead */
     logoutFunc?: () => Promise<void>
@@ -171,7 +171,6 @@ export default function TabNavBar({
                                     <Box
                                         key={JSON.stringify({ x, index })}
                                         onClick={(e) => {
-                                            next && console.log('pathname:', router?.pathname, ':=', x.path)
                                             changeRoute(e, x.path)
                                         }}
                                         sx={{

@@ -1,8 +1,9 @@
 # smoke-app
 
 App Next mínimo que consome a lib como um sistema de verdade consome. O `package.json`
-fixa o **Next 14**, o piso da peer; o `npm run smoke` também roda no **Next 16**, o
-topo da faixa e a versão que os apps usam (ver abaixo).
+fica na stack atual das peers: **Next 16, React 19, MUI 9, `x-date-pickers` 9 e
+`react-toastify` 11**. Desde a `1.0.0-rc.2` a lib declara só o major atual de cada peer,
+então há um cenário só (ver abaixo).
 
 ## Para que serve
 
@@ -13,7 +14,7 @@ testa isso: lá o MUI é o mesmo da lib. Este app é o único lugar onde o cená
 atravessando a fronteira.
 
 É o que valida a Etapa 1 (peers declaradas), a Etapa 3 (troca do bundler) e,
-principalmente, a Etapa 7 (MUI 5 → 9).
+principalmente, a Etapa 7 (MUI 5 → 9) e a `1.0.0-rc.2` (React 19, Next 16, ESM em `.mjs`).
 
 ## Como rodar
 
@@ -55,21 +56,22 @@ O `npm run smoke` (na raiz) faz tudo isso sozinho — e é o que roda no CI.
 
 ### Outras versões das peers
 
-O `package.json` do smoke-app fica no piso das peers (Next 14, MUI 7.3, `x-date-pickers` 8,
-`react-toastify` 10). O CI roda o smoke três vezes: no piso, com o Next 16 e no topo de todas
-as faixas:
+Até a `1.0.0-rc.1` o CI rodava o smoke três vezes, no piso e no topo das faixas das peers.
+Desde a `rc.2` cada peer tem um major só (UPGRADE_PLAN.md, decisão de 27/09/2026) e o CI
+roda uma vez, com o `package.json` do smoke-app. As variáveis servem para experimentar o
+próximo major de uma peer antes de adotá-lo:
 
 ```bash
 # na raiz do repo, depois de `npm run build`
-SMOKE_NEXT=16 npm run smoke                                                  # next ^14 || ^15 || ^16
-SMOKE_MUI=9 SMOKE_PICKERS=9 npm run smoke                                    # MUI ^7.3 || ^9 (o 9 exige pickers 9)
-SMOKE_NEXT=16 SMOKE_MUI=9 SMOKE_PICKERS=9 SMOKE_TOASTIFY=11 npm run smoke    # o topo, como no CI
+SMOKE_NEXT=17 npm run smoke
+SMOKE_MUI=10 SMOKE_PICKERS=10 npm run smoke    # o MUI e os pickers andam juntos
+SMOKE_TOASTIFY=12 npm run smoke
 ```
 
 `SMOKE_NEXT`, `SMOKE_MUI`, `SMOKE_PICKERS` e `SMOKE_TOASTIFY` trocam a faixa no `package.json` só durante a execução; o
-script devolve o `package.json` e o `tsconfig.json` (que o `next build` reescreve)
-ao estado original no fim. O `node_modules` fica com o Next testado — o próximo
-`npm run smoke` reinstala conforme o `package.json`.
+script devolve o `package.json` e o `tsconfig.json` ao estado original no fim. O
+`node_modules` fica com a versão testada: se o próximo `npm run smoke` der `ERESOLVE`,
+apague o `examples/smoke-app/node_modules`.
 
 ## O que a página exercita
 

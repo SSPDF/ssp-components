@@ -30,9 +30,9 @@ export default function NavBar({
     title: string
     img: string
     paddingBottom?: number
-    menuItems: JSX.Element | JSX.Element[]
+    menuItems: React.JSX.Element | React.JSX.Element[]
     next?: boolean
-    el?: JSX.Element
+    el?: React.JSX.Element
     logoutMsg?: string
     /** @deprecated Use logoutOptions.onBeforeLogout instead */
     logoutFunc?: () => Promise<void>

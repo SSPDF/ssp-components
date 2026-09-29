@@ -1,5 +1,5 @@
 /**
- * Compara os exports de `src/index.ts` com os de `dist/index.d.ts` (tipos do ESM) e
+ * Compara os exports de `src/index.ts` com os de `dist/index.d.mts` (tipos do ESM) e
  * `dist/index.d.cts` (tipos do CJS, desde a Etapa 3).
  *
  * Existe porque o build não protege nada: `tsconfig.json` tem `strict: false` e
@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const srcFile = path.join(root, 'src', 'index.ts')
-const distFiles = ['index.d.ts', 'index.d.cts']
+const distFiles = ['index.d.mts', 'index.d.cts']
 
 for (const f of distFiles) {
     if (!fs.existsSync(path.join(root, 'dist', f))) {

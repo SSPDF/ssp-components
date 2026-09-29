@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status (27/09/2026):** **Etapas 0 a 7 concluídas**, mais as Etapas 2.1 e 2.2, no branch único `atualizacao-dependencias` (todas commitadas; a 7 em `aaa403b` + `8e985ad`): versões `0.1.0` → `0.2.0` → `0.2.1` → `0.3.0` → `0.3.1` → `0.3.2` → `0.3.3` → `0.4.0` → **`1.0.0-rc.1`** (MUI 7.3+/9). O branch está no GitHub com o **PR #4 em rascunho**, usado só para rodar o CI (verde). **Nada foi publicado**: o npm segue com `latest` = `0.0.349`, e a `main` ainda tem o `publish.yaml` antigo, que publica a cada push nela, então nada de push direto na `main` até o merge. Hoje foram feitos a 4.1 (`0.3.1`), a 2.2 (`0.3.2`, que destrava o `copom`), o ferramental da 4.4 (sem release) e o MUI 5.18 nas `devDependencies`, com os achados **5.16, 5.17 e 5.18**. Em 26/09 foi feita a **Etapa 5** (Storybook 10, sem release; achado **5.19**), e as **stories de interação** acharam o bug do `GenericDatePicker`, corrigido na **`0.3.3`** (5.20), além dos achados 5.21. Também em 26/09, a **Etapa 6** (majors de runtime → **`0.4.0`**, achados **5.22** e **5.23**), com um e2e de login com o `keycloak-js` real no CI. Em 26–27/09, a **Etapa 7** (MUI 5 → 9, em degraus; `1.0.0-rc.1`, commitada e com CI verde, ainda não publicada). **Decisão de 27/09:** só as versões mais atuais, sem janela de compatibilidade (seção 9). **Próximo:** a `1.0.0-rc.2` com a stack atual inteira (React 19, Next 16, MUI 9, peers num major só), depois publicar e validar num app piloto. O estado consolidado, com o que está pendente, está na **seção 13**. Documento de trabalho: marque os checkboxes conforme as etapas forem concluídas.
+> **Status (29/09/2026):** **Etapas 0 a 8 concluídas e pendências da lib fechadas**, no branch único `atualizacao-dependencias`: versões `0.1.0` → … → `0.4.0` → `1.0.0-rc.1` (MUI 7.3+/9) → `1.0.0-rc.2` (React 19, Next 16, peers num major só, ESM em `.mjs`) → **`1.0.0-rc.3`** (achados 5.13e e 5.21 corrigidos, props legadas do `Input` removidas, TypeScript 6.0). As `rc.2` e `rc.3` estão **no working tree, sem commit**. O PR #4 segue em rascunho, só para o CI. **Nada foi publicado**: o npm segue com `latest` = `0.0.349`, e a `main` ainda tem o `publish.yaml` antigo (nada de push direto nela). Histórico: 25/09 (4.1, 2.2, 4.4; 5.16–5.18), 26/09 (Etapa 5, `0.3.3`, Etapa 6 `0.4.0`; 5.19–5.23), 26–27/09 (Etapa 7, `rc.1`), 27/09 (decisão: só as versões atuais), 29/09 (Etapa 8 `rc.2`; pendências `rc.3`). **Próximo:** commitar, ver o CI, criar a skill de migração dos apps e validá-la no specto. Estado consolidado na **seção 15**.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, **em 25/09/2026, após a Etapa 3** (seção 11) **de novo em 25/09/2026, após a Etapa 4** (seção 12) e **em 27/09/2026, após a Etapa 7** (seção 13) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7: o `.mjs` passa no Next 16, mas continua bloqueado pelo Next 14; destrava na Etapa 8, ver lá). **D2 decidida em 27/09/2026** — sem janela de compatibilidade: a lib declara só o major atual de cada peer, e a `1.0.0` já sai com React 19 (ver "Decisão de 27/09/2026" na seção 9).
@@ -357,9 +357,9 @@ Não é regressão — o código não mudou; o smoke-app só não tinha sido bui
 **Regra que sai daqui:** depois de todo build, a lista de externos do `dist/index.esm.js` tem que ser igual ao conjunto declarado no `lib-package.json`. Hoje é conferência manual (comando no `CLAUDE.md`); vale virar script em `check:package` na Etapa 3, junto com o `tsup` e os externals explícitos.
 
 
-### 5.13 Achados da Etapa 2 (23/09/2026) — em parte corrigidos; **e** continua aberto (**a** ✅ na `1.0.0-rc.1`)
+### 5.13 Achados da Etapa 2 (23/09/2026) — ✅ todos resolvidos (**a** na `1.0.0-rc.1`, **e** na `1.0.0-rc.3`)
 
-*27/09/2026: **a** ✅ corrigido na Etapa 7 (`1.0.0-rc.1`), com a story `Base/Table/InteracaoDuasTabelas`.* *Status em 25/09/2026, após a Etapa 4:* **a** aberto. Desde o `react-hooks` 7 é apontado pela regra `react-hooks/globals` (`Table.tsx:81-83`, como warning). **e** aberto, nas linhas atuais `GenericFetchAutoComplete.tsx:58`, `TabNavBar.tsx:153` e `table/utils.tsx:220`, mais os `console.log(err)` em `FileUpload.tsx:171`, `DropFileUpload.tsx:137,202` e `Table.tsx:144`. **f** ✅ (o script `link` saiu na Etapa 3). **g** ✅ (26/09, Etapa 5; o diagnóstico estava errado, ver 5.19). **b**, **c** e **d** já estavam resolvidos.
+*29/09/2026: **e** ✅ na `1.0.0-rc.3`: os três logs de depuração saíram, os `console.log(err)` viraram `console.error`, e o ESLint ganhou `no-console` como **erro** (permite `error`/`warn`; os dois logs ligados pelo app têm `eslint-disable` na linha).* *27/09/2026: **a** ✅ corrigido na Etapa 7 (`1.0.0-rc.1`), com a story `Base/Table/InteracaoDuasTabelas`.* *Status em 25/09/2026, após a Etapa 4:* **a** aberto. Desde o `react-hooks` 7 é apontado pela regra `react-hooks/globals` (`Table.tsx:81-83`, como warning). **e** aberto, nas linhas atuais `GenericFetchAutoComplete.tsx:58`, `TabNavBar.tsx:153` e `table/utils.tsx:220`, mais os `console.log(err)` em `FileUpload.tsx:171`, `DropFileUpload.tsx:137,202` e `Table.tsx:144`. **f** ✅ (o script `link` saiu na Etapa 3). **g** ✅ (26/09, Etapa 5; o diagnóstico estava errado, ver 5.19). **b**, **c** e **d** já estavam resolvidos.
 
 
 - **a) `Table` guarda o nome da tabela em variáveis de módulo.** `Table.tsx:23-26` declara `let isExpandAll`, `localTableName`, `filtersFuncData` e `localTableNameCache` no topo do arquivo e as reatribui a cada render. Com **duas `Table` na mesma página**, as duas passam a ler e gravar os filtros da última que renderizou. O `GenericTable` já faz certo (`const` dentro do componente). Correção de uma linha por variável, mas muda comportamento (conserta o compartilhamento) — precisa de teste com duas tabelas.
@@ -437,13 +437,13 @@ Ou seja, o Storybook sempre compilou com SWC. Removê-lo, junto com os `@babel/p
 
 O `handleChange` fazia `setValue(undefined)` em vez de `setValue(newValue)`. O campo mostrava a data digitada ou escolhida no calendário, mas o formulário nunca a recebia: o envio continuava barrado com "Este campo é obrigatório" (ou, sem `required`, ia sem a data). Só o `defaultValue` chegava ao formulário. O bug existe desde a criação do componente (v263, janeiro de 2025). Nenhum app do workspace usa o `GenericDatePicker`, e o `pickers.test.tsx` só testava o envio vazio. Corrigido com uma linha, igual ao `DatePicker` clássico, e coberto pela story `Date/GenericDatePicker/Interacao`, que falha com o código antigo (conferido). Muda o comportamento publicado, por isso saiu como patch: **`0.3.3`**.
 
-### 5.21 Outros achados das stories de interação (26/09/2026) — abertos, nenhum bloqueia
+### 5.21 Outros achados das stories de interação (26/09/2026) — ✅ a–e corrigidos na `1.0.0-rc.3` (29/09/2026)
 
-- **a) `Radio` não é acessível.** As opções são `Box` clicáveis, sem `role="radio"`, sem `input` e sem navegação por teclado. Leitor de tela não as anuncia, e os testes precisam clicar no texto.
-- **b) Campos sem nome acessível.** A busca e o campo "Valor" do filtro das tabelas só têm `placeholder`, e o `InputLabel` do `Input`/`FetchAutoComplete` não está ligado ao campo (`htmlFor`). Os testes acham os campos pelo placeholder ou pelo papel.
-- **c) `Input type='email'`: a mensagem da lib nunca aparece.** O `<form>` do `FormProvider` não tem `noValidate`, então a validação nativa do browser barra o envio antes, com a mensagem do browser. A de formato da lib ("O e-mail inserido não é válido") é inalcançável. Decidir se o `FormProvider` passa a usar `noValidate` (muda o que o usuário vê) ou se fica assim.
-- **d) `FileUpload` percorre a `FileList` com `Object.keys`.** Funciona com a `FileList` do browser, mas quebra com qualquer objeto parecido (como a do `userEvent.upload`). `Array.from(files)` resolveria. Os testes usam uma `FileList` real.
-- **e) `DatePicker` sem `maxDt` mostra "A data tem que ser depois de 16/04/2023 e antes de undefined".** A mensagem monta o `maxDt` mesmo quando ele não existe (e o `GenericDatePicker` também).
+- ✅ *(rc.3: padrão ARIA de radiogroup, com teclado; stories `Input/Radio/Interacao` e `InteracaoTeclado`)* **a) `Radio` não é acessível.** As opções são `Box` clicáveis, sem `role="radio"`, sem `input` e sem navegação por teclado. Leitor de tela não as anuncia, e os testes precisam clicar no texto.
+- ✅ *(rc.3: `useId` + `htmlFor` em `Input` e nos 4 autocompletes, `aria-labelledby` no grupo dos 3 pickers, `aria-label` na busca e nos campos do filtro das tabelas; story `Acessibilidade/Nomes dos campos`. De quebra: o `DatePicker` do filtro usava `div input`, que não existe desde os pickers 8, e estava mais alto que os outros campos, agora 39,8 px contra 40)* **b) Campos sem nome acessível.** A busca e o campo "Valor" do filtro das tabelas só têm `placeholder`, e o `InputLabel` do `Input`/`FetchAutoComplete` não está ligado ao campo (`htmlFor`). Os testes acham os campos pelo placeholder ou pelo papel.
+- ✅ *(rc.3: decidido **sem** `noValidate`. O `PlacaInput` do copom se registra sem regra e depende do `required` nativo dentro do `FormProvider`: com `noValidate` o copom aceitaria envio sem placa. O `Input` de e-mail passou a `type='text'` + `inputMode='email'`; a mensagem da lib aparece e o teclado do celular não muda)* **c) `Input type='email'`: a mensagem da lib nunca aparece.** O `<form>` do `FormProvider` não tem `noValidate`, então a validação nativa do browser barra o envio antes, com a mensagem do browser. A de formato da lib ("O e-mail inserido não é válido") é inalcançável. Decidir se o `FormProvider` passa a usar `noValidate` (muda o que o usuário vê) ou se fica assim.
+- ✅ *(rc.3: `Array.from`)* **d) `FileUpload` percorre a `FileList` com `Object.keys`.** Funciona com a `FileList` do browser, mas quebra com qualquer objeto parecido (como a do `userEvent.upload`). `Array.from(files)` resolveria. Os testes usam uma `FileList` real.
+- ✅ *(rc.3: `mensagemDeIntervalo`, com teste; a mensagem de passar do máximo, que era "A data escolhida não é válida", também cita o limite)* **e) `DatePicker` sem `maxDt` mostra "A data tem que ser depois de 16/04/2023 e antes de undefined".** A mensagem monta o `maxDt` mesmo quando ele não existe (e o `GenericDatePicker` também).
 - **f) O exemplo `MaskInput/MascaraDinamicaTelefone` nunca trocava para celular.** A máscara de fixo enchia no 10º dígito, e o IMask rejeitava o 11º antes do `onMaskChange` ver. Corrigido na story (a máscara de fixo aceita um dígito a mais). O componente não mudou.
 
 ### 5.22 `keycloak-js` 26: só ESM e exige contexto seguro (achado na Etapa 6, 26/09/2026) — documentado na `0.4.0`
@@ -1019,30 +1019,50 @@ Branch `atualizacao-dependencias`, sobre a `0.4.0` (`b048ff6`). Node 24.21.0. Fe
 
 **Diferenças visuais finais**, todas explicadas: as 5 tabelas com subpixel (zoom 4×: mesma posição, só a suavização), o Stepper centralizado e a story `ExemploAssistirValor`, que mostra o código de exemplo com `size={12}`. O baseline foi regravado no MUI 9.
 
-### Etapa 8 — React 19 / Next 16 → **incorporada à `1.0.0`** (decisão de 27/09/2026, seção 9)
+### Etapa 8 — React 19 / Next 16 → **incorporada à `1.0.0`** (decisão de 27/09/2026, seção 9) — ✅ concluída em 29/09/2026 (`1.0.0-rc.2`, não publicado)
 
 > *27/09/2026: não haverá `2.0.0` só para o React. Os itens abaixo entram na `1.0.0-rc.2`, com todas as peers no major atual (tabela na seção 9).*
 
-- [ ] `@types/react` 19, `@types/react-dom` 19.
-- [ ] `JSX.Element` → `React.JSX.Element` em 10 arquivos (Apêndice C).
-- [ ] Revisar os 2 `forwardRef` (`MaskInput.tsx:15`, `GenericMaskInput.tsx:6`).
+- [x] `@types/react` 19, `@types/react-dom` 19. *(29/09: 19.3, junto com `react`/`react-dom` 19.3 e `next` 16.3.7 nas `devDependencies`)*
+- [x] `JSX.Element` → `React.JSX.Element` em 10 arquivos (Apêndice C). *(29/09: nos 2 sem import default do React, `types.ts` e `Modal.tsx`, `import { type JSX } from 'react'`)*
+- [x] Revisar os 2 `forwardRef` (`MaskInput.tsx:15`, `GenericMaskInput.tsx:6`). *(29/09: ficam. O React 19 ainda aceita `forwardRef` sem aviso; eles são o `inputComponent` do MUI, que passa o `ref`. Trocar por `ref` como prop não muda nada para o app.)*
 - [x] *(25/09/2026, Etapa 4)* Refs de callback que retornavam JSX (tratado como cleanup no React 19) nos três pickers e no `FilterSection`: corrigido (5.16). Reconferido em 25/09: 21 usos de `JSX.Element` em 10 arquivos, 2 `forwardRef`.
-- [ ] `react-leaflet` 4 → 5 (*decisão de 27/09: é o caminho; sem peer opcional*). **Atenção:** a v5 tem peer `react ^19.0.0` **estrito** e a v4 tem `react ^18.0.0` estrito — não há versão que sirva aos dois (reconferido em 23/09). Como `dependency` direta, o bump torna React 19 **obrigatório** para todos os apps. Ver decisão D2 para a alternativa (peer opcional, o app escolhe a versão).
-- [ ] Next 16 (16.3.6 em 23/09): exige Node ≥ 20.9 e aceita React 18.2+ — **pode subir antes do React 19**, se for útil a algum app. *A peer já aceita o 16 desde a `0.2.1` (Etapa 2.1), validado no smoke-app; o que sobra aqui é subir o `next` das `devDependencies` (Storybook) e a avaliação do App Router abaixo.* Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
-- [ ] `cookies-next` foi removido na Etapa 2 (helper interno) — **não precisa voltar**. Só reavaliar se quisermos o helper deles de novo.
+- [x] `react-leaflet` 4 → 5 (*decisão de 27/09: é o caminho; sem peer opcional*). *(29/09: 5.0.0; `Map`, `DraggableMarker` e `AnimatedMarker` sem mudança de código; story `Base/Map` e página `/next-apis` do smoke iguais)* **Atenção:** a v5 tem peer `react ^19.0.0` **estrito** e a v4 tem `react ^18.0.0` estrito — não há versão que sirva aos dois (reconferido em 23/09). Como `dependency` direta, o bump torna React 19 **obrigatório** para todos os apps. Ver decisão D2 para a alternativa (peer opcional, o app escolhe a versão).
+- [x] *(29/09: `next` 16.3.7 nas `devDependencies`; o Storybook 10.6 builda com ele. O Pages Router fica, sem reescrita)* Next 16 (16.3.6 em 23/09): exige Node ≥ 20.9 e aceita React 18.2+ — **pode subir antes do React 19**, se for útil a algum app. *A peer já aceita o 16 desde a `0.2.1` (Etapa 2.1), validado no smoke-app; o que sobra aqui é subir o `next` das `devDependencies` (Storybook) e a avaliação do App Router abaixo.* Avaliar App Router vs. os 6 arquivos que usam `next/router` (Pages Router) — `NavBar.tsx`, `TabNavBar.tsx`, `KeycloakAuthProvider.tsx`, `OAuthProvider.tsx` (+ `next/dynamic` em `map/index.tsx`). O Pages Router continua suportado no Next 16, então não é obrigatório reescrever agora.
+- [x] `cookies-next` foi removido na Etapa 2 (helper interno) — **não precisa voltar**. Só reavaliar se quisermos o helper deles de novo.
 - [x] *(27/09/2026)* **D2 decidida:** sem janela de convivência; `react-leaflet` 5 como dependência direta. *Reconferido em 27/09:* o `react-leaflet` 4 era **o único** bloqueio de React 19; MUI 9, x-date-pickers 9, `react-imask` 7, `react-dropzone` 20, `react-toastify` 11 e `react-hook-form` 7 já aceitam o 19.
-- [ ] *(27/09/2026)* **Peer `next` passa a `^16.0.0`** (só o major atual; o Next 14 nem aceitaria o React 19). O smoke fica num cenário só, o da stack atual.
-- [ ] *(27/09/2026)* **Com o Next 14 fora, adotar o ESM em `.mjs`** (pendente desde a Etapa 3). Receita já testada na Etapa 7: `outExtensions` com `.mjs`/`.d.mts` para ESM, `exports.import` e `module` apontando para eles, `typesVersions` para os subcaminhos no `node10` e o attw sem `--ignore-rules`. Com isso o attw fica 100% limpo. O que o impedia era o Next 14 (`import Image from "next/image"` é CommonJS lá); no Next 16 passou com MUI 7 e 9. Avaliar o ESM-only junto.
-- [ ] *(27/09/2026)* Contagens reconferidas depois da Etapa 7: 21 usos de `JSX.Element` em 10 arquivos (Apêndice C) e 2 `forwardRef`. Sem mudança.
+- [x] *(27/09/2026)* **Peer `next` passa a `^16.0.0`** (só o major atual; o Next 14 nem aceitaria o React 19). O smoke fica num cenário só, o da stack atual.
+- [x] *(29/09: feito; attw 100% limpo, sem `--ignore-rules`; ESM-only avaliado e descartado, ver o registro)* *(27/09/2026)* **Com o Next 14 fora, adotar o ESM em `.mjs`** (pendente desde a Etapa 3). Receita já testada na Etapa 7: `outExtensions` com `.mjs`/`.d.mts` para ESM, `exports.import` e `module` apontando para eles, `typesVersions` para os subcaminhos no `node10` e o attw sem `--ignore-rules`. Com isso o attw fica 100% limpo. O que o impedia era o Next 14 (`import Image from "next/image"` é CommonJS lá); no Next 16 passou com MUI 7 e 9. Avaliar o ESM-only junto.
+- [x] *(27/09/2026)* Contagens reconferidas depois da Etapa 7: 21 usos de `JSX.Element` em 10 arquivos (Apêndice C) e 2 `forwardRef`. Sem mudança.
 
 **Impacto:** breaking coordenado, **dentro da `1.0.0`** (rc.2): peer `react ^19.0.0` e as demais no major atual.
+
+#### Registro de execução — 29/09/2026
+
+Branch `atualizacao-dependencias`, sobre a `1.0.0-rc.1` + `a20ac06` (fix de `key`). Node 24.21.0. Um degrau só, **sem commit** (fica no working tree para revisão).
+
+| O quê | Antes (`rc.1`) | Depois (`rc.2`) |
+|---|---|---|
+| Peers | React `^18`, Next `^14 \|\| ^15 \|\| ^16`, MUI `^7.3 \|\| ^9`, pickers `^8 \|\| ^9`, toastify `^10 \|\| ^11` | React `^19`, Next `^16`, MUI `^9`, pickers `^9`, toastify `^11` |
+| `react-leaflet` (dependency) | `^4.2.1` | `^5.0.0` |
+| `devDependencies` | React 18.3, `@types/react` 18, Next 14.2 | React 19.3, `@types/react` 19.3, Next 16.3.7 |
+| Saída ESM | `.js` / `.d.ts` (attw com `--ignore-rules unexpected-module-syntax`) | `.mjs` / `.d.mts`, `"type": "commonjs"`, `typesVersions` para `types/*` (attw limpo em todos os modos) |
+| Smoke no CI | 3 (piso, Next 16, topo) | 1 (stack atual; o `package.json` do smoke-app foi para Next 16, React 19, MUI 9, pickers 9, toastify 11) |
+
+**Código:** o typecheck com `@types/react` 19 acusou só duas coisas. O `JSX` global (21 usos, 10 arquivos) e o `StepperBlock`, que lia `component.props.name` de um `ReactElement` sem parâmetro (no 19, `props: unknown`); ganhou o tipo `CampoDoBloco`. Nenhuma API removida do React 19 aparecia no `src/` (`defaultProps`, `propTypes`, `findDOMNode`, `element.ref`, string refs). Os refs de callback já tinham sido tratados na Etapa 4 (5.16).
+
+**ESM-only: avaliado e descartado.** O Next consome o `.mjs`; o `.cjs` é o que o `require` recebe no Jest e nos scripts Node dos apps. Tirá-lo obrigaria todo app a mexer na configuração de teste, sem ganho no Next.
+
+**Validação (tudo verde):** typecheck; lint com 0 erros (349 warnings, eram 351); format; 49 testes; build; API pública (78 exports); `check:package` (externos, `'use client'` no `.mjs` e no `.cjs`, `llms.txt`, publint, attw **sem nenhuma regra ignorada**); smoke no Next 16.3.7 + React 19.3 + MUI 9.4 + pickers 9.14 + toastify 11.1; e2e do Keycloak (12 passos, OIDC simulado); build do Storybook; **95 snapshots com `SNAPSHOTS_DETALHE=1` sem nenhum pixel diferente** e as 29 interações passando.
+
+**Docs:** CHANGELOG (`1.0.0-rc.2`, com o que o app precisa fazer para o React 19), README (peers), `AGENTS.md`, `llms.txt` (sem os links do MUI 7.3 e dos pickers 8; com os guias do React 19 e do Next 16), `CLAUDE.md`, README do smoke-app, CI (um smoke; `SMOKE_NEXT=16` saiu do e2e e do workflow do HMG).
 
 > *Correção de 23/09:* o texto original dizia que "a lib fica em `react: ^18 || ^19` desde a Etapa 1". **Não fica** — a Etapa 1 declarou `^18.0.0`, porque `react-leaflet@4`, `react-query@3` e `x-date-pickers@6` recusam o 19. Depois das Etapas 2 e 7 sobra só o `react-leaflet`, e aí `1.x` só consegue declarar `^18 || ^19` se a decisão D2 tirar o `react-leaflet` das `dependencies`. Sem isso, `1.x` = React 18 e `2.0.0` = React 19, sem janela de convivência.
 
 ### Etapa 9 — TypeScript 7
 - [ ] O `latest` do npm já é `7.0.2` (port nativo em Go). Ficar em **5.9 até a Etapa 8 concluir** e então subir, com dois critérios objetivos de entrada: (a) o bundler da Etapa 3 e o Storybook em uso geram `.d.ts` corretos com TS 7 (*o `tsdown@0.23` já declara peer `typescript ^5 || ^6 || ^7`; o `tsup@8.5.1` declara `>=4.5.0` sem garantia*); (b) `typescript-eslint` suporta TS 7 na versão que estivermos usando. Se algum falhar, permanecer em 5.9 — é a única dependência do plano em que "mais nova" ainda não é claramente melhor.
 
-*25/09/2026:* o critério (b) **falha hoje** — o `typescript-eslint` 8.70.1 (24/09) declara peer `typescript >=4.8.4 <6.1.0`. Existe também o **TS 6.0** (6.0.3), a versão de transição anterior ao port em Go, e ele **está** dentro do range do `typescript-eslint`. Se valer um passo intermediário, 5.9 → 6.0 é viável já; o 7 espera o `typescript-eslint`. *Reconferido em 25/09/2026, após a Etapa 4: sem mudança (`typescript-eslint` 8.70.1, peer `typescript >=4.8.4 <6.1.0`; TS 6.0.3 e 7.0.2).* *De novo em 27/09/2026, após a Etapa 7: sem mudança.*
+*29/09/2026: **TypeScript 6.0.3 adotado na `rc.3`** (o passo intermediário abaixo). O `dist/` saiu idêntico byte a byte ao do 5.9. Única mudança: o TS 6 confere imports por efeito colateral, e `src/css.d.ts` declara `*.css`. O 7 continua esperando: `typescript-eslint` 8.71.0 ainda declara `typescript <6.1.0`.* *25/09/2026:* o critério (b) **falha hoje** — o `typescript-eslint` 8.70.1 (24/09) declara peer `typescript >=4.8.4 <6.1.0`. Existe também o **TS 6.0** (6.0.3), a versão de transição anterior ao port em Go, e ele **está** dentro do range do `typescript-eslint`. Se valer um passo intermediário, 5.9 → 6.0 é viável já; o 7 espera o `typescript-eslint`. *Reconferido em 25/09/2026, após a Etapa 4: sem mudança (`typescript-eslint` 8.70.1, peer `typescript >=4.8.4 <6.1.0`; TS 6.0.3 e 7.0.2).* *De novo em 27/09/2026, após a Etapa 7: sem mudança.*
 
 ---
 
@@ -1052,11 +1072,11 @@ Branch `atualizacao-dependencias`, sobre a `0.4.0` (`b048ff6`). Node 24.21.0. Fe
 
 - **Ordem de publicação (nada publicado ainda; não precisa de merge).** O `publish.yaml` novo publica por tag `v*` a partir do commit marcado, então dá para publicar direto do branch:
   1. **tag `v0.4.0` no `b048ff6`**, que vai para `latest`. É a linha para quem está em MUI 5 (specto, viva-flor e copom instalam; o copom desde a `0.3.2`).
-  2. **tag `v1.0.0-rc.1` no `8e985ad`**, que vai para `next` (pré-release). O app piloto instala `@ssplib/react-components@next`.
+  2. **tag da rc mais recente** (hoje `v1.0.0-rc.3`, no commit dela), que vai para `next` (pré-release). O app piloto instala `@ssplib/react-components@next`. *(29/09: a `rc.1` e a `rc.2` podem ser puladas: a `rc.1` declara React 18, e a `rc.3` fecha a API que os apps vão usar, então é nela que vale migrar.)*
   3. O merge na `main` pode vir depois. Até lá, nada de push direto na `main`, que ainda tem o `publish.yaml` antigo, que publica a cada push.
 - **Branches:** quando a `main` virar `1.x`, criar o **`v0-legacy` a partir do `b048ff6` (`0.4.0`)**. Ele recebe só correções da linha `0.x` (MUI 5).
 - **Linha `0.x`:** foi até a `0.4.0` (Etapas 1 a 6). Todo app sai de `^0.0.34x` **manualmente**: em `0.0.x` o `^` fixa a versão exata, então nenhum app recebe a `0.4.0` sem editar o `package.json`. A `0.4.0` exige Node ≥ 22 e HTTPS (CHANGELOG).
-- **Peers da `1.x`: só o major atual** (decisão de 27/09/2026, seção 9). A `1.0.0-rc.1` ainda declara `^7.3 || ^9` / `^8 || ^9` / `react ^18`. A `rc.2` estreita para MUI 9, pickers 9, React 19, Next 16 e toastify 11. Atualizar a lib passa a ser atualizar a stack inteira do app.
+- **Peers da `1.x`: só o major atual** (decisão de 27/09/2026, seção 9). A `rc.2` (29/09) já declara só MUI 9, pickers 9, React 19, Next 16 e toastify 11. Atualizar a lib passa a ser atualizar a stack inteira do app.
 - **Migração de cada app para a `1.x` é um projeto do app**, não uma troca de versão: o MUI dele sobe junto, com codemods no código dele. **Piloto recomendado: o specto**, o menor, que ficou com 14 arquivos tocados e build verde no teste de 27/09 (o viva-flor tocou 65 e tem `x-charts`). A migração inclui subir o React para 19 e o Next para 16. Seguir a lista do CHANGELOG da `1.0.0-rc.1` e, depois dos codemods, **conferir os spreads JSX** (`{...props}`): o `v9.0.0/system-props` os apaga sem erro. O teste de 27/09 detectou isso comparando a contagem por arquivo antes e depois.
 - **`conoc-frontend`:** já está no React 19 e no Next 16. Para a `1.0.0` sobe o MUI 7.3 → 9 e os pickers 8 → 9, e o Node do build para 22+.
 - **Semver de verdade** desde a Etapa 1. Breaking change = major (na `0.x`, o minor). Nunca mais em patch.
@@ -1277,6 +1297,41 @@ Conferido contra o repo, o registry (`npm view`), o GitHub (PR #4, CI) e os quat
 
 ---
 
+## 14. Estado em 29/09/2026, após a Etapa 8
+
+Substitui a seção 13 no que mudou; o resto dela continua valendo.
+
+- **`1.0.0-rc.2` pronta no working tree, sem commit.** Registro na Etapa 8. Toda a suíte local verde, inclusive snapshots no container e o e2e do Keycloak. O CI ainda não rodou sobre ela.
+- **Versões publicáveis:** `0.4.0` (`b048ff6`, MUI 5 + React 18) → `latest`; `1.0.0-rc.2` (a commitar) → `next`. A `rc.1` (`8e985ad`) fica só no histórico.
+- **Consumidores:** para a `rc.2`, todos precisam do React 19 e do Next 16 além do MUI 9. O `conoc-frontend` já está no React 19 e no Next 16 (sobe só MUI, pickers e o Node do build para 22). Specto (piloto recomendado), viva-flor e copom sobem também o React. As migrações de 27/09 do specto e do viva-flor estão em `git stash` nos apps e foram feitas contra a `rc.1` (React 18): falta o degrau do React 19.
+- **Achados abertos:** os mesmos da seção 13 (5.13e, 5.21, warnings de lint, Ubuntu 26 em 19/10).
+
+**Próximos passos:** commitar a `rc.2` e ver o CI → publicar a `0.4.0` em `latest` e a `rc.2` em `next` (seção 8) → piloto (specto) com React 19 + Next 16 + MUI 9 em homologação → `1.0.0` em `latest` → migração dos outros apps → Etapa 9 (TS 7, esperando o `typescript-eslint`).
+
+---
+
+## 15. Estado em 29/09/2026, com a `1.0.0-rc.3`
+
+Substitui a seção 14.
+
+**`1.0.0-rc.3` no working tree, sem commit.** Depois da `rc.2`, a pergunta foi "dá para atualizar mais alguma coisa na lib antes de migrar os apps?". A resposta foi fechar tudo o que ainda mudaria o trabalho nos apps, para que eles migrem uma vez só:
+
+| O quê | Resultado |
+|---|---|
+| Dependências | Storybook 10.6.1, `react-hook-form` 7.89, `typescript-eslint` 8.71, `@types/node` 24.19, **TypeScript 6.0.3**. `msw` **removido** (nunca foi usado). Fora: TS 7 (Etapa 9) e `json-server` 1.0 (beta). `npm outdated` só mostra esses dois e o `@types/node` 26 (Node 26; o CI é 24) |
+| 5.13e | ✅ sem logs de depuração; `no-console` como erro |
+| 5.21a–e | ✅ `Radio` acessível; nomes acessíveis; mensagem de e-mail; `FileList`; mensagem de intervalo |
+| Props legadas do `Input` | ✅ removidas (nenhum dos quatro apps as passava a um componente da lib) |
+| Achado novo | `DatePicker` do filtro das tabelas com o estilo antigo (`div input`), corrigido |
+
+**Validação:** typecheck, lint (0 erros, 345 warnings), format, 52 testes, build, API pública (78 exports), `check:package` (attw sem regra ignorada), smoke, e2e do Keycloak na `rc.2`, **95 snapshots sem nenhum pixel diferente (`SNAPSHOTS_DETALHE=1`) e 32 interações** (3 novas: `Radio/InteracaoTeclado` e as duas de `Acessibilidade/Nomes dos campos`). Altura do picker do filtro conferida no browser.
+
+**O que continua aberto:** Etapa 9 (TS 7); os 345 warnings de lint (regras do React Compiler, `any`); o `ubuntu-latest` vira Ubuntu 26 em 19/10.
+
+**Próximos passos:** commitar e ver o CI → skill (+ script) de migração dos apps, dentro do repo da lib → validar a skill no specto → viva-flor → publicar a `0.4.0` em `latest` e a rc em `next` → `1.0.0`.
+
+---
+
 ## Apêndice A — Arquivos com `<Grid>` a migrar (Etapa 7) — ✅ migrados na `1.0.0-rc.1`
 
 `src/` (28):
@@ -1333,7 +1388,7 @@ src/components/form/table/GenericTable.tsx        (InputProps)
 src/components/form/table/Table.tsx               (InputProps)
 ```
 
-## Apêndice C — Arquivos com `JSX.Element` global (Etapa 8) — *reconferido em 27/09: 21 usos em 10 arquivos*
+## Apêndice C — Arquivos com `JSX.Element` global (Etapa 8) — ✅ migrados na `1.0.0-rc.2`
 
 ```
 src/components/form/checkbox/CheckBox.tsx

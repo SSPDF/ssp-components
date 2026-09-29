@@ -41,6 +41,10 @@ export default tseslint.config(
             // A lib tem casos reais de <MenuItem> sem key dentro de .map()
             // (CustomMenu, Table, GenericTable) — ver seção 5.8 do UPGRADE_PLAN.md.
             'no-undef': 'off', // o TS já resolve isso, e aqui dá falso positivo com tipos
+            // Log de depuração não vai para o console dos apps (UPGRADE_PLAN.md 5.13e). Erro de
+            // verdade usa console.error/warn; os logs pedidos pelo app (`debugLog` do Stepper,
+            // `enableDebugLogs` do KeycloakAuthProvider) têm eslint-disable na linha.
+            'no-console': ['error', { allow: ['error', 'warn'] }],
 
             // --- Dívida conhecida: warn agora, error depois ----------------------
             // Estas 12 ocorrências não são auto-corrigíveis e exigiriam editar o
@@ -78,8 +82,8 @@ export default tseslint.config(
         },
     },
     {
-        // Stories podem usar console à vontade — várias demonstram o submit.
-        files: ['src/stories/**', 'src/decorators/**', 'scripts/**'],
+        // Stories podem usar console à vontade — várias demonstram o submit. O `teste/` fica fora do build.
+        files: ['src/stories/**', 'src/decorators/**', 'scripts/**', 'src/components/teste/**', '**/*.test.{ts,tsx}'],
         rules: {
             'no-console': 'off',
             '@typescript-eslint/no-explicit-any': 'off',

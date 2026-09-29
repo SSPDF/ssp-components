@@ -78,6 +78,7 @@ export function KeycloakAuthProvider({
     const log = useCallback(
         (message: string, ...args: unknown[]) => {
             if (enableDebugLogs) {
+                // eslint-disable-next-line no-console -- logger atrás da prop `enableDebugLogs`
                 console.log(`[KeycloakAuth] ${message}`, ...args)
             }
         },
