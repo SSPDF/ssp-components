@@ -2,6 +2,22 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 1.0.0-rc.4
+
+Uma correção e documentação, depois de migrar o specto e o viva-flor com a `rc.3`. Peers, dependências e API pública iguais às da `rc.3`.
+
+### O que o app precisa fazer
+
+- **Pôr a lib no `transpilePackages` do `next.config`**, se ainda não estiver (`transpilePackages: ['@ssplib/react-components']`). É exigência desde a `rc.2` (ESM em `.mjs`), agora documentada: sem isso o `next build` quebra no SSR com `Failed to load external module @ssplib/react-components`. O viva-flor não tinha; o specto já tinha.
+
+### Correções
+
+- **Estado de erro da `Table` sem `<div>` dentro de `<p>`.** Com a API respondendo 500, o texto do erro (ícone, mensagem e a `customErrorMsg` do app) ficava num `Typography` que renderiza `<p>`, e o React acusava `<div> cannot be a descendant of <p>` (erro de hidratação no Next). O `Typography` agora renderiza `<div>`; o visual é o mesmo. Existia desde a `0.0.x`; achado ao migrar o viva-flor (30/09/2026). O mesmo trecho no `GenericTable` foi corrigido junto.
+
+### Documentação
+
+- **Skill de agente `atualizar-ssplib`** (`skills/atualizar-ssplib/` no repositório, fora do pacote): guia a atualização da lib num app, com um script de diagnóstico que compara o app com a versão-alvo, propõe a instalação na ordem certa e aponta o que os codemods do MUI não resolvem. Instalação no app: `npx skills add SSPDF/ssp-components --skill atualizar-ssplib -a claude-code`. Ver o README.
+
 ## 1.0.0-rc.3
 
 **Pendências da lib fechadas antes da `1.0.0`.** As peers são as mesmas da `rc.2` (React 19, Next 16, MUI 9, pickers 9, toastify 11). A ideia é que os apps migrem uma vez só, direto para a API final.
@@ -43,6 +59,7 @@ Emotion, `react-hook-form` e `dayjs` não mudaram. A dependência `react-leaflet
 
 ### O que o app precisa fazer
 
+- **Pôr a lib no `transpilePackages` do `next.config`** (`transpilePackages: ['@ssplib/react-components']`). Com o ESM em `.mjs`, um app sem isso deixa o Next carregar a lib com o `import` nativo do Node no SSR, e o `next build` quebra (`Failed to load external module @ssplib/react-components … ERR_MODULE_NOT_FOUND`). Achado ao migrar o viva-flor (30/09/2026); o specto já transpilava.
 - **Tudo o que a `1.0.0-rc.1` pede** (MUI 9, pickers 9, codemods do MUI, campos dentro de `<Grid container>`): ver a seção dela abaixo.
 - **Subir o React e o React DOM para 19**, com `@types/react` / `@types/react-dom` 19. Guia oficial: <https://react.dev/blog/2024/04/25/react-19-upgrade-guide>. O que costuma aparecer no código dos apps: o namespace `JSX` global saiu dos tipos (`JSX.Element` → `React.JSX.Element`, ou `import type { JSX } from 'react'`); `ReactElement` sem parâmetro tem `props: unknown` (era `any`); `useRef()` exige valor inicial; `propTypes` e `defaultProps` de componentes de função deixam de valer; um ref de callback não pode retornar nada que não seja uma função de cleanup.
 - **Subir o Next para 16** (Node ≥ 20.9; a lib já pede Node ≥ 22). O Pages Router continua suportado e é o que a lib usa (`next/router`).

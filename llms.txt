@@ -8,7 +8,7 @@ Não leia o código bundlado em `node_modules` para entender a API: os arquivos 
 
 - [AGENTS.md](AGENTS.md): guia para agentes. Os dois sistemas de formulário, inputs com máscara, autenticação, tabela e exportação, tipos, requisitos do app
 - [README.md](README.md): instalação, peers, requisitos do app (Node 22, HTTPS para o Keycloak), layout com `<Grid container>`, `silent-check-sso.html`
-- [CHANGELOG.md](CHANGELOG.md): o que muda em cada versão e o que o app precisa fazer. Da `1.0.0-rc.1` à `1.0.0-rc.3`, a migração do app para o MUI 9, o React 19 e o Next 16, incluindo o que os codemods não resolvem e como achar os campos da lib nos testes
+- [CHANGELOG.md](CHANGELOG.md): o que muda em cada versão e o que o app precisa fazer. Da `1.0.0-rc.1` à `1.0.0-rc.4`, a migração do app para o MUI 9, o React 19 e o Next 16, incluindo o que os codemods não resolvem e como achar os campos da lib nos testes
 
 ## MUI nas versões que a lib suporta
 
