@@ -18,7 +18,7 @@ npm install @ssplib/react-components \
 
 A lib **não embute** o MUI, o Emotion nem as libs de formulário/toast: ela as importa do app. Por isso elas são `peerDependencies` e o app precisa tê-las instaladas — uma cópia só na árvore, a do app.
 
-Desde a `1.0.0-rc.2` a lib declara **só o major atual** de cada peer: atualizar a lib é atualizar a stack do app inteira de uma vez (React 19, Next 16, MUI 9, pickers 9, toastify 11). Quem ainda está no MUI 5 + React 18 fica na linha `0.x` (`0.4.0`).
+Desde a `1.0.0-rc.2` a lib declara **só o major atual** de cada peer: atualizar a lib é atualizar a stack do app inteira de uma vez (React 19, Next 16, MUI 9, pickers 9, toastify 11). Quem ainda está no MUI 5 + React 18 fica na `0.0.349` até migrar: a linha `0.x` intermediária (`0.1.0` a `0.4.0`) não foi publicada.
 
 | Pacote | Versão |
 |---|---|
