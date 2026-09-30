@@ -525,6 +525,7 @@ export function GenericTable({
                 }}
             >
                 <Typography
+                    component='div'
                     sx={{
                         fontSize: 24,
                         textAlign: 'center',

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import FormProvider from '../../providers/FormProvider'
 import GenericTable from './GenericTable'
 import Table from './Table'
@@ -56,5 +56,26 @@ describe('filtro salvo no localStorage', () => {
         render(<GenericTable id='g1' tableName='Pessoa' useKC={false} columnSize={4} itemCount={10} initialData={dados} columns={colunas} filters={filtros} action={() => null} />)
         expect(await screen.findByText('Maria', { selector: 'p' })).toBeInTheDocument()
         expect(screen.getByText('contem')).toBeInTheDocument()
+    })
+})
+
+describe('estado de erro', () => {
+    /**
+     * O texto do erro fica num `Typography`. Era um `<p>` com um `<div>` dentro, e o React acusava
+     * `<div> cannot be a descendant of <p>` (erro de hidratação no Next) sempre que a API falhava.
+     * Achado no viva-flor em 30/09/2026, com a API fora do ar (UPGRADE_PLAN.md, seção 16).
+     */
+    it.each([500, 403])('Table com a API respondendo %i não aninha bloco dentro de <p>', async (status) => {
+        const erros = vi.spyOn(console, 'error').mockImplementation(() => {})
+        const fetchFunc = () => Promise.resolve(new Response(JSON.stringify({ statusCode: status }), { status: status === 500 ? 500 : 200, headers: { 'Content-Type': 'application/json' } }))
+        const { container } = render(
+            <FormProvider onSubmit={() => {}}>
+                <Table id={`erro-${status}`} tableName='Pessoa' useKC={false} columnSize={4} itemCount={10} columns={colunas} fetchFunc={fetchFunc} action={() => null} />
+            </FormProvider>,
+        )
+        expect(await screen.findByText(status === 500 ? /Não foi possível se conectar ao servidor/ : 'Acesso negado')).toBeInTheDocument()
+        expect(container.querySelector('p div, p p')).toBeNull()
+        expect(erros.mock.calls.flat().join(' ')).not.toMatch(/cannot be a descendant|cannot contain a nested/)
+        erros.mockRestore()
     })
 })

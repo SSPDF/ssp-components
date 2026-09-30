@@ -18,7 +18,9 @@ export function TableErrorState({ customErrorMsg, error }: TableErrorStateProps)
                 borderRadius: 4,
             }}
         >
+            {/* `div`, não o `<p>` padrão: o erro 500 põe blocos (`Box`, e a `customErrorMsg` do app) dentro. */}
             <Typography
+                component='div'
                 sx={{
                     fontSize: 24,
                     textAlign: 'center',
