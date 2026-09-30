@@ -83,7 +83,8 @@ export default tseslint.config(
     },
     {
         // Stories podem usar console à vontade — várias demonstram o submit. O `teste/` fica fora do build.
-        files: ['src/stories/**', 'src/decorators/**', 'scripts/**', 'src/components/teste/**', '**/*.test.{ts,tsx}'],
+        // Scripts (da lib e das skills) são CLIs: a saída deles é o console.
+        files: ['src/stories/**', 'src/decorators/**', 'scripts/**', 'skills/*/scripts/**', 'src/components/teste/**', '**/*.test.{ts,tsx}'],
         rules: {
             'no-console': 'off',
             '@typescript-eslint/no-explicit-any': 'off',

@@ -53,6 +53,15 @@ O MUI 9 exige Chrome 117+, Firefox 121+ e Safari 17+.
 
 ### SSR
 
+**O app precisa transpilar a lib** (desde a `1.0.0-rc.2`, que publica o ESM em `.mjs`):
+
+```js
+// next.config.js
+transpilePackages: ['@ssplib/react-components'],
+```
+
+Sem isso o Next carrega a lib como módulo externo no SSR, com o `import` nativo do Node, e o `next build` quebra com `Failed to load external module @ssplib/react-components` (`ERR_MODULE_NOT_FOUND`). O smoke-app da lib builda assim.
+
 Os componentes renderizam no servidor (Next.js Pages Router). `Table` e `GenericTable` restauram os filtros e a ordenação salvos no `localStorage` logo depois da montagem — até a `0.1.x` elas liam o `localStorage` durante o render e precisavam de `next/dynamic` com `ssr: false`, o que pode ser removido.
 
 `AutoComplete` não precisa mais de `QueryClientProvider` (a lib deixou de usar react-query na `0.2.0`).
@@ -151,6 +160,22 @@ Outros: `Map`, `MODAL`, `NavBar`, `TabNavBar`, `Menu`, `Button`, `Category`/`Fie
 Providers/contexto: `SspComponentsProvider`, `FormProvider`, `GenericFormProvider`, `KeycloakAuthProvider`, `OAuthProvider`, `FormContext`, `AuthContext`.
 
 Os tipos de props (`InputProps`, `InputType`, `CsvConfigProp`, `FilterValue`, `TableProps`, `TableProps2`, `MapProps`, `FieldType`, `FormContextType`, etc.) e os tipos de auth são exportados pela raiz do pacote — basta `import type { … } from '@ssplib/react-components'`.
+
+## Atualizar a lib num app
+
+Atualizar a lib é atualizar a stack do app junto (a lib declara só o major atual de cada peer). Para isso existe a skill de agente **`atualizar-ssplib`**, em [`skills/atualizar-ssplib/`](./skills/atualizar-ssplib/) neste repo: ela guia o agente pelo diagnóstico, instalação, codemods do MUI, correções manuais e verificação, e traz um script sem dependências que compara o app com a versão-alvo e aponta no código o que os codemods não resolvem (spreads apagados, cores que viram preto, Grid legado…).
+
+```bash
+# no app, instala a skill no escopo do projeto (Claude Code)
+npx skills add SSPDF/ssp-components --skill atualizar-ssplib -a claude-code
+# ou a partir de um clone local da lib
+npx skills add ../ssp-components --skill atualizar-ssplib -a claude-code
+
+# o script também roda sozinho, na raiz do app
+node ../ssp-components/skills/atualizar-ssplib/scripts/diagnostico.mjs --alvo <versão | caminho do .tgz>
+```
+
+Depois é só pedir ao agente para atualizar a `@ssplib/react-components`. A skill não commita: entrega o working tree para você testar.
 
 ## Desenvolvimento
 
