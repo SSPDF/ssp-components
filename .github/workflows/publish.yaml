@@ -17,6 +17,14 @@ on:
         type: choice
         options: [next, latest, legacy-v0]
 
+# Trusted publishing (OIDC) desde 30/09/2026: o npm confia neste workflow (SSPDF/ssp-components,
+# publish.yaml), configurado nas settings do pacote no npmjs.com. Não há token: nada expira e nada
+# depende da conta de uma pessoa (o NPM_TOKEN antigo expirou e travou a 1.0.0-rc.4). O npm gera a
+# attestation de proveniência sozinho (repo e pacote públicos). Requer npm >= 11.5.1 e runner do GitHub.
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     name: Publish
@@ -29,6 +37,10 @@ jobs:
           node-version: 24
           cache: npm
           registry-url: https://registry.npmjs.org
+
+      - name: Conferindo o npm (trusted publishing exige >= 11.5.1)
+        run: |
+          node -e "const [a,b,c]=process.argv[1].split('.').map(Number); if (a<11||(a===11&&(b<5||(b===5&&c<1)))) { console.error('npm '+process.argv[1]+' < 11.5.1'); process.exit(1) }" "$(npm --version)"
 
       - name: Instalando dependências
         run: npm ci
@@ -88,5 +100,3 @@ jobs:
       - name: Publicando
         run: npm publish --access public --tag "${{ steps.tag.outputs.value }}"
         working-directory: dist
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
