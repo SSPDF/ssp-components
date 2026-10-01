@@ -17,7 +17,6 @@ import CustomMenu from '../../utils/CustomMenu'
 import { FilterValue, OrderBy, TableProps2 } from './types'
 import { FilterMenu } from './FilterSection'
 import { filtrarDados, ordenarDados, removePunctuationAndAccents, getCount, transformArrayObjectInString } from './utils'
-import { useThemedColor } from '../../utils/useThemedColor'
 
 /**
  * Tabela cujo dados devem ser passados via props
@@ -91,7 +90,6 @@ export function GenericTable({
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
     const [filterKey, setFilterKey] = useState('filterKey')
     const theme = useTheme()
-    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
     const filterContainer = useRef(null)
 
@@ -547,8 +545,8 @@ export function GenericTable({
             <Stack sx={{ height: '100%', width: '100%' }} justifyContent='center' alignItems='center'>
                 <Box width='100%'>
                     <Stack direction='row' justifyContent='center' alignItems='center' justifyItems='center' spacing={2} marginY={4}>
-                        <PendingRounded sx={{ fill: color('#5e5e5e', (p) => p.text.secondary) }} />
-                        <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color={color('#5e5e5e', (p) => p.text.secondary)}>
+                        <PendingRounded sx={{ fill: '#5e5e5e' }} />
+                        <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color='#5e5e5e'>
                             Carregando {tableName}
                         </Typography>
                     </Stack>
@@ -568,7 +566,7 @@ export function GenericTable({
                                 }}
                                 justifyContent='space-between'
                                 paddingY={8}
-                                borderBottom={color('1px solid #cacaca', (p) => `1px solid ${p.divider}`)}
+                                borderBottom='1px solid #cacaca'
                             >
                                 {Array(7)
                                     .fill(0)
@@ -588,7 +586,7 @@ export function GenericTable({
 
     return (
         <>
-            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor={color('white', (p) => p.background.paper)} p={2} borderRadius={6} {...customTableStyle}>
+            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6} {...customTableStyle}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
                     <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} height={{ md: '40px', xs: 'inherit' }} width='100%'>
                         <TextField
@@ -599,8 +597,8 @@ export function GenericTable({
                                 },
                             }}
                             sx={{
-                                border: color('solid 1px #CBD5E1', (p) => `solid 1px ${p.divider}`),
-                                backgroundColor: color('#F8FAFC', (p) => p.background.default),
+                                border: 'solid 1px #CBD5E1',
+                                backgroundColor: '#F8FAFC',
                                 borderRadius: '50px',
                                 maxWidth: '600px',
                             }}
@@ -735,7 +733,7 @@ export function GenericTable({
                 )}
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
-                        <Stack sx={{ backgroundColor: color('#E2E8F0', (p) => p.action.selected), padding: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
+                        <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
                             <Typography fontSize={21} fontFamily='Inter' fontWeight={600} textAlign='center'>
                                 {user ? emptyMsg.user : emptyMsg.public}
                             </Typography>
@@ -746,10 +744,10 @@ export function GenericTable({
                                 key={index}
                                 sx={{
                                     padding: 0.5,
-                                    backgroundColor: index % 2 === 0 ? color('#F8FAFC', (p) => p.action.hover) : color('white', (p) => p.background.paper),
+                                    backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
                                     paddingTop: 2,
                                     paddingBottom: alwaysExpanded ? 2 : 0.5,
-                                    borderTop: color('solid 1.5px #E2E8F0', (p) => `solid 1.5px ${p.divider}`),
+                                    borderTop: 'solid 1.5px #E2E8F0',
                                     position: 'relative',
                                 }}
                                 elevation={0}
@@ -769,7 +767,7 @@ export function GenericTable({
                                             }}
                                         >
                                             <Box sx={{ width: '100%', paddingX: 1 }}>
-                                                <Typography fontSize={16} fontWeight={700} color={color('#1E293B', (p) => p.text.primary)} fontFamily='Inter'>
+                                                <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
                                                     {c.title}
                                                 </Typography>
                                             </Box>
@@ -782,7 +780,7 @@ export function GenericTable({
                                                     <Box
                                                         sx={{
                                                             wordWrap: 'break-word',
-                                                            color: color('#1E293B', (p) => p.text.primary),
+                                                            color: '#1E293B',
                                                             fontSize: 16,
                                                         }}
                                                         fontFamily='Inter'
@@ -819,7 +817,7 @@ export function GenericTable({
                                                 }}
                                                 sx={{
                                                     padding: 0,
-                                                    color: color('#637082', (p) => p.text.secondary),
+                                                    color: '#637082',
                                                     textTransform: 'capitalize',
                                                 }}
                                                 startIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
@@ -906,7 +904,7 @@ export function GenericTable({
                             }
                         }}
                         disabled={currentListPage <= 1}
-                        sx={{ bgcolor: color('white', (p) => p.background.paper), borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`) }}
+                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
                     </Button>
@@ -924,7 +922,7 @@ export function GenericTable({
                                                       color: 'white',
                                                   }
                                                 : {
-                                                      color: color('#1E293B', (p) => p.text.primary),
+                                                      color: '#1E293B',
                                                   }),
                                             borderRadius: '100%',
                                             padding: 0,
@@ -951,8 +949,8 @@ export function GenericTable({
                         variant='outlined'
                         sx={{
                             '.MuiPagination-ul': {
-                                backgroundColor: color('white', (p) => p.background.paper),
-                                border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                                backgroundColor: 'white',
+                                border: 'solid 1px #E2E8F0',
                                 borderRadius: '50px',
                                 paddingX: 0.25,
                                 paddingY: 0.5,
@@ -969,7 +967,7 @@ export function GenericTable({
                             }
                         }}
                         disabled={currentListPage >= paginationCount}
-                        sx={{ bgcolor: color('white', (p) => p.background.paper), borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`) }}
+                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />
                     </Button>

@@ -4,7 +4,6 @@ import get from 'lodash.get'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 let useDefault = true
 
@@ -128,15 +127,15 @@ export function FixedAutoComplete({
                 }}
                 size='small'
                 sx={{
-                    bgcolor: 'background.paper',
+                    bgcolor: 'white',
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
                         transition: 'all 0.2s',
                         '& fieldset': {
-                            borderColor: fieldBorder,
+                            borderColor: '#E0E0E0',
                         },
                         '&:hover fieldset': {
-                            borderColor: fieldBorderHover,
+                            borderColor: '#BDBDBD',
                         },
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',

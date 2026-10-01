@@ -1,7 +1,6 @@
 import { Card, Checkbox, Grid, Box, useTheme, Typography } from '@mui/material'
 import React, { ReactElement, useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
-import { fieldBorder } from '../fieldBorder'
 
 export default function CheckBoxWarning({
     name,
@@ -38,11 +37,11 @@ export default function CheckBoxWarning({
                 onClick={(e: any) => onClick(e)}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
+                    borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
+                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',

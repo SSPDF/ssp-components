@@ -2,14 +2,12 @@ import { PendingRounded } from '@mui/icons-material'
 import { Box, LinearProgress, Skeleton, Stack } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React from 'react'
-import { useThemedColor } from '../../utils/useThemedColor'
 
 interface TableLoadingStateProps {
     tableName: string
 }
 
 export function TableLoadingState({ tableName }: TableLoadingStateProps) {
-    const color = useThemedColor()
     return (
         <Stack
             sx={{
@@ -23,10 +21,10 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                 <Stack direction='row' justifyContent='center' alignItems='center' justifyItems='center' spacing={2} marginY={4}>
                     <PendingRounded
                         sx={{
-                            fill: color('#5e5e5e', (p) => p.text.secondary),
+                            fill: '#5e5e5e',
                         }}
                     />
-                    <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color={color('#5e5e5e', (p) => p.text.secondary)}>
+                    <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color='#5e5e5e'>
                         Carregando {tableName}
                     </Typography>
                 </Stack>
@@ -45,7 +43,7 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                             }}
                             justifyContent='space-between'
                             paddingY={8}
-                            borderBottom={color('1px solid #cacaca', (p) => `1px solid ${p.divider}`)}
+                            borderBottom='1px solid #cacaca'
                         >
                             {Array(7)
                                 .fill(0)

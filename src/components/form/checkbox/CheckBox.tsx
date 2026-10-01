@@ -2,7 +2,6 @@ import { Grid, Box, Typography, useTheme, Checkbox } from '@mui/material'
 import { useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
 import React from 'react'
-import { fieldBorder } from '../fieldBorder'
 
 export default function CheckBox({
     name,
@@ -44,11 +43,11 @@ export default function CheckBox({
                 onClick={(e: any) => onClick(e)}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
+                    borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
+                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',

@@ -8,7 +8,6 @@ import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
 import { useContext, useEffect, useState } from 'react'
 import { FormContext } from '../../../context/form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export default function DatePicker({
     name,
@@ -69,16 +68,16 @@ export default function DatePicker({
                         disableHighlightToday
                         sx={{
                             outline: get(context.errors, name!) ? '1px solid transparent' : '',
-                            backgroundColor: 'background.paper',
+                            backgroundColor: 'white',
                             width: '100%',
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
                                 transition: 'all 0.2s',
                                 '& fieldset': {
-                                    borderColor: fieldBorder,
+                                    borderColor: '#E0E0E0',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: fieldBorderHover,
+                                    borderColor: '#BDBDBD',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',

@@ -2,7 +2,6 @@ import { Box, Checkbox, Grid, Stack, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 interface OptionalInputProps {
     title: string
@@ -45,14 +44,14 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         helperText={get(context.errors, name!)?.message as string}
                         placeholder={title}
                         sx={{
-                            bgcolor: 'background.paper',
+                            bgcolor: 'white',
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
                                 '& fieldset': {
-                                    borderColor: fieldBorder,
+                                    borderColor: '#E0E0E0',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: fieldBorderHover,
+                                    borderColor: '#BDBDBD',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',
@@ -67,11 +66,11 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         disabled
                         placeholder={title}
                         sx={{
-                            bgcolor: 'background.paper',
+                            bgcolor: 'white',
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
                                 '& fieldset': {
-                                    borderColor: fieldBorder,
+                                    borderColor: '#E0E0E0',
                                 },
                             },
                         }}
