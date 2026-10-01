@@ -4,6 +4,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
 import { ErrorOutline } from '@mui/icons-material'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export default function MultInput({
     name,
@@ -98,14 +99,14 @@ export default function MultInput({
                     },
                 }}
                 sx={{
-                    bgcolor: 'white',
+                    bgcolor: 'background.paper',
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
                         '& fieldset': {
-                            borderColor: '#E0E0E0',
+                            borderColor: fieldBorder,
                         },
                         '&:hover fieldset': {
-                            borderColor: '#BDBDBD',
+                            borderColor: fieldBorderHover,
                         },
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',

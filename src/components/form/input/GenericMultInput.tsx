@@ -3,6 +3,7 @@ import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export default function MultInput({
     name,
@@ -70,14 +71,14 @@ export default function MultInput({
                 error={get(context.formState.errors, name!) ? true : false}
                 helperText={get(context.formState.errors, name!)?.message as string}
                 sx={{
-                    bgcolor: 'white',
+                    bgcolor: 'background.paper',
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
                         '& fieldset': {
-                            borderColor: '#E0E0E0',
+                            borderColor: fieldBorder,
                         },
                         '&:hover fieldset': {
-                            borderColor: '#BDBDBD',
+                            borderColor: fieldBorderHover,
                         },
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',

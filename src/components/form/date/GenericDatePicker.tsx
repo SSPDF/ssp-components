@@ -68,7 +68,7 @@ export default function GenericDatePicker({
                         disableHighlightToday
                         sx={{
                             outline: get(context.formState.errors, name!) ? '1px solid #a51c30' : '',
-                            backgroundColor: 'white',
+                            backgroundColor: 'background.paper',
                             width: '100%',
                             div: {
                                 input: {

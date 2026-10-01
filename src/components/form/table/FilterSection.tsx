@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { MODAL } from '../../modal/Modal'
 import { FilterOperators, FilterValue } from './types'
+import { useThemedColor } from '../../utils/useThemedColor'
 
 export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
     const [data, setData] = useState<FilterValue[]>(filters)
@@ -121,6 +122,7 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
     const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
     const [data, setData] = useState<FilterValue>(filterValue)
     const theme = useTheme()
+    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     useEffect(() => {
@@ -128,9 +130,9 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
     }, [data])
 
     return (
-        <Stack direction='row' alignItems='end' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
+        <Stack direction='row' alignItems='end' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? color('#ededed', (p) => p.action.hover) : 'inherit'} padding={0.5} borderRadius={2}>
             {!isSmall && (
-                <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
+                <Typography width='100%' alignContent='center' fontWeight={600} color={color('#323232', (p) => p.text.primary)}>
                     {filterValue.label}
                 </Typography>
             )}
@@ -150,7 +152,7 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
                     defaultValue={currentOperator}
                     size='small'
                     sx={{
-                        bgcolor: 'white',
+                        bgcolor: color('white', (p) => p.background.paper),
                     }}
                     fullWidth
                 >
@@ -179,6 +181,7 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
 }
 
 function FilterField({ filterValue, operator, onChange }: { filterValue: FilterValue; operator: FilterOperators; onChange: (value: string | any[], type?: 'value' | 'value2') => void }) {
+    const color = useThemedColor()
     switch (filterValue.type) {
         case 'number':
             return (
@@ -191,7 +194,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         onChange(e.target.value)
                     }}
                     sx={{
-                        bgcolor: 'white',
+                        bgcolor: color('white', (p) => p.background.paper),
                     }}
                     fullWidth
                 />
@@ -236,7 +239,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                             placeholder='Escolha um valor'
                                             fullWidth
                                             sx={{
-                                                bgcolor: 'white',
+                                                bgcolor: color('white', (p) => p.background.paper),
                                             }}
                                         />
                                     )}
@@ -256,7 +259,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         onChange(e.target.value)
                     }}
                     sx={{
-                        bgcolor: 'white',
+                        bgcolor: color('white', (p) => p.background.paper),
                     }}
                     fullWidth
                 />
@@ -284,7 +287,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                         },
                                     },
                                     width: '100%',
-                                    bgcolor: 'white',
+                                    bgcolor: color('white', (p) => p.background.paper),
                                 }}
                                 inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
@@ -307,7 +310,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                         },
                                     },
                                     width: '100%',
-                                    bgcolor: 'white',
+                                    bgcolor: color('white', (p) => p.background.paper),
                                 }}
                                 inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
@@ -325,7 +328,7 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                         },
                                     },
                                     width: '100%',
-                                    bgcolor: 'white',
+                                    bgcolor: color('white', (p) => p.background.paper),
                                 }}
                                 inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
