@@ -3,6 +3,7 @@ import React, { KeyboardEvent, useContext, useEffect, useId, useRef } from 'reac
 import { Controller } from 'react-hook-form'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
+import { fieldBorder } from '../fieldBorder'
 
 export function Radio({
     name,
@@ -105,11 +106,11 @@ export function Radio({
                                             onClick={() => !disabled && field.onChange(isSelected && !required ? '' : option.value)}
                                             sx={{
                                                 border: '1px solid',
-                                                borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
+                                                borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
                                                 borderRadius: '8px',
                                                 padding: '8px 16px',
                                                 cursor: disabled ? 'not-allowed' : 'pointer',
-                                                backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
+                                                backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
                                                 transition: 'all 0.2s',
                                                 display: 'flex',
                                                 alignItems: 'center',

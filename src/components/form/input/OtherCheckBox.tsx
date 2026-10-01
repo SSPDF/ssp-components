@@ -3,6 +3,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
 import { SwitchWatch } from '../switch/ToggleVisibility'
+import { fieldBorder } from '../fieldBorder'
 
 export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, md }: { name: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
     const context = useContext(FormContext)!
@@ -27,11 +28,11 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                 onClick={handleBoxClick}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
+                    borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
+                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
@@ -73,7 +74,7 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                             placeholder='Outro'
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    backgroundColor: 'white',
+                                    backgroundColor: 'background.paper',
                                 },
                             }}
                         />

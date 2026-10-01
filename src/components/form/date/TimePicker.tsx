@@ -9,6 +9,7 @@ import 'dayjs/locale/pt-br'
 import React, { useContext, useEffect, useState, useId } from 'react'
 import { FormContext } from '../../../context/form'
 import hasIn from 'lodash.hasin'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export default function TimePicker({
     name,
@@ -61,17 +62,17 @@ export default function TimePicker({
                     onChange={handleChange}
                     sx={{
                         outline: get(context.errors, name!) ? '1px solid transparent' : '',
-                        backgroundColor: 'white',
+                        backgroundColor: 'background.paper',
                         width: '100%',
                         // x-date-pickers 8+: as classes do campo são as do PickersOutlinedInput, não as do OutlinedInput.
                         '& .MuiPickersOutlinedInput-root': {
                             borderRadius: '8px',
                             transition: 'all 0.2s',
                             '& fieldset': {
-                                borderColor: '#E0E0E0',
+                                borderColor: fieldBorder,
                             },
                             '&:hover fieldset': {
-                                borderColor: '#BDBDBD',
+                                borderColor: fieldBorderHover,
                             },
                             '&.Mui-focused fieldset': {
                                 borderColor: 'primary.main',

@@ -167,7 +167,7 @@ export default function GenericFetchAutoComplete({
                     />
                 )}
                 sx={{
-                    bgcolor: 'white',
+                    bgcolor: 'background.paper',
                 }}
                 size='small'
                 fullWidth

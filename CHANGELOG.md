@@ -2,6 +2,14 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## Não lançado
+
+Entra na próxima versão. Peers, dependências e API pública iguais às da `rc.4`.
+
+### Mudanças que não exigem nada do app
+
+- **Tema escuro do app (`palette.mode: 'dark'`).** Fundo, texto e borda neutros dos campos (`Input`, pickers, autocompletes, `MultInput`, `OptionalInput`, `CheckBox`, `CheckBoxWarning`, `Radio`, `OtherCheckBox` e as versões `Generic`), das tabelas (`Table`, `GenericTable`, filtros, carregamento) e do `MODAL` eram fixos (`'white'`, `#E0E0E0`, `#1E293B`…). Num app em tema escuro o texto do campo herdava a cor clara do tema e sumia sobre o branco. Agora, no escuro, essas cores vêm da paleta do tema (`background.paper`, `divider`, `text.primary`…). **No tema claro nada muda**: os valores são os mesmos de antes, e os snapshots das 95 stories existentes não tiveram diferença. Botões coloridos, o chip de filtro e o aviso de erro da tabela continuam com cores fixas. Stories novas em `Tema escuro`.
+
 ## 1.0.0-rc.4
 
 Uma correção e documentação, depois de migrar o specto e o viva-flor com a `rc.3`. Peers, dependências e API pública iguais às da `rc.3`.

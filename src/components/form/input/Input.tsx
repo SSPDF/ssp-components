@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useMemo, useId } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 // Tipos nativos do HTML input
 type HTMLInputType = React.InputHTMLAttributes<HTMLInputElement>['type']
@@ -121,12 +122,12 @@ const VALIDATIONS: Record<string, { length: number; message: string }> = {
 
 // Estilos base do campo
 const baseTextFieldSx: SxProps<Theme> = {
-    backgroundColor: 'white',
+    backgroundColor: 'background.paper',
     '& .MuiOutlinedInput-root': {
         borderRadius: '8px',
         transition: 'all 0.2s',
-        '& fieldset': { borderColor: '#E0E0E0' },
-        '&:hover fieldset': { borderColor: '#BDBDBD' },
+        '& fieldset': { borderColor: fieldBorder },
+        '&:hover fieldset': { borderColor: fieldBorderHover },
         '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: '2px' },
         '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderWidth: '2px' },
     },

@@ -79,7 +79,7 @@ export default function GenericDatePicker({
                         disableHighlightToday
                         sx={{
                             outline: get(context.formState.errors, name!) ? '1px solid #a51c30' : '',
-                            backgroundColor: 'white',
+                            backgroundColor: 'background.paper',
                             width: '100%',
                             // x-date-pickers 8+: o campo é um grupo de seções, não mais um <input>. Mesmo padding de antes
                             // (8,4 px vertical e 16 px à esquerda), para o picker ter a altura dos outros campos.

@@ -3,6 +3,7 @@ import get from 'lodash.get'
 import React, { useEffect } from 'react'
 import MaskInput from './GenericMaskInput'
 import { useFormContext } from 'react-hook-form'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export function Input({
     type = 'input',
@@ -95,15 +96,15 @@ export function Input({
             helperText,
             ...inputConfig,
             sx: {
-                backgroundColor: 'white',
+                backgroundColor: 'background.paper',
                 '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
                     transition: 'all 0.2s',
                     '& fieldset': {
-                        borderColor: '#E0E0E0',
+                        borderColor: fieldBorder,
                     },
                     '&:hover fieldset': {
-                        borderColor: '#BDBDBD',
+                        borderColor: fieldBorderHover,
                     },
                     '&.Mui-focused fieldset': {
                         borderColor: 'primary.main',
