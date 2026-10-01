@@ -14,15 +14,13 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useStat
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils//CustomMenu'
+import { useIsClient } from '../../utils/useIsClient'
+import { separarPropsDeEstilo } from '../../utils/propsDeEstilo'
 import { FilterValue, OrderBy, TableProps } from './types'
 import { TableLoadingState } from './TableLoadingState'
 import { removePunctuationAndAccents, getCount, filtrarDados, ordenarDados, downloadCSVFile, downloadCSVAll } from './utils'
 import { FilterMenu } from './FilterSection'
-
-let isExpandAll: boolean = false
-let localTableName = ''
-let filtersFuncData: { [key: string]: (value: string) => any } = {}
-let localTableNameCache = ''
+import { useThemedColor } from '../../utils/useThemedColor'
 
 export function Table({
     mediaQueryLG,
@@ -70,21 +68,36 @@ export function Table({
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
     const [filterKey, setFilterKey] = useState('filterKey')
     const theme = useTheme()
+    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
     const startData = useRef<any[]>(data)
-    const orderAsc = useRef(localStorage.getItem(`order-${id}`) === 'true' || false)
+    const orderAsc = useRef(false)
     const lg = useMediaQuery(theme.breakpoints.up(2000))
+    // `localStorage` só existe no browser: nada de lê-lo durante o render (quebra o SSR — UPGRADE_PLAN.md 5.11)
+    const isClient = useIsClient()
 
-    localTableName = `tableFilter_${id}`
-    localTableNameCache = `tableFilterCache_${id}`
-    filtersFuncData = filtersFunc ?? {}
+    // Por instância, como no GenericTable. Até a 0.4.0 eram variáveis de módulo: com duas
+    // Table na mesma página, as duas liam e gravavam os filtros da última que renderizou
+    // (UPGRADE_PLAN.md 5.13a).
+    const localTableName = `tableFilter_${id}`
+    const localTableNameCache = `tableFilterCache_${id}`
+    const filtersFuncData: { [key: string]: (value: string) => any } = filtersFunc ?? {}
+    const [isAllExpanded, setIsAllExpanded] = useState(false)
 
-    if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+    // Estes dois efeitos precisam vir antes dos demais: os de baixo já contam com a
+    // ordenação restaurada e com o filtro salvo descartado se as colunas mudaram.
+    useEffect(() => {
+        orderAsc.current = localStorage.getItem(`order-${id}`) === 'true'
+    }, [id])
 
-    if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
-        localStorage.setItem(localTableNameCache, JSON.stringify(filters))
-        localStorage.removeItem(localTableName)
-    }
+    useEffect(() => {
+        if (!localStorage.getItem(localTableNameCache)) localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+
+        if (localStorage.getItem(localTableNameCache) !== JSON.stringify(filters)) {
+            localStorage.setItem(localTableNameCache, JSON.stringify(filters))
+            localStorage.removeItem(localTableName)
+        }
+    })
 
     useEffect(() => {
         setError(null)
@@ -111,7 +124,7 @@ export function Table({
                                 status: j.statusCode,
                             })
                         else {
-                            let value = dataPath ? get(j, dataPath) : j
+                            const value = dataPath ? get(j, dataPath) : j
 
                             if (!value || !Array.isArray(value)) {
                                 setData({ body: { data: [] } })
@@ -130,7 +143,7 @@ export function Table({
                                             orderAsc: orderAsc.current,
                                         })
                                     } catch (err) {
-                                        console.log(err)
+                                        console.error(err)
                                     }
                                 } else if (orderBy.length > 0) {
                                     // se não tiver salvo uma ordenação, ordena pelo primeiro da lista
@@ -166,7 +179,7 @@ export function Table({
     useEffect(() => {
         if (isLoading || error || !getData(data)) return
 
-        let value = getData(data)
+        const value = getData(data)
 
         setList(value)
         setListClone(value)
@@ -291,7 +304,7 @@ export function Table({
     useEffect(() => {
         const start = currentPage * itemsCount
         const newList = list.slice(start, start + itemsCount)
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
@@ -303,16 +316,16 @@ export function Table({
     }, [list, itemsCount, currentPage])
 
     function expandAll() {
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
+        const nextExpanded = !isAllExpanded
         for (let i = 0; i < itemCount; i++) {
-            obj[i] = !isExpandAll
+            obj[i] = nextExpanded
         }
 
         setShowExpandObjOnExited(obj)
         setExpandObj(obj)
-
-        isExpandAll = !isExpandAll
+        setIsAllExpanded(nextExpanded)
     }
 
     function reset() {
@@ -366,21 +379,29 @@ export function Table({
     if (isLoading) return <TableLoadingState tableName={tableName} />
     if (!userLoaded && useKC) return <LinearProgress />
 
+    const estiloDaTabela = separarPropsDeEstilo(customTableStyle, {
+        marginX: isSmall ? customMarginMobile : customMargin,
+        bgcolor: color('white', (p) => p.background.paper),
+        p: 2,
+        borderRadius: 6,
+    })
+
     return (
         <>
-            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6} {...customTableStyle}>
+            <Box {...estiloDaTabela.dom} sx={estiloDaTabela.sx}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
-                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} height={{ md: '40px', xs: 'inherit' }} width='100%'>
+                    <Stack
+                        spacing={1.5}
+                        direction={{ xs: 'column', md: 'row' }}
+                        sx={{
+                            height: { md: '40px', xs: 'inherit' },
+                            width: '100%',
+                        }}
+                    >
                         <TextField
-                            InputProps={{
-                                startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
-                                sx: {
-                                    '.MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                },
-                            }}
                             sx={{
-                                border: 'solid 1px #CBD5E1',
-                                backgroundColor: '#F8FAFC',
+                                border: color('solid 1px #CBD5E1', (p) => `solid 1px ${p.divider}`),
+                                backgroundColor: color('#F8FAFC', (p) => p.background.default),
                                 borderRadius: '50px',
                                 maxWidth: '600px',
                             }}
@@ -388,6 +409,16 @@ export function Table({
                             onChange={onInputChange}
                             fullWidth
                             placeholder={`Pesquisar ${tableName}`}
+                            slotProps={{
+                                // Só havia placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
+                                htmlInput: { 'aria-label': `Pesquisar ${tableName}` },
+                                input: {
+                                    startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
+                                    sx: {
+                                        '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    },
+                                },
+                            }}
                         />
 
                         <Button
@@ -412,7 +443,13 @@ export function Table({
                                 textTransform: 'capitalize',
                             }}
                         >
-                            <Stack direction='row' borderRadius={5} padding={0}>
+                            <Stack
+                                direction='row'
+                                sx={{
+                                    borderRadius: 5,
+                                    padding: 0,
+                                }}
+                            >
                                 <span>Filtrar</span>
                             </Stack>
                         </Button>
@@ -437,7 +474,7 @@ export function Table({
                                 <Button
                                     variant='contained'
                                     fullWidth
-                                    startIcon={isExpandAll ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                                    startIcon={isAllExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                                     sx={{
                                         backgroundColor: '#637082',
                                         ':hover': {
@@ -451,17 +488,33 @@ export function Table({
                                     }}
                                     onClick={expandAll}
                                 >
-                                    {isExpandAll ? 'Recolher' : 'Expandir'}
+                                    {isAllExpanded ? 'Recolher' : 'Expandir'}
                                 </Button>
                             )}
                         </Stack>
                     </Stack>
 
-                    <Stack alignItems='end' width={{ xs: '100%', md: '20%' }} direction={{ xs: 'row', md: 'column' }} spacing={{ xs: 1, md: 0 }}>
-                        <Typography fontWeight={600} textAlign='end'>
+                    <Stack
+                        direction={{ xs: 'row', md: 'column' }}
+                        spacing={{ xs: 1, md: 0 }}
+                        sx={{
+                            alignItems: 'end',
+                            width: { xs: '100%', md: '20%' },
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 600,
+                                textAlign: 'end',
+                            }}
+                        >
                             Registro de {tableName}s
                         </Typography>
-                        <Stack justifyContent='center'>
+                        <Stack
+                            sx={{
+                                justifyContent: 'center',
+                            }}
+                        >
                             <Typography>
                                 Exibindo {currentPage * itemsCount + 1}-{currentPage * itemsCount + 1 + getMaxItems().length - 1} de {list.length}
                             </Typography>
@@ -469,15 +522,54 @@ export function Table({
                     </Stack>
                 </Stack>
 
-                {localStorage.getItem(localTableName) && (
-                    <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
+                {isClient && localStorage.getItem(localTableName) && (
+                    <Box
+                        sx={{
+                            display: 'inline-flex',
+                            flexWrap: 'wrap',
+                            padding: 0.5,
+                            borderRadius: 4,
+                            marginBottom: 1,
+                        }}
+                    >
                         {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
                             .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2)))
                             .map((x) => (
-                                <Stack direction='row' spacing={1} bgcolor='#4e85c1' color='white' width='fit-content' paddingY={0.5} borderRadius={2} paddingX={1} m={0.5}>
-                                    <Typography fontWeight={700}>{x.label}</Typography>
-                                    <Typography fontStyle='italic'>{x.operator}</Typography>
-                                    <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
+                                <Stack
+                                    direction='row'
+                                    spacing={1}
+                                    sx={{
+                                        bgcolor: '#4e85c1',
+                                        color: 'white',
+                                        width: 'fit-content',
+                                        paddingY: 0.5,
+                                        borderRadius: 2,
+                                        paddingX: 1,
+                                        m: 0.5,
+                                    }}
+                                >
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 700,
+                                        }}
+                                    >
+                                        {x.label}
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            fontStyle: 'italic',
+                                        }}
+                                    >
+                                        {x.operator}
+                                    </Typography>
+                                    <Typography
+                                        color='black'
+                                        sx={{
+                                            bgcolor: 'white',
+                                            borderRadius: 2,
+                                            paddingX: 1,
+                                        }}
+                                    >
                                         {Array.isArray(x.value)
                                             ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
                                             : typeof x.value === 'object'
@@ -516,8 +608,23 @@ export function Table({
                 )}
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
-                        <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
-                            <Typography fontSize={21} fontFamily='Inter' fontWeight={600} textAlign='center'>
+                        <Stack
+                            sx={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: color('#E2E8F0', (p) => p.action.selected),
+                                padding: 2,
+                                marginX: { xs: 2, md: 0 },
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontSize: 21,
+                                    fontFamily: 'Inter',
+                                    fontWeight: 600,
+                                    textAlign: 'center',
+                                }}
+                            >
                                 {user ? emptyMsg.user : emptyMsg.public}
                             </Typography>
                         </Stack>
@@ -527,34 +634,50 @@ export function Table({
                                 key={index}
                                 sx={{
                                     padding: 0.5,
-                                    backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
+                                    backgroundColor: index % 2 === 0 ? color('#F8FAFC', (p) => p.action.hover) : color('white', (p) => p.background.paper),
                                     paddingTop: 2,
                                     paddingBottom: alwaysExpanded ? 2 : 0.5,
-                                    borderTop: 'solid 1.5px #E2E8F0',
+                                    borderTop: color('solid 1.5px #E2E8F0', (p) => `solid 1.5px ${p.divider}`),
                                     position: 'relative',
                                 }}
                                 elevation={0}
                             >
-                                <Grid container spacing={isSmall ? 2 : 0} paddingX={2} rowSpacing={2}>
+                                <Grid
+                                    container
+                                    spacing={isSmall ? 2 : 0}
+                                    rowSpacing={2}
+                                    sx={{
+                                        paddingX: 2,
+                                    }}
+                                >
                                     {columns.map((c) => (
                                         <Grid
                                             key={c.keyName + index}
-                                            item
-                                            xs={12}
-                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
-                                            {...({
-                                                size: { xs: 12, md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1) },
-                                            } as any)}
                                             sx={{
                                                 overflow: 'hidden',
                                             }}
+                                            size={{
+                                                xs: 12,
+                                                md: lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1),
+                                            }}
                                         >
                                             <Box sx={{ width: '100%', paddingX: 1 }}>
-                                                <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: 16,
+                                                        fontWeight: 700,
+                                                        color: color('#1E293B', (p) => p.text.primary),
+                                                        fontFamily: 'Inter',
+                                                    }}
+                                                >
                                                     {c.title}
                                                 </Typography>
                                             </Box>
-                                            <Box paddingLeft={1}>
+                                            <Box
+                                                sx={{
+                                                    paddingLeft: 1,
+                                                }}
+                                            >
                                                 <Collapse
                                                     in={alwaysExpanded || expandObj[index] === true}
                                                     collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
@@ -562,11 +685,11 @@ export function Table({
                                                 >
                                                     <Box
                                                         sx={{
+                                                            fontFamily: 'Inter',
                                                             wordWrap: 'break-word',
-                                                            color: '#1E293B',
+                                                            color: color('#1E293B', (p) => p.text.primary),
                                                             fontSize: 16,
                                                         }}
-                                                        fontFamily='Inter'
                                                     >
                                                         {c.customComponent ? (
                                                             c.customComponent(get(x, c.keyName), x)
@@ -583,17 +706,32 @@ export function Table({
                                         </Grid>
                                     ))}
                                     <Grid
-                                        item
-                                        xs={12}
-                                        md={lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize}
-                                        {...({ size: { xs: 12, md: lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize } } as any)}
+                                        size={{
+                                            xs: 12,
+                                            md: lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize,
+                                        }}
                                     >
-                                        <Stack direction='row' alignItems='center' justifyContent={isSmall ? 'start' : 'flex-end'} sx={{ height: '100%', paddingBottom: isSmall ? 2 : 0 }}>
+                                        <Stack
+                                            direction='row'
+                                            sx={{
+                                                alignItems: 'center',
+                                                justifyContent: isSmall ? 'start' : 'flex-end',
+                                                height: '100%',
+                                                paddingBottom: isSmall ? 2 : 0,
+                                            }}
+                                        >
                                             {action(x)}
                                         </Stack>
                                     </Grid>
                                     {showExpandObj[index] && !alwaysExpanded && (
-                                        <Stack direction='row' justifyContent='flex-end' bottom={0} width='100%'>
+                                        <Stack
+                                            direction='row'
+                                            sx={{
+                                                justifyContent: 'flex-end',
+                                                bottom: 0,
+                                                width: '100%',
+                                            }}
+                                        >
                                             <Button
                                                 onClick={(e) => {
                                                     setExpandObj((s) => ({ ...s, [index]: !s[index] }))
@@ -601,7 +739,7 @@ export function Table({
                                                 }}
                                                 sx={{
                                                     padding: 0,
-                                                    color: '#637082',
+                                                    color: color('#637082', (p) => p.text.secondary),
                                                     textTransform: 'capitalize',
                                                 }}
                                                 startIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
@@ -618,7 +756,6 @@ export function Table({
 
                 {getMaxItems().length > 0 && (
                     <Stack
-                        padding={1}
                         direction={{
                             xs: 'column',
                             md: 'row',
@@ -627,8 +764,11 @@ export function Table({
                             xs: 2,
                             md: 0,
                         }}
-                        justifyContent='space-between'
-                        alignItems='center'
+                        sx={{
+                            padding: 1,
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
                     >
                         {csvConfig && (
                             <Stack
@@ -636,20 +776,24 @@ export function Table({
                                     xs: 'column',
                                     md: 'row',
                                 }}
-                                justifyContent='flex-end'
                                 spacing={1}
+                                sx={{
+                                    justifyContent: 'flex-end',
+                                }}
                             >
-                                {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]).filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length > 0 && (
-                                    <Button
-                                        startIcon={<FileDownloadIcon />}
-                                        variant='contained'
-                                        size='small'
-                                        onClick={(e) => handleCSVDownload(list)}
-                                        sx={{ backgroundColor: '#a5a5a5', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
-                                    >
-                                        Baixar Filtrados
-                                    </Button>
-                                )}
+                                {isClient &&
+                                    (JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[]).filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2))).length >
+                                        0 && (
+                                        <Button
+                                            startIcon={<FileDownloadIcon />}
+                                            variant='contained'
+                                            size='small'
+                                            onClick={(e) => handleCSVDownload(list)}
+                                            sx={{ backgroundColor: '#a5a5a5', marginRight: { xs: 2, md: 0 }, width: { xs: '100%', md: 'fit-content' } }}
+                                        >
+                                            Baixar Filtrados
+                                        </Button>
+                                    )}
                                 <Button
                                     startIcon={<FileDownloadIcon />}
                                     variant='contained'
@@ -665,8 +809,22 @@ export function Table({
                 )}
             </Box>
 
-            <Stack direction='row' justifyContent='center' paddingY={1} paddingTop={2}>
-                <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
+            <Stack
+                direction='row'
+                sx={{
+                    justifyContent: 'center',
+                    paddingY: 1,
+                    paddingTop: 2,
+                }}
+            >
+                <Stack
+                    direction='row'
+                    spacing={2}
+                    sx={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
                     <Button
                         onClick={(e) =>
                             setListPage((s) => {
@@ -677,7 +835,14 @@ export function Table({
                                 return 1
                             })
                         }
-                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
+                        sx={{
+                            bgcolor: color('white', (p) => p.background.paper),
+                            borderRadius: '50px',
+                            height: '40px',
+                            width: '40px',
+                            minWidth: 0,
+                            border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                        }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
                     </Button>
@@ -695,7 +860,7 @@ export function Table({
                                                       color: 'white',
                                                   }
                                                 : {
-                                                      color: '#1E293B',
+                                                      color: color('#1E293B', (p) => p.text.primary),
                                                   }),
                                             borderRadius: '100%',
                                             padding: 0,
@@ -722,8 +887,8 @@ export function Table({
                         variant='outlined'
                         sx={{
                             '.MuiPagination-ul': {
-                                backgroundColor: 'white',
-                                border: 'solid 1px #E2E8F0',
+                                backgroundColor: color('white', (p) => p.background.paper),
+                                border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
                                 borderRadius: '50px',
                                 paddingX: 0.25,
                                 paddingY: 0.5,
@@ -740,7 +905,14 @@ export function Table({
                                 return paginationCount
                             })
                         }
-                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
+                        sx={{
+                            bgcolor: color('white', (p) => p.background.paper),
+                            borderRadius: '50px',
+                            height: '40px',
+                            width: '40px',
+                            minWidth: 0,
+                            border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                        }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />
                     </Button>

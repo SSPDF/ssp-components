@@ -1,13 +1,16 @@
-import { Grid, InputLabel, TextField, Typography, Box } from '@mui/material'
-import { ErrorOutline } from '@mui/icons-material'
+import { Grid, InputLabel, Typography, Box } from '@mui/material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 import { LocalizationProvider, DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs, { Dayjs } from 'dayjs'
+import { Dayjs } from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import 'dayjs/locale/pt-br'
 import get from 'lodash.get'
 import hasIn from 'lodash.hasin'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useId } from 'react'
 import { FormContext } from '../../../context/form'
+import { mensagemDeIntervalo } from './mensagemDeIntervalo'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export default function DatePicker({
     name,
@@ -33,6 +36,8 @@ export default function DatePicker({
     sm?: number
     md?: number
 }) {
+    // Liga o rótulo ao grupo de seções do picker: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const rotuloId = useId()
     const context = useContext(FormContext)!
 
     const [value, setValue] = useState<Dayjs | undefined>(defaultValue !== undefined ? dayjs(defaultValue, 'DD/MM/YYYY') : undefined)
@@ -56,10 +61,15 @@ export default function DatePicker({
 
     return (
         <>
-            <Grid item {...{ xs, sm, md }}>
-                {title && <InputLabel required={required}>{title}</InputLabel>}
+            <Grid size={{ xs, sm, md }}>
+                {title && (
+                    <InputLabel required={required} id={rotuloId}>
+                        {title}
+                    </InputLabel>
+                )}
                 <LocalizationProvider adapterLocale={'pt-br'} dateAdapter={AdapterDayjs}>
                     <MUIDatePicker
+                        slotProps={{ textField: { slotProps: { input: { 'aria-labelledby': title ? rotuloId : undefined } } } }}
                         minDate={dayjs(minDt, 'DD/MM/YYYY')}
                         maxDate={dayjs(maxDt, 'DD/MM/YYYY')}
                         format='DD/MM/YYYY'
@@ -68,59 +78,56 @@ export default function DatePicker({
                         disableHighlightToday
                         sx={{
                             outline: get(context.errors, name!) ? '1px solid transparent' : '',
-                            backgroundColor: 'white',
+                            backgroundColor: 'background.paper',
                             width: '100%',
-                            '& .MuiOutlinedInput-root': {
+                            // x-date-pickers 8+: as classes do campo são as do PickersOutlinedInput, não as do OutlinedInput.
+                            '& .MuiPickersOutlinedInput-root': {
                                 borderRadius: '8px',
                                 transition: 'all 0.2s',
                                 '& fieldset': {
-                                    borderColor: '#E0E0E0',
+                                    borderColor: fieldBorder,
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: '#BDBDBD',
+                                    borderColor: fieldBorderHover,
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',
                                     borderWidth: '2px',
                                 },
-                                '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+                                '&.Mui-error .MuiPickersOutlinedInput-notchedOutline': {
                                     borderColor: 'error.main',
                                     borderWidth: '2px',
                                 },
                             },
-                            div: {
-                                input: {
-                                    paddingX: 2,
-                                    paddingY: 1.05,
-                                },
-                            },
+                            // x-date-pickers 8+: o campo é um grupo de seções, não mais um <input>. Mesmo padding de antes
+                            // (8,4 px vertical e 16 px à esquerda), para o picker ter a altura dos outros campos.
+                            '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                            '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                         }}
-                        inputRef={(params: any) => (
-                            <TextField
-                                size='small'
-                                {...params}
-                                {...context?.formRegister(name!, {
-                                    validate: (v, f) => {
-                                        if (!hasIn(f, name)) {
-                                            return true
-                                        }
+                        // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
+                        // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o
+                        // retorno de uma ref vira função de cleanup (UPGRADE_PLAN.md 5.16).
+                        inputRef={() => {
+                            context?.formRegister(name!, {
+                                validate: (v, f) => {
+                                    if (!hasIn(f, name)) {
+                                        return true
+                                    }
 
-                                        if (!v) v = ''
+                                    if (!v) v = ''
 
-                                        if (v.length <= 0 && required) return 'Este campo é obrigatório'
-                                        if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
+                                    if (v.length <= 0 && required) return 'Este campo é obrigatório'
+                                    if (v.length < 10 && required) return 'A data precisa seguir o padrão DD/MM/AAAA'
 
-                                        if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
-                                            return `A data tem que ser depois de ${minDt} e antes de ${maxDt}`
+                                    if (minDt && !(dayjs(minDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(minDt, 'DD/MM/YYYY').isBefore(dayjs(v, 'DD/MM/YYYY'))))
+                                        return mensagemDeIntervalo(minDt, maxDt)
 
-                                        if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
-                                            return 'A data escolhida não é válida'
-                                    },
-                                    shouldUnregister: true,
-                                })}
-                                fullWidth
-                            />
-                        )}
+                                    if (maxDt && !(dayjs(maxDt, 'DD/MM/YYYY').isSame(dayjs(v, 'DD/MM/YYYY')) || dayjs(maxDt, 'DD/MM/YYYY').isAfter(dayjs(v, 'DD/MM/YYYY'))))
+                                        return mensagemDeIntervalo(minDt, maxDt)
+                                },
+                                shouldUnregister: true,
+                            })
+                        }}
                     />
                     {get(context.errors, name!) && (
                         <Box
@@ -136,8 +143,15 @@ export default function DatePicker({
                                 gap: 1,
                             }}
                         >
-                            <ErrorOutline fontSize='small' />
-                            <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                            <ErrorOutlineOutlined fontSize='small' />
+                            <Typography
+                                variant='caption'
+                                sx={{
+                                    color: 'inherit',
+                                    fontWeight: 600,
+                                    fontSize: 14,
+                                }}
+                            >
                                 {get(context.errors, name!)?.message as string}
                             </Typography>
                         </Box>

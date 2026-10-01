@@ -1,9 +1,10 @@
 import { Autocomplete, Grid, InputLabel, TextField, Box } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useId } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 let useDefault = true
 
@@ -16,7 +17,7 @@ export default function FetchAutoComplete({
     required = false,
     defaultValue,
     route = '',
-    onChange = () => { },
+    onChange = () => {},
     xs = 12,
     sm,
     watchValue,
@@ -38,6 +39,8 @@ export default function FetchAutoComplete({
     md?: number
     disabled?: boolean
 }) {
+    // Liga o rótulo ao campo: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const campoId = useId()
     const context = useContext(FormContext)!
 
     const [loading, setLoading] = useState(true)
@@ -64,10 +67,10 @@ export default function FetchAutoComplete({
                     response.status === 401
                         ? 'Sessão expirada. Faça login novamente.'
                         : response.status === 403
-                            ? 'Acesso negado. Verifique suas permissões.'
-                            : response.status >= 500
-                                ? 'Erro interno do servidor. Tente novamente mais tarde.'
-                                : 'Erro ao carregar dados'
+                          ? 'Acesso negado. Verifique suas permissões.'
+                          : response.status >= 500
+                            ? 'Erro interno do servidor. Tente novamente mais tarde.'
+                            : 'Erro ao carregar dados'
 
                 setError(errorMessage)
                 setLoadingText(errorMessage)
@@ -143,14 +146,18 @@ export default function FetchAutoComplete({
 
     if (defaultValue && list.length <= 0 && !dValue)
         return (
-            <Grid item {...{ xs, sm, md }}>
+            <Grid size={{ xs, sm, md }}>
                 <TextField size='small' fullWidth placeholder={loadingText} disabled />
             </Grid>
         )
 
     return (
-        <Grid item {...{ xs, sm, md }}>
-            {title && <InputLabel required={required}>{title}</InputLabel>}
+        <Grid size={{ xs, sm, md }}>
+            {title && (
+                <InputLabel required={required} htmlFor={campoId}>
+                    {title}
+                </InputLabel>
+            )}
             <input
                 type='text'
                 {...context?.formRegister(name!, {
@@ -161,6 +168,7 @@ export default function FetchAutoComplete({
                 hidden
             />
             <Autocomplete
+                id={campoId}
                 value={value}
                 loading={loading}
                 loadingText={loadingText}
@@ -177,7 +185,7 @@ export default function FetchAutoComplete({
                     if (hasError) {
                         errorMessage = (
                             <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <ErrorOutline fontSize='small' />
+                                <ErrorOutlineOutlined fontSize='small' />
                                 {errorMessage}
                             </Box>
                         )
@@ -192,32 +200,37 @@ export default function FetchAutoComplete({
                             onFocus={onFocus}
                             error={hasError}
                             helperText={errorMessage}
-                            FormHelperTextProps={{
-                                sx: {
-                                    backgroundColor: hasError ? '#FFEBEE' : 'transparent',
-                                    borderRadius: '8px',
-                                    padding: hasError ? '8px 12px' : 0,
-                                    marginBottom: hasError ? '4px' : 0,
-                                    marginTop: hasError ? '8px' : 0,
-                                    border: hasError ? '1px solid #FFCDD2' : 'none',
-                                    color: 'error.main',
-                                    marginLeft: 0,
-                                    marginRight: 0,
+                            // MUI 9: as props do Autocomplete para o campo (combobox, ref, adornos) vêm em
+                            // params.slotProps. Sem mesclar, o formHelperText daqui as apagaria.
+                            slotProps={{
+                                ...params.slotProps,
+                                formHelperText: {
+                                    sx: {
+                                        backgroundColor: hasError ? '#FFEBEE' : 'transparent',
+                                        borderRadius: '8px',
+                                        padding: hasError ? '8px 12px' : 0,
+                                        marginBottom: hasError ? '4px' : 0,
+                                        marginTop: hasError ? '8px' : 0,
+                                        border: hasError ? '1px solid #FFCDD2' : 'none',
+                                        color: 'error.main',
+                                        marginLeft: 0,
+                                        marginRight: 0,
+                                    },
                                 },
                             }}
                         />
                     )
                 }}
                 sx={{
-                    bgcolor: 'white',
+                    bgcolor: 'background.paper',
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
                         transition: 'all 0.2s',
                         '& fieldset': {
-                            borderColor: '#E0E0E0',
+                            borderColor: fieldBorder,
                         },
                         '&:hover fieldset': {
-                            borderColor: '#BDBDBD',
+                            borderColor: fieldBorderHover,
                         },
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',

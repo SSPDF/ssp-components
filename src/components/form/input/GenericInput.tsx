@@ -3,6 +3,7 @@ import get from 'lodash.get'
 import React, { useEffect } from 'react'
 import MaskInput from './GenericMaskInput'
 import { useFormContext } from 'react-hook-form'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 export function Input({
     type = 'input',
@@ -79,7 +80,7 @@ export function Input({
                     //
                     else if (type === 'email') {
                         if (value.length > 50) return 'Limite máximo de 50 caracteres'
-                        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(v) && props.required) return 'O e-mail inserido não é valido'
+                        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(v) && props.required) return 'O e-mail inserido não é válido'
                     }
                     //
                     else if (type === 'cpf_cnpj') {
@@ -95,15 +96,15 @@ export function Input({
             helperText,
             ...inputConfig,
             sx: {
-                backgroundColor: 'white',
+                backgroundColor: 'background.paper',
                 '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
                     transition: 'all 0.2s',
                     '& fieldset': {
-                        borderColor: '#E0E0E0',
+                        borderColor: fieldBorder,
                     },
                     '&:hover fieldset': {
-                        borderColor: '#BDBDBD',
+                        borderColor: fieldBorderHover,
                     },
                     '&.Mui-focused fieldset': {
                         borderColor: 'primary.main',
@@ -226,7 +227,7 @@ export function Input({
     }
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             {props.title && (
                 <InputLabel
                     htmlFor='campo'

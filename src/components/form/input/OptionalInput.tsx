@@ -2,6 +2,7 @@ import { Box, Checkbox, Grid, Stack, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 interface OptionalInputProps {
     title: string
@@ -23,7 +24,7 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
     }, [context])
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Stack direction='row'>
                 <Box>
                     <Checkbox size='small' {...context.formRegister(checkName)} sx={{ paddingLeft: 0, margin: 0 }} />
@@ -34,7 +35,7 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         {...context.formRegister(name!, {
                             validate: (v, f) => {
                                 const value = context.formWatch(checkName)
-                                if (!!value) {
+                                if (value) {
                                     if (!v || (v.length <= 0 && required)) return 'Este campo não pode ser vazio'
                                 }
                             },
@@ -44,14 +45,14 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         helperText={get(context.errors, name!)?.message as string}
                         placeholder={title}
                         sx={{
-                            bgcolor: 'white',
+                            bgcolor: 'background.paper',
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
                                 '& fieldset': {
-                                    borderColor: '#E0E0E0',
+                                    borderColor: fieldBorder,
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: '#BDBDBD',
+                                    borderColor: fieldBorderHover,
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',
@@ -66,11 +67,11 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         disabled
                         placeholder={title}
                         sx={{
-                            bgcolor: 'white',
+                            bgcolor: 'background.paper',
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
                                 '& fieldset': {
-                                    borderColor: '#E0E0E0',
+                                    borderColor: fieldBorder,
                                 },
                             },
                         }}

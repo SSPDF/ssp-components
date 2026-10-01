@@ -1,9 +1,10 @@
-import { Grid, GridProps, InputLabel, InputLabelProps, TextField, TextFieldProps, Box, SxProps, Theme } from '@mui/material'
+import { Box, FormHelperTextProps, Grid, GridProps, InputLabel, InputLabelProps, SxProps, TextField, TextFieldProps, Theme } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useId } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
+import { fieldBorder, fieldBorderHover } from '../fieldBorder'
 
 // Tipos nativos do HTML input
 type HTMLInputType = React.InputHTMLAttributes<HTMLInputElement>['type']
@@ -41,18 +42,31 @@ interface InputOwnProps {
     customValidate?: (value: string, form: Record<string, any>) => string | undefined
     /** Valor observado externamente: quando informado, o campo é sincronizado com esse valor (ex.: watchValue={context.formWatch('outroCampo')}) */
     watchValue?: string
-    /** Props do Grid container */
-    gridProps?: Omit<GridProps, 'item' | 'xs' | 'sm' | 'md'>
+    /** Props do Grid que envolve o campo (o tamanho vem de `xs`/`sm`/`md`) */
+    gridProps?: Omit<GridProps, 'size'>
     /** Props do InputLabel */
     labelProps?: Omit<InputLabelProps, 'required'>
 }
 
+/**
+ * Largura do campo por breakpoint, no formato do Grid antigo do MUI (`item xs sm md`): número de
+ * colunas, `'auto'`, ou `true` para ocupar o espaço que sobrar. Desde a 1.0.0 viram o `size` do
+ * Grid v2, que só tem efeito dentro de um `<Grid container>` (UPGRADE_PLAN.md, Etapa 7).
+ */
+type LarguraGrid = number | 'auto' | boolean
+
 // Props de layout do Grid
 interface GridLayoutProps {
-    xs?: GridProps['xs']
-    sm?: GridProps['sm']
-    md?: GridProps['md']
+    xs?: LarguraGrid
+    sm?: LarguraGrid
+    md?: LarguraGrid
 }
+
+// `true` era "crescer" no Grid antigo; no v2 é 'grow'. `false` não define tamanho.
+const paraGridV2 = (v?: LarguraGrid) => (v === true ? 'grow' : v === false ? undefined : v)
+
+// Um slot pode ser um objeto ou uma função (ownerState) => props; função não dá para mesclar e vence.
+const juntarSlot = (base?: object, atual?: unknown) => (typeof atual === 'function' ? atual : base || atual ? { ...base, ...(atual as object) } : undefined)
 
 // Props completas: nossas props + TextField props (exceto as controladas) + Grid layout
 export type InputProps = InputOwnProps & GridLayoutProps & Omit<TextFieldProps, OmittedTextFieldProps | keyof InputOwnProps>
@@ -63,7 +77,7 @@ const MASK_CONFIGS: Record<string, IMaskConfig> = {
     phone: {
         mask: [
             { mask: '(00) 0000-0000' }, // Fixo
-            { mask: '(00) 00000-0000' } // Celular (Genérico é melhor que forçar o 9 fixo na string)
+            { mask: '(00) 00000-0000' }, // Celular (Genérico é melhor que forçar o 9 fixo na string)
         ],
         dispatch: (appended: any, dynamicMasked: any) => {
             const number = (dynamicMasked.value + appended).replace(/\D/g, '')
@@ -83,7 +97,7 @@ const MASK_CONFIGS: Record<string, IMaskConfig> = {
             }
 
             return dynamicMasked.compiledMasks[0]
-        }
+        },
     },
     sei: { mask: '00000-00000000/0000-00' },
     cpf: { mask: '000.000.000-00' },
@@ -108,18 +122,18 @@ const VALIDATIONS: Record<string, { length: number; message: string }> = {
 
 // Estilos base do campo
 const baseTextFieldSx: SxProps<Theme> = {
-    backgroundColor: 'white',
+    backgroundColor: 'background.paper',
     '& .MuiOutlinedInput-root': {
         borderRadius: '8px',
         transition: 'all 0.2s',
-        '& fieldset': { borderColor: '#E0E0E0' },
-        '&:hover fieldset': { borderColor: '#BDBDBD' },
+        '& fieldset': { borderColor: fieldBorder },
+        '&:hover fieldset': { borderColor: fieldBorderHover },
         '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: '2px' },
         '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderWidth: '2px' },
     },
 }
 
-const getHelperTextProps = (hasError: boolean): TextFieldProps['FormHelperTextProps'] => ({
+const getHelperTextProps = (hasError: boolean): Partial<FormHelperTextProps> => ({
     sx: {
         backgroundColor: hasError ? '#FFEBEE' : 'transparent',
         borderRadius: '8px',
@@ -164,10 +178,11 @@ export function Input({
     // Props do TextField repassadas
     disabled = false,
     sx,
-    InputProps: inputPropsFromUser,
-    InputLabelProps: inputLabelPropsFromUser,
+    slotProps: slotPropsDoUsuario,
     ...textFieldProps
 }: InputProps) {
+    // Liga o rótulo ao campo: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const idGerado = useId()
     const context = useContext(FormContext)!
 
     useEffect(() => {
@@ -236,7 +251,7 @@ export function Input({
 
     const helperText = hasError ? (
         <Box component='span' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ErrorOutline fontSize='small' />
+            <ErrorOutlineOutlined fontSize='small' />
             {errorData?.message as string}
         </Box>
     ) : undefined
@@ -247,20 +262,24 @@ export function Input({
     const formConfig = useMemo(
         () => ({
             ...context.formRegister(name, { validate }),
+            id: idGerado,
             error: hasError,
             helperText,
             fullWidth: true,
             size: 'small' as const,
             variant: 'outlined' as const,
             placeholder: customPlaceholder ?? title,
-            FormHelperTextProps: getHelperTextProps(hasError),
             sx: mergedSx,
-            InputProps: inputPropsFromUser,
-            InputLabelProps: inputLabelPropsFromUser,
             ...textFieldProps,
+            slotProps: {
+                ...slotPropsDoUsuario,
+                formHelperText: juntarSlot(getHelperTextProps(hasError), slotPropsDoUsuario?.formHelperText),
+            },
         }),
-        [name, hasError, helperText, customPlaceholder, title, mergedSx, inputPropsFromUser, inputLabelPropsFromUser, textFieldProps],
+        [name, idGerado, hasError, helperText, customPlaceholder, title, mergedSx, slotPropsDoUsuario, textFieldProps],
     )
+
+    const campoId = (textFieldProps as { id?: string }).id ?? idGerado
 
     const renderInput = () => {
         // Tipos com máscara customizada
@@ -274,21 +293,22 @@ export function Input({
         // 'input' é tratado como 'text' para compatibilidade
         const htmlType = type === 'input' ? 'text' : type
 
-        return (
-            <TextField
-                {...formConfig}
-                type={htmlType}
-                value={formValue ?? defaultValue}
-                onChange={(e) => context.formSetValue(name, e.target.value)}
-                disabled={disabled}
-            />
-        )
+        // E-mail vai como texto, com teclado de e-mail: com `type='email'` a validação nativa do browser
+        // barrava o envio antes da lib, e a mensagem dela nunca aparecia (UPGRADE_PLAN.md 5.21c). Não se
+        // usa `noValidate` no <form> porque os apps têm campos próprios com `required` nativo.
+        if (type === 'email') {
+            const htmlInput = formConfig.slotProps.htmlInput
+            const slotProps = { ...formConfig.slotProps, htmlInput: typeof htmlInput === 'function' ? htmlInput : { inputMode: 'email' as const, autoComplete: 'email', ...htmlInput } }
+            return <TextField {...formConfig} slotProps={slotProps} type='text' value={formValue ?? defaultValue} onChange={(e) => context.formSetValue(name, e.target.value)} disabled={disabled} />
+        }
+
+        return <TextField {...formConfig} type={htmlType} value={formValue ?? defaultValue} onChange={(e) => context.formSetValue(name, e.target.value)} disabled={disabled} />
     }
 
     return (
-        <Grid item xs={xs} sm={sm} md={md} {...gridProps}>
+        <Grid size={{ xs: paraGridV2(xs), sm: paraGridV2(sm), md: paraGridV2(md) }} {...gridProps}>
             {title && (
-                <InputLabel required={required} sx={labelProps?.sx ? [baseLabelSx, labelProps.sx].flat() : baseLabelSx} {...labelProps}>
+                <InputLabel required={required} htmlFor={campoId} sx={labelProps?.sx ? [baseLabelSx, labelProps.sx].flat() : baseLabelSx} {...labelProps}>
                     {title}
                 </InputLabel>
             )}

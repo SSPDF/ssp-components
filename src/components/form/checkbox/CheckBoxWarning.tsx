@@ -1,6 +1,7 @@
 import { Card, Checkbox, Grid, Box, useTheme, Typography } from '@mui/material'
 import React, { ReactElement, useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
+import { fieldBorder } from '../fieldBorder'
 
 export default function CheckBoxWarning({
     name,
@@ -28,20 +29,20 @@ export default function CheckBoxWarning({
         (e: React.SyntheticEvent<Element, Event>) => {
             context?.formSetValue(name!, !context?.formGetValues(name))
         },
-        [context, name]
+        [context, name],
     )
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Box
                 onClick={(e: any) => onClick(e)}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
+                    borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
+                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
@@ -66,8 +67,11 @@ export default function CheckBoxWarning({
                 />
                 <Typography
                     variant='body2'
-                    color={isSelected ? 'primary.main' : 'text.primary'}
-                    fontWeight={isSelected ? 600 : 400}
+                    // MUI 9: o color do Typography só aceita nomes da paleta ('primary.main' e 'text.primary' viravam CSS inválido)
+                    color={isSelected ? 'primary' : 'textPrimary'}
+                    sx={{
+                        fontWeight: isSelected ? 600 : 400,
+                    }}
                 >
                     {title}
                 </Typography>

@@ -9,15 +9,21 @@ interface LoadingScreenProps {
 export const LoadingScreen = ({ textMessage, containerSx }: LoadingScreenProps) => {
     return (
         <Stack
-            justifyContent='center'
-            alignItems='center'
-            gap={4}
             sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 4,
                 width: '100%',
                 ...containerSx,
             }}
         >
-            <Box display='flex' justifyContent='center' alignItems='center'>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
                 <Typography variant='h6'>{textMessage ?? 'Carregando...'}</Typography>
             </Box>
             <LinearProgress sx={{ width: '100%' }} />

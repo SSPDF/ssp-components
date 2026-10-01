@@ -12,10 +12,21 @@
         "outDir": "dist",
         "rootDir": "src",
         "sourceMap": true,
-        "lib": ["DOM", "ESNext"],
+        "lib": [
+            "DOM",
+            "ESNext"
+        ],
         "allowImportingTsExtensions": true,
         "noEmit": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist", "scripts"]
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "scripts",
+        "examples",
+        "storybook-static"
+    ]
 }

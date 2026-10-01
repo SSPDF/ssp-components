@@ -1,5 +1,4 @@
-import { Box, Button, Grid, InputLabel, LinearProgress, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { Stack } from '@mui/system'
+import { Box, Button, Grid, InputLabel, LinearProgress, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import axios, { AxiosProgressEvent, AxiosResponse } from 'axios'
 import get from 'lodash.get'
 import React, { FormEvent, useContext, useEffect, useState } from 'react'
@@ -8,9 +7,7 @@ import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 
 import { PDFIcon, TrashIcon } from '../../icons/icons'
-import { ErrorOutline } from '@mui/icons-material'
-
-
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 
 interface FileState {
     id: number
@@ -93,7 +90,7 @@ export default function DropFileUpload({
                     return true
                 })
                 .forEach((file, index) => {
-                    let id: number = Date.now() + index
+                    const id: number = Date.now() + index
 
                     // fetch API
 
@@ -137,7 +134,7 @@ export default function DropFileUpload({
                             }
                         })
                         .catch((err) => {
-                            console.log(err)
+                            console.error(err)
                             setProgress(-1)
                             removeFile(id)
                         })
@@ -202,15 +199,15 @@ export default function DropFileUpload({
                         removeFile(id, true, fileIds[id])
                     }
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => console.error(err))
         }
     }
 
     useEffect(() => {
         if (apiURL) {
             const uploadedFiles = files
-                .filter(f => fileIds[f.id] !== undefined)
-                .map(f => ({
+                .filter((f) => fileIds[f.id] !== undefined)
+                .map((f) => ({
                     CO_SEQ_ARQUIVO: fileIds[f.id],
                     CO_TIPO_ARQUIVO: parseInt(tipoArquivo),
                 }))
@@ -232,21 +229,28 @@ export default function DropFileUpload({
     }, [])
 
     return (
-        <Grid item {...{ xs, sm, md }} sx={{ width: '100%', opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
-            <Box bgcolor='white' p={2} borderRadius='8px' color='#1E293B'>
+        <Grid size={{ xs, sm, md }} sx={{ width: '100%', opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
+            <Box
+                sx={{
+                    bgcolor: 'white',
+                    p: 2,
+                    borderRadius: '8px',
+                    color: '#1E293B',
+                }}
+            >
                 <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                     {title}
                 </InputLabel>
                 <Stack
                     {...getRootProps({ className: 'dropzone' })}
-                    bgcolor='#EFEFEF'
-                    justifyContent='center'
-                    alignItems='center'
-                    textAlign='center'
-                    borderRadius='6px'
-                    py={8}
-                    border='solid 1.5px #989898'
                     sx={{
+                        bgcolor: '#EFEFEF',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                        borderRadius: '6px',
+                        py: 8,
+                        border: 'solid 1.5px #989898',
                         borderStyle: 'dashed',
                         cursor: 'pointer',
                     }}
@@ -263,9 +267,19 @@ export default function DropFileUpload({
 
                         return <input {...inputProps} ref={assignRef(inputRef, formRef)} />
                     })()}
-                    <Stack spacing={2} alignItems='center'>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center',
+                        }}
+                    >
                         <Box>
-                            <Typography fontWeight={600} fontSize={18}>
+                            <Typography
+                                sx={{
+                                    fontWeight: 600,
+                                    fontSize: 18,
+                                }}
+                            >
                                 Arraste seus arquivos até aqui
                             </Typography>
                             <Typography>ou selecione arquivos que estão no seu computador</Typography>
@@ -282,19 +296,53 @@ export default function DropFileUpload({
                         >
                             Selecionar
                         </Button>
-                        <Typography fontWeight={300}>Tamanho máximo por arquivo {sizeLimit}MB</Typography>
+                        <Typography
+                            sx={{
+                                fontWeight: 300,
+                            }}
+                        >
+                            Tamanho máximo por arquivo {sizeLimit}MB
+                        </Typography>
                     </Stack>
                 </Stack>
 
-                <Typography pt={2} fontSize={16} fontWeight={600}>
+                <Typography
+                    sx={{
+                        pt: 2,
+                        fontSize: 16,
+                        fontWeight: 600,
+                    }}
+                >
                     Você selecionou {files.length} arquivo{files.length > 1 ? 's' : ''}.
                 </Typography>
 
-                <Stack width='100%' marginTop={1} spacing={1}>
+                <Stack
+                    spacing={1}
+                    sx={{
+                        width: '100%',
+                        marginTop: 1,
+                    }}
+                >
                     {files.map((x) => (
-                        <Stack direction='row' justifyContent='space-between' border='solid 1px #E2E8F0' borderRadius={2} p={1}>
+                        <Stack
+                            direction='row'
+                            sx={{
+                                justifyContent: 'space-between',
+                                border: 'solid 1px #E2E8F0',
+                                borderRadius: 2,
+                                p: 1,
+                            }}
+                        >
                             <Stack direction='row'>
-                                <Stack direction='row' justifyContent='center' alignItems='center' minWidth={30} pr={1.5}>
+                                <Stack
+                                    direction='row'
+                                    sx={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        minWidth: 30,
+                                        pr: 1.5,
+                                    }}
+                                >
                                     <PDFIcon
                                         sx={{
                                             filter: 'invert(42%) sepia(86%) saturate(2412%) hue-rotate(326deg) brightness(86%) contrast(102%)',
@@ -304,8 +352,20 @@ export default function DropFileUpload({
                                     />
                                 </Stack>
                                 <Stack>
-                                    <Typography fontWeight={600}>{x.name}</Typography>
-                                    <Typography fontSize={14}>{bytesToKBorMB(x.size)}</Typography>
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {x.name}
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            fontSize: 14,
+                                        }}
+                                    >
+                                        {bytesToKBorMB(x.size)}
+                                    </Typography>
                                 </Stack>
                             </Stack>
 
@@ -353,8 +413,15 @@ export default function DropFileUpload({
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             {errorMsg}
                         </Typography>
                     </Box>
@@ -374,8 +441,15 @@ export default function DropFileUpload({
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             O campo de arquivo é obrigatório
                         </Typography>
                     </Box>
@@ -384,6 +458,3 @@ export default function DropFileUpload({
         </Grid>
     )
 }
-
-
-

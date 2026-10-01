@@ -1,10 +1,11 @@
-import { ButtonProps, Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 import React from 'react'
-import Bt from './Bt'
+import Bt, { CustomButton } from './Bt'
 
 interface MenuProps {
     data: { name: string; onClick?: () => void }[]
-    btProps?: ButtonProps
+    // Repassado para o `Bt`: aceita as props do `Button` do MUI e também `customColor`/`customFontColor`
+    btProps?: CustomButton
     children?: React.ReactNode
 }
 
@@ -28,12 +29,15 @@ export default function CustomMenu({ data = [], ...props }: MenuProps) {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
+                slotProps={{
+                    list: {
+                        'aria-labelledby': 'basic-button',
+                    },
                 }}
             >
-                {data.map((x) => (
+                {data.map((x, i) => (
                     <MenuItem
+                        key={`${x.name}-${i}`}
                         onClick={() => {
                             x.onClick && x.onClick()
                             handleClose()

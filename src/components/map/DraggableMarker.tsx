@@ -8,7 +8,7 @@ import React from 'react'
 interface DraggableMarkerProps {
     startCoord: LatLngExpression
     draggable?: boolean
-    // eslint-disable-next-line no-unused-vars
+
     onChange?: (coord: LatLngExpression) => void
     children?: ReactElement
     showPopup?: boolean
@@ -28,7 +28,7 @@ export default function DraggableMarker({ ...props }: DraggableMarkerProps) {
                 }
             },
         }),
-        []
+        [],
     )
 
     useMapEvents({

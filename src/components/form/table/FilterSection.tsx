@@ -5,10 +5,11 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
+import dayjs from '../../utils/dayjs'
 import React, { useEffect, useState } from 'react'
 import { MODAL } from '../../modal/Modal'
 import { FilterOperators, FilterValue } from './types'
+import { useThemedColor } from '../../utils/useThemedColor'
 
 export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
     const [data, setData] = useState<FilterValue[]>(filters)
@@ -28,9 +29,11 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
 
     return (
         <Box
-            width={{
-                xs: 'inherit',
-                md: 850,
+            sx={{
+                width: {
+                    xs: 'inherit',
+                    md: 850,
+                },
             }}
         >
             <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
@@ -46,7 +49,12 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                 ))}
             </Menu>
 
-            <Stack direction='row' justifyContent='space-between'>
+            <Stack
+                direction='row'
+                sx={{
+                    justifyContent: 'space-between',
+                }}
+            >
                 {/* <Button
                     variant='contained'
                     onClick={handleClick}
@@ -58,7 +66,12 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                 >
                     Adicionar Regra
                 </Button> */}
-                <Typography fontWeight={700} fontSize={18}>
+                <Typography
+                    sx={{
+                        fontWeight: 700,
+                        fontSize: 18,
+                    }}
+                >
                     Filtrar
                 </Typography>
                 <Button
@@ -75,7 +88,11 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                 </Button>
             </Stack>
 
-            <Box marginBottom={1}>
+            <Box
+                sx={{
+                    marginBottom: 1,
+                }}
+            >
                 <Alert severity='warning'>Preencha apenas os campos que deseja filtrar.</Alert>
             </Box>
 
@@ -88,7 +105,7 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                             idx={idx}
                             setDt={(valueData) => {
                                 setData((dt) => {
-                                    let arr = [...dt]
+                                    const arr = [...dt]
                                     arr[idx] = valueData
                                     return arr
                                 })
@@ -97,7 +114,13 @@ export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: ()
                     ))}
                 </Box>
             </Stack>
-            <Stack direction='row' justifyContent='flex-end' marginTop={1}>
+            <Stack
+                direction='row'
+                sx={{
+                    justifyContent: 'flex-end',
+                    marginTop: 1,
+                }}
+            >
                 <Button
                     variant='contained'
                     color='success'
@@ -121,6 +144,7 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
     const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
     const [data, setData] = useState<FilterValue>(filterValue)
     const theme = useTheme()
+    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     useEffect(() => {
@@ -128,9 +152,26 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
     }, [data])
 
     return (
-        <Stack direction='row' alignItems='end' spacing={1} width='100%' bgcolor={idx % 2 === 0 ? '#ededed' : 'inherit'} padding={0.5} borderRadius={2}>
+        <Stack
+            direction='row'
+            spacing={1}
+            sx={{
+                alignItems: 'end',
+                width: '100%',
+                bgcolor: idx % 2 === 0 ? color('#ededed', (p) => p.action.hover) : 'inherit',
+                padding: 0.5,
+                borderRadius: 2,
+            }}
+        >
             {!isSmall && (
-                <Typography width='100%' alignContent='center' fontWeight={600} color='#323232'>
+                <Typography
+                    sx={{
+                        width: '100%',
+                        alignContent: 'center',
+                        fontWeight: 600,
+                        color: color('#323232', (p) => p.text.primary),
+                    }}
+                >
                     {filterValue.label}
                 </Typography>
             )}
@@ -150,7 +191,7 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
                     defaultValue={currentOperator}
                     size='small'
                     sx={{
-                        bgcolor: 'white',
+                        bgcolor: color('white', (p) => p.background.paper),
                     }}
                     fullWidth
                 >
@@ -179,6 +220,12 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
 }
 
 function FilterField({ filterValue, operator, onChange }: { filterValue: FilterValue; operator: FilterOperators; onChange: (value: string | any[], type?: 'value' | 'value2') => void }) {
+    const color = useThemedColor()
+    // Os campos do filtro só tinham placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const nome = `Valor do filtro ${filterValue.label}`
+    // x-date-pickers 8+: o campo é um grupo de seções, sem <input> visível; o nome vai no grupo.
+    const nomeDoPicker = (sufixo = '') => ({ textField: { slotProps: { input: { 'aria-label': nome + sufixo } } } })
+
     switch (filterValue.type) {
         case 'number':
             return (
@@ -186,12 +233,13 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                     type='number'
                     size='small'
                     placeholder='Valor'
+                    slotProps={{ htmlInput: { 'aria-label': nome } }}
                     defaultValue={filterValue.value}
                     onChange={(e) => {
                         onChange(e.target.value)
                     }}
                     sx={{
-                        bgcolor: 'white',
+                        bgcolor: color('white', (p) => p.background.paper),
                     }}
                     fullWidth
                 />
@@ -203,7 +251,6 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         return (
                             <Autocomplete
                                 multiple
-                                id='tags-standard'
                                 onChange={(_e, value) => {
                                     if (value.length <= 0) {
                                         onChange('')
@@ -214,14 +261,27 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                 }}
                                 options={filterValue.useList}
                                 defaultValue={Array.isArray(filterValue.value) ? filterValue.value : []}
-                                renderInput={(params) => <TextField {...params} variant='standard' placeholder='Escolha os valores' fullWidth />}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant='standard'
+                                        placeholder='Escolha os valores'
+                                        fullWidth
+                                        // MUI 9: o Autocomplete manda as props do input em params.slotProps; mesclar, não trocar.
+                                        slotProps={{ ...params.slotProps, htmlInput: { ...params.slotProps.htmlInput, 'aria-label': nome } }}
+                                    />
+                                )}
                                 fullWidth
                             />
                         )
                     case 'contem':
                     case 'igual':
                         return (
-                            <Box width='100%'>
+                            <Box
+                                sx={{
+                                    width: '100%',
+                                }}
+                            >
                                 <Autocomplete
                                     options={filterValue.useList}
                                     onChange={(_e, value) => {
@@ -235,8 +295,9 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                             size='small'
                                             placeholder='Escolha um valor'
                                             fullWidth
+                                            slotProps={{ ...params.slotProps, htmlInput: { ...params.slotProps.htmlInput, 'aria-label': nome } }}
                                             sx={{
-                                                bgcolor: 'white',
+                                                bgcolor: color('white', (p) => p.background.paper),
                                             }}
                                         />
                                     )}
@@ -251,12 +312,13 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                 <TextField
                     size='small'
                     placeholder='Valor'
+                    slotProps={{ htmlInput: { 'aria-label': nome } }}
                     defaultValue={filterValue.value}
                     onChange={(e) => {
                         onChange(e.target.value)
                     }}
                     sx={{
-                        bgcolor: 'white',
+                        bgcolor: color('white', (p) => p.background.paper),
                     }}
                     fullWidth
                 />
@@ -276,17 +338,14 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
                                 }}
                                 defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
+                                slotProps={nomeDoPicker()}
                                 sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
+                                    // x-date-pickers 8+: o seletor antigo (div input) não acha mais nada; mesmas medidas do DatePicker da lib.
+                                    '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                                    '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
-                                    bgcolor: 'white',
+                                    bgcolor: color('white', (p) => p.background.paper),
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )
@@ -299,17 +358,14 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '')
                                 }}
                                 defaultValue={filterValue.value ? dayjs(filterValue.value as string, 'DD/MM/YYYY') : undefined}
+                                slotProps={nomeDoPicker(' (início)')}
                                 sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
+                                    // x-date-pickers 8+: o seletor antigo (div input) não acha mais nada; mesmas medidas do DatePicker da lib.
+                                    '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                                    '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
-                                    bgcolor: 'white',
+                                    bgcolor: color('white', (p) => p.background.paper),
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                             <DatePicker
                                 format='DD/MM/YYYY'
@@ -317,17 +373,14 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     onChange(dt.isValid() ? dt.format('DD/MM/YYYY') : '', 'value2')
                                 }}
                                 defaultValue={filterValue.value2 ? dayjs(filterValue.value2 as string, 'DD/MM/YYYY') : undefined}
+                                slotProps={nomeDoPicker(' (fim)')}
                                 sx={{
-                                    div: {
-                                        input: {
-                                            paddingX: 2,
-                                            paddingY: 1.05,
-                                        },
-                                    },
+                                    // x-date-pickers 8+: o seletor antigo (div input) não acha mais nada; mesmas medidas do DatePicker da lib.
+                                    '& .MuiPickersInputBase-root': { paddingLeft: 2 },
+                                    '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
-                                    bgcolor: 'white',
+                                    bgcolor: color('white', (p) => p.background.paper),
                                 }}
-                                inputRef={(params: any) => <TextField {...params} size='small' fullWidth />}
                             />
                         </LocalizationProvider>
                     )

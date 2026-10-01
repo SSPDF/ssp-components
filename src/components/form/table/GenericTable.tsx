@@ -14,9 +14,12 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useStat
 import { AuthContext } from '../../../context/auth'
 import { MODAL } from '../../modal/Modal'
 import CustomMenu from '../../utils/CustomMenu'
+import { useIsClient } from '../../utils/useIsClient'
+import { separarPropsDeEstilo } from '../../utils/propsDeEstilo'
 import { FilterValue, OrderBy, TableProps2 } from './types'
 import { FilterMenu } from './FilterSection'
 import { filtrarDados, ordenarDados, removePunctuationAndAccents, getCount, transformArrayObjectInString } from './utils'
+import { useThemedColor } from '../../utils/useThemedColor'
 
 /**
  * Tabela cujo dados devem ser passados via props
@@ -90,8 +93,8 @@ export function GenericTable({
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
     const [filterKey, setFilterKey] = useState('filterKey')
     const theme = useTheme()
+    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
-    const filterContainer = useRef(null)
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
 
@@ -101,6 +104,8 @@ export function GenericTable({
     const localTableNameCache = `tableFilterCache_${id}`
     const orderAsc = useRef<boolean>(false)
     const filtersFuncData = filtersFunc ?? {}
+    // `localStorage` só existe no browser: nada de lê-lo durante o render (quebra o SSR — UPGRADE_PLAN.md 5.11)
+    const isClient = useIsClient()
 
     useEffect(() => {
         setData(initialData)
@@ -156,7 +161,6 @@ export function GenericTable({
     )
 
     function onInputChange(e: ChangeEvent) {
-        console.log(listClone)
         const searchValue = (e.target as HTMLInputElement).value
 
         if (searchValue === '') {
@@ -292,7 +296,7 @@ export function GenericTable({
 
                                     return removeQuotes ? `${item}` : `"${item}"`
                                 } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                    const strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
                                     let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
@@ -353,7 +357,7 @@ export function GenericTable({
 
                                     return removeQuotes ? `${item}` : `"${item}"`
                                 } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                    let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                    const strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
                                     let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
@@ -415,7 +419,7 @@ export function GenericTable({
 
                                 return removeQuotes ? `${item}` : `"${item}"`
                             } else if (typeof x[k] === 'object' && !Array.isArray(x[k]) && x[k] !== null) {
-                                let strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
+                                const strItemAsObject = transformArrayObjectInString(x[k]).slice(1, -1) // k: label (Ex.: jsNaturezaEvento)
 
                                 let item = csvUpper && !csvExcludeUpper.includes(k) ? (strItemAsObject as string).toUpperCase() : strItemAsObject
 
@@ -433,7 +437,7 @@ export function GenericTable({
             const csvData = header + values
 
             // download
-            var link = window.document.createElement('a')
+            const link = window.document.createElement('a')
             link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData))
             link.setAttribute('download', `${csv?.fileName}.csv`)
             link.click()
@@ -443,7 +447,7 @@ export function GenericTable({
 
     function expandAll() {
         const nextExpanded = !isAllExpanded
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         for (let i = 0; i < itemsCount; i++) {
             obj[i] = nextExpanded
@@ -500,7 +504,7 @@ export function GenericTable({
     useEffect(() => {
         const start = currentPage * itemsCount
         const newList = list.slice(start, start + itemsCount)
-        let obj: { [key: number]: boolean } = {}
+        const obj: { [key: number]: boolean } = {}
 
         newList.forEach((x, index) => {
             columns.forEach((c) => {
@@ -511,17 +515,33 @@ export function GenericTable({
         setShowExpandObj(obj)
     }, [list, itemsCount, currentPage])
 
-    useEffect(() => {
-        console.log(filterContainer.current)
-    }, [filterContainer.current])
-
     if (error)
         return (
-            <Box bgcolor='#fff2c8' color='#3e3129' padding={2} marginX={2} borderRadius={4}>
-                <Typography fontSize={24} textAlign='center' fontFamily='Inter'>
+            <Box
+                sx={{
+                    bgcolor: '#fff2c8',
+                    color: '#3e3129',
+                    padding: 2,
+                    marginX: 2,
+                    borderRadius: 4,
+                }}
+            >
+                <Typography
+                    component='div'
+                    sx={{
+                        fontSize: 24,
+                        textAlign: 'center',
+                        fontFamily: 'Inter',
+                    }}
+                >
                     {error.status === 403 && 'Acesso negado'}
                     {error.status === 500 && (
-                        <Box fontWeight={500} textAlign='center'>
+                        <Box
+                            sx={{
+                                fontWeight: 500,
+                                textAlign: 'center',
+                            }}
+                        >
                             <ReportProblemRounded sx={{ transform: 'scale(2)', marginY: 1, fill: '#3e3129' }} />
                             <Box>
                                 {customErrorMsg ? (
@@ -542,11 +562,39 @@ export function GenericTable({
         )
     if (isLoading)
         return (
-            <Stack sx={{ height: '100%', width: '100%' }} justifyContent='center' alignItems='center'>
-                <Box width='100%'>
-                    <Stack direction='row' justifyContent='center' alignItems='center' justifyItems='center' spacing={2} marginY={4}>
-                        <PendingRounded sx={{ fill: '#5e5e5e' }} />
-                        <Typography fontWeight={600} fontSize={20} textTransform='capitalize' textAlign='center' color='#5e5e5e'>
+            <Stack
+                sx={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    width: '100%',
+                }}
+            >
+                <Box
+                    sx={{
+                        width: '100%',
+                    }}
+                >
+                    <Stack
+                        direction='row'
+                        spacing={2}
+                        sx={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            justifyItems: 'center',
+                            marginY: 4,
+                        }}
+                    >
+                        <PendingRounded sx={{ fill: color('#5e5e5e', (p) => p.text.secondary) }} />
+                        <Typography
+                            sx={{
+                                fontWeight: 600,
+                                fontSize: 20,
+                                textTransform: 'capitalize',
+                                textAlign: 'center',
+                                color: color('#5e5e5e', (p) => p.text.secondary),
+                            }}
+                        >
                             Carregando {tableName}
                         </Typography>
                     </Stack>
@@ -564,9 +612,11 @@ export function GenericTable({
                                     xs: 3,
                                     md: 1,
                                 }}
-                                justifyContent='space-between'
-                                paddingY={8}
-                                borderBottom='1px solid #cacaca'
+                                sx={{
+                                    justifyContent: 'space-between',
+                                    paddingY: 8,
+                                    borderBottom: color('1px solid #cacaca', (p) => `1px solid ${p.divider}`),
+                                }}
                             >
                                 {Array(7)
                                     .fill(0)
@@ -584,21 +634,29 @@ export function GenericTable({
 
     if (!userLoaded && useKC) return <LinearProgress />
 
+    const estiloDaTabela = separarPropsDeEstilo(customTableStyle, {
+        marginX: isSmall ? customMarginMobile : customMargin,
+        bgcolor: color('white', (p) => p.background.paper),
+        p: 2,
+        borderRadius: 6,
+    })
+
     return (
         <>
-            <Box marginX={isSmall ? customMarginMobile : customMargin} bgcolor='white' p={2} borderRadius={6} {...customTableStyle}>
+            <Box {...estiloDaTabela.dom} sx={estiloDaTabela.sx}>
                 <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }}>
-                    <Stack spacing={1.5} direction={{ xs: 'column', md: 'row' }} height={{ md: '40px', xs: 'inherit' }} width='100%'>
+                    <Stack
+                        spacing={1.5}
+                        direction={{ xs: 'column', md: 'row' }}
+                        sx={{
+                            height: { md: '40px', xs: 'inherit' },
+                            width: '100%',
+                        }}
+                    >
                         <TextField
-                            InputProps={{
-                                startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
-                                sx: {
-                                    '.MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                },
-                            }}
                             sx={{
-                                border: 'solid 1px #CBD5E1',
-                                backgroundColor: '#F8FAFC',
+                                border: color('solid 1px #CBD5E1', (p) => `solid 1px ${p.divider}`),
+                                backgroundColor: color('#F8FAFC', (p) => p.background.default),
                                 borderRadius: '50px',
                                 maxWidth: '600px',
                             }}
@@ -606,6 +664,16 @@ export function GenericTable({
                             onChange={onInputChange}
                             fullWidth
                             placeholder={`Pesquisar ${tableName}`}
+                            slotProps={{
+                                // Só havia placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
+                                htmlInput: { 'aria-label': `Pesquisar ${tableName}` },
+                                input: {
+                                    startAdornment: <SearchIcon sx={{ marginRight: 1, fill: '#c0c0c0' }} />,
+                                    sx: {
+                                        '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    },
+                                },
+                            }}
                         />
 
                         {filters.length > 0 && (
@@ -631,7 +699,13 @@ export function GenericTable({
                                     textTransform: 'capitalize',
                                 }}
                             >
-                                <Stack direction='row' borderRadius={5} padding={0}>
+                                <Stack
+                                    direction='row'
+                                    sx={{
+                                        borderRadius: 5,
+                                        padding: 0,
+                                    }}
+                                >
                                     <span>Filtrar</span>
                                 </Stack>
                             </Button>
@@ -673,11 +747,27 @@ export function GenericTable({
                         </Stack>
                     </Stack>
 
-                    <Stack alignItems='end' width={{ xs: '100%', md: '20%' }} direction={{ xs: 'row', md: 'column' }} spacing={{ xs: 1, md: 0 }}>
-                        <Typography fontWeight={600} textAlign='end'>
+                    <Stack
+                        direction={{ xs: 'row', md: 'column' }}
+                        spacing={{ xs: 1, md: 0 }}
+                        sx={{
+                            alignItems: 'end',
+                            width: { xs: '100%', md: '20%' },
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 600,
+                                textAlign: 'end',
+                            }}
+                        >
                             Registro de {tableName}s
                         </Typography>
-                        <Stack justifyContent='center'>
+                        <Stack
+                            sx={{
+                                justifyContent: 'center',
+                            }}
+                        >
                             <Typography>
                                 Exibindo {getMaxItems().length ? currentPage * itemsCount + 1 : 0}-{currentPage * itemsCount + getMaxItems().length} de {totalCount ?? list.length}
                             </Typography>
@@ -685,15 +775,54 @@ export function GenericTable({
                     </Stack>
                 </Stack>
 
-                {localStorage.getItem(localTableName) && (
-                    <Box display='inline-flex' flexWrap='wrap' padding={0.5} borderRadius={4} marginBottom={1}>
+                {isClient && localStorage.getItem(localTableName) && (
+                    <Box
+                        sx={{
+                            display: 'inline-flex',
+                            flexWrap: 'wrap',
+                            padding: 0.5,
+                            borderRadius: 4,
+                            marginBottom: 1,
+                        }}
+                    >
                         {(JSON.parse(localStorage.getItem(localTableName) ?? '[]') as FilterValue[])
                             .filter((x) => x.value || (x.operator === 'entre' && (x.value || x.value2)))
                             .map((x) => (
-                                <Stack direction='row' spacing={1} bgcolor='#4e85c1' color='white' width='fit-content' paddingY={0.5} borderRadius={2} paddingX={1} m={0.5}>
-                                    <Typography fontWeight={700}>{x.label}</Typography>
-                                    <Typography fontStyle='italic'>{x.operator}</Typography>
-                                    <Typography bgcolor='white' borderRadius={2} paddingX={1} color='black'>
+                                <Stack
+                                    direction='row'
+                                    spacing={1}
+                                    sx={{
+                                        bgcolor: '#4e85c1',
+                                        color: 'white',
+                                        width: 'fit-content',
+                                        paddingY: 0.5,
+                                        borderRadius: 2,
+                                        paddingX: 1,
+                                        m: 0.5,
+                                    }}
+                                >
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 700,
+                                        }}
+                                    >
+                                        {x.label}
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            fontStyle: 'italic',
+                                        }}
+                                    >
+                                        {x.operator}
+                                    </Typography>
+                                    <Typography
+                                        color='black'
+                                        sx={{
+                                            bgcolor: 'white',
+                                            borderRadius: 2,
+                                            paddingX: 1,
+                                        }}
+                                    >
                                         {Array.isArray(x.value)
                                             ? (x.value as { id: string; label: string }[]).map((x) => x.label).join(' - ')
                                             : typeof x.value === 'object'
@@ -733,8 +862,23 @@ export function GenericTable({
                 )}
                 <Stack spacing={0.2}>
                     {getMaxItems().length <= 0 ? (
-                        <Stack sx={{ backgroundColor: '#E2E8F0', padding: 2, marginX: { xs: 2, md: 0 } }} justifyContent='center' alignItems='center'>
-                            <Typography fontSize={21} fontFamily='Inter' fontWeight={600} textAlign='center'>
+                        <Stack
+                            sx={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: color('#E2E8F0', (p) => p.action.selected),
+                                padding: 2,
+                                marginX: { xs: 2, md: 0 },
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontSize: 21,
+                                    fontFamily: 'Inter',
+                                    fontWeight: 600,
+                                    textAlign: 'center',
+                                }}
+                            >
                                 {user ? emptyMsg.user : emptyMsg.public}
                             </Typography>
                         </Stack>
@@ -744,34 +888,50 @@ export function GenericTable({
                                 key={index}
                                 sx={{
                                     padding: 0.5,
-                                    backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
+                                    backgroundColor: index % 2 === 0 ? color('#F8FAFC', (p) => p.action.hover) : color('white', (p) => p.background.paper),
                                     paddingTop: 2,
                                     paddingBottom: alwaysExpanded ? 2 : 0.5,
-                                    borderTop: 'solid 1.5px #E2E8F0',
+                                    borderTop: color('solid 1.5px #E2E8F0', (p) => `solid 1.5px ${p.divider}`),
                                     position: 'relative',
                                 }}
                                 elevation={0}
                             >
-                                <Grid container spacing={isSmall ? 2 : 0} paddingX={2} rowSpacing={2}>
+                                <Grid
+                                    container
+                                    spacing={isSmall ? 2 : 0}
+                                    rowSpacing={2}
+                                    sx={{
+                                        paddingX: 2,
+                                    }}
+                                >
                                     {columns.map((c) => (
                                         <Grid
                                             key={String(c?.keyName) + index}
-                                            item
-                                            xs={12}
-                                            md={lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1)}
-                                            {...({
-                                                size: { xs: 12, md: lg ? (12 / columnSize) * (!!c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (!!c.size ? c.size : 1) },
-                                            } as any)}
                                             sx={{
                                                 overflow: 'hidden',
                                             }}
+                                            size={{
+                                                xs: 12,
+                                                md: lg ? (12 / columnSize) * (c.size ? c.size : 1) : mediaQueryLG ? mediaQueryLG.all : (12 / columnSize) * (c.size ? c.size : 1),
+                                            }}
                                         >
                                             <Box sx={{ width: '100%', paddingX: 1 }}>
-                                                <Typography fontSize={16} fontWeight={700} color='#1E293B' fontFamily='Inter'>
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: 16,
+                                                        fontWeight: 700,
+                                                        color: color('#1E293B', (p) => p.text.primary),
+                                                        fontFamily: 'Inter',
+                                                    }}
+                                                >
                                                     {c.title}
                                                 </Typography>
                                             </Box>
-                                            <Box paddingLeft={1}>
+                                            <Box
+                                                sx={{
+                                                    paddingLeft: 1,
+                                                }}
+                                            >
                                                 <Collapse
                                                     in={alwaysExpanded || expandObj[index] === true}
                                                     collapsedSize={alwaysExpanded ? 'auto' : collapsedSize}
@@ -779,11 +939,11 @@ export function GenericTable({
                                                 >
                                                     <Box
                                                         sx={{
+                                                            fontFamily: 'Inter',
                                                             wordWrap: 'break-word',
-                                                            color: '#1E293B',
+                                                            color: color('#1E293B', (p) => p.text.primary),
                                                             fontSize: 16,
                                                         }}
-                                                        fontFamily='Inter'
                                                     >
                                                         {c.customComponent ? (
                                                             c.customComponent(get(x, c.keyName as any), x)
@@ -800,24 +960,39 @@ export function GenericTable({
                                         </Grid>
                                     ))}
                                     <Grid
-                                        item
-                                        xs={12}
-                                        md={lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize}
-                                        {...({ size: { xs: 12, md: lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize } } as any)}
+                                        size={{
+                                            xs: 12,
+                                            md: lg ? 12 / columnSize : mediaQueryLG ? mediaQueryLG.action : 12 / columnSize,
+                                        }}
                                     >
-                                        <Stack direction='row' alignItems='center' justifyContent={isSmall ? 'start' : 'flex-end'} sx={{ height: '100%', paddingBottom: isSmall ? 2 : 0 }}>
+                                        <Stack
+                                            direction='row'
+                                            sx={{
+                                                alignItems: 'center',
+                                                justifyContent: isSmall ? 'start' : 'flex-end',
+                                                height: '100%',
+                                                paddingBottom: isSmall ? 2 : 0,
+                                            }}
+                                        >
                                             {action(x)}
                                         </Stack>
                                     </Grid>
                                     {showExpandObj[index] && !alwaysExpanded && (
-                                        <Stack direction='row' justifyContent='flex-end' bottom={0} width='100%'>
+                                        <Stack
+                                            direction='row'
+                                            sx={{
+                                                justifyContent: 'flex-end',
+                                                bottom: 0,
+                                                width: '100%',
+                                            }}
+                                        >
                                             <Button
                                                 onClick={() => {
                                                     setExpandObj((s) => ({ ...s, [index]: !s[index] }))
                                                 }}
                                                 sx={{
                                                     padding: 0,
-                                                    color: '#637082',
+                                                    color: color('#637082', (p) => p.text.secondary),
                                                     textTransform: 'capitalize',
                                                 }}
                                                 startIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
@@ -834,7 +1009,6 @@ export function GenericTable({
 
                 {getMaxItems().length > 0 && (
                     <Stack
-                        padding={1}
                         direction={{
                             xs: 'column',
                             md: 'row',
@@ -843,8 +1017,11 @@ export function GenericTable({
                             xs: 2,
                             md: 0,
                         }}
-                        justifyContent='space-between'
-                        alignItems='center'
+                        sx={{
+                            padding: 1,
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
                     >
                         {csv && (
                             <Stack
@@ -852,8 +1029,10 @@ export function GenericTable({
                                     xs: 'column',
                                     md: 'row',
                                 }}
-                                justifyContent='flex-end'
                                 spacing={1}
+                                sx={{
+                                    justifyContent: 'flex-end',
+                                }}
                             >
                                 {csvWithoutZip && (
                                     <Button
@@ -892,8 +1071,22 @@ export function GenericTable({
                 )}
             </Box>
 
-            <Stack direction='row' justifyContent='center' paddingY={1} paddingTop={2}>
-                <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
+            <Stack
+                direction='row'
+                sx={{
+                    justifyContent: 'center',
+                    paddingY: 1,
+                    paddingTop: 2,
+                }}
+            >
+                <Stack
+                    direction='row'
+                    spacing={2}
+                    sx={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
                     <Button
                         onClick={() => {
                             const nextPage = Math.max(1, currentListPage - 1)
@@ -904,7 +1097,14 @@ export function GenericTable({
                             }
                         }}
                         disabled={currentListPage <= 1}
-                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
+                        sx={{
+                            bgcolor: color('white', (p) => p.background.paper),
+                            borderRadius: '50px',
+                            height: '40px',
+                            width: '40px',
+                            minWidth: 0,
+                            border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                        }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
                     </Button>
@@ -922,7 +1122,7 @@ export function GenericTable({
                                                       color: 'white',
                                                   }
                                                 : {
-                                                      color: '#1E293B',
+                                                      color: color('#1E293B', (p) => p.text.primary),
                                                   }),
                                             borderRadius: '100%',
                                             padding: 0,
@@ -949,8 +1149,8 @@ export function GenericTable({
                         variant='outlined'
                         sx={{
                             '.MuiPagination-ul': {
-                                backgroundColor: 'white',
-                                border: 'solid 1px #E2E8F0',
+                                backgroundColor: color('white', (p) => p.background.paper),
+                                border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
                                 borderRadius: '50px',
                                 paddingX: 0.25,
                                 paddingY: 0.5,
@@ -967,7 +1167,14 @@ export function GenericTable({
                             }
                         }}
                         disabled={currentListPage >= paginationCount}
-                        sx={{ bgcolor: 'white', borderRadius: '50px', height: '40px', width: '40px', minWidth: 0, border: 'solid 1px #E2E8F0' }}
+                        sx={{
+                            bgcolor: color('white', (p) => p.background.paper),
+                            borderRadius: '50px',
+                            height: '40px',
+                            width: '40px',
+                            minWidth: 0,
+                            border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                        }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />
                     </Button>

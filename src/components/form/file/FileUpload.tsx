@@ -4,13 +4,12 @@ import Delete from '@mui/icons-material/Delete'
 import DoneIcon from '@mui/icons-material/Done'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf'
-import { Box, Button, CircularProgress, Grid, InputLabel, Paper, TableContainer, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { Stack } from '@mui/system'
+import { Box, Button, CircularProgress, Grid, InputLabel, Paper, Stack, TableContainer, Typography, useMediaQuery, useTheme } from '@mui/material'
 import get from 'lodash.get'
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { ErrorOutline } from '@mui/icons-material'
+import { ErrorOutlineOutlined } from '@mui/icons-material'
 
 interface FileState {
     id: number
@@ -66,7 +65,8 @@ export default function FileUpload({
     const onFile = useCallback(
         (e: FormEvent) => {
             const newFiles = (e.target as HTMLInputElement).files!
-            const filesTo = Object.keys(newFiles).map((key: number | string) => newFiles[key as number])
+            // Array.from, e não Object.keys: funciona com qualquer FileList, não só a do browser (UPGRADE_PLAN.md 5.21d).
+            const filesTo = Array.from(newFiles)
 
             setFiles([
                 ...files,
@@ -85,7 +85,7 @@ export default function FileUpload({
                         return true
                     })
                     .map((file, index) => {
-                        let id: number = Date.now() + index
+                        const id: number = Date.now() + index
 
                         // fetch API
 
@@ -137,7 +137,7 @@ export default function FileUpload({
                     }),
             ])
         },
-        [files, context]
+        [files, context],
     )
 
     const removeFile = (id: number, hideMsg?: boolean, fileId?: number) => {
@@ -169,7 +169,7 @@ export default function FileUpload({
                         removeFile(id, true, fileIds[id])
                     }
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => console.error(err))
         }
     }
 
@@ -190,7 +190,7 @@ export default function FileUpload({
     }, [])
 
     return (
-        <Grid item {...{ xs, sm, md }} sx={{ width: '100%' }}>
+        <Grid size={{ xs, sm, md }} sx={{ width: '100%' }}>
             <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                 {title}
             </InputLabel>
@@ -265,19 +265,38 @@ export default function FileUpload({
                         )}
                     </Box>
                 </Box>
-                <Typography fontWeight={600} paddingY={1} color='black'>
+                <Typography
+                    color='black'
+                    sx={{
+                        fontWeight: 600,
+                        paddingY: 1,
+                    }}
+                >
                     Você selecionou {files.length} arquivo{files.length > 1 && 's'}
                 </Typography>
                 {files.length > 0 && (
                     <TableContainer component={Paper}>
                         <Stack direction='column'>
                             {files.map((x) => (
-                                <Stack key={x.name} direction='row' justifyContent='space-between' padding={0.5}>
+                                <Stack
+                                    key={x.name}
+                                    direction='row'
+                                    sx={{
+                                        justifyContent: 'space-between',
+                                        padding: 0.5,
+                                    }}
+                                >
                                     <Box>
                                         <Stack direction='row' spacing={2}>
                                             {filesLoaded.includes(x.id) ? <DoneIcon sx={{ fill: '#06d6a0' }} /> : <CircularProgress size={22} sx={{ color: 'black' }} />}
                                             <PictureAsPdf color='error' />
-                                            <Typography fontWeight={600}>{x.name}</Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {x.name}
+                                            </Typography>
                                         </Stack>
                                     </Box>
                                     <Box>
@@ -312,8 +331,15 @@ export default function FileUpload({
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             {errorMsg}
                         </Typography>
                     </Box>
@@ -332,8 +358,15 @@ export default function FileUpload({
                             gap: 1,
                         }}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             * O campo de arquivo é obrigatório
                         </Typography>
                     </Box>

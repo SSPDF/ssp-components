@@ -3,3 +3,13 @@ dist
 .idea
 *storybook.log
 storybook-static
+
+# Etapa 0 — artefatos gerados (o baseline em snapshots/baseline/ É versionado)
+snapshots/__diff__/
+coverage
+examples/*/node_modules
+examples/*/.next
+examples/*/next-env.d.ts
+
+# npm run pack:local — tarball para testar num app real
+pack/

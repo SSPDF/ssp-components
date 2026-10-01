@@ -2,34 +2,34 @@ import { Box, Grid, Stack, Typography } from '@mui/material'
 import React from 'react'
 
 export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; name: string; tag?: string; xs?: number; md?: number; lg?: number }) {
-    let color =
+    const color =
         tag && tag === 'Distrital'
             ? '#BFDBFE'
             : tag === 'Estadual'
-            ? '#BBF7D0'
-            : tag === 'Federal'
-            ? '#FEF08A'
-            : tag === 'Internacional'
-            ? '#FED7AA'
-            : tag === 'Não'
-            ? '#FECACA'
-            : tag === 'Sim'
-            ? '#BBF7D0'
-            : '#BBF7D0'
+              ? '#BBF7D0'
+              : tag === 'Federal'
+                ? '#FEF08A'
+                : tag === 'Internacional'
+                  ? '#FED7AA'
+                  : tag === 'Não'
+                    ? '#FECACA'
+                    : tag === 'Sim'
+                      ? '#BBF7D0'
+                      : '#BBF7D0'
 
     return (
-        <Grid paddingBottom={3} item {...{ xs, md, lg }} paddingRight={2}>
+        <Grid size={{ xs, md, lg }} sx={{ paddingBottom: 3, paddingRight: 2 }}>
             <Stack spacing={1}>
                 <Stack spacing={1} direction={'row'}>
                     <Typography
                         sx={{
+                            fontWeight: 600,
                             backgroundColor: '#E2E8F0',
                             maxWidth: 'max-content',
                             paddingX: 1,
                             borderRadius: 2,
                             color: '#1E293B',
                         }}
-                        fontWeight={600}
                     >
                         {title}
                     </Typography>
@@ -37,13 +37,13 @@ export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; na
                     {tag && (
                         <Typography
                             sx={{
+                                fontWeight: 600,
                                 backgroundColor: color,
                                 maxWidth: 'max-content',
                                 paddingX: 1,
                                 borderRadius: 2,
                                 color: '#1E293B',
                             }}
-                            fontWeight={600}
                         >
                             {tag}
                         </Typography>

@@ -1,9 +1,9 @@
-import { deleteCookie, getCookie, setCookie } from 'cookies-next'
-import jwt_decode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { AuthClaims, AuthReturn, AuthSspToken, LoginOptions, LogoutOptions, User } from '../../types/auth'
+import { deleteCookie, getCookie, setCookie } from '../utils/cookies'
 
 interface OiDcConfig {
     client_id: string
@@ -34,14 +34,7 @@ export function OAuthProvider({
     testIP?: string
     logoutURL?: string
 }) {
-    const govBrURL =
-        oidcConfig.authority +
-        '/authorize?response_type=code&client_id=' +
-        oidcConfig.client_id +
-        '&scope=' +
-        oidcConfig.scope +
-        '&redirect_uri=' +
-        oidcConfig.redirect_uri
+    const govBrURL = oidcConfig.authority + '/authorize?response_type=code&client_id=' + oidcConfig.client_id + '&scope=' + oidcConfig.scope + '&redirect_uri=' + oidcConfig.redirect_uri
 
     const [user, setUser] = useState<User | null>(null)
     const [userLoaded, setUserLoaded] = useState(false)
@@ -49,7 +42,7 @@ export function OAuthProvider({
     const router = useRouter()
 
     useEffect(() => {
-        const token = getCookie(cookieName) as string
+        const token = getCookie(cookieName)
 
         if (!token) {
             setUserLoaded(true)
@@ -66,7 +59,7 @@ export function OAuthProvider({
                 logout()
                 return
             } else {
-                const userData: AuthClaims = jwt_decode(token)
+                const userData: AuthClaims = jwtDecode(token)
                 const img = localStorage.getItem(userImgName) as string
 
                 setUser({
@@ -110,7 +103,7 @@ export function OAuthProvider({
                 router.replace(govBrURL)
             }
         },
-        [testIP, testToken, redirectURL, govBrURL, router]
+        [testIP, testToken, redirectURL, govBrURL, router],
     )
 
     // chamado no callback de login
@@ -119,9 +112,9 @@ export function OAuthProvider({
             const token = authData.ssp_token
 
             setCookie(cookieName, token)
-            const userData: AuthSspToken = jwt_decode(token)
+            const userData: AuthSspToken = jwtDecode(token)
 
-            const idToken: AuthClaims = jwt_decode(authData.id_token)
+            const idToken: AuthClaims = jwtDecode(authData.id_token)
 
             // pegando foto de usuario
             await fetch(idToken.picture, {
@@ -166,7 +159,7 @@ export function OAuthProvider({
 
             router.replace(redirectURL).finally(() => setUserLoaded(true))
         },
-        [redirectURL, router]
+        [redirectURL, router],
     )
 
     const logout = useCallback(
@@ -195,7 +188,7 @@ export function OAuthProvider({
                     setUserLoaded(true)
                 })
         },
-        [logoutURL, router]
+        [logoutURL, router],
     )
 
     /**
@@ -205,7 +198,7 @@ export function OAuthProvider({
         (role: string): boolean => {
             return user?.roles?.includes(role) ?? false
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -216,7 +209,7 @@ export function OAuthProvider({
             if (!user?.roles || roles.length === 0) return false
             return roles.every((role) => user.roles.includes(role))
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -227,7 +220,7 @@ export function OAuthProvider({
             if (!user?.roles || roles.length === 0) return false
             return roles.some((role) => user.roles.includes(role))
         },
-        [user?.roles]
+        [user?.roles],
     )
 
     /**
@@ -254,7 +247,7 @@ export function OAuthProvider({
             hasAnyRole,
             accessToken: user?.token,
         }),
-        [user, userLoaded, login, logout, saveUserData, refreshToken, hasRole, hasAllRoles, hasAnyRole]
+        [user, userLoaded, login, logout, saveUserData, refreshToken, hasRole, hasAllRoles, hasAnyRole],
     )
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

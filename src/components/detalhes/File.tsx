@@ -7,7 +7,7 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
     const { user } = useContext(AuthContext)
 
     return (
-        <Grid paddingBottom={3} paddingRight={3} {...{ md }}>
+        <Grid size={{ md }} sx={{ paddingBottom: 3, paddingRight: 3 }}>
             <Stack
                 spacing={1}
                 sx={{
@@ -19,14 +19,29 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
                     borderColor: '#CBD5E1',
                 }}
             >
-                <Typography fontWeight={600} sx={{ textAlign: 'center' }}>
+                <Typography
+                    sx={{
+                        fontWeight: 600,
+                        textAlign: 'center',
+                    }}
+                >
                     {title}
                 </Typography>
-                <Stack direction='row' spacing={2} alignItems='center'>
+                <Stack
+                    direction='row'
+                    spacing={2}
+                    sx={{
+                        alignItems: 'center',
+                    }}
+                >
                     <FileDownload sx={{ fill: 'red' }} />
                     <Typography>{name}</Typography>
                 </Stack>
-                <Stack alignItems='center'>
+                <Stack
+                    sx={{
+                        alignItems: 'center',
+                    }}
+                >
                     <Button
                         variant='outlined'
                         color='error'
@@ -41,7 +56,7 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
                             })
                                 .then((res) => res.blob())
                                 .then((blob) => {
-                                    var file = window.URL.createObjectURL(blob)
+                                    const file = window.URL.createObjectURL(blob)
                                     const a = document.createElement('a')
                                     a.href = file
 

@@ -1,8 +1,9 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react'
+import { useThemedColor } from '../utils/useThemedColor'
 
-export let MODAL: {
+export const MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
     reparent: (child: JSX.Element, id: string | number) => JSX.Element
     openReparented: (id: string | number) => void
@@ -20,6 +21,7 @@ export function CustomModalProvider() {
     // const contentRef = useRef<JSX.Element | JSX.Element[]>(<></>)
     const handleClose = () => setOpen(false)
     const theme = useTheme()
+    const color = useThemedColor()
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
     const [idRef, setIdRef] = useState<{ [id: string | number]: JSX.Element }>({})
@@ -54,18 +56,41 @@ export function CustomModalProvider() {
                     open={open}
                     onClose={handleClose}
                     onOpen={() => {}}
-                    PaperProps={{
-                        sx: {
-                            bgcolor: 'transparent',
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                bgcolor: 'transparent',
+                            },
                         },
                     }}
                 >
-                    <Stack direction='row' onClick={handleClose} maxHeight='8vh' height='8vh' justifyContent='center' alignItems='center'>
-                        <Typography fontWeight={600} color='white'>
+                    <Stack
+                        direction='row'
+                        onClick={handleClose}
+                        sx={{
+                            maxHeight: '8vh',
+                            height: '8vh',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography
+                            color='white'
+                            sx={{
+                                fontWeight: 600,
+                            }}
+                        >
                             Clique fora para fechar
                         </Typography>
                     </Stack>
-                    <Box p={2} maxHeight='92vh' bgcolor='white' overflow='auto'>
+                    <Box
+                        sx={{
+                            p: 2,
+                            maxHeight: '92vh',
+                            bgcolor: color('white', (p) => p.background.paper),
+                            overflow: 'auto',
+                        }}
+                    >
                         {content}
                         {idRef[currentId]}
                     </Box>
@@ -74,25 +99,26 @@ export function CustomModalProvider() {
                 <Modal open={open} onClose={handleClose}>
                     <Box
                         sx={{
-                            position: 'absolute' as 'absolute',
+                            position: 'absolute' as const,
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
                             borderRadius: 2,
-                            bgcolor: 'white',
+                            bgcolor: color('white', (p) => p.background.paper),
                             border: '1px solid #454545',
                             boxShadow: 24,
                         }}
                     >
                         <Box
                             onClick={handleClose}
-                            width='fit-content'
-                            height='fit-content'
-                            position='absolute'
-                            right={0}
-                            top={0}
-                            margin={0.6}
                             sx={{
+                                width: 'fit-content',
+                                height: 'fit-content',
+                                position: 'absolute',
+                                right: 0,
+                                top: 0,
+                                margin: 0.6,
+
                                 ':hover': {
                                     transform: 'scale(1.03)',
                                     transition: 'all 500ms',
@@ -106,7 +132,17 @@ export function CustomModalProvider() {
                                 }}
                             />
                         </Box>
-                        <Box overflow='auto' maxHeight='90vh' p={2} marginTop={4} borderTop='solid 1px gray' bgcolor='#F9F9F9' borderRadius={2}>
+                        <Box
+                            sx={{
+                                overflow: 'auto',
+                                maxHeight: '90vh',
+                                p: 2,
+                                marginTop: 4,
+                                borderTop: 'solid 1px gray',
+                                bgcolor: color('#F9F9F9', (p) => p.background.default),
+                                borderRadius: 2,
+                            }}
+                        >
                             {content}
                             {idRef[currentId]}
                         </Box>
