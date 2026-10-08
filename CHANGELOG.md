@@ -2,13 +2,34 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
-## Não lançado
+## 1.0.0-rc.5
 
-Entra na próxima versão. Peers, dependências e API pública iguais às da `rc.4`.
+Os componentes acompanham o tema escuro do app. Peers, dependências e API pública iguais às da `rc.4`; nada muda no tema claro.
 
 ### Mudanças que não exigem nada do app
 
-- **Tema escuro do app (`palette.mode: 'dark'`).** Fundo, texto e borda neutros dos campos (`Input`, pickers, autocompletes, `MultInput`, `OptionalInput`, `CheckBox`, `CheckBoxWarning`, `Radio`, `OtherCheckBox` e as versões `Generic`), das tabelas (`Table`, `GenericTable`, filtros, carregamento) e do `MODAL` eram fixos (`'white'`, `#E0E0E0`, `#1E293B`…). Num app em tema escuro o texto do campo herdava a cor clara do tema e sumia sobre o branco. Agora, no escuro, essas cores vêm da paleta do tema (`background.paper`, `divider`, `text.primary`…). **No tema claro nada muda**: os valores são os mesmos de antes, e os snapshots das 95 stories existentes não tiveram diferença. Botões coloridos, o chip de filtro e o aviso de erro da tabela continuam com cores fixas. Stories novas em `Tema escuro`.
+- **Os componentes acompanham o tema escuro do app.** Fundo, texto e borda neutros eram fixos (`'white'`, `#E0E0E0`, `#1E293B`…): num app em tema escuro o texto herdava a cor clara do tema e sumia sobre o branco. Agora acompanham o escuro: campos (`Input`, pickers, autocompletes, `MultInput`, `OptionalInput` e as versões `Generic`), cartões de opção (`CheckBox`, `CheckBoxWarning`, `OtherCheckBox`, `Radio`), caixa de mensagem de erro, tabelas (`Table`, `GenericTable`, filtros, chip do filtro, carregamento), `MODAL`, uploads (`FileUpload`, `DropFileUpload`), detalhes (`Field`, `FieldLabel`, `File`), `StepperBlock`, `NavBar` e `TabNavBar`. Cores de marca e de status (botões coloridos, etiquetas Sim/Não, aviso de erro da tabela) continuam fixas.
+- **Funciona nos três jeitos de ter tema escuro no MUI 9**: `palette: { mode: 'dark' }`, `colorSchemes` e `colorSchemes` + `cssVariables` (o recomendado). A cor do escuro entra por `theme.applyStyles('dark', …)`, e não por `theme.palette.mode`, que fica `'light'` num app com `cssVariables` (o modo troca por classe/atributo/media query, sem re-render). Com `cssVariables`, o CSS do escuro sai no SSR, sem piscar o claro na hidratação.
+- **No tema claro nada muda**, nem num app que personaliza `background.paper`: o claro continua com os valores fixos de sempre, e os snapshots de todas as stories não tiveram nenhum pixel diferente.
+- `TabNavBar`: sem `customBgColor`, a barra é branca no claro e `background.paper` no escuro (antes, sempre `#FFFFFF`). Com `customBgColor`, a cor do app vale nos dois temas.
+
+### Para quem quer tema escuro no app
+
+Do jeito que o MUI 9 recomenda ([Dark mode](https://mui.com/material-ui/customization/dark-mode/), [CSS theme variables](https://mui.com/material-ui/customization/css-theme-variables/configuration/)):
+
+```tsx
+// _app.tsx
+const theme = createTheme({
+    cssVariables: { colorSchemeSelector: 'class' },
+    colorSchemes: { light: true, dark: true },
+})
+// <ThemeProvider theme={theme}><CssBaseline />…</ThemeProvider>; o modo troca com useColorScheme().setMode('dark')
+
+// _document.tsx, no <body>, antes do <Main />: aplica o modo salvo antes da hidratação
+<InitColorSchemeScript attribute='class' />
+```
+
+`palette: { mode: 'dark' }` também funciona (o app inteiro escuro, sem troca). **Para sobrescrever uma cor neutra da lib no escuro** (no `sx` de um campo, no `customTableStyle`…), use `theme.applyStyles('dark', …)` também: com `cssVariables`, o estilo do escuro da lib vem num seletor (`*:where(.dark) &`) que ganha de um `bgcolor` solto no `sx`.
 
 ## 1.0.0-rc.4
 
