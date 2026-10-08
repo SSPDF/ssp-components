@@ -4,7 +4,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, caixaDeErro, fundoDoCampo } from '../estilosDoCampo'
 
 export default function MultInput({
     name,
@@ -85,16 +85,11 @@ export default function MultInput({
 
                 error={error}
                 helperText={helperText}
-                sx={{
-                    bgcolor: 'background.paper',
+                sx={(theme) => ({
+                    ...fundoDoCampo(theme),
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
-                        '& fieldset': {
-                            borderColor: fieldBorder,
-                        },
-                        '&:hover fieldset': {
-                            borderColor: fieldBorderHover,
-                        },
+                        ...bordaDoCampo(theme),
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',
                             borderWidth: '2px',
@@ -103,21 +98,22 @@ export default function MultInput({
                             borderWidth: '2px',
                         },
                     },
-                }}
+                })}
                 placeholder={customPlaceholder ? customPlaceholder : title}
                 slotProps={{
                     formHelperText: {
-                        sx: {
-                            backgroundColor: error ? '#FFEBEE' : 'transparent',
+                        sx: (theme) => ({
+                            backgroundColor: 'transparent',
                             borderRadius: '8px',
                             padding: error ? '8px 12px' : 0,
                             marginBottom: error ? '4px' : 0,
                             marginTop: error ? '8px' : 0,
-                            border: error ? '1px solid #FFCDD2' : 'none',
+                            border: 'none',
                             color: 'error.main',
+                            ...(error && caixaDeErro(theme)),
                             marginLeft: 0,
                             marginRight: 0,
-                        },
+                        }),
                     },
                 }}
             />

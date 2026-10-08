@@ -9,7 +9,7 @@ import dayjs from '../../utils/dayjs'
 import React, { useEffect, useState } from 'react'
 import { MODAL } from '../../modal/Modal'
 import { FilterOperators, FilterValue } from './types'
-import { useThemedColor } from '../../utils/useThemedColor'
+import { noEscuro } from '../../utils/temaEscuro'
 
 export function FilterMenu({ filters, baseFilters, filtrar, reset }: { reset: () => void; filtrar: (dt: FilterValue[]) => void; filters: FilterValue[]; baseFilters: FilterValue[] }) {
     const [data, setData] = useState<FilterValue[]>(filters)
@@ -144,7 +144,6 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
     const [currentOperator, setCurrentOperator] = useState(filterValue.operator)
     const [data, setData] = useState<FilterValue>(filterValue)
     const theme = useTheme()
-    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     useEffect(() => {
@@ -158,9 +157,10 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
             sx={{
                 alignItems: 'end',
                 width: '100%',
-                bgcolor: idx % 2 === 0 ? color('#ededed', (p) => p.action.hover) : 'inherit',
+                bgcolor: idx % 2 === 0 ? '#ededed' : 'inherit',
                 padding: 0.5,
                 borderRadius: 2,
+                ...noEscuro(theme, (p) => ({ bgcolor: idx % 2 === 0 ? p.action.hover : 'inherit' })),
             }}
         >
             {!isSmall && (
@@ -169,7 +169,8 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
                         width: '100%',
                         alignContent: 'center',
                         fontWeight: 600,
-                        color: color('#323232', (p) => p.text.primary),
+                        color: '#323232',
+                        ...noEscuro(theme, (p) => ({ color: p.text.primary })),
                     }}
                 >
                     {filterValue.label}
@@ -191,7 +192,8 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
                     defaultValue={currentOperator}
                     size='small'
                     sx={{
-                        bgcolor: color('white', (p) => p.background.paper),
+                        bgcolor: 'white',
+                        ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                     }}
                     fullWidth
                 >
@@ -220,7 +222,7 @@ function FilterRow({ filterValue, setDt, idx }: { filterValue: FilterValue; setD
 }
 
 function FilterField({ filterValue, operator, onChange }: { filterValue: FilterValue; operator: FilterOperators; onChange: (value: string | any[], type?: 'value' | 'value2') => void }) {
-    const color = useThemedColor()
+    const theme = useTheme()
     // Os campos do filtro só tinham placeholder: sem nome acessível (UPGRADE_PLAN.md 5.21b).
     const nome = `Valor do filtro ${filterValue.label}`
     // x-date-pickers 8+: o campo é um grupo de seções, sem <input> visível; o nome vai no grupo.
@@ -239,7 +241,8 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         onChange(e.target.value)
                     }}
                     sx={{
-                        bgcolor: color('white', (p) => p.background.paper),
+                        bgcolor: 'white',
+                        ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                     }}
                     fullWidth
                 />
@@ -297,7 +300,8 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                             fullWidth
                                             slotProps={{ ...params.slotProps, htmlInput: { ...params.slotProps.htmlInput, 'aria-label': nome } }}
                                             sx={{
-                                                bgcolor: color('white', (p) => p.background.paper),
+                                                bgcolor: 'white',
+                                                ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                                             }}
                                         />
                                     )}
@@ -318,7 +322,8 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                         onChange(e.target.value)
                     }}
                     sx={{
-                        bgcolor: color('white', (p) => p.background.paper),
+                        bgcolor: 'white',
+                        ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                     }}
                     fullWidth
                 />
@@ -344,7 +349,8 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     '& .MuiPickersInputBase-root': { paddingLeft: 2 },
                                     '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
-                                    bgcolor: color('white', (p) => p.background.paper),
+                                    bgcolor: 'white',
+                                    ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                                 }}
                             />
                         </LocalizationProvider>
@@ -364,7 +370,8 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     '& .MuiPickersInputBase-root': { paddingLeft: 2 },
                                     '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
-                                    bgcolor: color('white', (p) => p.background.paper),
+                                    bgcolor: 'white',
+                                    ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                                 }}
                             />
                             <DatePicker
@@ -379,7 +386,8 @@ function FilterField({ filterValue, operator, onChange }: { filterValue: FilterV
                                     '& .MuiPickersInputBase-root': { paddingLeft: 2 },
                                     '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
                                     width: '100%',
-                                    bgcolor: color('white', (p) => p.background.paper),
+                                    bgcolor: 'white',
+                                    ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                                 }}
                             />
                         </LocalizationProvider>

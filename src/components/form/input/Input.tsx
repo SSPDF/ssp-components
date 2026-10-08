@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useMemo, useId } from 'react'
 import MaskInput, { IMaskConfig } from './MaskInput'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, caixaDeErro, fundoDoCampo } from '../estilosDoCampo'
 
 // Tipos nativos do HTML input
 type HTMLInputType = React.InputHTMLAttributes<HTMLInputElement>['type']
@@ -121,30 +121,30 @@ const VALIDATIONS: Record<string, { length: number; message: string }> = {
 }
 
 // Estilos base do campo
-const baseTextFieldSx: SxProps<Theme> = {
-    backgroundColor: 'background.paper',
+const baseTextFieldSx: SxProps<Theme> = (theme) => ({
+    ...fundoDoCampo(theme),
     '& .MuiOutlinedInput-root': {
         borderRadius: '8px',
         transition: 'all 0.2s',
-        '& fieldset': { borderColor: fieldBorder },
-        '&:hover fieldset': { borderColor: fieldBorderHover },
+        ...bordaDoCampo(theme),
         '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: '2px' },
         '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderWidth: '2px' },
     },
-}
+})
 
 const getHelperTextProps = (hasError: boolean): Partial<FormHelperTextProps> => ({
-    sx: {
-        backgroundColor: hasError ? '#FFEBEE' : 'transparent',
+    sx: (theme) => ({
+        backgroundColor: 'transparent',
         borderRadius: '8px',
         padding: hasError ? '8px 12px' : 0,
         marginBottom: hasError ? '4px' : 0,
         marginTop: hasError ? '8px' : 0,
-        border: hasError ? '1px solid #FFCDD2' : 'none',
+        border: 'none',
         color: 'error.main',
         marginLeft: 0,
         marginRight: 0,
-    },
+        ...(hasError && caixaDeErro(theme)),
+    }),
 })
 
 const baseLabelSx: SxProps<Theme> = {

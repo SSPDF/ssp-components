@@ -85,6 +85,11 @@ echo "── valor padrão do DatePicker na primeira montagem ──"
 # UPGRADE_PLAN.md 5.17 — detalhes no próprio script.
 node verificar-datepicker.cjs
 
+echo
+echo "── CSS do tema escuro no SSR ────────────────────────"
+# UPGRADE_PLAN.md seção 17 — detalhes no próprio script.
+node verificar-tema-escuro.cjs
+
 if [ -n "${SMOKE_E2E_KEYCLOAK:-}" ]; then
     echo
     echo "── e2e do KeycloakAuthProvider ──────────────────────"

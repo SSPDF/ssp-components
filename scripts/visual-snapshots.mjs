@@ -9,7 +9,19 @@
  * imagens. Use `npm run snapshots` (ou `npm run snapshots:update`), que executam
  * este script dentro do container Linux fixo — ver scripts/snapshots-in-docker.sh.
  *
- * Uso: node scripts/visual-snapshots.mjs [--update]   (SNAPSHOTS_DETALHE=1 lista diferenças abaixo da tolerância)
+ * Cada story roda duas vezes: no tema claro (o padrão do MUI, baseline em `snapshots/baseline/`) e no
+ * escuro do app (`&globals=tema:escuro`, ver src/decorators/TemaDecorator.tsx; baseline em
+ * `snapshots/baseline/escuro/`). As stories de tema próprio (tag `tema-proprio`) também seguem o
+ * global, cada uma com o seu mecanismo de tema.
+ * No escuro, depois do render (e da `play`), `scripts/lib/contraste.mjs` confere se todo texto e
+ * ícone visível é legível sobre o fundo e se sobrou superfície clara fixa. O que já é igual no claro
+ * da mesma story não conta: é design fixo, guardado pelo baseline (o placeholder dos pickers do MUI
+ * e os botões verdes de texto branco ficam abaixo de 3:1 nos dois temas). O que se quer pegar é a
+ * cor que não acompanha o tema do app. Com a tag `cor-do-app`, a story tem cores fixas que o app
+ * escolheu (a `TabNavBar` com `customBgColor`): o contraste vale, a superfície clara não.
+ *
+ * Uso: node scripts/visual-snapshots.mjs [--update] [--filtro <trecho do id>]
+ *      (SNAPSHOTS_DETALHE=1 lista diferenças abaixo da tolerância)
  */
 import { chromium } from 'playwright'
 import http from 'node:http'
@@ -20,12 +32,21 @@ import { fileURLToPath } from 'node:url'
 import { PNG } from 'pngjs'
 import pixelmatch from 'pixelmatch'
 import { instalarEscuta, esperarStory, resumirErro } from './lib/storybook-play.mjs'
+import { verificarLegibilidade, chaveDoProblema } from './lib/contraste.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const staticDir = path.join(root, 'storybook-static')
 const baselineDir = path.join(root, 'snapshots', 'baseline')
 const diffDir = path.join(root, 'snapshots', '__diff__')
 const update = process.argv.includes('--update')
+const iFiltro = process.argv.indexOf('--filtro')
+const filtro = iFiltro >= 0 ? process.argv[iFiltro + 1] : ''
+
+/** `claro` = como a story sempre rodou; `escuro` = tema escuro do app com variáveis CSS. */
+const TEMAS = [
+    { nome: 'claro', query: '', pasta: baselineDir },
+    { nome: 'escuro', query: '&globals=tema:escuro', pasta: path.join(baselineDir, 'escuro') },
+]
 
 const VIEWPORT = { width: 1280, height: 800 }
 const MAX_DIFF_RATIO = 0.001 // 0,1% dos pixels
@@ -84,7 +105,12 @@ async function main() {
     const base = `http://127.0.0.1:${port}`
     const index = JSON.parse(await fs.readFile(path.join(staticDir, 'index.json'), 'utf8'))
     const stories = Object.values(index.entries).filter((e) => e.type === 'story')
-    const ids = stories.map((e) => e.id).sort()
+    const ids = stories
+        .map((e) => e.id)
+        .filter((id) => id.includes(filtro))
+        .sort()
+    const temaProprio = new Set(stories.filter((e) => e.tags?.includes('tema-proprio')).map((e) => e.id))
+    const corDoApp = new Set(stories.filter((e) => e.tags?.includes('cor-do-app')).map((e) => e.id))
     const interacao = new Set(stories.filter((e) => e.tags?.includes('interacao')).map((e) => e.id))
 
     await fs.mkdir(baselineDir, { recursive: true })
@@ -95,9 +121,13 @@ async function main() {
     const failures = []
     const renderErrors = []
     const playFailures = []
+    const legibilidade = []
+    const problemasNoClaro = new Map()
     let written = 0
 
-    for (const id of ids) {
+    const execucoes = ids.flatMap((id) => TEMAS.map((tema) => ({ id, tema })))
+    for (const { id, tema } of execucoes) {
+        const rotulo = tema.nome === 'claro' ? id : `${id} [escuro]`
         // Um contexto novo por story (localStorage, cookies e cache zerados). Com uma página só
         // para todas, o render de algumas stories dependia do que as anteriores deixaram: com
         // MUI 5.12, 8 stories saíam diferentes do render isolado (UPGRADE_PLAN.md 5.18).
@@ -107,29 +137,44 @@ async function main() {
         const errors = []
         page.on('pageerror', (e) => errors.push(resumirErro(e)))
         await instalarEscuta(page)
-        await page.goto(`${base}/iframe.html?id=${id}&viewMode=story`, { waitUntil: 'networkidle' })
+        await page.goto(`${base}/iframe.html?id=${id}&viewMode=story${tema.query}`, { waitUntil: 'networkidle' })
         const resultado = await esperarStory(page)
-        if (resultado.status !== 'success') playFailures.push({ id, errors: resultado.erros.length ? resultado.erros : [`status ${resultado.status}`] })
+        // O ThemeProvider põe a classe `dark` no <html> num efeito, depois do primeiro render.
+        if (tema.nome === 'escuro' && !temaProprio.has(id)) await page.waitForFunction(() => document.documentElement.classList.contains('dark'), null, { timeout: 5_000 }).catch(() => {})
+        if (resultado.status !== 'success') playFailures.push({ id: rotulo, errors: resultado.erros.length ? resultado.erros : [`status ${resultado.status}`] })
 
-        if (interacao.has(id)) {
-            if (errors.length) renderErrors.push({ id, errors })
-            await context.close()
-            continue
-        }
+        // Sem animação e sem transição: a legibilidade é medida no estado final, e o PNG também.
         await page.addStyleTag({
             // O toast tem tempo de vida (some em 5 s): nas stories que enviam o formulário no `play`
             // (ex.: "Estados de erro"), a captura sairia com ou sem ele conforme o tempo.
             content: `*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; } .Toastify { display: none !important; }`,
         })
         await page.waitForTimeout(150)
+        // Legibilidade: o claro só serve de referência (o design de sempre, guardado pelo baseline);
+        // no escuro, falha o que não é igual no claro.
+        if (tema.nome === 'claro') {
+            problemasNoClaro.set(id, new Set((await page.evaluate(verificarLegibilidade, {})).map(chaveDoProblema)))
+        } else {
+            const noClaro = problemasNoClaro.get(id) ?? new Set()
+            const ilegiveis = (await page.evaluate(verificarLegibilidade, { superficies: !corDoApp.has(id) })).filter((p) => !noClaro.has(chaveDoProblema(p)))
+            if (ilegiveis.length) legibilidade.push({ id: rotulo, ilegiveis })
+        }
+
+        if (interacao.has(id)) {
+            if (errors.length) renderErrors.push({ id: rotulo, errors })
+            await context.close()
+            continue
+        }
 
         const shot = await page.screenshot({ fullPage: false })
-        const file = path.join(baselineDir, `${id}.png`)
+        const file = path.join(tema.pasta, `${id}.png`)
+        const nomeDiff = tema.nome === 'claro' ? id : `${id}--escuro`
 
-        if (errors.length) renderErrors.push({ id, errors })
+        if (errors.length) renderErrors.push({ id: rotulo, errors })
         await context.close()
 
         if (update || !existsSync(file)) {
+            await fs.mkdir(tema.pasta, { recursive: true })
             await fs.writeFile(file, shot)
             written++
             continue
@@ -138,7 +183,7 @@ async function main() {
         const expected = PNG.sync.read(await fs.readFile(file))
         const actual = PNG.sync.read(shot)
         if (expected.width !== actual.width || expected.height !== actual.height) {
-            failures.push({ id, reason: `tamanho mudou: ${expected.width}x${expected.height} -> ${actual.width}x${actual.height}` })
+            failures.push({ id: rotulo, reason: `tamanho mudou: ${expected.width}x${expected.height} -> ${actual.width}x${actual.height}` })
             continue
         }
         const diff = new PNG({ width: expected.width, height: expected.height })
@@ -146,23 +191,24 @@ async function main() {
         const ratio = changed / (expected.width * expected.height)
         // SNAPSHOTS_DETALHE=1: lista também o que ficou abaixo da tolerância (útil ao revisar uma migração).
         if (process.env.SNAPSHOTS_DETALHE && changed > 0) {
-            console.log(`  ${id}: ${changed} px (${(ratio * 100).toFixed(4)}%)`)
+            console.log(`  ${rotulo}: ${changed} px (${(ratio * 100).toFixed(4)}%)`)
             await fs.mkdir(diffDir, { recursive: true })
-            await fs.writeFile(path.join(diffDir, `${id}.diff.png`), PNG.sync.write(diff))
-            await fs.writeFile(path.join(diffDir, `${id}.atual.png`), shot)
+            await fs.writeFile(path.join(diffDir, `${nomeDiff}.diff.png`), PNG.sync.write(diff))
+            await fs.writeFile(path.join(diffDir, `${nomeDiff}.atual.png`), shot)
         }
         if (ratio > MAX_DIFF_RATIO) {
             await fs.mkdir(diffDir, { recursive: true })
-            await fs.writeFile(path.join(diffDir, `${id}.diff.png`), PNG.sync.write(diff))
-            await fs.writeFile(path.join(diffDir, `${id}.atual.png`), shot)
-            failures.push({ id, reason: `${changed} px diferentes (${(ratio * 100).toFixed(3)}%)` })
+            await fs.writeFile(path.join(diffDir, `${nomeDiff}.diff.png`), PNG.sync.write(diff))
+            await fs.writeFile(path.join(diffDir, `${nomeDiff}.atual.png`), shot)
+            failures.push({ id: rotulo, reason: `${changed} px diferentes (${(ratio * 100).toFixed(3)}%)` })
         }
     }
 
     await browser.close()
     server.close()
 
-    console.log(`\n${ids.length - interacao.size} stories capturadas, ${interacao.size} de interação.`)
+    const nInteracao = ids.filter((id) => interacao.has(id)).length
+    console.log(`\n${ids.length - nInteracao} stories capturadas, ${nInteracao} de interação; todas nos temas claro e escuro.`)
     if (written) console.log(`${written} PNG(s) gravados em snapshots/baseline/.`)
 
     if (renderErrors.length) {
@@ -175,13 +221,21 @@ async function main() {
         for (const { id, errors } of playFailures) console.error(`  ✗ ${id}\n      ${errors.join('\n').replace(/\n/g, '\n      ')}`)
     }
 
+    if (legibilidade.length) {
+        console.error(`\n${legibilidade.length} story(ies) com texto ilegível ou superfície clara no escuro (scripts/lib/contraste.mjs):`)
+        for (const { id, ilegiveis } of legibilidade) {
+            console.error(`  ✗ ${id}`)
+            for (const p of ilegiveis) console.error(`      ${p.tipo}: ${p.elemento} "${p.texto}" — ${p.detalhe}`)
+        }
+    }
+
     if (failures.length) {
         console.error(`\n${failures.length} story(ies) com diferença visual (diffs em snapshots/__diff__/):`)
         for (const { id, reason } of failures) console.error(`  ✗ ${id} — ${reason}`)
     }
 
-    if (renderErrors.length || playFailures.length || failures.length) process.exit(1)
-    console.log('Nenhuma diferença visual, nenhum erro de runtime e todas as interações passaram.')
+    if (renderErrors.length || playFailures.length || legibilidade.length || failures.length) process.exit(1)
+    console.log('Nenhuma diferença visual, nenhum erro de runtime, tudo legível nos dois temas e todas as interações passaram.')
 }
 
 main().catch((e) => {

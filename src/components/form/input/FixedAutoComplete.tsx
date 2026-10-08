@@ -4,7 +4,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect, useState, useId } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, caixaDeErro, fundoDoCampo } from '../estilosDoCampo'
 
 let useDefault = true
 
@@ -122,34 +122,30 @@ export function FixedAutoComplete({
                             slotProps={{
                                 ...params.slotProps,
                                 formHelperText: {
-                                    sx: {
-                                        backgroundColor: hasError ? '#FFEBEE' : 'transparent',
+                                    sx: (theme) => ({
+                                        backgroundColor: 'transparent',
                                         borderRadius: '8px',
                                         padding: hasError ? '8px 12px' : 0,
                                         marginBottom: hasError ? '4px' : 0,
                                         marginTop: hasError ? '8px' : 0,
-                                        border: hasError ? '1px solid #FFCDD2' : 'none',
+                                        border: 'none',
                                         color: 'error.main',
+                                        ...(hasError && caixaDeErro(theme)),
                                         marginLeft: 0,
                                         marginRight: 0,
-                                    },
+                                    }),
                                 },
                             }}
                         />
                     )
                 }}
                 size='small'
-                sx={{
-                    bgcolor: 'background.paper',
+                sx={(theme) => ({
+                    ...fundoDoCampo(theme),
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
                         transition: 'all 0.2s',
-                        '& fieldset': {
-                            borderColor: fieldBorder,
-                        },
-                        '&:hover fieldset': {
-                            borderColor: fieldBorderHover,
-                        },
+                        ...bordaDoCampo(theme),
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',
                             borderWidth: '2px',
@@ -158,7 +154,7 @@ export function FixedAutoComplete({
                             borderWidth: '2px',
                         },
                     },
-                }}
+                })}
                 fullWidth
             />
         </Grid>

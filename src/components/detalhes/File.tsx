@@ -2,6 +2,7 @@ import { Button, Grid, Stack, Typography } from '@mui/material'
 import { FileDownload } from '@mui/icons-material'
 import React, { useContext } from 'react'
 import { AuthContext } from '../../context/auth'
+import { noEscuro } from '../utils/temaEscuro'
 
 export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: string; fileURL: string; name: string; md?: number; fileExt?: string }) {
     const { user } = useContext(AuthContext)
@@ -10,14 +11,15 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
         <Grid size={{ md }} sx={{ paddingBottom: 3, paddingRight: 3 }}>
             <Stack
                 spacing={1}
-                sx={{
+                sx={(theme) => ({
                     backgroundColor: '#F8FAFC',
                     paddingY: 1,
                     paddingX: 3,
                     borderRadius: 2,
                     border: 1,
                     borderColor: '#CBD5E1',
-                }}
+                    ...noEscuro(theme, (p) => ({ backgroundColor: p.action.hover, borderColor: p.divider })),
+                })}
             >
                 <Typography
                     sx={{

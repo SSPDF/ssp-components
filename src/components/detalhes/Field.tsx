@@ -1,5 +1,6 @@
 import { Box, Grid, Stack, Typography } from '@mui/material'
 import React from 'react'
+import { noEscuro } from '../utils/temaEscuro'
 
 export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; name: string; tag?: string; xs?: number; md?: number; lg?: number }) {
     const color =
@@ -22,14 +23,15 @@ export function Field({ name, title, tag, xs = 12, md, lg }: { title: string; na
             <Stack spacing={1}>
                 <Stack spacing={1} direction={'row'}>
                     <Typography
-                        sx={{
+                        sx={(theme) => ({
                             fontWeight: 600,
                             backgroundColor: '#E2E8F0',
                             maxWidth: 'max-content',
                             paddingX: 1,
                             borderRadius: 2,
                             color: '#1E293B',
-                        }}
+                            ...noEscuro(theme, (p) => ({ backgroundColor: p.action.selected, color: p.text.primary })),
+                        })}
                     >
                         {title}
                     </Typography>

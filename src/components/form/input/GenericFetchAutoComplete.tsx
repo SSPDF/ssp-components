@@ -3,6 +3,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect, useState, useId } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { useFormContext } from 'react-hook-form'
+import { fundoDoCampo } from '../estilosDoCampo'
 
 let useDefault = true
 
@@ -166,9 +167,9 @@ export default function GenericFetchAutoComplete({
                         helperText={get(context.formState.errors, name!)?.message as string}
                     />
                 )}
-                sx={{
-                    bgcolor: 'background.paper',
-                }}
+                sx={(theme) => ({
+                    ...fundoDoCampo(theme),
+                })}
                 size='small'
                 fullWidth
                 disabled={disabled}

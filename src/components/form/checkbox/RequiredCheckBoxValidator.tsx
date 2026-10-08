@@ -3,6 +3,7 @@ import { FormContext } from '../../../context/form'
 import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
 import { ElevatorSharp, ErrorOutlineOutlined } from '@mui/icons-material'
+import { caixaDeErro } from '../estilosDoCampo'
 
 function getChildrenNames(children: React.JSX.Element[]): string[] {
     let arr: string[] = []
@@ -58,17 +59,16 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
             {get(context.errors, props.name) && (
                 <Grid size={12}>
                     <Box
-                        sx={{
-                            backgroundColor: '#FFEBEE',
+                        sx={(theme) => ({
                             borderRadius: '8px',
                             padding: '8px 12px',
                             marginTop: 1,
-                            border: '1px solid #FFCDD2',
                             color: 'error.main',
+                            ...caixaDeErro(theme),
                             display: 'flex',
                             alignItems: 'center',
                             gap: 1,
-                        }}
+                        })}
                     >
                         <ErrorOutlineOutlined fontSize='small' />
                         <Typography

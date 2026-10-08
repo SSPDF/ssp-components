@@ -2,7 +2,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/Menu'
 import PersonIcon from '@mui/icons-material/Person'
-import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material'
 import LinearProgress from '@mui/material/LinearProgress'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,6 +10,7 @@ import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { LoginOptions, LogoutOptions } from '../../types/auth'
+import { noEscuro } from '../utils/temaEscuro'
 
 function verificarRota(route: string, path: string): boolean {
     if (route === path) {
@@ -36,7 +37,7 @@ export default function TabNavBar({
     route = '/teste/89',
     paddingBottom = 0,
     logoutMsg = 'Sair',
-    customBgColor = '#FFFFFF',
+    customBgColor,
     logoutFunc,
     loginOptions,
     logoutOptions,
@@ -61,7 +62,8 @@ export default function TabNavBar({
     /** Opções para configurar o comportamento do logout (redirectUri, callbacks, etc) */
     logoutOptions?: LogoutOptions
 }) {
-    const theme = useTheme()
+    // Sem cor do app, a barra é a neutra da lib: branca no claro, `background.paper` no escuro.
+    const fundo = customBgColor ?? '#FFFFFF'
     const breakpoint = links.length <= 3 ? 'md' : 'lg'
     let router: NextRouter | undefined | null = undefined
     if (next) router = useRouter()
@@ -124,13 +126,25 @@ export default function TabNavBar({
                     zIndex: 100,
                 }}
             >
-                <AppBar position='relative' elevation={0} sx={{ color: theme.palette.getContrastText(customBgColor), paddingX: { xs: 1, [breakpoint]: 4 }, bgcolor: customBgColor }}>
+                <AppBar
+                    position='relative'
+                    elevation={0}
+                    sx={(t) => ({
+                        color: t.palette.getContrastText(fundo),
+                        paddingX: { xs: 1, [breakpoint]: 4 },
+                        bgcolor: fundo,
+                        // No escuro: a barra neutra vira a do tema; a cor do app fica, e é preciso repeti-la
+                        // porque o AppBar do MUI escurece sozinho com variáveis CSS (fundo e texto).
+                        ...noEscuro(t, (p) => (customBgColor ? { bgcolor: fundo, color: t.palette.getContrastText(fundo) } : { bgcolor: p.background.paper, color: p.text.primary })),
+                    })}
+                >
                     <Stack
                         direction='row'
-                        sx={{
+                        sx={(t) => ({
                             justifyContent: 'space-between',
-                            bgcolor: customBgColor,
-                        }}
+                            bgcolor: fundo,
+                            ...(!customBgColor && noEscuro(t, (p) => ({ bgcolor: p.background.paper }))),
+                        })}
                     >
                         <Stack
                             direction='row'
@@ -173,7 +187,7 @@ export default function TabNavBar({
                                         onClick={(e) => {
                                             changeRoute(e, x.path)
                                         }}
-                                        sx={{
+                                        sx={(t) => ({
                                             paddingX: 3,
                                             paddingY: 0.8,
                                             borderRadius: 50,
@@ -186,8 +200,9 @@ export default function TabNavBar({
                                                 cursor: 'pointer',
                                                 userSelect: 'none',
                                                 filter: isActive ? 'brightness(1.1)' : 'none',
+                                                ...(!isActive && noEscuro(t, (p) => ({ backgroundColor: p.action.hover }))),
                                             },
-                                        }}
+                                        })}
                                     >
                                         <Stack
                                             sx={{
@@ -300,7 +315,7 @@ export default function TabNavBar({
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
-                                                        <LogoutOutlinedIcon sx={{ fill: '#545454' }} />
+                                                        <LogoutOutlinedIcon sx={(t) => ({ fill: '#545454', ...noEscuro(t, (p) => ({ fill: p.action.active })) })} />
                                                         <Typography
                                                             sx={{
                                                                 textTransform: 'capitalize',
@@ -338,7 +353,7 @@ export default function TabNavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
                                         <Typography
                                             sx={{
@@ -356,7 +371,7 @@ export default function TabNavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
                                         <Typography
                                             sx={{

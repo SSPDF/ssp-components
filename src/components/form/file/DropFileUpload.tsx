@@ -8,6 +8,8 @@ import { FormContext } from '../../../context/form'
 
 import { PDFIcon, TrashIcon } from '../../icons/icons'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
+import { caixaDeErro } from '../estilosDoCampo'
+import { noEscuro } from '../../utils/temaEscuro'
 
 interface FileState {
     id: number
@@ -231,19 +233,20 @@ export default function DropFileUpload({
     return (
         <Grid size={{ xs, sm, md }} sx={{ width: '100%', opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
             <Box
-                sx={{
+                sx={(theme) => ({
                     bgcolor: 'white',
                     p: 2,
                     borderRadius: '8px',
                     color: '#1E293B',
-                }}
+                    ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper, color: p.text.primary })),
+                })}
             >
                 <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                     {title}
                 </InputLabel>
                 <Stack
                     {...getRootProps({ className: 'dropzone' })}
-                    sx={{
+                    sx={(theme) => ({
                         bgcolor: '#EFEFEF',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -253,7 +256,9 @@ export default function DropFileUpload({
                         border: 'solid 1.5px #989898',
                         borderStyle: 'dashed',
                         cursor: 'pointer',
-                    }}
+                        // borderColor, e não border: o shorthand no escuro desfaria o tracejado.
+                        ...noEscuro(theme, (p) => ({ bgcolor: p.action.hover, borderColor: p.action.disabled })),
+                    })}
                 >
                     {(() => {
                         const inputProps = getInputProps()
@@ -326,12 +331,13 @@ export default function DropFileUpload({
                     {files.map((x) => (
                         <Stack
                             direction='row'
-                            sx={{
+                            sx={(theme) => ({
                                 justifyContent: 'space-between',
                                 border: 'solid 1px #E2E8F0',
                                 borderRadius: 2,
                                 p: 1,
-                            }}
+                                ...noEscuro(theme, (p) => ({ borderColor: p.divider })),
+                            })}
                         >
                             <Stack direction='row'>
                                 <Stack
@@ -401,17 +407,16 @@ export default function DropFileUpload({
 
                 {errorMsg && (
                     <Box
-                        sx={{
-                            backgroundColor: '#FFEBEE',
+                        sx={(theme) => ({
                             borderRadius: '8px',
                             padding: '8px 12px',
                             marginTop: '16px',
-                            border: '1px solid #FFCDD2',
                             color: 'error.main',
+                            ...caixaDeErro(theme),
                             display: 'flex',
                             alignItems: 'center',
                             gap: 1,
-                        }}
+                        })}
                     >
                         <ErrorOutlineOutlined fontSize='small' />
                         <Typography
@@ -429,17 +434,16 @@ export default function DropFileUpload({
 
                 {get(context?.errors, name!) && (
                     <Box
-                        sx={{
-                            backgroundColor: '#FFEBEE',
+                        sx={(theme) => ({
                             borderRadius: '8px',
                             padding: '8px 12px',
                             marginTop: '8px',
-                            border: '1px solid #FFCDD2',
                             color: 'error.main',
+                            ...caixaDeErro(theme),
                             display: 'flex',
                             alignItems: 'center',
                             gap: 1,
-                        }}
+                        })}
                     >
                         <ErrorOutlineOutlined fontSize='small' />
                         <Typography

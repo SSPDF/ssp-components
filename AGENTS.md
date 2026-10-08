@@ -52,6 +52,8 @@ React 19 e Next.js 16 (Pages Router — auth usa `next/router`). Peers (declarad
 
 **`next.config`: `transpilePackages: ['@ssplib/react-components']` é obrigatório desde a `1.0.0-rc.2`** (ESM em `.mjs`): sem ele o `next build` quebra no SSR com `Failed to load external module @ssplib/react-components`. Corrija no app.
 
+**Tema escuro (desde a `1.0.0-rc.5`):** os componentes acompanham o tema escuro do app (`palette.mode: 'dark'`, `colorSchemes`, ou `colorSchemes` + `cssVariables`, o recomendado pelo MUI 9, com `<InitColorSchemeScript attribute='class' />` no `_document`). Não decida cor por `theme.palette.mode` no app: com `cssVariables` ele fica `'light'`. Para mudar uma cor da lib só no escuro, use `theme.applyStyles('dark', …)` no `sx`; uma cor solta no `sx` perde para o escuro da lib quando o tema tem `cssVariables`. Exemplo no `README.md`.
+
 Desde a `0.4.0`: **Node ≥ 22** (o `react-dropzone` 20 exige) e o `KeycloakAuthProvider` só funciona em **HTTPS ou `localhost`** (o `keycloak-js` 26 usa a Web Crypto). O app precisa servir `public/silent-check-sso.html` (conteúdo no `README.md`), e o `basePath` do provider tem que ser o do `next.config.js`.
 
 ## Documentação do MUI
@@ -60,4 +62,4 @@ A lib é construída sobre o MUI e reexpõe tipos dele (`InputProps` estende `Te
 
 - O `llms.txt` deste pacote (`node_modules/@ssplib/react-components/llms.txt`) lista os índices da documentação do Material UI e do x-date-pickers **nas versões que a lib suporta**, e os guias de migração.
 - Se o app tiver o MCP oficial do MUI configurado (`npx -y @mui/mcp@0.1.6`), prefira ele: `useMuiDocs` com o pacote e a versão do app, e depois `fetchDocs` nos links que ele devolver.
-- Migrando um app para a `1.x`: leia o CHANGELOG da `1.0.0-rc.1` à `1.0.0-rc.4`. A `rc.1` lista o que os codemods do MUI não resolvem (o mais grave: o `v9.0.0/system-props` apaga os `{...props}` dos elementos que converte), a `rc.2` o que o React 19 e o Next 16 pedem, e a `rc.3` como achar os campos da lib nos testes.
+- Migrando um app para a `1.x`: leia o CHANGELOG da `1.0.0-rc.1` à `1.0.0-rc.4` (a `rc.5` só acrescenta o tema escuro, sem exigir nada do app). A `rc.1` lista o que os codemods do MUI não resolvem (o mais grave: o `v9.0.0/system-props` apaga os `{...props}` dos elementos que converte), a `rc.2` o que o React 19 e o Next 16 pedem, e a `rc.3` como achar os campos da lib nos testes.

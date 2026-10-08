@@ -1,15 +1,15 @@
 import { PendingRounded } from '@mui/icons-material'
-import { Box, LinearProgress, Skeleton, Stack } from '@mui/material'
+import { Box, LinearProgress, Skeleton, Stack, useTheme } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React from 'react'
-import { useThemedColor } from '../../utils/useThemedColor'
+import { noEscuro } from '../../utils/temaEscuro'
 
 interface TableLoadingStateProps {
     tableName: string
 }
 
 export function TableLoadingState({ tableName }: TableLoadingStateProps) {
-    const color = useThemedColor()
+    const theme = useTheme()
     return (
         <Stack
             sx={{
@@ -36,7 +36,8 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                 >
                     <PendingRounded
                         sx={{
-                            fill: color('#5e5e5e', (p) => p.text.secondary),
+                            fill: '#5e5e5e',
+                            ...noEscuro(theme, (p) => ({ fill: p.text.secondary })),
                         }}
                     />
                     <Typography
@@ -45,7 +46,8 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                             fontSize: 20,
                             textTransform: 'capitalize',
                             textAlign: 'center',
-                            color: color('#5e5e5e', (p) => p.text.secondary),
+                            color: '#5e5e5e',
+                            ...noEscuro(theme, (p) => ({ color: p.text.secondary })),
                         }}
                     >
                         Carregando {tableName}
@@ -68,7 +70,8 @@ export function TableLoadingState({ tableName }: TableLoadingStateProps) {
                             sx={{
                                 justifyContent: 'space-between',
                                 paddingY: 8,
-                                borderBottom: color('1px solid #cacaca', (p) => `1px solid ${p.divider}`),
+                                borderBottom: '1px solid #cacaca',
+                                ...noEscuro(theme, (p) => ({ borderBottom: `1px solid ${p.divider}` })),
                             }}
                         >
                             {Array(7)

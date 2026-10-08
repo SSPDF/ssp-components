@@ -3,7 +3,7 @@ import InputLabel from '@mui/material/InputLabel'
 import get from 'lodash.get'
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, fundoDoCampo } from '../estilosDoCampo'
 
 export default function MultInput({
     name,
@@ -70,22 +70,17 @@ export default function MultInput({
                 })}
                 error={get(context.formState.errors, name!) ? true : false}
                 helperText={get(context.formState.errors, name!)?.message as string}
-                sx={{
-                    bgcolor: 'background.paper',
+                sx={(theme) => ({
+                    ...fundoDoCampo(theme),
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',
-                        '& fieldset': {
-                            borderColor: fieldBorder,
-                        },
-                        '&:hover fieldset': {
-                            borderColor: fieldBorderHover,
-                        },
+                        ...bordaDoCampo(theme),
                         '&.Mui-focused fieldset': {
                             borderColor: 'primary.main',
                             borderWidth: '1px',
                         },
                     },
-                }}
+                })}
                 placeholder={customPlaceholder ? customPlaceholder : title}
             />
         </Grid>

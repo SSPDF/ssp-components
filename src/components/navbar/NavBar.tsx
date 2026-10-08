@@ -10,6 +10,7 @@ import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { LoginOptions, LogoutOptions } from '../../types/auth'
+import { noEscuro } from '../utils/temaEscuro'
 
 export default function NavBar({
     links,
@@ -103,7 +104,18 @@ export default function NavBar({
                     zIndex: 100,
                 }}
             >
-                <AppBar position='relative' elevation={0} sx={{ backgroundColor: '#F1F5F9', color: 'black', paddingY: 1, paddingX: { xs: 1, md: 4 } }}>
+                <AppBar
+                    position='relative'
+                    elevation={0}
+                    sx={(theme) => ({
+                        backgroundColor: '#F1F5F9',
+                        color: 'black',
+                        paddingY: 1,
+                        paddingX: { xs: 1, md: 4 },
+                        // Explícito nos três jeitos de ter tema escuro: o AppBar do MUI só escurece sozinho com variáveis CSS.
+                        ...noEscuro(theme, (p) => ({ backgroundColor: p.background.paper, color: p.text.primary })),
+                    })}
+                >
                     <Stack
                         direction='row'
                         sx={{
@@ -248,7 +260,7 @@ export default function NavBar({
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
-                                                        <LogoutOutlinedIcon sx={{ fill: '#545454' }} />
+                                                        <LogoutOutlinedIcon sx={(theme) => ({ fill: '#545454', ...noEscuro(theme, (p) => ({ fill: p.action.active })) })} />
                                                         <Typography
                                                             sx={{
                                                                 textTransform: 'capitalize',
@@ -286,7 +298,7 @@ export default function NavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
                                         <Typography
                                             sx={{
@@ -304,7 +316,7 @@ export default function NavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
                                         <Typography
                                             sx={{

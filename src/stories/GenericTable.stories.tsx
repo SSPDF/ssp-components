@@ -5,6 +5,7 @@ import { GenericTable } from '../components/form/table/GenericTable'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import React from 'react'
 import { expect, userEvent, within } from 'storybook/test'
+import { noEscuro } from '../components/utils/temaEscuro'
 
 interface FakeDataProps {
     id: string
@@ -244,20 +245,22 @@ export const PaginacaoServerSide: Story = {
         return (
             <Stack spacing={2}>
                 <Box
-                    sx={{
+                    sx={(theme) => ({
                         p: 2,
                         bgcolor: '#f0f9ff',
                         borderRadius: 2,
                         border: '1px solid #bae6fd',
-                    }}
+                        ...noEscuro(theme, (p) => ({ bgcolor: theme.alpha(p.info.main, 0.08), borderColor: theme.alpha(p.info.main, 0.4), color: p.text.primary })),
+                    })}
                 >
                     <Typography
                         variant='subtitle2'
                         gutterBottom
-                        sx={{
+                        sx={(theme) => ({
                             fontWeight: 700,
                             color: '#0369a1',
-                        }}
+                            ...noEscuro(theme, (p) => ({ color: p.info.light })),
+                        })}
                     >
                         Chamadas à API (prova de paginação server-side)
                     </Typography>

@@ -2,7 +2,7 @@ import { Grid, Box, Typography, useTheme, Checkbox } from '@mui/material'
 import { useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
 import React from 'react'
-import { fieldBorder } from '../fieldBorder'
+import { cartaoDeOpcao } from '../estilosDoCampo'
 
 export default function CheckBox({
     name,
@@ -44,21 +44,16 @@ export default function CheckBox({
                 onClick={(e: any) => onClick(e)}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
+                    ...cartaoDeOpcao(theme, isSelected, !disabled && !isSelected),
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
                     position: 'relative',
                     opacity: disabled ? 0.6 : 1,
                     mb: 0.5,
-                    '&:hover': {
-                        borderColor: !disabled && !isSelected ? theme.palette.grey[400] : undefined,
-                        backgroundColor: !disabled && !isSelected ? theme.palette.grey[50] : undefined,
-                    },
                 }}
             >
                 <Checkbox
@@ -68,7 +63,7 @@ export default function CheckBox({
                         padding: 0,
                         mr: 1.5,
                         '&.Mui-checked': {
-                            color: theme.palette.primary.main,
+                            color: 'primary.main',
                         },
                     }}
                 />

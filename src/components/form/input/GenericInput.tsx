@@ -3,7 +3,7 @@ import get from 'lodash.get'
 import React, { useEffect } from 'react'
 import MaskInput from './GenericMaskInput'
 import { useFormContext } from 'react-hook-form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, fundoDoCampo } from '../estilosDoCampo'
 
 export function Input({
     type = 'input',
@@ -95,23 +95,18 @@ export function Input({
             error,
             helperText,
             ...inputConfig,
-            sx: {
-                backgroundColor: 'background.paper',
+            sx: (theme) => ({
+                ...fundoDoCampo(theme),
                 '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
                     transition: 'all 0.2s',
-                    '& fieldset': {
-                        borderColor: fieldBorder,
-                    },
-                    '&:hover fieldset': {
-                        borderColor: fieldBorderHover,
-                    },
+                    ...bordaDoCampo(theme),
                     '&.Mui-focused fieldset': {
                         borderColor: 'primary.main',
                         borderWidth: '1px',
                     },
                 },
-            },
+            }),
         }
 
         switch (type) {

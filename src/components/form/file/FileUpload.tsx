@@ -10,6 +10,8 @@ import React, { FormEvent, useCallback, useContext, useEffect, useState } from '
 import { AuthContext } from '../../../context/auth'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
+import { caixaDeErro } from '../estilosDoCampo'
+import { noEscuro } from '../../utils/temaEscuro'
 
 interface FileState {
     id: number
@@ -194,7 +196,7 @@ export default function FileUpload({
             <InputLabel required={required} sx={{ marginBottom: 2, textTransform: 'capitalize' }}>
                 {title}
             </InputLabel>
-            <Box sx={{ backgroundColor: '#e2eafc', padding: 1, borderRadius: 1, marginTop: 1 }}>
+            <Box sx={(theme) => ({ backgroundColor: '#e2eafc', padding: 1, borderRadius: 1, marginTop: 1, ...noEscuro(theme, (p) => ({ backgroundColor: theme.alpha(p.primary.main, 0.08) })) })}>
                 <input
                     id={name}
                     type='file'
@@ -288,7 +290,11 @@ export default function FileUpload({
                                 >
                                     <Box>
                                         <Stack direction='row' spacing={2}>
-                                            {filesLoaded.includes(x.id) ? <DoneIcon sx={{ fill: '#06d6a0' }} /> : <CircularProgress size={22} sx={{ color: 'black' }} />}
+                                            {filesLoaded.includes(x.id) ? (
+                                                <DoneIcon sx={{ fill: '#06d6a0' }} />
+                                            ) : (
+                                                <CircularProgress size={22} sx={(theme) => ({ color: 'black', ...noEscuro(theme, (p) => ({ color: p.text.primary })) })} />
+                                            )}
                                             <PictureAsPdf color='error' />
                                             <Typography
                                                 sx={{
@@ -319,17 +325,16 @@ export default function FileUpload({
                 )}
                 {errorMsg && (
                     <Box
-                        sx={{
-                            backgroundColor: '#FFEBEE',
+                        sx={(theme) => ({
                             borderRadius: '8px',
                             padding: '8px 12px',
                             marginTop: '16px',
-                            border: '1px solid #FFCDD2',
                             color: 'error.main',
+                            ...caixaDeErro(theme),
                             display: 'flex',
                             alignItems: 'center',
                             gap: 1,
-                        }}
+                        })}
                     >
                         <ErrorOutlineOutlined fontSize='small' />
                         <Typography
@@ -346,17 +351,16 @@ export default function FileUpload({
                 )}
                 {get(context?.errors, name!) && (
                     <Box
-                        sx={{
-                            backgroundColor: '#FFEBEE',
+                        sx={(theme) => ({
                             borderRadius: '8px',
                             padding: '8px 12px',
                             marginTop: '8px',
-                            border: '1px solid #FFCDD2',
                             color: 'error.main',
+                            ...caixaDeErro(theme),
                             display: 'flex',
                             alignItems: 'center',
                             gap: 1,
-                        }}
+                        })}
                     >
                         <ErrorOutlineOutlined fontSize='small' />
                         <Typography

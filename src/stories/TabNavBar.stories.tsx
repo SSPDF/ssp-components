@@ -55,7 +55,12 @@ export const MuitosLinks: Story = {
     },
 }
 
+/**
+ * Barra na cor do app. No tema escuro a cor continua a do app (a lib não troca uma cor que o app
+ * escolheu); tag `cor-do-app`: os snapshots não acusam a barra clara como superfície esquecida.
+ */
 export const CorCustomizada: Story = {
+    tags: ['cor-do-app'],
     args: {
         ...Base.args,
         color: '#c2410c',

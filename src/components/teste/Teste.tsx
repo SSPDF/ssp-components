@@ -19,6 +19,7 @@ import StepperBlock from '../form/stepper/StepperBlock'
 import { Table } from '../form/table/Table'
 import TabNavBar from '../navbar/TabNavBar'
 import OtherCheckBox from '../form/input/OtherCheckBox'
+import { noEscuro } from '../utils/temaEscuro'
 
 const token = ``
 
@@ -257,9 +258,10 @@ export default function Teste() {
 
     return (
         <Box
-            sx={{
+            sx={(theme) => ({
                 bgcolor: '#F9F9F9',
-            }}
+                ...noEscuro(theme, (p) => ({ bgcolor: p.background.default })),
+            })}
         >
             {/* <TabNavBar
                 img='/conoc/logossp.png'

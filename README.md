@@ -66,6 +66,20 @@ Os componentes renderizam no servidor (Next.js Pages Router). `Table` e `Generic
 
 `AutoComplete` não precisa mais de `QueryClientProvider` (a lib deixou de usar react-query na `0.2.0`).
 
+### Tema escuro
+
+Os componentes acompanham o tema escuro do app (desde a `1.0.0-rc.5`) nos três jeitos que o MUI 9 oferece: `palette: { mode: 'dark' }`, `colorSchemes` e `colorSchemes` + `cssVariables`. O recomendado é o último, com o `InitColorSchemeScript` no `_document` ([Dark mode](https://mui.com/material-ui/customization/dark-mode/), [CSS theme variables](https://mui.com/material-ui/customization/css-theme-variables/configuration/#next-js-pages-router)):
+
+```tsx
+const theme = createTheme({
+    cssVariables: { colorSchemeSelector: 'class' },
+    colorSchemes: { light: true, dark: true },
+})
+// _document.tsx, no <body> antes do <Main />: <InitColorSchemeScript attribute='class' />
+```
+
+No tema claro os componentes têm as cores de sempre. Para sobrescrever uma cor neutra da lib só no escuro, use `theme.applyStyles('dark', …)` no `sx`: com `cssVariables`, o escuro da lib vem num seletor (`*:where(.dark) &`) que ganha de uma cor solta no `sx`.
+
 ## Conceito central: os dois sistemas de formulário
 
 Esta é a coisa **mais importante** de entender. A lib tem **dois mecanismos de formulário incompatíveis entre si**. Cada componente pertence a um deles — escolha o provider certo conforme o componente que for usar.

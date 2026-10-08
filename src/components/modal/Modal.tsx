@@ -1,7 +1,7 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { Box, Modal, Stack, SwipeableDrawer, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useEffect, useState, type JSX } from 'react'
-import { useThemedColor } from '../utils/useThemedColor'
+import { noEscuro } from '../utils/temaEscuro'
 
 export const MODAL: {
     open: (customCompoment?: JSX.Element | JSX.Element[] | (() => JSX.Element)) => void
@@ -21,7 +21,6 @@ export function CustomModalProvider() {
     // const contentRef = useRef<JSX.Element | JSX.Element[]>(<></>)
     const handleClose = () => setOpen(false)
     const theme = useTheme()
-    const color = useThemedColor()
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
     const [idRef, setIdRef] = useState<{ [id: string | number]: JSX.Element }>({})
@@ -87,8 +86,9 @@ export function CustomModalProvider() {
                         sx={{
                             p: 2,
                             maxHeight: '92vh',
-                            bgcolor: color('white', (p) => p.background.paper),
+                            bgcolor: 'white',
                             overflow: 'auto',
+                            ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                         }}
                     >
                         {content}
@@ -104,9 +104,10 @@ export function CustomModalProvider() {
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
                             borderRadius: 2,
-                            bgcolor: color('white', (p) => p.background.paper),
+                            bgcolor: 'white',
                             border: '1px solid #454545',
                             boxShadow: 24,
+                            ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
                         }}
                     >
                         <Box
@@ -139,8 +140,9 @@ export function CustomModalProvider() {
                                 p: 2,
                                 marginTop: 4,
                                 borderTop: 'solid 1px gray',
-                                bgcolor: color('#F9F9F9', (p) => p.background.default),
+                                bgcolor: '#F9F9F9',
                                 borderRadius: 2,
+                                ...noEscuro(theme, (p) => ({ bgcolor: p.background.default })),
                             }}
                         >
                             {content}

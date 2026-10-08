@@ -19,7 +19,7 @@ import { separarPropsDeEstilo } from '../../utils/propsDeEstilo'
 import { FilterValue, OrderBy, TableProps2 } from './types'
 import { FilterMenu } from './FilterSection'
 import { filtrarDados, ordenarDados, removePunctuationAndAccents, getCount, transformArrayObjectInString } from './utils'
-import { useThemedColor } from '../../utils/useThemedColor'
+import { noEscuro } from '../../utils/temaEscuro'
 
 /**
  * Tabela cujo dados devem ser passados via props
@@ -93,7 +93,6 @@ export function GenericTable({
     const [showExpandObjOnExited, setShowExpandObjOnExited] = useState<{ [key: number]: boolean }>({})
     const [filterKey, setFilterKey] = useState('filterKey')
     const theme = useTheme()
-    const color = useThemedColor()
     const isSmall = useMediaQuery(theme.breakpoints.only('xs'))
 
     const lg = useMediaQuery(theme.breakpoints.up(2000))
@@ -585,14 +584,15 @@ export function GenericTable({
                             marginY: 4,
                         }}
                     >
-                        <PendingRounded sx={{ fill: color('#5e5e5e', (p) => p.text.secondary) }} />
+                        <PendingRounded sx={{ fill: '#5e5e5e', ...noEscuro(theme, (p) => ({ fill: p.text.secondary })) }} />
                         <Typography
                             sx={{
                                 fontWeight: 600,
                                 fontSize: 20,
                                 textTransform: 'capitalize',
                                 textAlign: 'center',
-                                color: color('#5e5e5e', (p) => p.text.secondary),
+                                color: '#5e5e5e',
+                                ...noEscuro(theme, (p) => ({ color: p.text.secondary })),
                             }}
                         >
                             Carregando {tableName}
@@ -615,7 +615,8 @@ export function GenericTable({
                                 sx={{
                                     justifyContent: 'space-between',
                                     paddingY: 8,
-                                    borderBottom: color('1px solid #cacaca', (p) => `1px solid ${p.divider}`),
+                                    borderBottom: '1px solid #cacaca',
+                                    ...noEscuro(theme, (p) => ({ borderBottom: `1px solid ${p.divider}` })),
                                 }}
                             >
                                 {Array(7)
@@ -636,9 +637,10 @@ export function GenericTable({
 
     const estiloDaTabela = separarPropsDeEstilo(customTableStyle, {
         marginX: isSmall ? customMarginMobile : customMargin,
-        bgcolor: color('white', (p) => p.background.paper),
+        bgcolor: 'white',
         p: 2,
         borderRadius: 6,
+        ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper })),
     })
 
     return (
@@ -655,10 +657,11 @@ export function GenericTable({
                     >
                         <TextField
                             sx={{
-                                border: color('solid 1px #CBD5E1', (p) => `solid 1px ${p.divider}`),
-                                backgroundColor: color('#F8FAFC', (p) => p.background.default),
+                                border: 'solid 1px #CBD5E1',
+                                backgroundColor: '#F8FAFC',
                                 borderRadius: '50px',
                                 maxWidth: '600px',
+                                ...noEscuro(theme, (p) => ({ border: `solid 1px ${p.divider}`, backgroundColor: p.background.default })),
                             }}
                             size='small'
                             onChange={onInputChange}
@@ -821,6 +824,7 @@ export function GenericTable({
                                             bgcolor: 'white',
                                             borderRadius: 2,
                                             paddingX: 1,
+                                            ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper, color: p.text.primary })),
                                         }}
                                     >
                                         {Array.isArray(x.value)
@@ -866,9 +870,10 @@ export function GenericTable({
                             sx={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor: color('#E2E8F0', (p) => p.action.selected),
+                                backgroundColor: '#E2E8F0',
                                 padding: 2,
                                 marginX: { xs: 2, md: 0 },
+                                ...noEscuro(theme, (p) => ({ backgroundColor: p.action.selected })),
                             }}
                         >
                             <Typography
@@ -888,11 +893,12 @@ export function GenericTable({
                                 key={index}
                                 sx={{
                                     padding: 0.5,
-                                    backgroundColor: index % 2 === 0 ? color('#F8FAFC', (p) => p.action.hover) : color('white', (p) => p.background.paper),
+                                    backgroundColor: index % 2 === 0 ? '#F8FAFC' : 'white',
                                     paddingTop: 2,
                                     paddingBottom: alwaysExpanded ? 2 : 0.5,
-                                    borderTop: color('solid 1.5px #E2E8F0', (p) => `solid 1.5px ${p.divider}`),
+                                    borderTop: 'solid 1.5px #E2E8F0',
                                     position: 'relative',
+                                    ...noEscuro(theme, (p) => ({ backgroundColor: index % 2 === 0 ? p.action.hover : p.background.paper, borderTop: `solid 1.5px ${p.divider}` })),
                                 }}
                                 elevation={0}
                             >
@@ -920,8 +926,9 @@ export function GenericTable({
                                                     sx={{
                                                         fontSize: 16,
                                                         fontWeight: 700,
-                                                        color: color('#1E293B', (p) => p.text.primary),
+                                                        color: '#1E293B',
                                                         fontFamily: 'Inter',
+                                                        ...noEscuro(theme, (p) => ({ color: p.text.primary })),
                                                     }}
                                                 >
                                                     {c.title}
@@ -941,8 +948,9 @@ export function GenericTable({
                                                         sx={{
                                                             fontFamily: 'Inter',
                                                             wordWrap: 'break-word',
-                                                            color: color('#1E293B', (p) => p.text.primary),
+                                                            color: '#1E293B',
                                                             fontSize: 16,
+                                                            ...noEscuro(theme, (p) => ({ color: p.text.primary })),
                                                         }}
                                                     >
                                                         {c.customComponent ? (
@@ -992,8 +1000,9 @@ export function GenericTable({
                                                 }}
                                                 sx={{
                                                     padding: 0,
-                                                    color: color('#637082', (p) => p.text.secondary),
+                                                    color: '#637082',
                                                     textTransform: 'capitalize',
+                                                    ...noEscuro(theme, (p) => ({ color: p.text.secondary })),
                                                 }}
                                                 startIcon={expandObj[index] ? <ExpandLess /> : <ExpandMore />}
                                             >
@@ -1098,12 +1107,13 @@ export function GenericTable({
                         }}
                         disabled={currentListPage <= 1}
                         sx={{
-                            bgcolor: color('white', (p) => p.background.paper),
+                            bgcolor: 'white',
                             borderRadius: '50px',
                             height: '40px',
                             width: '40px',
                             minWidth: 0,
-                            border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                            border: 'solid 1px #E2E8F0',
+                            ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper, border: `solid 1px ${p.divider}` })),
                         }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5) scaleX(-1)' }} />
@@ -1122,7 +1132,8 @@ export function GenericTable({
                                                       color: 'white',
                                                   }
                                                 : {
-                                                      color: color('#1E293B', (p) => p.text.primary),
+                                                      color: '#1E293B',
+                                                      ...noEscuro(theme, (p) => ({ color: p.text.primary })),
                                                   }),
                                             borderRadius: '100%',
                                             padding: 0,
@@ -1149,11 +1160,12 @@ export function GenericTable({
                         variant='outlined'
                         sx={{
                             '.MuiPagination-ul': {
-                                backgroundColor: color('white', (p) => p.background.paper),
-                                border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                                backgroundColor: 'white',
+                                border: 'solid 1px #E2E8F0',
                                 borderRadius: '50px',
                                 paddingX: 0.25,
                                 paddingY: 0.5,
+                                ...noEscuro(theme, (p) => ({ backgroundColor: p.background.paper, border: `solid 1px ${p.divider}` })),
                             },
                         }}
                     />
@@ -1168,12 +1180,13 @@ export function GenericTable({
                         }}
                         disabled={currentListPage >= paginationCount}
                         sx={{
-                            bgcolor: color('white', (p) => p.background.paper),
+                            bgcolor: 'white',
                             borderRadius: '50px',
                             height: '40px',
                             width: '40px',
                             minWidth: 0,
-                            border: color('solid 1px #E2E8F0', (p) => `solid 1px ${p.divider}`),
+                            border: 'solid 1px #E2E8F0',
+                            ...noEscuro(theme, (p) => ({ bgcolor: p.background.paper, border: `solid 1px ${p.divider}` })),
                         }}
                     >
                         <NavigateNextRoundedIcon sx={{ transform: 'scale(1.5)' }} />

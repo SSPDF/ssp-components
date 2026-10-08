@@ -82,6 +82,42 @@ export default tseslint.config(
         },
     },
     {
+        // Tema escuro do app (UPGRADE_PLAN.md seção 17): a cor do escuro entra por
+        // `theme.applyStyles('dark', …)` (`noEscuro` de utils/temaEscuro.ts), com a paleta de
+        // `paleta(theme)`. `palette.mode` e as cores neutras lidas de `theme.palette` não acompanham
+        // um app com `cssVariables` + `colorSchemes`: lá o modo troca por CSS e `theme.palette` é a
+        // do claro. Fora o teste, que compara justamente com o `palette.mode`.
+        files: ['src/components/**/*.{ts,tsx}'],
+        ignores: ['**/*.test.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: "MemberExpression[property.name='mode'][object.type='MemberExpression'][object.property.name='palette']",
+                    message:
+                        "Não decida a cor por palette.mode: use noEscuro(theme, …) de utils/temaEscuro.ts (theme.applyStyles('dark')). Com cssVariables o modo troca por CSS e palette.mode fica 'light'.",
+                },
+                {
+                    // `theme.alpha` com variáveis CSS troca `var(--x)` por `var(--xChannel)` e monta
+                    // `rgba(… / a)`: com cor literal sai `rgba(#01BA35 / 0.16)`, CSS inválido, descartado.
+                    selector: "CallExpression[callee.property.name='alpha'][callee.object.type='Identifier'][arguments.0.type=/^(Literal|TemplateLiteral)$/]",
+                    message: "theme.alpha só com token da paleta (p.primary.main…). Para cor fixa, use alpha('#…', a) de '@mui/material'.",
+                },
+                {
+                    // Com variáveis CSS, cada um devolve { '*:where(.dark) &': … }: dois no mesmo objeto têm a
+                    // mesma chave e o segundo apaga o primeiro (o campo voltava a ficar branco no escuro).
+                    selector:
+                        'ObjectExpression > SpreadElement:has(CallExpression[callee.name=/^(noEscuro|fundoDoCampo|caixaDeErro|cartaoDeOpcao)$/]) ~ SpreadElement:has(CallExpression[callee.name=/^(noEscuro|fundoDoCampo|caixaDeErro|cartaoDeOpcao)$/])',
+                    message: 'Dois estilos de escuro (noEscuro, fundoDoCampo, caixaDeErro, cartaoDeOpcao) no mesmo objeto: com cssVariables o segundo apaga o primeiro. Junte tudo num noEscuro só.',
+                },
+                {
+                    selector: "MemberExpression[property.name=/^(background|text|divider|action|common)$/][object.type='MemberExpression'][object.property.name='palette']",
+                    message: 'Cor neutra lida de theme.palette é a do claro num app com cssVariables. No claro use o valor fixo de sempre; no escuro, noEscuro(theme, (p) => …) com o p que ele passa.',
+                },
+            ],
+        },
+    },
+    {
         // Stories podem usar console à vontade — várias demonstram o submit. O `teste/` fica fora do build.
         // Scripts (da lib e das skills) são CLIs: a saída deles é o console.
         files: ['src/stories/**', 'src/decorators/**', 'scripts/**', 'skills/*/scripts/**', 'src/components/teste/**', '**/*.test.{ts,tsx}'],

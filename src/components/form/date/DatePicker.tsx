@@ -10,7 +10,7 @@ import hasIn from 'lodash.hasin'
 import { useContext, useEffect, useState, useId } from 'react'
 import { FormContext } from '../../../context/form'
 import { mensagemDeIntervalo } from './mensagemDeIntervalo'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, caixaDeErro, fundoDoCampo } from '../estilosDoCampo'
 
 export default function DatePicker({
     name,
@@ -76,20 +76,15 @@ export default function DatePicker({
                         value={value}
                         onChange={handleChange}
                         disableHighlightToday
-                        sx={{
+                        sx={(theme) => ({
                             outline: get(context.errors, name!) ? '1px solid transparent' : '',
-                            backgroundColor: 'background.paper',
+                            ...fundoDoCampo(theme),
                             width: '100%',
                             // x-date-pickers 8+: as classes do campo são as do PickersOutlinedInput, não as do OutlinedInput.
                             '& .MuiPickersOutlinedInput-root': {
                                 borderRadius: '8px',
                                 transition: 'all 0.2s',
-                                '& fieldset': {
-                                    borderColor: fieldBorder,
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: fieldBorderHover,
-                                },
+                                ...bordaDoCampo(theme),
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',
                                     borderWidth: '2px',
@@ -103,7 +98,7 @@ export default function DatePicker({
                             // (8,4 px vertical e 16 px à esquerda), para o picker ter a altura dos outros campos.
                             '& .MuiPickersInputBase-root': { paddingLeft: 2 },
                             '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
-                        }}
+                        })}
                         // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
                         // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o
                         // retorno de uma ref vira função de cleanup (UPGRADE_PLAN.md 5.16).
@@ -131,17 +126,16 @@ export default function DatePicker({
                     />
                     {get(context.errors, name!) && (
                         <Box
-                            sx={{
-                                backgroundColor: '#FFEBEE',
+                            sx={(theme) => ({
                                 borderRadius: '8px',
                                 padding: '8px 12px',
                                 marginTop: '8px',
-                                border: '1px solid #FFCDD2',
                                 color: 'error.main',
+                                ...caixaDeErro(theme),
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 1,
-                            }}
+                            })}
                         >
                             <ErrorOutlineOutlined fontSize='small' />
                             <Typography

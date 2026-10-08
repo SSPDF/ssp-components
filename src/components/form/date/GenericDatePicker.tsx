@@ -10,6 +10,7 @@ import hasIn from 'lodash.hasin'
 import React, { useEffect, useState, useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { mensagemDeIntervalo } from './mensagemDeIntervalo'
+import { noEscuro } from '../../utils/temaEscuro'
 
 export default function GenericDatePicker({
     name,
@@ -77,15 +78,18 @@ export default function GenericDatePicker({
                         value={value}
                         onChange={handleChange}
                         disableHighlightToday
-                        sx={{
+                        sx={(theme) => ({
                             outline: get(context.formState.errors, name!) ? '1px solid #a51c30' : '',
-                            backgroundColor: 'background.paper',
+                            // Fundo e contorno do erro num noEscuro só: com variáveis CSS, dois no mesmo objeto
+                            // geram a mesma chave (`*:where(.dark) &`) e o segundo apagaria o primeiro.
+                            backgroundColor: 'white',
+                            ...noEscuro(theme, (p) => ({ backgroundColor: p.background.paper, ...(get(context.formState.errors, name!) && { outlineColor: p.error.main }) })),
                             width: '100%',
                             // x-date-pickers 8+: o campo é um grupo de seções, não mais um <input>. Mesmo padding de antes
                             // (8,4 px vertical e 16 px à esquerda), para o picker ter a altura dos outros campos.
                             '& .MuiPickersInputBase-root': { paddingLeft: 2 },
                             '& .MuiPickersInputBase-sectionsContainer': { paddingY: 1.05 },
-                        }}
+                        })}
                         // Ref de callback: o React descarta o retorno, então o `TextField` que ficava aqui nunca
                         // renderizou — o que vale é o `register` com a validação. Não retornar nada: no React 19 o
                         // retorno de uma ref vira função de cleanup (UPGRADE_PLAN.md 5.16).
@@ -111,7 +115,9 @@ export default function GenericDatePicker({
                             })
                         }}
                     />
-                    <Typography sx={{ color: '#a51c30', fontSize: 14, paddingLeft: 1 }}>{get(context.formState.errors, name!)?.message as string}</Typography>
+                    <Typography sx={(theme) => ({ color: '#a51c30', fontSize: 14, paddingLeft: 1, ...noEscuro(theme, (p) => ({ color: p.error.light })) })}>
+                        {get(context.formState.errors, name!)?.message as string}
+                    </Typography>
                 </LocalizationProvider>
             </Grid>
         </>

@@ -3,7 +3,8 @@ import React, { KeyboardEvent, useContext, useEffect, useId, useRef } from 'reac
 import { Controller } from 'react-hook-form'
 import { FormContext } from '../../../context/form'
 import { ErrorOutlineOutlined } from '@mui/icons-material'
-import { fieldBorder } from '../fieldBorder'
+import { caixaDeErro, cartaoDeOpcao } from '../estilosDoCampo'
+import { paleta } from '../../utils/temaEscuro'
 
 export function Radio({
     name,
@@ -106,23 +107,18 @@ export function Radio({
                                             onClick={() => !disabled && field.onChange(isSelected && !required ? '' : option.value)}
                                             sx={{
                                                 border: '1px solid',
-                                                borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
+                                                ...cartaoDeOpcao(theme, isSelected, !disabled && !isSelected),
                                                 borderRadius: '8px',
                                                 padding: '8px 16px',
                                                 cursor: disabled ? 'not-allowed' : 'pointer',
-                                                backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
                                                 transition: 'all 0.2s',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 position: 'relative',
                                                 opacity: disabled ? 0.6 : 1,
-                                                '&:hover': {
-                                                    borderColor: !disabled && !isSelected ? theme.palette.grey[400] : undefined,
-                                                    backgroundColor: !disabled && !isSelected ? theme.palette.grey[50] : undefined,
-                                                },
                                                 // Só com foco do teclado: o clique não mostra o contorno.
                                                 '&:focus-visible': {
-                                                    outline: `2px solid ${theme.palette.primary.main}`,
+                                                    outline: `2px solid ${paleta(theme).primary.main}`,
                                                     outlineOffset: '2px',
                                                 },
                                             }}
@@ -133,7 +129,7 @@ export function Radio({
                                                     height: '18px',
                                                     borderRadius: '50%',
                                                     border: '2px solid',
-                                                    borderColor: isSelected ? theme.palette.primary.main : '#9E9E9E',
+                                                    borderColor: isSelected ? paleta(theme).primary.main : '#9E9E9E',
                                                     mr: 1.5,
                                                     display: 'flex',
                                                     alignItems: 'center',
@@ -147,7 +143,7 @@ export function Radio({
                                                             width: '10px',
                                                             height: '10px',
                                                             borderRadius: '50%',
-                                                            backgroundColor: theme.palette.primary.main,
+                                                            backgroundColor: paleta(theme).primary.main,
                                                         }}
                                                     />
                                                 )}
@@ -169,19 +165,18 @@ export function Radio({
                             {error && (
                                 <FormHelperText
                                     id={`${id}-erro`}
-                                    sx={{
-                                        backgroundColor: '#FFEBEE',
+                                    sx={(theme) => ({
                                         borderRadius: '8px',
                                         padding: '8px 12px',
                                         marginTop: '8px',
-                                        border: '1px solid #FFCDD2',
                                         color: 'error.main',
+                                        ...caixaDeErro(theme),
                                         display: 'flex',
                                         alignItems: 'center',
                                         gap: 1,
                                         marginLeft: 0,
                                         marginRight: 0,
-                                    }}
+                                    })}
                                 >
                                     <ErrorOutlineOutlined fontSize='small' />
                                     {error.message}

@@ -1,9 +1,10 @@
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined'
-import { Box, Grid, Stack } from '@mui/material'
+import { alpha, Box, Grid, Stack } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React, { ReactElement, useContext } from 'react'
 import Switch from '../switch/Switch'
 import { FormContext } from '../../../context/form'
+import { noEscuro } from '../../utils/temaEscuro'
 
 // No React 19 o `props` de um `ReactElement` sem parâmetro é `unknown` (era `any`).
 type CampoDoBloco = ReactElement<{ children?: unknown; name?: string }>
@@ -77,27 +78,31 @@ export function StepperBlock({ optional = false, title, prefix = 0, optionalMess
                     <Stack direction='row' spacing={2}>
                         <Box sx={{ marginTop: 0.6 }}>
                             <Stack
-                                sx={{
+                                sx={(theme) => ({
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     backgroundColor: '#E6F8EB',
                                     borderRadius: '100%',
                                     height: '35px',
                                     width: '35px',
-                                }}
+                                    // O verde do ícone, transparente sobre o fundo escuro. `alpha`, e não `theme.alpha`: com
+                                    // variáveis CSS o `theme.alpha` só aceita token da paleta e geraria `rgba(#01BA35 / …)`.
+                                    ...noEscuro(theme, () => ({ backgroundColor: alpha('#01BA35', 0.16) })),
+                                })}
                             >
                                 <ContentPasteOutlinedIcon sx={{ height: '18px', fill: '#01BA35' }} />
                             </Stack>
                         </Box>
                         <Typography
                             variant='h6'
-                            sx={{
+                            sx={(theme) => ({
                                 fontWeight: 600,
                                 fontSize: 28,
                                 fontFamily: 'Inter',
                                 color: '#1E293B',
                                 paddingBottom: 4,
-                            }}
+                                ...noEscuro(theme, (p) => ({ color: p.text.primary })),
+                            })}
                         >
                             {title}
                         </Typography>

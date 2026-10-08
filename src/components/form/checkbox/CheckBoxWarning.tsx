@@ -1,7 +1,7 @@
 import { Card, Checkbox, Grid, Box, useTheme, Typography } from '@mui/material'
 import React, { ReactElement, useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
-import { fieldBorder } from '../fieldBorder'
+import { cartaoDeOpcao } from '../estilosDoCampo'
 
 export default function CheckBoxWarning({
     name,
@@ -38,20 +38,15 @@ export default function CheckBoxWarning({
                 onClick={(e: any) => onClick(e)}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : fieldBorder(theme),
+                    ...cartaoDeOpcao(theme, isSelected, !isSelected),
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : theme.palette.background.paper,
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
                     position: 'relative',
                     marginBottom: 0.5,
-                    '&:hover': {
-                        borderColor: !isSelected ? theme.palette.grey[400] : undefined,
-                        backgroundColor: !isSelected ? theme.palette.grey[50] : undefined,
-                    },
                 }}
             >
                 <Checkbox
@@ -61,7 +56,7 @@ export default function CheckBoxWarning({
                         padding: 0,
                         mr: 1.5,
                         '&.Mui-checked': {
-                            color: theme.palette.primary.main,
+                            color: 'primary.main',
                         },
                     }}
                 />

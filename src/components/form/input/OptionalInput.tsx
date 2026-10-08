@@ -2,7 +2,8 @@ import { Box, Checkbox, Grid, Stack, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
-import { fieldBorder, fieldBorderHover } from '../fieldBorder'
+import { bordaDoCampo, fundoDoCampo } from '../estilosDoCampo'
+import { noEscuro } from '../../utils/temaEscuro'
 
 interface OptionalInputProps {
     title: string
@@ -44,37 +45,30 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         error={!!get(context.errors, name!)}
                         helperText={get(context.errors, name!)?.message as string}
                         placeholder={title}
-                        sx={{
-                            bgcolor: 'background.paper',
+                        sx={(theme) => ({
+                            ...fundoDoCampo(theme),
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
-                                '& fieldset': {
-                                    borderColor: fieldBorder,
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: fieldBorderHover,
-                                },
+                                ...bordaDoCampo(theme),
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',
                                     borderWidth: '1px',
                                 },
                             },
-                        }}
+                        })}
                     />
                 ) : (
                     <TextField
                         size='small'
                         disabled
                         placeholder={title}
-                        sx={{
-                            bgcolor: 'background.paper',
+                        sx={(theme) => ({
+                            ...fundoDoCampo(theme),
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
-                                '& fieldset': {
-                                    borderColor: fieldBorder,
-                                },
+                                '& fieldset': { borderColor: '#E0E0E0', ...noEscuro(theme, (p) => ({ borderColor: p.divider })) },
                             },
-                        }}
+                        })}
                     />
                 )}
             </Stack>
