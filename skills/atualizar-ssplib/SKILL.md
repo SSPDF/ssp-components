@@ -42,11 +42,14 @@ Leia o relatório inteiro e o trecho do CHANGELOG (as seções **"O que o app pr
    node SCRIPT --salvar-spreads /tmp/spreads-antes.json
    ```
 2. Rode os comandos de instalação do relatório, na ordem (revise a lista antes). O primeiro desinstala a lib antiga: sem isso, as dependências dela que ficam no lock (ex.: `react-leaflet` 4 da `0.0.x`, que pede React 18) fazem o npm dar `ERESOLVE` acusando a própria lib nova. **Nunca** `--force` nem `--legacy-peer-deps`: um `ERESOLVE` que sobra aponta um pacote real em conflito. Leia no relatório do npm (`~/.npm/_logs/*-eresolve-report.txt`) qual é, resolva-o (subir, remover) e rode de novo.
-3. Confira que `package.json` ficou com faixas normais (`^9.4.0`, não `latest`) e que o `@ssplib/react-components` aponta para o alvo.
+3. Se o app tem `package-lock.json` **e** `yarn.lock`, o npm reescreve os dois. Diga ao usuário qual o build usa (o Dockerfile) e que o outro ficou desatualizado.
+4. Confira que `package.json` ficou com faixas normais (`^9.4.0`, não `latest`) e que o `@ssplib/react-components` aponta para o alvo.
 
 ## 3. Codemods
 
 Antes: `transpilePackages` com `'@ssplib/react-components'` no `next.config` (o diagnóstico acusa em `transpile`). Obrigatório desde a `1.0.0-rc.2`.
+
+**Use `@mui/codemod@9.4.0`** (como na referência), nunca `@latest`: o CLI da `9.5.0` quebra com `yargs.command is not a function` e não aplica nada. Rode pelo `npx` oficial, sem contorno.
 
 Rode só os que o caminho de versões pede (a lista está no CHANGELOG da versão que introduziu a mudança). Para sair da `0.x` (MUI 5) para a `1.x`, veja `references/0.x-para-1.x.md`, que tem a ordem exata e o que cada um deixa para trás.
 
@@ -58,7 +61,7 @@ node SCRIPT --comparar-spreads /tmp/spreads-antes.json
 
 Cada arquivo listado perdeu um `{...x}`. Abra o `git diff` dele, veja nos usos do componente o que o spread carregava e decida (reponha, ou converta as props de layout em `size`: detalhes na referência). O codemod descarta o spread sem erro e o TypeScript não acusa.
 
-Os codemods também reformatam o código (aspas duplas, ponto e vírgula). Se o app tiver `.prettierrc`, rode `npx prettier --write` nos arquivos que a migração tocou, e só neles.
+Os codemods também reformatam o código (aspas duplas, ponto e vírgula). Se o app tiver `.prettierrc`, rode `npx prettier --write` nos arquivos que a migração tocou, e só neles. Se o `.prettierrc` não define `trailingComma`, passe `--trailing-comma none`: o padrão do Prettier 3 (`all`) enche o diff de vírgulas que o código do app não tinha.
 
 ## 4. Correções manuais
 

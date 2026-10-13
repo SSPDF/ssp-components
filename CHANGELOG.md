@@ -2,6 +2,19 @@
 
 Mudanças relevantes para quem consome `@ssplib/react-components`. A lib segue [semver](https://semver.org/lang/pt-BR/) a partir da `0.1.0`: enquanto estiver em `0.x`, **mudança breaking sobe o minor** (`0.1` → `0.2`) e correção sobe o patch.
 
+## 1.0.0
+
+**Primeira versão estável da linha 1.x** (MUI 9 + React 19 + Next 16). O código do pacote é o da `1.0.0-rc.5`: peers, dependências e API pública iguais, nada novo para o app. O que muda é a dist-tag: a partir daqui a versão vai para `latest` (as `rc` ficavam na `next`).
+
+### Validação antes de estabilizar
+
+- **specto e viva-flor** foram migrados do zero (`0.0.348` / `0.0.349` → `1.0.0-rc.5` instalada do npm) com a skill `atualizar-ssplib` e testados no navegador contra o HMG, sem erro nem aviso no console e sem aviso com stack na lib.
+- **Codemods do MUI com `@mui/codemod@9.4.0`.** Use essa versão e não `@latest`: o CLI da `9.5.0` quebra com `yargs.command is not a function` e a `9.3.0` foi publicada sem os transforms. A skill e a referência `0.x-para-1.x.md` já usam a `9.4.0`.
+
+### O que o app precisa fazer
+
+Quem vem da `0.0.x` migra a stack inteira de uma vez: siga a skill `atualizar-ssplib` e as seções "O que o app precisa fazer" das `rc.1` a `rc.4` abaixo. Quem já está na `rc.5` não precisa fazer nada.
+
 ## 1.0.0-rc.5
 
 Os componentes acompanham o tema escuro do app. Peers, dependências e API pública iguais às da `rc.4`; nada muda no tema claro.
