@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # histórico completo: o passo abaixo confere se o commit publicado está na main
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
@@ -41,6 +44,35 @@ jobs:
       - name: Conferindo o npm (trusted publishing exige >= 11.5.1)
         run: |
           node -e "const [a,b,c]=process.argv[1].split('.').map(Number); if (a<11||(a===11&&(b<5||(b===5&&c<1)))) { console.error('npm '+process.argv[1]+' < 11.5.1'); process.exit(1) }" "$(npm --version)"
+
+      # Versão estável (sem sufixo de pré-release) ou dist-tag `latest` só sai de um commit que
+      # já está na história da main, ou seja, depois do merge e da revisão do PR. Pré-release
+      # (`1.0.0-rc.N` → `next`) continua podendo sair de qualquer branch, para validar num app
+      # piloto antes do merge. `legacy-v0` (correção crítica na linha 0.x, a partir de um branch
+      # antigo, ver CLAUDE.md) também fica de fora, porque por definição não vem da main.
+      - name: Conferindo que a versão estável sai da main
+        env:
+          DIST_TAG_INPUT: ${{ inputs.dist_tag }}
+        run: |
+          VER="$(node -p "require('./lib-package.json').version")"
+          if [ "$DIST_TAG_INPUT" = "legacy-v0" ]; then
+            echo "dist-tag legacy-v0: não exige a main."
+            exit 0
+          fi
+          case "$VER" in
+            *-*) PRE=1 ;;
+            *)   PRE=0 ;;
+          esac
+          if [ "$PRE" = "1" ] && [ "$DIST_TAG_INPUT" != "latest" ]; then
+            echo "Pré-release $VER: pode sair de qualquer branch."
+            exit 0
+          fi
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Versão estável ($VER, dist-tag ${DIST_TAG_INPUT:-latest}) só pode ser publicada a partir de um commit que já está na main. O commit ${GITHUB_SHA::8} não está. Faça o merge do PR e marque a tag (ou dispare o workflow) em cima da main."
+            exit 1
+          fi
+          echo "Commit ${GITHUB_SHA::8} está na main: ok para publicar $VER."
 
       - name: Instalando dependências
         run: npm ci
