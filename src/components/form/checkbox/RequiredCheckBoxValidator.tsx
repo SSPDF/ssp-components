@@ -2,9 +2,10 @@ import React, { useContext } from 'react'
 import { FormContext } from '../../../context/form'
 import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material'
 import get from 'lodash.get'
-import { ElevatorSharp, ErrorOutline } from '@mui/icons-material'
+import { ElevatorSharp, ErrorOutlineOutlined } from '@mui/icons-material'
+import { caixaDeErro } from '../estilosDoCampo'
 
-function getChildrenNames(children: JSX.Element[]): string[] {
+function getChildrenNames(children: React.JSX.Element[]): string[] {
     let arr: string[] = []
 
     children.forEach((x) => {
@@ -25,7 +26,7 @@ function getChildrenNames(children: JSX.Element[]): string[] {
     return arr
 }
 
-export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: JSX.Element | JSX.Element[]; customText?: string }) {
+export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo menos 1 opção', ...props }: { name: string; children: React.JSX.Element | React.JSX.Element[]; customText?: string }) {
     const context = useContext(FormContext)!
 
     return (
@@ -45,7 +46,6 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
                             if (nameValue) {
                                 canContinue = true
                             }
-
                         })
 
                         if (!canContinue) return customText
@@ -57,22 +57,28 @@ export default function RequiredCheckBoxGroup({ customText = 'Selecione pelo men
             />
             {props.children}
             {get(context.errors, props.name) && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <Box
-                        sx={{
-                            backgroundColor: '#FFEBEE',
+                        sx={(theme) => ({
                             borderRadius: '8px',
                             padding: '8px 12px',
                             marginTop: 1,
-                            border: '1px solid #FFCDD2',
                             color: 'error.main',
+                            ...caixaDeErro(theme),
                             display: 'flex',
                             alignItems: 'center',
                             gap: 1,
-                        }}
+                        })}
                     >
-                        <ErrorOutline fontSize='small' />
-                        <Typography variant='caption' color='inherit' fontWeight={600} fontSize={14}>
+                        <ErrorOutlineOutlined fontSize='small' />
+                        <Typography
+                            variant='caption'
+                            sx={{
+                                color: 'inherit',
+                                fontWeight: 600,
+                                fontSize: 14,
+                            }}
+                        >
                             {get(context.errors, props.name)?.message as string}
                         </Typography>
                     </Box>

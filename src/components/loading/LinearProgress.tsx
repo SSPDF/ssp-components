@@ -8,7 +8,12 @@ export function LinearProgress(props: LinearProgressProps) {
                 <MuiLinearProgress variant='determinate' {...props} />
             </Box>
             <Box sx={{ minWidth: 3 }}>
-                <Typography variant='body2' color='text.secondary'>{`${Math.round(props.value || 100)}%`}</Typography>
+                <Typography
+                    variant='body2'
+                    sx={{
+                        color: 'text.secondary',
+                    }}
+                >{`${Math.round(props.value || 100)}%`}</Typography>
             </Box>
         </Box>
     )

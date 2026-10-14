@@ -10,6 +10,7 @@ import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { LoginOptions, LogoutOptions } from '../../types/auth'
+import { noEscuro } from '../utils/temaEscuro'
 
 export default function NavBar({
     links,
@@ -30,9 +31,9 @@ export default function NavBar({
     title: string
     img: string
     paddingBottom?: number
-    menuItems: JSX.Element | JSX.Element[]
+    menuItems: React.JSX.Element | React.JSX.Element[]
     next?: boolean
-    el?: JSX.Element
+    el?: React.JSX.Element
     logoutMsg?: string
     /** @deprecated Use logoutOptions.onBeforeLogout instead */
     logoutFunc?: () => Promise<void>
@@ -77,7 +78,7 @@ export default function NavBar({
                 setLoading(false)
             }
         },
-        [router]
+        [router],
     )
 
     function changeRoute(e: React.MouseEvent, path: string) {
@@ -96,13 +97,49 @@ export default function NavBar({
 
     return (
         <>
-            <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
-                <AppBar position='relative' elevation={0} sx={{ backgroundColor: '#F1F5F9', color: 'black', paddingY: 1, paddingX: { xs: 1, md: 4 } }}>
-                    <Stack direction='row' justifyContent='space-between'>
-                        <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', md: 'flex' }, width: '100%' }}>
+            <Box
+                sx={{
+                    position: pos,
+                    width: '100%',
+                    zIndex: 100,
+                }}
+            >
+                <AppBar
+                    position='relative'
+                    elevation={0}
+                    sx={(theme) => ({
+                        backgroundColor: '#F1F5F9',
+                        color: 'black',
+                        paddingY: 1,
+                        paddingX: { xs: 1, md: 4 },
+                        // Explícito nos três jeitos de ter tema escuro: o AppBar do MUI só escurece sozinho com variáveis CSS.
+                        ...noEscuro(theme, (p) => ({ backgroundColor: p.background.paper, color: p.text.primary })),
+                    })}
+                >
+                    <Stack
+                        direction='row'
+                        sx={{
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <Stack
+                            direction='row'
+                            spacing={2}
+                            sx={{
+                                alignItems: 'center',
+                                marginRight: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                width: '100%',
+                            }}
+                        >
                             <Link href='/'>{next ? <Image src={img} alt={title} width={40} height={40} /> : <img src={img} height={35} />}</Link>
                             <Box>
-                                <Typography variant='subtitle1' fontWeight={600}>
+                                <Typography
+                                    variant='subtitle1'
+                                    sx={{
+                                        fontWeight: 600,
+                                    }}
+                                >
                                     {title}
                                 </Typography>
                             </Box>
@@ -124,7 +161,13 @@ export default function NavBar({
                                     <Menu open={menuOpen} onClose={closeMenu} anchorEl={anchor}>
                                         {links.map((x) => (
                                             <MenuItem key={`navmenu${x}`} onClick={(e) => onMenuItemClick(e, x.path)}>
-                                                <Typography textTransform='capitalize'>{x.name}</Typography>
+                                                <Typography
+                                                    sx={{
+                                                        textTransform: 'capitalize',
+                                                    }}
+                                                >
+                                                    {x.name}
+                                                </Typography>
                                             </MenuItem>
                                         ))}
                                     </Menu>
@@ -133,7 +176,14 @@ export default function NavBar({
                         </Box>
 
                         {/* Desktop */}
-                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { md: '100%' } }}>
+                        <Stack
+                            direction='row'
+                            sx={{
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
+                                width: { md: '100%' },
+                            }}
+                        >
                             <Stack direction='row' spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
                                 {links.map((x) => (
                                     <Box
@@ -210,15 +260,35 @@ export default function NavBar({
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
-                                                        <LogoutOutlinedIcon sx={{ fill: '#545454' }} />
-                                                        <Typography textTransform='capitalize'>{logoutMsg}</Typography>
+                                                        <LogoutOutlinedIcon sx={(theme) => ({ fill: '#545454', ...noEscuro(theme, (p) => ({ fill: p.action.active })) })} />
+                                                        <Typography
+                                                            sx={{
+                                                                textTransform: 'capitalize',
+                                                            }}
+                                                        >
+                                                            {logoutMsg}
+                                                        </Typography>
                                                     </Stack>
                                                 </MenuItem>
                                             </Menu>
                                         </Box>
-                                        <Stack direction='row' spacing={0.4} alignItems='center' onClick={(e) => setAvatarAnchor(e.currentTarget as any)} sx={{ userSelect: 'none' }}>
+                                        <Stack
+                                            direction='row'
+                                            spacing={0.4}
+                                            onClick={(e) => setAvatarAnchor(e.currentTarget as any)}
+                                            sx={{
+                                                alignItems: 'center',
+                                                userSelect: 'none',
+                                            }}
+                                        >
                                             <Typography>Olá,</Typography>
-                                            <Typography fontWeight={600}>{(user as any)?.given_name}</Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {(user as any)?.given_name}
+                                            </Typography>
                                             <KeyboardArrowDownIcon />
                                         </Stack>
                                     </Stack>
@@ -228,9 +298,15 @@ export default function NavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
-                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 15,
+                                                padding: 0.4,
+                                            }}
+                                        >
                                             Entrar com o gov.br
                                         </Typography>
                                     </Button>
@@ -240,9 +316,15 @@ export default function NavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
-                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 15,
+                                                padding: 0.4,
+                                            }}
+                                        >
                                             Entrar
                                         </Typography>
                                     </Button>
@@ -253,7 +335,11 @@ export default function NavBar({
                 </AppBar>
                 {loading && <LinearProgress />}
             </Box>
-            <Box paddingBottom={paddingBottom} />
+            <Box
+                sx={{
+                    paddingBottom: paddingBottom,
+                }}
+            />
         </>
     )
 }

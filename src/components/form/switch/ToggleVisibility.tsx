@@ -21,7 +21,7 @@ export function SwitchWatch({
     checkValue,
     ...props
 }: {
-    children: JSX.Element | JSX.Element[]
+    children: React.JSX.Element | React.JSX.Element[]
     switchId: string
     unregisterNameList: string[]
     invert?: boolean

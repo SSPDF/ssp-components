@@ -2,6 +2,8 @@ import { Box, Checkbox, Grid, Stack, TextField } from '@mui/material'
 import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
+import { bordaDoCampo, fundoDoCampo } from '../estilosDoCampo'
+import { noEscuro } from '../../utils/temaEscuro'
 
 interface OptionalInputProps {
     title: string
@@ -23,7 +25,7 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
     }, [context])
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Stack direction='row'>
                 <Box>
                     <Checkbox size='small' {...context.formRegister(checkName)} sx={{ paddingLeft: 0, margin: 0 }} />
@@ -34,7 +36,7 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         {...context.formRegister(name!, {
                             validate: (v, f) => {
                                 const value = context.formWatch(checkName)
-                                if (!!value) {
+                                if (value) {
                                     if (!v || (v.length <= 0 && required)) return 'Este campo não pode ser vazio'
                                 }
                             },
@@ -43,37 +45,30 @@ export default function OptionalInput({ title, name, required = false, xs = 12, 
                         error={!!get(context.errors, name!)}
                         helperText={get(context.errors, name!)?.message as string}
                         placeholder={title}
-                        sx={{
-                            bgcolor: 'white',
+                        sx={(theme) => ({
+                            ...fundoDoCampo(theme),
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
-                                '& fieldset': {
-                                    borderColor: '#E0E0E0',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#BDBDBD',
-                                },
+                                ...bordaDoCampo(theme),
                                 '&.Mui-focused fieldset': {
                                     borderColor: 'primary.main',
                                     borderWidth: '1px',
                                 },
                             },
-                        }}
+                        })}
                     />
                 ) : (
                     <TextField
                         size='small'
                         disabled
                         placeholder={title}
-                        sx={{
-                            bgcolor: 'white',
+                        sx={(theme) => ({
+                            ...fundoDoCampo(theme),
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '8px',
-                                '& fieldset': {
-                                    borderColor: '#E0E0E0',
-                                },
+                                '& fieldset': { borderColor: '#E0E0E0', ...noEscuro(theme, (p) => ({ borderColor: p.divider })) },
                             },
-                        }}
+                        })}
                     />
                 )}
             </Stack>

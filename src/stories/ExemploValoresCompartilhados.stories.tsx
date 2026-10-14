@@ -1,8 +1,8 @@
 import { Button, Grid } from '@mui/material'
-import { Source } from '@storybook/addon-docs/blocks'
+import CodeSample from './CodeSample'
 import { Meta, StoryObj } from '@storybook/nextjs'
 import { useContext, useState } from 'react'
-import 'react-toastify/ReactToastify.min.css'
+import 'react-toastify/ReactToastify.css'
 import Input from '../components/form/input/Input'
 import FormProvider from '../components/providers/FormProvider'
 import { SspComponentsProvider } from '../components/providers/SspComponentsProvider'
@@ -42,8 +42,8 @@ function Teste() {
                 {/* Esse grid é opcional para dar espaçamento */}
                 <Grid container>
                     <Input name='nome' type='input' title='Nome' required />
-                    <Grid item xs={12}>
-                        <Source
+                    <Grid size={12}>
+                        <CodeSample
                             code={`
 <Input name='nome' type='input' title='Nome' required />
 
@@ -57,7 +57,7 @@ function NomeComponent() {
 
     // Usando formWatch para assistir um valor do form (FUNCIONA APENAS PARA MOSTRAR)
     return (
-        <Grid item xs={12}>
+        <Grid size={12}>
             <h3>Nome: {context.formWatch('nome')}</h3>
         </Grid>
     )
@@ -82,7 +82,7 @@ function NomeComponent() {
     const context = useContext(FormContext)!
 
     return (
-        <Grid item xs={12}>
+        <Grid size={12}>
             <h3>Nome: {context.formWatch('nome')}</h3>
         </Grid>
     )

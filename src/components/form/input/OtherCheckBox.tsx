@@ -3,6 +3,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect } from 'react'
 import { FormContext } from '../../../context/form'
 import { SwitchWatch } from '../switch/ToggleVisibility'
+import { cartaoDeOpcao, fundoDoCampo } from '../estilosDoCampo'
 
 export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, md }: { name: string; required?: boolean; xs?: number; sm?: number; md?: number }) {
     const context = useContext(FormContext)!
@@ -22,24 +23,19 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
     }
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Box
                 onClick={handleBoxClick}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
+                    ...cartaoDeOpcao(theme, !!isSelected, !isSelected),
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
                     mb: 0.5,
-                    '&:hover': {
-                        borderColor: !isSelected ? theme.palette.grey[400] : undefined,
-                        backgroundColor: !isSelected ? theme.palette.grey[50] : undefined,
-                    },
                 }}
             >
                 <Checkbox
@@ -49,7 +45,7 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                         padding: 0,
                         mr: 1.5,
                         '&.Mui-checked': {
-                            color: theme.palette.primary.main,
+                            color: 'primary.main',
                         },
                     }}
                 />
@@ -71,14 +67,20 @@ export default function SSPOtherCheckBox({ name, required = false, xs = 12, sm, 
                             error={get(context.errors, name!) ? true : false}
                             helperText={get(context.errors, name!)?.message as string}
                             placeholder='Outro'
-                            sx={{
+                            sx={(theme) => ({
                                 '& .MuiOutlinedInput-root': {
-                                    backgroundColor: 'white',
-                                }
-                            }}
+                                    ...fundoDoCampo(theme),
+                                },
+                            })}
                         />
                     ) : (
-                        <Typography color='text.primary'>Outro</Typography>
+                        <Typography
+                            sx={{
+                                color: 'text.primary',
+                            }}
+                        >
+                            Outro
+                        </Typography>
                     )}
                 </Box>
             </Box>

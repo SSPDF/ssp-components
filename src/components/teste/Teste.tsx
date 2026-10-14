@@ -19,6 +19,7 @@ import StepperBlock from '../form/stepper/StepperBlock'
 import { Table } from '../form/table/Table'
 import TabNavBar from '../navbar/TabNavBar'
 import OtherCheckBox from '../form/input/OtherCheckBox'
+import { noEscuro } from '../utils/temaEscuro'
 
 const token = ``
 
@@ -50,7 +51,7 @@ export function Exemplo({ required = false }: { required?: boolean }) {
 
                 <OtherCheckBox name='conhecimento_outro' md={12} required={required} />
 
-                <RequiredCheckBoxGroup name='x' >
+                <RequiredCheckBoxGroup name='x'>
                     <CheckBox name='teste_check_1' title='Input' />
                     <CheckBox name='teste_check_2' title='Input' />
                 </RequiredCheckBoxGroup>
@@ -88,7 +89,6 @@ export function Exemplo({ required = false }: { required?: boolean }) {
                     ]}
                     required={required}
                 />
-
             </StepperBlock>
             <StepperBlock title='Segundo'>
                 <Input name='teste2' type='input' />
@@ -143,8 +143,24 @@ function getStatus(content: string) {
     }
 
     return (
-        <Stack color='white' fontWeight={600} direction='row' justifyContent='start'>
-            <Box bgcolor={color} width='128px' borderRadius='14px' paddingX={1.2} paddingY={0.6} textAlign='center'>
+        <Stack
+            direction='row'
+            sx={{
+                color: 'white',
+                fontWeight: 600,
+                justifyContent: 'start',
+            }}
+        >
+            <Box
+                sx={{
+                    bgcolor: color,
+                    width: '128px',
+                    borderRadius: '14px',
+                    paddingX: 1.2,
+                    paddingY: 0.6,
+                    textAlign: 'center',
+                }}
+            >
                 {name}
             </Box>
         </Stack>
@@ -203,7 +219,7 @@ const CustomTabPanel = React.memo(function Custom(props: TabPanelProps) {
     const { children, value, index, ...other } = props
 
     return (
-        <Box role='tabpanel' display={value !== index ? 'none' : ''} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+        <Box role='tabpanel' id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other} sx={{ display: value !== index ? 'none' : '' }}>
             {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
         </Box>
     )
@@ -241,8 +257,12 @@ export default function Teste() {
     // return <Exemplo required />
 
     return (
-        <Box bgcolor='#F9F9F9'>
-
+        <Box
+            sx={(theme) => ({
+                bgcolor: '#F9F9F9',
+                ...noEscuro(theme, (p) => ({ bgcolor: p.background.default })),
+            })}
+        >
             {/* <TabNavBar
                 img='/conoc/logossp.png'
                 color='#208FE8'
@@ -271,7 +291,6 @@ export default function Teste() {
                 paddingBottom={3}
                 next={false}
             /> */}
-
 
             {/* <Input
                 type='input'
@@ -950,4 +969,4 @@ export default function Teste() {
         </Box>
     )
 }
-// 
+//

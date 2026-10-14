@@ -2,6 +2,7 @@ import { Grid, Box, Typography, useTheme, Checkbox } from '@mui/material'
 import { useCallback, useContext } from 'react'
 import { FormContext } from '../../../context/form'
 import React from 'react'
+import { cartaoDeOpcao } from '../estilosDoCampo'
 
 export default function CheckBox({
     name,
@@ -14,7 +15,7 @@ export default function CheckBox({
     disabled = false,
 }: {
     name: string
-    title: string | JSX.Element
+    title: string | React.JSX.Element
     defaultValue?: boolean
     onChange?: (e: React.SyntheticEvent<Element, Event>) => void
     xs?: number
@@ -34,30 +35,25 @@ export default function CheckBox({
                 onChange?.(e)
             }
         },
-        [context, name, disabled, onChange]
+        [context, name, disabled, onChange],
     )
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             <Box
                 onClick={(e: any) => onClick(e)}
                 sx={{
                     border: '1px solid',
-                    borderColor: isSelected ? theme.palette.primary.main : '#E0E0E0',
+                    ...cartaoDeOpcao(theme, isSelected, !disabled && !isSelected),
                     borderRadius: '8px',
                     padding: '8px 16px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
-                    backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
                     position: 'relative',
                     opacity: disabled ? 0.6 : 1,
                     mb: 0.5,
-                    '&:hover': {
-                        borderColor: !disabled && !isSelected ? theme.palette.grey[400] : undefined,
-                        backgroundColor: !disabled && !isSelected ? theme.palette.grey[50] : undefined,
-                    },
                 }}
             >
                 <Checkbox
@@ -67,15 +63,18 @@ export default function CheckBox({
                         padding: 0,
                         mr: 1.5,
                         '&.Mui-checked': {
-                            color: theme.palette.primary.main,
+                            color: 'primary.main',
                         },
                     }}
                 />
                 {typeof title === 'string' ? (
                     <Typography
                         variant='body2'
-                        color={isSelected ? 'primary.main' : 'text.primary'}
-                        fontWeight={isSelected ? 600 : 400}
+                        // MUI 9: o color do Typography só aceita nomes da paleta ('primary.main' e 'text.primary' viravam CSS inválido)
+                        color={isSelected ? 'primary' : 'textPrimary'}
+                        sx={{
+                            fontWeight: isSelected ? 600 : 400,
+                        }}
                     >
                         {title}
                     </Typography>

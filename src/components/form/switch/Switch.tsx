@@ -26,7 +26,13 @@ export function Switch({ defaultChecked = false, ...props }: SwitchProps) {
             <FormControlLabel
                 control={<MUISwitch defaultChecked={defaultChecked} {...context?.formRegister(props.name)} />}
                 label={
-                    <Typography width={25} sx={{ userSelect: 'none', fontWeight: 600 }}>
+                    <Typography
+                        sx={{
+                            width: 25,
+                            userSelect: 'none',
+                            fontWeight: 600,
+                        }}
+                    >
                         {context?.formWatch(props.name) ? yesMessage : noMessage}
                     </Typography>
                 }

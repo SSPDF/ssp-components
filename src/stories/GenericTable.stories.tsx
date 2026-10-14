@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { GenericTable } from '../components/form/table/GenericTable'
 import FormBaseDecorator from '../decorators/FormBaseDecorator'
 import React from 'react'
+import { expect, userEvent, within } from 'storybook/test'
+import { noEscuro } from '../components/utils/temaEscuro'
 
 interface FakeDataProps {
     id: string
@@ -229,10 +231,7 @@ export const PaginacaoServerSide: Story = {
 
         const loadPage = React.useCallback(async (pageNum: number) => {
             setLoading(true)
-            setApiCalls((prev) => [
-                ...prev,
-                { page: pageNum, at: new Date().toLocaleTimeString('pt-BR', { hour12: false }) },
-            ])
+            setApiCalls((prev) => [...prev, { page: pageNum, at: new Date().toLocaleTimeString('pt-BR', { hour12: false }) }])
             const { items, total } = await fakeApiFetchPage(pageNum)
             setData(items)
             setTotalCount(total)
@@ -246,27 +245,54 @@ export const PaginacaoServerSide: Story = {
         return (
             <Stack spacing={2}>
                 <Box
-                    sx={{
+                    sx={(theme) => ({
                         p: 2,
                         bgcolor: '#f0f9ff',
                         borderRadius: 2,
                         border: '1px solid #bae6fd',
-                    }}
+                        ...noEscuro(theme, (p) => ({ bgcolor: theme.alpha(p.info.main, 0.08), borderColor: theme.alpha(p.info.main, 0.4), color: p.text.primary })),
+                    })}
                 >
-                    <Typography variant="subtitle2" fontWeight={700} color="#0369a1" gutterBottom>
+                    <Typography
+                        variant='subtitle2'
+                        gutterBottom
+                        sx={(theme) => ({
+                            fontWeight: 700,
+                            color: '#0369a1',
+                            ...noEscuro(theme, (p) => ({ color: p.info.light })),
+                        })}
+                    >
                         Chamadas à API (prova de paginação server-side)
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Typography
+                        variant='body2'
+                        sx={{
+                            color: 'text.secondary',
+                            mb: 1,
+                        }}
+                    >
                         Cada troca de página dispara uma nova requisição. Registros abaixo:
                     </Typography>
                     {apiCalls.length === 0 ? (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                            variant='body2'
+                            sx={{
+                                color: 'text.secondary',
+                            }}
+                        >
                             Nenhuma chamada ainda.
                         </Typography>
                     ) : (
-                        <Stack direction="column" component="ul" sx={{ m: 0, pl: 2.5, listStyle: 'disc' }} spacing={0.5}>
+                        <Stack direction='column' component='ul' sx={{ m: 0, pl: 2.5, listStyle: 'disc' }} spacing={0.5}>
                             {apiCalls.map((call, i) => (
-                                <Typography key={i} component="li" variant="body2" display="block">
+                                <Typography
+                                    key={i}
+                                    component='li'
+                                    variant='body2'
+                                    sx={{
+                                        display: 'block',
+                                    }}
+                                >
                                     <strong>Página {call.page}</strong> às {call.at}
                                 </Typography>
                             ))}
@@ -275,7 +301,7 @@ export const PaginacaoServerSide: Story = {
                 </Box>
                 <GenericTable
                     {...args}
-                    id="generic-table-server-side"
+                    id='generic-table-server-side'
                     serverSidePagination
                     page={page}
                     onPageChange={setPage}
@@ -291,5 +317,23 @@ export const PaginacaoServerSide: Story = {
         ...Base.args,
         id: 'generic-table-server-side',
         itemCount: PAGE_SIZE,
+    },
+}
+
+/** Trocar de página chama a "API" de novo e mostra a faixa certa de registros. */
+export const Interacao: Story = {
+    tags: ['interacao'],
+    render: PaginacaoServerSide.render,
+    args: PaginacaoServerSide.args,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await expect(await canvas.findByText('Exibindo 1-10 de 47')).toBeVisible()
+
+        await userEvent.click(within(canvas.getByRole('navigation', { name: 'pagination navigation' })).getByRole('button', { name: '2' }))
+        await expect(await canvas.findByText('Exibindo 11-20 de 47')).toBeVisible()
+        await expect(canvas.getByText('Página 2')).toBeVisible()
+
+        await userEvent.click(within(canvas.getByRole('navigation', { name: 'pagination navigation' })).getByRole('button', { name: '5' }))
+        await expect(await canvas.findByText('Exibindo 41-47 de 47')).toBeVisible()
     },
 }

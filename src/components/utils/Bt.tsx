@@ -2,7 +2,7 @@ import { Button, ButtonProps } from '@mui/material'
 
 import tinycolor from 'tinycolor2'
 
-interface CustomButton extends ButtonProps {
+export interface CustomButton extends ButtonProps {
     customColor?: tinycolor.ColorInput
     customFontColor?: tinycolor.ColorInput
 }

@@ -2,31 +2,48 @@ import { Button, Grid, Stack, Typography } from '@mui/material'
 import { FileDownload } from '@mui/icons-material'
 import React, { useContext } from 'react'
 import { AuthContext } from '../../context/auth'
+import { noEscuro } from '../utils/temaEscuro'
 
 export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: string; fileURL: string; name: string; md?: number; fileExt?: string }) {
     const { user } = useContext(AuthContext)
 
     return (
-        <Grid paddingBottom={3} paddingRight={3} {...{ md }}>
+        <Grid size={{ md }} sx={{ paddingBottom: 3, paddingRight: 3 }}>
             <Stack
                 spacing={1}
-                sx={{
+                sx={(theme) => ({
                     backgroundColor: '#F8FAFC',
                     paddingY: 1,
                     paddingX: 3,
                     borderRadius: 2,
                     border: 1,
                     borderColor: '#CBD5E1',
-                }}
+                    ...noEscuro(theme, (p) => ({ backgroundColor: p.action.hover, borderColor: p.divider })),
+                })}
             >
-                <Typography fontWeight={600} sx={{ textAlign: 'center' }}>
+                <Typography
+                    sx={{
+                        fontWeight: 600,
+                        textAlign: 'center',
+                    }}
+                >
                     {title}
                 </Typography>
-                <Stack direction='row' spacing={2} alignItems='center'>
+                <Stack
+                    direction='row'
+                    spacing={2}
+                    sx={{
+                        alignItems: 'center',
+                    }}
+                >
                     <FileDownload sx={{ fill: 'red' }} />
                     <Typography>{name}</Typography>
                 </Stack>
-                <Stack alignItems='center'>
+                <Stack
+                    sx={{
+                        alignItems: 'center',
+                    }}
+                >
                     <Button
                         variant='outlined'
                         color='error'
@@ -41,7 +58,7 @@ export function File({ title, name, md, fileURL, fileExt = 'pdf' }: { title: str
                             })
                                 .then((res) => res.blob())
                                 .then((blob) => {
-                                    var file = window.URL.createObjectURL(blob)
+                                    const file = window.URL.createObjectURL(blob)
                                     const a = document.createElement('a')
                                     a.href = file
 

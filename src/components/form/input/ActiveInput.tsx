@@ -32,7 +32,7 @@ export default function FileUpload({
     const switchName = `${name}-switch`
 
     return (
-        <Grid item {...{ xs, sm, md }}>
+        <Grid size={{ xs, sm, md }}>
             {title && (
                 <InputLabel required={required} sx={{ textTransform: 'capitalize' }}>
                     {title}

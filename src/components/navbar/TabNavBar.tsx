@@ -2,7 +2,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/Menu'
 import PersonIcon from '@mui/icons-material/Person'
-import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material'
 import LinearProgress from '@mui/material/LinearProgress'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,7 +10,7 @@ import { NextRouter, useRouter } from 'next/router'
 import React, { useCallback, useContext, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { LoginOptions, LogoutOptions } from '../../types/auth'
-
+import { noEscuro } from '../utils/temaEscuro'
 
 function verificarRota(route: string, path: string): boolean {
     if (route === path) {
@@ -37,7 +37,7 @@ export default function TabNavBar({
     route = '/teste/89',
     paddingBottom = 0,
     logoutMsg = 'Sair',
-    customBgColor = '#FFFFFF',
+    customBgColor,
     logoutFunc,
     loginOptions,
     logoutOptions,
@@ -49,9 +49,9 @@ export default function TabNavBar({
     color?: string
     route?: string
     paddingBottom?: number
-    menuItems: JSX.Element | JSX.Element[]
+    menuItems: React.JSX.Element | React.JSX.Element[]
     next?: boolean
-    el?: JSX.Element
+    el?: React.JSX.Element
     logoutMsg?: string
     /** @deprecated Use logoutOptions.onBeforeLogout instead */
     logoutFunc?: () => Promise<void>
@@ -62,7 +62,8 @@ export default function TabNavBar({
     /** Opções para configurar o comportamento do logout (redirectUri, callbacks, etc) */
     logoutOptions?: LogoutOptions
 }) {
-    const theme = useTheme()
+    // Sem cor do app, a barra é a neutra da lib: branca no claro, `background.paper` no escuro.
+    const fundo = customBgColor ?? '#FFFFFF'
     const breakpoint = links.length <= 3 ? 'md' : 'lg'
     let router: NextRouter | undefined | null = undefined
     if (next) router = useRouter()
@@ -99,7 +100,7 @@ export default function TabNavBar({
                 setLoading(false)
             }
         },
-        [router]
+        [router],
     )
 
     function changeRoute(e: React.MouseEvent, path: string) {
@@ -118,45 +119,104 @@ export default function TabNavBar({
 
     return (
         <>
-            <Box position={pos} sx={{ width: '100%', zIndex: 100 }}>
-                <AppBar position='relative' elevation={0} sx={{ color: theme.palette.getContrastText(customBgColor), paddingX: { xs: 1, [breakpoint]: 4 }, bgcolor: customBgColor }}>
-                    <Stack direction='row' justifyContent='space-between' bgcolor={customBgColor}>
-                        <Stack direction='row' alignItems='center' spacing={2} marginRight={2} sx={{ display: { xs: 'none', [breakpoint]: 'flex' }, width: '100%' }}>
+            <Box
+                sx={{
+                    position: pos,
+                    width: '100%',
+                    zIndex: 100,
+                }}
+            >
+                <AppBar
+                    position='relative'
+                    elevation={0}
+                    sx={(t) => ({
+                        color: t.palette.getContrastText(fundo),
+                        paddingX: { xs: 1, [breakpoint]: 4 },
+                        bgcolor: fundo,
+                        // No escuro: a barra neutra vira a do tema; a cor do app fica, e é preciso repeti-la
+                        // porque o AppBar do MUI escurece sozinho com variáveis CSS (fundo e texto).
+                        ...noEscuro(t, (p) => (customBgColor ? { bgcolor: fundo, color: t.palette.getContrastText(fundo) } : { bgcolor: p.background.paper, color: p.text.primary })),
+                    })}
+                >
+                    <Stack
+                        direction='row'
+                        sx={(t) => ({
+                            justifyContent: 'space-between',
+                            bgcolor: fundo,
+                            ...(!customBgColor && noEscuro(t, (p) => ({ bgcolor: p.background.paper }))),
+                        })}
+                    >
+                        <Stack
+                            direction='row'
+                            spacing={2}
+                            sx={{
+                                alignItems: 'center',
+                                marginRight: 2,
+                                display: { xs: 'none', [breakpoint]: 'flex' },
+                                width: '100%',
+                            }}
+                        >
                             <Link href='/'>{next ? <Image src={img} alt={title} width={40} height={40} /> : <img src={img} height={35} />}</Link>
                             <Box>
-                                <Typography variant='subtitle1' fontWeight={600}>
+                                <Typography
+                                    variant='subtitle1'
+                                    sx={{
+                                        fontWeight: 600,
+                                    }}
+                                >
                                     {title}
                                 </Typography>
                             </Box>
                         </Stack>
-                        <Stack direction='row' width='100%' justifyContent='center' alignItems='center' spacing={2} sx={{ display: { xs: 'none', [breakpoint]: 'flex' } }}>
+                        <Stack
+                            direction='row'
+                            spacing={2}
+                            sx={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                display: { xs: 'none', [breakpoint]: 'flex' },
+                            }}
+                        >
                             {links.map((x, index) => {
                                 const isActive = next ? verificarRota(router?.pathname ?? '', x.path) : verificarRota(route, x.path)
 
                                 return (
                                     <Box
                                         key={JSON.stringify({ x, index })}
-                                        paddingX={3}
-                                        paddingY={0.8}
-                                        borderRadius={50}
-                                        bgcolor={isActive ? color : 'transparent'}
-                                        color={isActive ? '#fff' : 'inherit'}
-                                        sx={{
+                                        onClick={(e) => {
+                                            changeRoute(e, x.path)
+                                        }}
+                                        sx={(t) => ({
+                                            paddingX: 3,
+                                            paddingY: 0.8,
+                                            borderRadius: 50,
+                                            bgcolor: isActive ? color : 'transparent',
+                                            color: isActive ? '#fff' : 'inherit',
                                             transition: 'all 0.2s ease-in-out',
+
                                             ':hover': {
                                                 backgroundColor: isActive ? color : 'rgba(0,0,0,0.05)',
                                                 cursor: 'pointer',
                                                 userSelect: 'none',
-                                                filter: isActive ? 'brightness(1.1)' : 'none'
+                                                filter: isActive ? 'brightness(1.1)' : 'none',
+                                                ...(!isActive && noEscuro(t, (p) => ({ backgroundColor: p.action.hover }))),
                                             },
-                                        }}
-                                        onClick={(e) => {
-                                            next && console.log('pathname:', router?.pathname, ':=', x.path)
-                                            changeRoute(e, x.path)
-                                        }}
+                                        })}
                                     >
-                                        <Stack justifyContent='center'>
-                                            <Typography fontWeight={isActive ? 600 : 500} whiteSpace='nowrap'>{x.name}</Typography>
+                                        <Stack
+                                            sx={{
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: isActive ? 600 : 500,
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {x.name}
+                                            </Typography>
                                         </Stack>
                                     </Box>
                                 )
@@ -179,7 +239,13 @@ export default function TabNavBar({
                                     <Menu open={menuOpen} onClose={closeMenu} anchorEl={anchor}>
                                         {links.map((x, index) => (
                                             <MenuItem key={JSON.stringify({ x, index })} onClick={(e) => onMenuItemClick(e, x.path)}>
-                                                <Typography textTransform='capitalize'>{x.name}</Typography>
+                                                <Typography
+                                                    sx={{
+                                                        textTransform: 'capitalize',
+                                                    }}
+                                                >
+                                                    {x.name}
+                                                </Typography>
                                             </MenuItem>
                                         ))}
                                     </Menu>
@@ -188,7 +254,15 @@ export default function TabNavBar({
                         </Box>
 
                         {/* Desktop */}
-                        <Stack direction='row' justifyContent='flex-end' alignItems='center' sx={{ width: { [breakpoint]: '100%' } }} paddingY={1}>
+                        <Stack
+                            direction='row'
+                            sx={{
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
+                                paddingY: 1,
+                                width: { [breakpoint]: '100%' },
+                            }}
+                        >
                             <Stack direction='row' spacing={2}>
                                 <Box>{el}</Box>
 
@@ -241,15 +315,35 @@ export default function TabNavBar({
                                                     }}
                                                 >
                                                     <Stack direction='row' spacing={1}>
-                                                        <LogoutOutlinedIcon sx={{ fill: '#545454' }} />
-                                                        <Typography textTransform='capitalize'>{logoutMsg}</Typography>
+                                                        <LogoutOutlinedIcon sx={(t) => ({ fill: '#545454', ...noEscuro(t, (p) => ({ fill: p.action.active })) })} />
+                                                        <Typography
+                                                            sx={{
+                                                                textTransform: 'capitalize',
+                                                            }}
+                                                        >
+                                                            {logoutMsg}
+                                                        </Typography>
                                                     </Stack>
                                                 </MenuItem>
                                             </Menu>
                                         </Box>
-                                        <Stack direction='row' spacing={0.4} alignItems='center' onClick={(e) => setAvatarAnchor(e.currentTarget as any)} sx={{ userSelect: 'none' }}>
+                                        <Stack
+                                            direction='row'
+                                            spacing={0.4}
+                                            onClick={(e) => setAvatarAnchor(e.currentTarget as any)}
+                                            sx={{
+                                                alignItems: 'center',
+                                                userSelect: 'none',
+                                            }}
+                                        >
                                             <Typography>Olá,</Typography>
-                                            <Typography fontWeight={600}>{user.given_name}</Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {user.given_name}
+                                            </Typography>
                                             <KeyboardArrowDownIcon />
                                         </Stack>
                                     </Stack>
@@ -259,9 +353,15 @@ export default function TabNavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
-                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 15,
+                                                padding: 0.4,
+                                            }}
+                                        >
                                             Entrar com o gov.br
                                         </Typography>
                                     </Button>
@@ -271,9 +371,15 @@ export default function TabNavBar({
                                         size='small'
                                         startIcon={<PersonIcon />}
                                         onClick={() => login(loginOptions)}
-                                        sx={{ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2 }}
+                                        sx={(t) => ({ color: 'white', textTransform: 'inherit', borderRadius: 50, paddingX: 2, ...noEscuro(t, (p) => ({ color: p.primary.contrastText })) })}
                                     >
-                                        <Typography fontWeight={600} fontSize={15} padding={0.4}>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 15,
+                                                padding: 0.4,
+                                            }}
+                                        >
                                             Entrar
                                         </Typography>
                                     </Button>
@@ -283,8 +389,12 @@ export default function TabNavBar({
                     </Stack>
                 </AppBar>
                 {loading && <LinearProgress />}
-            </Box >
-            <Box paddingBottom={paddingBottom} />
+            </Box>
+            <Box
+                sx={{
+                    paddingBottom: paddingBottom,
+                }}
+            />
         </>
     )
 }

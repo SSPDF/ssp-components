@@ -1,8 +1,9 @@
 import { Autocomplete, Grid, InputLabel, TextField } from '@mui/material'
 import get from 'lodash.get'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useId } from 'react'
 import { AuthContext } from '../../../context/auth'
 import { useFormContext } from 'react-hook-form'
+import { fundoDoCampo } from '../estilosDoCampo'
 
 let useDefault = true
 
@@ -37,6 +38,8 @@ export default function GenericFetchAutoComplete({
     md?: number
     disabled?: boolean
 }) {
+    // Liga o rótulo ao campo: sem isso o campo não tem nome acessível (UPGRADE_PLAN.md 5.21b).
+    const campoId = useId()
     const context = useFormContext()
 
     const [loading, setLoading] = useState(true)
@@ -55,9 +58,8 @@ export default function GenericFetchAutoComplete({
                 },
             }).then((res) => {
                 if (res.ok) {
-                    console.log('llll')
                     res.json().then((j) => {
-                        let value = get(j, route, j).filter((x: any) => x.id === defaultValue)
+                        const value = get(j, route, j).filter((x: any) => x.id === defaultValue)
                         if (value.length > 0) {
                             setList(get(j, route, j))
                             setLoading(false)
@@ -123,14 +125,18 @@ export default function GenericFetchAutoComplete({
 
     if (defaultValue && list.length <= 0 && !dValue)
         return (
-            <Grid item {...{ xs, sm, md }}>
+            <Grid size={{ xs, sm, md }}>
                 <TextField size='small' fullWidth placeholder={loadingText} disabled />
             </Grid>
         )
 
     return (
-        <Grid item {...{ xs, sm, md }}>
-            {title && <InputLabel required={required}>{title}</InputLabel>}
+        <Grid size={{ xs, sm, md }}>
+            {title && (
+                <InputLabel required={required} htmlFor={campoId}>
+                    {title}
+                </InputLabel>
+            )}
             <input
                 type='text'
                 {...context?.register(name!, {
@@ -141,6 +147,7 @@ export default function GenericFetchAutoComplete({
                 hidden
             />
             <Autocomplete
+                id={campoId}
                 value={value}
                 loading={loading}
                 loadingText={loadingText}
@@ -160,9 +167,9 @@ export default function GenericFetchAutoComplete({
                         helperText={get(context.formState.errors, name!)?.message as string}
                     />
                 )}
-                sx={{
-                    bgcolor: 'white',
-                }}
+                sx={(theme) => ({
+                    ...fundoDoCampo(theme),
+                })}
                 size='small'
                 fullWidth
                 disabled={disabled}
