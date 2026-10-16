@@ -1,6 +1,6 @@
 # Plano de atualização de dependências
 
-> **Status (16/10/2026):** **Etapas 0 a 8 concluídas e pendências da lib fechadas**, no branch único `atualizacao-dependencias`: versões `0.1.0` → … → `0.4.0` → `1.0.0-rc.1` (MUI 7.3+/9) → `1.0.0-rc.2` (React 19, Next 16, peers num major só, ESM em `.mjs`) → **`1.0.0-rc.3`** (achados 5.13e e 5.21 corrigidos, props legadas do `Input` removidas, TypeScript 6.0). A `rc.3` foi commitada em 29/09 (`cc6d57d`, CI e e2e de HMG verdes) e a `rc.4` em 30/09. O PR #4 foi mergeado na `main` em 14/10 (`24dec24`). As `rc.4` e `rc.5` saíram na `next` e a `1.0.0` em `latest` (dist-tags conferidas no npm em 16/10); a `0.4.0` nunca foi publicada. Histórico: 25/09 (4.1, 2.2, 4.4; 5.16–5.18), 26/09 (Etapa 5, `0.3.3`, Etapa 6 `0.4.0`; 5.19–5.23), 26–27/09 (Etapa 7, `rc.1`), 27/09 (decisão: só as versões atuais), 29/09 (Etapa 8 `rc.2`; pendências `rc.3`). **30/09:** skill `atualizar-ssplib` criada e aplicada no specto e no viva-flor (apps sem commit; seção 16); **`1.0.0-rc.4` publicada na `next`** por trusted publishing (OIDC); a `0.4.0` não é publicada (decisão de 30/09, seção 8). **08/10:** tema escuro refeito com `theme.applyStyles` e validado nos três jeitos de ter tema escuro do MUI 9, com snapshots e verificação de legibilidade de toda story no escuro (seção 17), lançado como **`1.0.0-rc.5`**. **13/10:** specto e viva-flor refeitos do zero com a `rc.5` do npm e `@mui/codemod@9.4.0` (o `@latest` quebra), testados no navegador contra o HMG sem erro; skill atualizada; **`1.0.0` estável** (código da `rc.5`) em `latest`. **16/10:** specto na `1.0.0`, commitado e enviado à `develop` (`8f561e4`); viva-flor segue na `rc.5` e sem commit (seção 18). **Próximo:** viva-flor para `^1.0.0` e commit, deploy do specto nos ambientes de teste, homologação com dados reais, copom e conoc-frontend com a skill. Estado consolidado nas **seções 15, 16, 17 e 18**.
+> **Status (16/10/2026):** **Etapas 0 a 8 concluídas e pendências da lib fechadas**, no branch único `atualizacao-dependencias`: versões `0.1.0` → … → `0.4.0` → `1.0.0-rc.1` (MUI 7.3+/9) → `1.0.0-rc.2` (React 19, Next 16, peers num major só, ESM em `.mjs`) → **`1.0.0-rc.3`** (achados 5.13e e 5.21 corrigidos, props legadas do `Input` removidas, TypeScript 6.0). A `rc.3` foi commitada em 29/09 (`cc6d57d`, CI e e2e de HMG verdes) e a `rc.4` em 30/09. O PR #4 foi mergeado na `main` em 14/10. As `rc.4` e `rc.5` saíram na `next` e a `1.0.0` em `latest` (dist-tags conferidas no npm em 16/10); a `0.4.0` nunca foi publicada. Histórico: 25/09 (4.1, 2.2, 4.4; 5.16–5.18), 26/09 (Etapa 5, `0.3.3`, Etapa 6 `0.4.0`; 5.19–5.23), 26–27/09 (Etapa 7, `rc.1`), 27/09 (decisão: só as versões atuais), 29/09 (Etapa 8 `rc.2`; pendências `rc.3`). **30/09:** skill `atualizar-ssplib` criada e aplicada no specto e no viva-flor (apps sem commit; seção 16); **`1.0.0-rc.4` publicada na `next`** por trusted publishing (OIDC); a `0.4.0` não é publicada (decisão de 30/09, seção 8). **08/10:** tema escuro refeito com `theme.applyStyles` e validado nos três jeitos de ter tema escuro do MUI 9, com snapshots e verificação de legibilidade de toda story no escuro (seção 17), lançado como **`1.0.0-rc.5`**. **13/10:** specto e viva-flor refeitos do zero com a `rc.5` do npm e `@mui/codemod@9.4.0` (o `@latest` quebra), testados no navegador contra o HMG sem erro; skill atualizada; **`1.0.0` estável** (código da `rc.5`) em `latest`. **Versões testadas em cada app:** seção 18. **Próximo:** testar a `1.0.0` nos apps migrados, deploy nos ambientes de teste, homologação com dados reais, copom e conoc-frontend com a skill. Estado consolidado nas **seções 15, 16, 17 e 18**.
 > **Análise feita em:** 21/09/2026, sobre a versão `0.0.349` (branch `main`, commit `7e017da`). **Revalidada em 22/09/2026**, **de novo em 23/09/2026, após a Etapa 1**, **em 25/09/2026, após a Etapa 3** (seção 11) **de novo em 25/09/2026, após a Etapa 4** (seção 12) e **em 27/09/2026, após a Etapa 7** (seção 13) — contra o código, o registry do npm e o que a execução das Etapas 0 e 1 mostrou. O resultado dessa revalidação está na **seção 10**; as seções abaixo já foram corrigidas conforme ela.
 > **Decisões tomadas em:** 21/09/2026 e 22/09/2026 — ver seção 9. **Alvo aprovado: as versões mais recentes de tudo**, incluindo MUI 9, Storybook 10, React 19 e Next 16, com ESLint e branch `v0-legacy`.
 > **Decisões de 23/09/2026:** **D1 decidida** — `tsdown` em modo `unbundle`, saída ESM + CJS (ESM-only reavaliado na Etapa 7: o `.mjs` passa no Next 16, mas continua bloqueado pelo Next 14; destrava na Etapa 8, ver lá). **D2 decidida em 27/09/2026** — sem janela de compatibilidade: a lib declara só o major atual de cada peer, e a `1.0.0` já sai com React 19 (ver "Decisão de 27/09/2026" na seção 9).
@@ -1402,32 +1402,32 @@ Decisão do usuário (08/10): refazer conforme as práticas atuais do MUI 9, com
 
 ---
 
-## 18. Estado em 16/10/2026, com a `1.0.0` estável
+## 18. Versões testadas por app
 
-**Lib.** `1.0.0` publicada em `latest` (13/10, commit `ecf21dc`, código idêntico ao da `rc.5`; as `rc` ficam na `next`). O PR #4 (`atualizacao-dependencias`) foi mergeado na `main` em 14/10 (`24dec24`), o que fecha a pendência do `publish.yaml` antigo na `main`. Working tree limpo.
+O estado corrente (versão instalada, commits, working tree) vive nos repositórios dos apps e muda o tempo todo; este plano registra só **qual versão da lib foi testada em qual app, e como**.
 
-**Migração refeita do zero (13/10).** O usuário mandou descartar a migração com o tarball da `rc.3` nos dois apps e refazer com a **`1.0.0-rc.5` do npm**, seguindo só a skill `atualizar-ssplib`. Os dois ficaram migrados e foram testados por ele no navegador contra o HMG (specto contra o HMG; viva-flor com `.env.local` apontando a API para o HMG), sem erro nem aviso no console.
+**Lib.** A `1.0.0` é a primeira estável da linha 1.x, com o código idêntico ao da `1.0.0-rc.5`; o PR #4 (`atualizacao-dependencias`) foi mergeado na `main` em 14/10, o que fecha a pendência do `publish.yaml` antigo na `main`.
 
-- **`@mui/codemod@9.4.0`, não `@latest`.** O CLI da `9.5.0` quebra com `yargs.command is not a function` (yargs 18) e a `9.3.0` saiu sem os transforms. A skill e a referência `0.x-para-1.x.md` fixam a `9.4.0`.
-- **Estado dos apps** (ambos na `develop`; o specto foi commitado e enviado em 16/10, com `tsc` limpo e sem novo teste no navegador depois da troca `rc.5` → `1.0.0`; o viva-flor segue sem commit): 
+**Migração refeita do zero (13/10).** O usuário mandou descartar a migração com o tarball da `rc.3` nos dois apps e refazer com a `rc.5` do npm, seguindo só a skill `atualizar-ssplib`. Foi com ela que a skill ganhou o `@mui/codemod@9.4.0` fixo (o `@latest`, `9.5.0`, quebra com `yargs.command is not a function` por causa do yargs 18, e a `9.3.0` saiu sem os transforms).
 
-| App | Versão da lib | Working tree | Último commit |
+| App | Versão da lib testada | Como foi testada | Resultado |
 |---|---|---|---|
-| specto-frontend | `^1.0.0` | commitado e enviado à `develop` (16/10) | `8f561e4` |
-| viva-flor-frontend | `^1.0.0-rc.5` | 68 arquivos, +5546/−3879 | `4736833` (08/10) |
-| copom | `^0.0.348` | não migrado | — |
-| conoc-frontend | tarball `0.2.0` | não migrado | — |
+| specto-frontend | `1.0.0-rc.5` (npm) | Navegador, contra o HMG (13/10) | Sem erro nem aviso no console |
+| specto-frontend | `1.0.0` | `tsc` (16/10); sem teste no navegador | Código igual ao da `rc.5`; falta testar |
+| viva-flor-frontend | `1.0.0-rc.5` (npm) | Navegador, com a API apontada para o HMG por `.env.local` (13/10) | Sem erro nem aviso no console |
+| viva-flor-frontend | `1.0.0` | `tsc` (16/10); sem teste no navegador | Código igual ao da `rc.5`; falta testar |
+| copom | — | — | Não migrado |
+| conoc-frontend | — | — | Não migrado |
 
-- **Viva-flor**: as 12 cópias locais de componentes da lib não foram trocadas pelas da lib (decisão pendente do usuário); o `yarn.lock` foi reescrito pelo npm.
+Os dois apps migrados passaram para a `1.0.0` e foram enviados à `develop` em 16/10. Antes disso, as migrações com o tarball da `rc.3` (30/09) foram testadas só por `tsc`, lint e `next build`, e foram descartadas.
 
 **Pendências**
 
-1. viva-flor: subir de `^1.0.0-rc.5` para `^1.0.0` (a `1.0.0` não pede nada aos apps) e repetir o teste no navegador; specto: repetir o teste depois do deploy.
-2. Commit do viva-flor (só quando o usuário pedir) e deploy nos ambientes de teste; depois homologação com dados reais.
-3. Decidir sobre as cópias locais de componentes no viva-flor.
-4. copom e conoc-frontend com a skill.
-5. npm: marcar "disallow bypass 2fa tokens" no pacote e apagar o secret `NPM_TOKEN` (seção 16).
-6. Nenhum app usa tema escuro hoje; o primeiro que usar valida a seção 17 com dados reais.
+1. Testar a `1.0.0` no navegador em specto e viva-flor (hoje só `tsc`), depois do deploy nos ambientes de teste; depois homologação com dados reais.
+2. Viva-flor: as 12 cópias locais de componentes da lib não foram trocadas pelas da lib (decisão pendente do usuário).
+3. copom e conoc-frontend com a skill.
+4. npm: marcar "disallow bypass 2fa tokens" no pacote e apagar o secret `NPM_TOKEN` (seção 16).
+5. Nenhum app usa tema escuro hoje; o primeiro que usar valida a seção 17 com dados reais.
 
 ---
 
