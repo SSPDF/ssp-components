@@ -1360,7 +1360,7 @@ Aplicada a partir da `develop` (`99be6ee`), com o tarball da `rc.3`: 58 arquivos
 
 **Bug da lib achado no viva-flor, corrigido na `rc.4` (30/09, a pedido do usuário):** com a API fora do ar, o estado de erro da `Table` (`TableErrorState.tsx`) punha um `Box` (`<div>`) dentro de um `Typography` (`<p>`), e o React acusava erro de hidratação. Existia desde a `0.0.x`. O `Typography` passou a `component='div'` (margem zerada pelo MUI, visual igual: 95 snapshots sem nenhum pixel diferente, com `SNAPSHOTS_DETALHE=1`), no `TableErrorState` e na cópia do `GenericTable` (que é código morto: o `error` dele é um `useState(null)` que nunca muda). Teste novo em `Table.test.tsx` (500 e 403), que falhava antes da correção. Primeiro foi para o tarball da `rc.3`, regerado e reinstalado nos dois apps; como a `rc.3` já tinha commit de release, a correção saiu como **`1.0.0-rc.4`** (decisão do usuário), junto com a skill e a documentação do `transpilePackages`. Commit e push no branch, **sem tag e sem publicar** (a tag `v*` dispara o publish).
 
-**Publicação (30/09):** a tag `v1.0.0-rc.4` falhou no `npm publish` com `404` no `PUT`: o `NPM_TOKEN` (de 03/06/2026, conta pessoal de um mantenedor) tinha expirado. Em vez de um token novo, o publish passou a usar **trusted publishing** (OIDC): no npmjs.com o pacote confia em `SSPDF/ssp-components` + `publish.yaml`, só com "Allow npm publish"; o workflow ganhou `id-token: write` e perdeu o `NODE_AUTH_TOKEN`. Como o workflow que roda é o do commit da tag, a tag `v1.0.0-rc.4` (nunca publicada) foi movida para o commit com essa mudança, e a **`1.0.0-rc.4` saiu na `next`** (30/09, com attestation de proveniência SLSA v1). A `0.4.0` **não é publicada** (decisão do usuário, seção 8). Pendente do lado do npm: marcar "disallow bypass 2fa tokens" no pacote e apagar o secret `NPM_TOKEN`.
+**Publicação (30/09):** a tag `v1.0.0-rc.4` falhou no `npm publish` com `404` no `PUT`: o `NPM_TOKEN` (de 03/06/2026, conta pessoal de um mantenedor) tinha expirado. Em vez de um token novo, o publish passou a usar **trusted publishing** (OIDC): no npmjs.com o pacote confia em `SSPDF/ssp-components` + `publish.yaml`, só com "Allow npm publish"; o workflow ganhou `id-token: write` e perdeu o `NODE_AUTH_TOKEN`. Como o workflow que roda é o do commit da tag, a tag `v1.0.0-rc.4` (nunca publicada) foi movida para o commit com essa mudança, e a **`1.0.0-rc.4` saiu na `next`** (30/09, com attestation de proveniência SLSA v1). A `0.4.0` **não é publicada** (decisão do usuário, seção 8). Do lado do npm, "disallow bypass 2fa tokens" foi marcado no pacote e o secret `NPM_TOKEN` foi apagado (confirmado pelo usuário em 16/10).
 
 **Próximos passos (30/09; superado, ver seção 18):** specto e viva-flor trocam o tarball local por `@ssplib/react-components@1.0.0-rc.5` → commit nos apps e deploy nos ambientes de teste → homologação com dados reais → `1.0.0` em `latest` e merge na `main` → copom e conoc-frontend com a skill.
 
@@ -1398,7 +1398,7 @@ Decisão do usuário (08/10): refazer conforme as práticas atuais do MUI 9, com
 - **O claro não mudou**: `SNAPSHOTS_DETALHE=1 npm run snapshots` com nenhum pixel diferente nas 99 stories capturadas no claro (e as 32 de interação passando nos dois temas). Os baselines escuros nasceram numa rodada e bateram pixel a pixel na seguinte.
 - Custo: cada story roda duas vezes, então o passo de snapshots do CI dobra (era ~3,5 min).
 
-**Pendências**: nenhum app usa tema escuro hoje; o primeiro que usar valida isto com dados reais. Na `main`, o `publish.yaml` antigo ainda publica a cada push (só não publicou o `v350` porque o npm exige 2FA): apagar o secret `NPM_TOKEN` (já pendente, seção 16) fecha isso.
+**Pendências**: nenhum app usa tema escuro hoje; o primeiro que usar valida isto com dados reais. O `publish.yaml` antigo da `main` (que publicava a cada push) deixou de existir com o merge do PR #4, e o secret `NPM_TOKEN` já foi apagado (seção 16).
 
 ---
 
@@ -1426,8 +1426,7 @@ Os dois apps migrados passaram para a `1.0.0` e foram enviados à `develop` em 1
 1. Testar a `1.0.0` no navegador em specto e viva-flor (hoje só `tsc`), depois do deploy nos ambientes de teste; depois homologação com dados reais.
 2. Viva-flor: as 12 cópias locais de componentes da lib não foram trocadas pelas da lib (decisão pendente do usuário).
 3. copom e conoc-frontend com a skill.
-4. npm: marcar "disallow bypass 2fa tokens" no pacote e apagar o secret `NPM_TOKEN` (seção 16).
-5. Nenhum app usa tema escuro hoje; o primeiro que usar valida a seção 17 com dados reais.
+4. Nenhum app usa tema escuro hoje; o primeiro que usar valida a seção 17 com dados reais.
 
 ---
 
